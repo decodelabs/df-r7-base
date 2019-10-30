@@ -12,7 +12,7 @@ use df\flex;
 
 class Base implements IBucket
 {
-    use core\io\TAcceptTypeProcessor;
+    use core\lang\TAcceptTypeProcessor;
 
     const USER_SPECIFIC = false;
     const ALLOW_ONE_PER_USER = false;

@@ -20,7 +20,7 @@ class FileUpload extends Base implements IFileUploadWidget, Inspectable
     use TWidget_Input;
     use TWidget_FocusableInput;
     use TWidget_OptionalMultipleValueInput;
-    use core\io\TAcceptTypeProcessor;
+    use core\lang\TAcceptTypeProcessor;
 
     const PRIMARY_TAG = 'input.picker.file';
     const ARRAY_INPUT = false;

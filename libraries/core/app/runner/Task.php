@@ -168,8 +168,6 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
 
         if (is_string($response)) {
             echo $response."\r\n";
-        } elseif ($response instanceof core\io\IFlushable) {
-            $response->flush();
         } elseif (!empty($response)) {
             Glitch::incomplete($response);
         }

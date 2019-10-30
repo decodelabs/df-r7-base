@@ -8,6 +8,8 @@ namespace df\core\lang;
 use df;
 use df\core;
 
+use DecodeLabs\Atlas;
+
 interface ICallback
 {
     const DIRECT = 1;
@@ -226,4 +228,105 @@ interface IPromise
 
     // Sync
     public function sync();
+}
+
+
+
+
+
+// Accept type
+interface IAcceptTypeProcessor
+{
+    public function setAcceptTypes(...$types);
+    public function addAcceptTypes(...$types);
+    public function getAcceptTypes();
+    public function isTypeAccepted(...$types);
+}
+
+trait TAcceptTypeProcessor
+{
+    protected $_acceptTypes = [];
+
+    public function setAcceptTypes(...$types)
+    {
+        $this->_acceptTypes = [];
+        return $this->addAcceptTypes(...$types);
+    }
+
+    public function addAcceptTypes(...$types)
+    {
+        foreach ($types as $type) {
+            $type = trim(strtolower($type));
+
+            if (!strlen($type)) {
+                continue;
+            }
+
+            if ($type{0} == '.') {
+                $type = Atlas::$mime->detect($type);
+            }
+
+            if (false === strpos($type, '/')) {
+                $type .= '/*';
+            }
+
+            if (!in_array($type, $this->_acceptTypes)) {
+                $this->_acceptTypes[] = $type;
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAcceptTypes()
+    {
+        return $this->_acceptTypes;
+    }
+
+    public function isTypeAccepted(...$types)
+    {
+        if (empty($this->_acceptTypes)) {
+            return true;
+        }
+
+        foreach ($types as $type) {
+            if (!strlen($type)) {
+                continue;
+            }
+
+            if ($type{0} == '.') {
+                $type = Atlas::$mime->detect($type);
+            }
+
+            @list($category, $name) = explode('/', $type, 2);
+
+            foreach ($this->_acceptTypes as $accept) {
+                if ($accept == '*') {
+                    return true;
+                }
+
+                @list($acceptCategory, $acceptName) = explode('/', $accept, 2);
+
+                if ($acceptCategory == '*') {
+                    return true;
+                }
+
+                if ($acceptCategory != $category) {
+                    continue;
+                }
+
+                if ($acceptName == '*') {
+                    return true;
+                }
+
+                if ($acceptName != $name) {
+                    continue;
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

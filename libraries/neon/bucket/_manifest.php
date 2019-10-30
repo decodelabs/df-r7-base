@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\neon;
 
-interface IBucket extends core\io\IAcceptTypeProcessor
+interface IBucket extends core\lang\IAcceptTypeProcessor
 {
     public function getName(): string;
     public function getDisplayName(): string;

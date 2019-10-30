@@ -12,10 +12,10 @@ use df\halo;
 
 use DecodeLabs\Glitch;
 
-class Counter implements flex\code\IProbe, core\io\IAcceptTypeProcessor, \ArrayAccess
+class Counter implements flex\code\IProbe, core\lang\IAcceptTypeProcessor, \ArrayAccess
 {
     use flex\code\TProbe;
-    use core\io\TAcceptTypeProcessor;
+    use core\lang\TAcceptTypeProcessor;
 
     const TEXT_TYPES = [
         'as', 'atom', 'cgi', 'css', 'cs', 'dtd', 'htaccess', 'htc', 'htm', 'html', 'js', 'json',

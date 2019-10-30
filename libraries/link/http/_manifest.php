@@ -551,7 +551,7 @@ interface ICookieJar
 
 
 // Upload
-interface IUploadHandler extends core\io\IAcceptTypeProcessor, \Countable, \IteratorAggregate, \ArrayAccess
+interface IUploadHandler extends core\lang\IAcceptTypeProcessor, \Countable, \IteratorAggregate, \ArrayAccess
 {
     public function setAllowedExtensions(array $extensions);
     public function addAllowedExtensions(array $extensions);

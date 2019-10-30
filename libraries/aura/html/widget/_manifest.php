@@ -11,9 +11,12 @@ use df\aura;
 use df\arch;
 use df\user;
 
-interface IElementContentWrapper extends \ArrayAccess, \Countable {}
+interface IElementContentWrapper extends \ArrayAccess, \Countable
+{
+}
 
-interface IRendererContext extends core\collection\IMappedCollection {
+interface IRendererContext extends core\collection\IMappedCollection
+{
     public function setComponent(?arch\IComponent $component);
     public function getComponent(): ?arch\IComponent;
     public function getWidget(): aura\html\widget\IWidget;
@@ -39,7 +42,8 @@ interface IRendererContext extends core\collection\IMappedCollection {
     public function shouldSkipCells(): bool;
 }
 
-interface IField {
+interface IField
+{
     public function getKey(): string;
     public function setName(string $name);
     public function getName(): string;
@@ -56,13 +60,15 @@ interface IField {
 
 
 
-interface IWidgetShortcutProvider {
+interface IWidgetShortcutProvider
+{
     public function __call($method, array $args);
 }
 
 
 
-interface IWidget extends aura\html\IElementRepresentation, aura\html\ITagDataContainer, core\lang\IChainable {
+interface IWidget extends aura\html\IElementRepresentation, aura\html\ITagDataContainer, core\lang\IChainable
+{
     public function getWidgetName(): string;
     public function getTag(): aura\html\ITag;
     public function setContext(arch\IContext $context);
@@ -72,12 +78,14 @@ interface IWidget extends aura\html\IElementRepresentation, aura\html\ITagDataCo
     public function isTagBlock(): bool;
 }
 
-interface IWidgetProxy {
+interface IWidgetProxy
+{
     public function toWidget(): ?IWidget;
 }
 
 
-interface IBodyContentAwareWidget extends IWidget {
+interface IBodyContentAwareWidget extends IWidget
+{
     public function withBody();
     public function setBody($body);
     public function getBody();
@@ -85,17 +93,23 @@ interface IBodyContentAwareWidget extends IWidget {
 }
 
 
-interface IContainerWidget extends IWidget, core\collection\IIndexedQueue, aura\html\IWidgetFinder {}
+interface IContainerWidget extends IWidget, core\collection\IIndexedQueue, aura\html\IWidgetFinder
+{
+}
 
 
-interface IFieldDataProvider extends core\constraint\IRequirable, core\constraint\IDisableable {
+interface IFieldDataProvider extends core\constraint\IRequirable, core\constraint\IDisableable
+{
     public function getErrors(): array;
 }
 
 
-interface IFormOrientedWidget extends IWidget {}
+interface IFormOrientedWidget extends IWidget
+{
+}
 
-interface IFormDataWidget extends IFormOrientedWidget {
+interface IFormDataWidget extends IFormOrientedWidget
+{
     public function setName(?string $name);
     public function getName(): ?string;
 
@@ -108,32 +122,40 @@ interface IFormDataWidget extends IFormOrientedWidget {
     public function getTargetFormId();
 }
 
-interface IInputWidget extends IFormDataWidget, IFieldDataProvider, core\constraint\IReadOnly {
+interface IInputWidget extends IFormDataWidget, IFieldDataProvider, core\constraint\IReadOnly
+{
     public function setTabIndex($index);
     public function getTabIndex();
 }
 
-interface IFocusableInputWidget extends IInputWidget {
+interface IFocusableInputWidget extends IInputWidget
+{
     public function shouldAutoFocus(bool $flag=null);
 }
 
-interface IVisualInputWidget extends IInputWidget, IFocusableInputWidget {
+interface IVisualInputWidget extends IInputWidget, IFocusableInputWidget
+{
     public function shouldValidate(bool $flag=null);
     public function shouldAutoComplete(bool $flag=null);
 }
 
-interface IOptionalMultipleValueInputWidget extends IInputWidget {
+interface IOptionalMultipleValueInputWidget extends IInputWidget
+{
     public function allowMultiple(bool $flag=null);
 }
 
-interface IDataListEntryWidget extends IVisualInputWidget {
+interface IDataListEntryWidget extends IVisualInputWidget
+{
     public function setDataListId($id);
     public function getDataListId();
 }
 
-interface IDataEntryWidget extends IVisualInputWidget, IDataListEntryWidget {}
+interface IDataEntryWidget extends IVisualInputWidget, IDataListEntryWidget
+{
+}
 
-interface ITextEntryWidget extends IVisualInputWidget {
+interface ITextEntryWidget extends IVisualInputWidget
+{
     public function setMaxLength(?int $length);
     public function getMaxLength(): ?int;
 
@@ -143,7 +165,8 @@ interface ITextEntryWidget extends IVisualInputWidget {
     public function shouldSpellCheck(bool $flag=null);
 }
 
-interface IRangeEntryWidget extends IDataEntryWidget {
+interface IRangeEntryWidget extends IDataEntryWidget
+{
     public function setRange($min, $max, $step=null);
 
     public function setMin($min);
@@ -156,27 +179,35 @@ interface IRangeEntryWidget extends IDataEntryWidget {
     public function getStep();
 }
 
-interface ICheckInputWidget extends IInputWidget {
+interface ICheckInputWidget extends IInputWidget
+{
     public function isChecked($flag=null);
 }
 
-interface ISelectionInputWidget extends IInputWidget {
+interface ISelectionInputWidget extends IInputWidget
+{
     public function setOptionRenderer($renderer);
     public function getOptionRenderer();
 }
 
-interface IMultipleSelectionInputWidget extends ISelectionInputWidget {}
+interface IMultipleSelectionInputWidget extends ISelectionInputWidget
+{
+}
 
-interface IUngroupedOptionWidget extends IFormOrientedWidget {
+interface IUngroupedOptionWidget extends IFormOrientedWidget
+{
     public function setOptions($options, $labelsAsValues=false);
     public function addOptions($options, $labelsAsValues=false);
     public function getOptions();
     public function sortOptions($byLabel=false);
 }
 
-interface IUngroupedSelectionInputWidget extends IUngroupedOptionWidget, ISelectionInputWidget {}
+interface IUngroupedSelectionInputWidget extends IUngroupedOptionWidget, ISelectionInputWidget
+{
+}
 
-interface IGroupedSelectionInputWidget extends ISelectionInputWidget {
+interface IGroupedSelectionInputWidget extends ISelectionInputWidget
+{
     public function setOptions($options, $labelsAsValues=false);
     public function addOptions($options, $labelsAsValues=false);
     public function getOptions();
@@ -195,13 +226,15 @@ interface IGroupedSelectionInputWidget extends ISelectionInputWidget {
     public function getGroupName($id);
 }
 
-interface IDispositionAwareWidget {
+interface IDispositionAwareWidget
+{
     public function setDisposition($diposition);
     public function getDisposition();
 }
 
 
-interface IIconProviderWidget {
+interface IIconProviderWidget
+{
     public function setIcon(string $icon=null);
     public function getIcon();
 }
@@ -215,7 +248,8 @@ interface IIconProviderWidget {
 
 
 // Forms
-interface IFormWidget extends IFormOrientedWidget {
+interface IFormWidget extends IFormOrientedWidget
+{
     public function setAction($action);
     public function getAction();
 
@@ -238,7 +272,8 @@ interface IFormWidget extends IFormOrientedWidget {
     public function getAcceptCharset();
 }
 
-interface IFieldSetWidget extends IFormOrientedWidget {
+interface IFieldSetWidget extends IFormOrientedWidget
+{
     public function withLegendBody();
     public function setLegendBody(aura\html\IElementContent $body);
     public function getLegendBody();
@@ -251,11 +286,13 @@ interface IFieldSetWidget extends IFormOrientedWidget {
 }
 
 
-interface IButtonWidget extends IInputWidget, IBodyContentAwareWidget, IDispositionAwareWidget {
+interface IButtonWidget extends IInputWidget, IBodyContentAwareWidget, IDispositionAwareWidget
+{
     public function shouldValidate(bool $flag=null);
 }
 
-interface ITextboxWidget extends ITextEntryWidget, IDataListEntryWidget {
+interface ITextboxWidget extends ITextEntryWidget, IDataListEntryWidget
+{
     public function setPattern($pattern);
     public function getPattern();
 
@@ -263,7 +300,8 @@ interface ITextboxWidget extends ITextEntryWidget, IDataListEntryWidget {
     public function getFormEvent();
 }
 
-interface ITextareaWidget extends ITextEntryWidget {
+interface ITextareaWidget extends ITextEntryWidget
+{
     public function setColumns($columns);
     public function getColumns();
 
@@ -277,22 +315,29 @@ interface ITextareaWidget extends ITextEntryWidget {
     public function getWrap();
 }
 
-interface IFileUploadWidget extends IFocusableInputWidget, IOptionalMultipleValueInputWidget, core\io\IAcceptTypeProcessor {}
+interface IFileUploadWidget extends IFocusableInputWidget, IOptionalMultipleValueInputWidget, core\lang\IAcceptTypeProcessor
+{
+}
 
-interface IDateWidget extends IRangeEntryWidget {}
+interface IDateWidget extends IRangeEntryWidget
+{
+}
 
-interface IMultiSelectWidget extends IMultipleSelectionInputWidget {
+interface IMultiSelectWidget extends IMultipleSelectionInputWidget
+{
     public function setSize($size);
     public function getSize();
 }
 
 
-interface ILabelWidget extends IFormOrientedWidget, IBodyContentAwareWidget {
+interface ILabelWidget extends IFormOrientedWidget, IBodyContentAwareWidget
+{
     public function setInputId($inputId);
     public function getInputId();
 }
 
-interface IFieldWidget extends IFormOrientedWidget {
+interface IFieldWidget extends IFormOrientedWidget
+{
     public function withLabelBody();
     public function setLabelBody(aura\html\IElementContent $labelBody);
     public function getLabelBody();
@@ -301,27 +346,31 @@ interface IFieldWidget extends IFormOrientedWidget {
 
 
 // Lists
-interface IListWidget extends IWidget {
-
+interface IListWidget extends IWidget
+{
 }
 
-interface IDataDrivenListWidget extends IListWidget {
+interface IDataDrivenListWidget extends IListWidget
+{
     public function setData($data);
     public function getData();
 }
 
-interface IOrderedDataDrivenListWidget extends IDataDrivenListWidget {
+interface IOrderedDataDrivenListWidget extends IDataDrivenListWidget
+{
     public function setStartIndex($start);
     public function getStartIndex();
     public function isReversed(bool $flag=null);
 }
 
-interface ILinearListWidget extends IListWidget {
+interface ILinearListWidget extends IListWidget
+{
     public function setRenderer($renderer=null);
     public function getRenderer();
 }
 
-interface IMappedListWidget extends IListWidget {
+interface IMappedListWidget extends IListWidget
+{
     public function setRowProcessor($processor=null);
     public function getRowProcessor();
     public function setField(IField $field);
@@ -338,7 +387,8 @@ interface IMappedListWidget extends IListWidget {
 
 
 // Links
-interface ILinkWidget extends IWidget, IBodyContentAwareWidget, core\constraint\IDisableable, IDispositionAwareWidget, arch\navigation\ILink {
+interface ILinkWidget extends IWidget, IBodyContentAwareWidget, core\constraint\IDisableable, IDispositionAwareWidget, arch\navigation\ILink
+{
     public function setTarget($target);
     public function getTarget();
 
@@ -359,7 +409,8 @@ interface ILinkWidget extends IWidget, IBodyContentAwareWidget, core\constraint\
     public function getContentType();
 }
 
-interface IDescriptionAwareLinkWidget extends ILinkWidget {
+interface IDescriptionAwareLinkWidget extends ILinkWidget
+{
     public function setDescription($description);
     public function getDescription();
     public function shouldShowDescription(bool $flag=null);

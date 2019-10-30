@@ -15,7 +15,7 @@ use DecodeLabs\Atlas\Dir;
 
 class Handler implements link\http\IUploadHandler
 {
-    use core\io\TAcceptTypeProcessor;
+    use core\lang\TAcceptTypeProcessor;
 
     protected $_files = [];
     protected $_extensions = [];
