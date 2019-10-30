@@ -59,7 +59,7 @@ class TaskSetCollation extends arch\node\Task
 
         $charset = $this->request->query->get('charset', explode('_', $collation)[0]);
 
-        if (!Cli::confirm('Are you sure you want to convert all databases to '.$charset.' / '.$collation.'?', true)->prompt()) {
+        if (!Cli::confirm('Are you sure you want to convert all databases to '.$charset.' / '.$collation.'?', true)) {
             return;
         }
 

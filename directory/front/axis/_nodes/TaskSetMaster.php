@@ -33,7 +33,7 @@ class TaskSetMaster extends arch\node\Task
 
         $check = $this->format->stringToBoolean($this->request['check'], true);
 
-        if ($current && (!$check || Cli::confirm('Use current: '.opal\rdbms\Dsn::factory($current)->getDisplayString(true), true)->prompt())) {
+        if ($current && (!$check || Cli::confirm('Use current: '.opal\rdbms\Dsn::factory($current)->getDisplayString(true), true))) {
             if (!$check) {
                 Cli::info('Sticking with current: '.opal\rdbms\Dsn::factory($current)->getDisplayString(true));
             }

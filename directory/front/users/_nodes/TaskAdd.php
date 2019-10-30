@@ -131,7 +131,7 @@ class TaskAdd extends arch\node\Task
                     continue;
                 }
 
-                if (Cli::confirm('Add to '.$groups[$id]['name'].' group?')->prompt()) {
+                if (Cli::confirm('Add to '.$groups[$id]['name'].' group?')) {
                     $this->_client->groups->add($groups[$id]);
                 }
             }

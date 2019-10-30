@@ -41,7 +41,7 @@ class TaskInit extends arch\node\Task
         }
 
         if ($repo->getConfig('gui.geometry') != self::GEOMETRY) {
-            if (Cli::confirm('Would you like to set default GUI config @1020p?', true)->prompt()) {
+            if (Cli::confirm('Would you like to set default GUI config @1020p?', true)) {
                 Cli::{'yellow'}('Setting geometry: ');
 
                 $repo->setConfig('gui.wmstate', 'zoomed');

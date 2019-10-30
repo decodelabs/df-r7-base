@@ -159,7 +159,7 @@ abstract class Task extends Base implements ITaskNode
                     $answerString = (string)$answerString;
                 }
 
-                $valid = Cli::confirm('Is this correct? '.$answerString, true)->prompt();
+                $valid = Cli::confirm('Is this correct? '.$answerString, true);
             }
         } while (!$valid);
 
