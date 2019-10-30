@@ -11,6 +11,7 @@ use df\apex;
 use df\arch;
 use df\link;
 use df\spur;
+use df\flex;
 
 use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Glitch;
@@ -89,32 +90,38 @@ class TaskMedia extends arch\node\Task
                 'get', '~devtools/migrate/media', [
                     'file' => $fileId,
                     'version' => $versionId
-                ], $path
+                ]
             ), function ($response) use ($versionId, $version, $path) {
-                if (!$response->isOk()) {
-                    if ($response->isMissing()) {
+                if ($response->getStatusCode() >= 300) {
+                    if ($response->getStatusCode() === 404) {
                         try {
-                            $content = $response->getJsonContent();
+                            $content = flex\Json::stringToTree((string($response->getBody())));
                             $message = $content['message'];
                         } catch (\Throwable $e) {
                             $message = null;
                         }
 
                         Cli::error($versionId.' - '.$version['fileName'].' **NOT FOUND'.($message ? ': '.$message : null).'**');
-                    } elseif ($response->isForbidden()) {
+                    } elseif ($response->getStatusCode() === 403) {
                         throw Glitch::{'EInvalidArgument,EApi'}(
                             'Migration key is invalid - check application pass keys match'
                         );
-                    } elseif ($response->isError()) {
+                    } elseif ($response->getStatusCode() >= 400) {
                         throw Glitch::EApi('Migration failed!!!');
                     }
                 } else {
-                    Cli::success('Fetched '.$versionId.' - '.$version['fileName'].' - '.$this->format->fileSize(filesize($path)));
-                }
-            });
-        }
+                    $file = Atlas::$fs->file($path, 'wb');
+                    $stream = $response->getBody();
 
-        $this->_migrator->sync();
+                    while (!$stream->eof()) {
+                        $file->write($stream->read(8192));
+                    }
+
+                    $file->close();
+                    Cli::success('Fetched '.$versionId.' - '.$version['fileName'].' - '.$this->format->fileSize($file->getSize()));
+                }
+            })->wait();
+        }
     }
 
     protected function _getUrl()
@@ -145,7 +152,7 @@ class TaskMedia extends arch\node\Task
         if (isset($this->request['bucket'])) {
             $bucket = $this->request['bucket'];
         } else {
-            $bucket = $this->_askFor('Bucket', function ($answer) {
+            $bucket = $this->_askFor('Bucket', function (&$answer) {
                 if ($answer === 'all') {
                     $answer = null;
                 }
@@ -176,7 +183,7 @@ class TaskMedia extends arch\node\Task
         if (isset($this->request['limit'])) {
             $limit = $this->request['limit'];
         } else {
-            $limit = $this->_askFor('Size limit', function ($answer) {
+            $limit = $this->_askFor('Size limit', function (&$answer) {
                 if ($answer === 'none') {
                     $answer = null;
                 }

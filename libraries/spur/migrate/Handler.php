@@ -10,8 +10,13 @@ use df\core;
 use df\spur;
 use df\link;
 use df\arch;
+use df\flex;
 
 use DecodeLabs\Glitch;
+use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\Pool as HttpPool;
+use GuzzleHttp\Psr7\Request as HttpRequest;
+use Psr\Http\Message\ResponseInterface;
 
 class Handler implements IHandler
 {
@@ -19,7 +24,7 @@ class Handler implements IHandler
     protected $_url;
     protected $_router;
     protected $_context;
-    protected $_httpPool;
+    protected $_httpClient;
 
     protected $_asyncBatchSize = 0;
     protected $_asyncBatchLimit = 10;
@@ -32,7 +37,7 @@ class Handler implements IHandler
             $this->_context->app->getPassKey()
         );
 
-        $this->_httpPool = (new link\http\Client())->newPool();
+        $this->_httpClient = new HttpClient();
         $this->_sayHello($url);
     }
 
@@ -57,11 +62,12 @@ class Handler implements IHandler
         $url->path->push('~devtools/migrate/hello')->shouldAddTrailingSlash(false);
         $url->query->key = $this->_key;
 
-        $response = $this->_httpPool->getClient()->get($url, function ($request) {
-            $request->headers->set('x-df-self', md5(df\Launchpad::$app->getPassKey()));
-        });
+        $response = $this->_httpClient->get((string)$url, [
+            'http_errors' => false,
+            'verify' => false
+        ]);
 
-        $content = $response->getJsonContent();
+        $content = flex\Json::stringToTree((string)$response->getBody());
 
         if (!$content->data->nodes->contains('media')) {
             throw Glitch::{'EApi,EForbidden'}([
@@ -102,7 +108,7 @@ class Handler implements IHandler
     }
 
 
-    public function createRequest($method, $request, array $data=null, $responseFilePath=null)
+    public function createRequest($method, $request, array $data=null)
     {
         if (is_string($request)) {
             $request = new arch\Request($request);
@@ -139,37 +145,45 @@ class Handler implements IHandler
             $request->getUrl()->setPassword($this->_url->getPassword());
         }
 
-        if ($responseFilePath !== null) {
-            $request->getOptions()->setDownloadFilePath($responseFilePath);
-        }
-
         $request->setMethod($method);
-        $request->getHeaders()->set('x-df-self', md5(df\Launchpad::$app->getPassKey()));
+        //$request->getHeaders()->set('x-df-self', md5(df\Launchpad::$app->getPassKey()));
 
         return $request;
     }
 
     public function call(link\http\IRequest $request)
     {
-        $response = $this->_httpPool->getClient()->sendRequest($request);
-
-        if ($response->isError()) {
-            $content = $response->getJsonContent();
-            throw Glitch::EApi('Migration failed: '.$content['error']);
-        }
-
-        return $response;
+        $psrRequest = $this->_prepareRequest($request);
+        return $this->_httpClient->send($psrRequest, [
+            'verify' => false
+        ]);
     }
 
     public function callAsync(link\http\IRequest $request, $callback)
     {
-        $this->_httpPool->promiseResponse($request)->then($callback);
-        return $this;
+        $psrRequest = $this->_prepareRequest($request);
+        return $this->_httpClient->sendAsync($psrRequest, [
+            'verify' => false
+        ])->then($callback);
+    }
+
+    protected function _prepareRequest(link\http\IRequest $request)
+    {
+        $request->prepareHeaders();
+        $url = clone $request->getUrl();
+        //$url->setUsername(null);
+        //$url->setPassword(null);
+
+        return new HttpRequest(
+            $request->getMethod(),
+            (string)$url,
+            $request->getHeaders()->toArray(),
+            $request->getBodyDataString()
+        );
     }
 
     public function sync()
     {
-        $this->_httpPool->sync();
         return $this;
     }
 }

@@ -19,7 +19,7 @@ interface IHandler
     public function setAsyncBatchLimit($limit);
     public function getAsyncBatchLimit();
 
-    public function createRequest($method, $request, array $data=null, $responseFilePath=null);
+    public function createRequest($method, $request, array $data=null);
     public function call(link\http\IRequest $request);
     public function callAsync(link\http\IRequest $request, $callback);
     public function sync();
