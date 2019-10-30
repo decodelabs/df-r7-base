@@ -44,7 +44,7 @@ class TaskAdd extends arch\node\Task
         }, null, true);
 
         $this->_auth->identity = $this->_client['email'];
-        $this->_auth->password = $this->_askPassword('Password', true, true, true);
+        $this->_auth->password = $this->user->password->hash(Cli::askPassword('Password', true, true));
 
         $this->_client->fullName = $this->_askFor('Full name', function ($answer) {
             return $this->data->newValidator()
@@ -131,7 +131,7 @@ class TaskAdd extends arch\node\Task
                     continue;
                 }
 
-                if (Cli::confirm('Add to '.$groups[$id]['name'].' group?')) {
+                if (Cli::confirm('Add to '.$groups[$id]['name'].' group?', true)) {
                     $this->_client->groups->add($groups[$id]);
                 }
             }

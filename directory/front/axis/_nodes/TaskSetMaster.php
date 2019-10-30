@@ -60,7 +60,7 @@ class TaskSetMaster extends arch\node\Task
             }, $dsn->getUsername());
             $dsn->setUsername($username);
 
-            $password = $this->_askPassword('Password', false, false);
+            $password = Cli::askPassword('Password', false, false);
             $dsn->setPassword($password);
 
             $host = $this->_askFor('Host', function ($answer) {

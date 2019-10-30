@@ -117,100 +117,36 @@ abstract class Task extends Base implements ITaskNode
 
 
     // Interaction
-    protected function _askFor($label, callable $validator, $default=null, $check=false)
+    protected function _askFor(string $label, callable $validator, ?string $default=null, bool $confirm=false)
     {
-        do {
-            Cli::{'cyan'}($label.': ');
+        $output = null;
 
-            if ($default !== null) {
-                Cli::write('['.$default.'] ');
-            }
+        Cli::newQuestion($label, $default)
+            ->setValidator(function ($answer, $session) use ($validator, &$output) {
+                $valid = $validator($answer);
 
-            $answer = trim(Cli::readLine());
-
-            if (!strlen($answer) && $default !== null) {
-                $answer = $default;
-            }
-
-            $valid = $validator($answer);
-
-            if ($valid instanceof core\validate\IField) {
-                $valid = $valid->getValidator();
-            }
-
-            if ($valid instanceof core\validate\IHandler) {
-                $key = current(array_keys($valid->getFields()));
-                $valid->validate([$key => $answer]);
-
-                foreach ($valid->getCurrentData()->{$key}->getErrors() as $error) {
-                    Cli::error($error);
+                if ($valid instanceof core\validate\IField) {
+                    $valid = $valid->getValidator();
                 }
 
-                $answer = $valid[$key];
-                $valid = $valid->isValid();
-            }
+                if ($valid instanceof core\validate\IHandler) {
+                    $key = current(array_keys($valid->getFields()));
+                    $valid->validate([$key => $answer]);
 
-            if ($valid && $check) {
-                $answerString = $answer;
+                    foreach ($valid->getCurrentData()->{$key}->getErrors() as $error) {
+                        $session->error($error);
+                    }
 
-                if ($answerString instanceof core\time\IDate) {
-                    $answerString = $this->format->date($answerString);
-                } else {
-                    $answerString = (string)$answerString;
+                    $answer = $valid[$key];
+                    $valid = $valid->isValid();
                 }
 
-                $valid = Cli::confirm('Is this correct? '.$answerString, true);
-            }
-        } while (!$valid);
+                $output = $answer;
+                return $valid;
+            })
+            ->setConfirm($confirm)
+            ->prompt();
 
-        return $answer;
-    }
-
-    protected function _askPassword($label, $repeat=false, $required=true, $hash=false)
-    {
-        do {
-            Cli::{'cyan'}($label.': ');
-            $snapshot = Cli::snapshotStty();
-            Cli::toggleInputEcho(false);
-
-            $answer = trim(Cli::readLine());
-            Cli::restoreStty($snapshot);
-            Cli::newLine();
-
-            $validator = $this->data->newValidator()
-                ->addField('password')
-                    ->isRequired((bool)$required);
-
-            $data = ['password' => $answer];
-
-            if ($repeat) {
-                Cli::{'cyan'}('Repeat '.lcfirst($label).': ');
-                $snapshot = Cli::snapshotStty();
-                Cli::toggleInputEcho(false);
-
-                $repeatAnswer = trim(Cli::readLine());
-                Cli::restoreStty($snapshot);
-                Cli::newLine();
-
-                $validator->setMatchField('repeat');
-                $data['repeat'] = $repeatAnswer;
-            }
-
-            $validator = $validator->validate($data);
-
-            $valid = $validator->isValid();
-            $answer = $hash ?
-                $validator['password'] :
-                $validator->data['password'];
-
-            foreach ($validator->data->password->getErrors() as $error) {
-                Cli::error($error);
-            }
-            foreach ($validator->data->repeat->getErrors() as $error) {
-                Cli::error($error);
-            }
-        } while (!$valid);
-
-        return $answer;
+        return $output;
     }
 }

@@ -145,7 +145,11 @@ class TaskMedia extends arch\node\Task
         if (isset($this->request['bucket'])) {
             $bucket = $this->request['bucket'];
         } else {
-            $bucket = $this->_askFor('Bucket [default: all]', function ($answer) {
+            $bucket = $this->_askFor('Bucket', function ($answer) {
+                if ($answer === 'all') {
+                    $answer = null;
+                }
+
                 return $this->data->newValidator()
                     ->addField('bucket', 'slug')
                         ->extend(function ($value, $field) {
@@ -161,7 +165,7 @@ class TaskMedia extends arch\node\Task
                                 $field->addError('invalid', 'Bucket not found');
                             }
                         });
-            });
+            }, 'all');
         }
 
         return $bucket;
@@ -172,10 +176,14 @@ class TaskMedia extends arch\node\Task
         if (isset($this->request['limit'])) {
             $limit = $this->request['limit'];
         } else {
-            $limit = $this->_askFor('Size limit [default: none]', function ($answer) {
+            $limit = $this->_askFor('Size limit', function ($answer) {
+                if ($answer === 'none') {
+                    $answer = null;
+                }
+
                 return $this->data->newValidator()
                     ->addField('limit', 'fileSize');
-            });
+            }, 'none');
         }
 
         if ($limit) {
