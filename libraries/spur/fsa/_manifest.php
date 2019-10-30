@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 use df\link;
 
-interface IFhrsMediator extends spur\IHttpMediator
+interface IFhrsMediator extends spur\IGuzzleMediator
 {
     public function fetchBasicRegions(): core\collection\ITree;
     public function pageBasicRegions(int $page, int $limit): core\collection\ITree;

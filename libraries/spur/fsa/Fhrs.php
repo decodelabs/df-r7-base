@@ -9,12 +9,14 @@ use df;
 use df\core;
 use df\spur;
 use df\link;
+use df\flex;
 
 use DecodeLabs\Glitch;
+use Psr\Http\Message\ResponseInterface;
 
 class Fhrs implements IFhrsMediator
 {
-    use spur\THttpMediator;
+    use spur\TGuzzleMediator;
 
     const API_URL = 'http://api.ratings.food.gov.uk/';
     const VERSION = 2;
@@ -230,11 +232,11 @@ class Fhrs implements IFhrsMediator
         return $request;
     }
 
-    protected function _extractResponseError(link\http\IResponse $response)
+    protected function _extractResponseError(ResponseInterface $response)
     {
-        $data = $response->getJsonContent();
-        $message = $data->get('Message', 'Request failed');
-        $code = $response->getHeaders()->getStatusCode();
+        $data = flex\Json::stringToTree((string)$response->getBody());
+        $message = $data->get('Message', $data->getValue() ?? 'Request failed');
+        $code = $response->getStatusCode();
         $errorType = 'EApi';
 
         switch ($code) {

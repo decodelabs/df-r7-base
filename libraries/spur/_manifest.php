@@ -9,11 +9,16 @@ use df;
 use df\core;
 use df\spur;
 use df\link;
+use df\flex;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
+
+use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\Psr7\Request as HttpRequest;
+use Psr\Http\Message\ResponseInterface;
 
 interface IHttpMediator
 {
@@ -157,6 +162,20 @@ trait THttpMediator
     }
 }
 
+
+
+
+interface IGuzzleMediator
+{
+    public function setHttpClient(HttpClient $client);
+    public function getHttpClient(): HttpClient;
+
+    public function requestRaw(string $method, string $path, array $data=[], array $headers=[]): ResponseInterface;
+    public function requestJson(string $method, string $path, array $data=[], array $headers=[]): core\collection\ITree;
+    public function createUrl(string $path): link\http\IUrl;
+    public function createRequest(string $method, string $path, array $data=[], array $headers=[]): link\http\IRequest;
+    public function sendRequest(link\http\IRequest $request): ResponseInterface;
+}
 
 
 
