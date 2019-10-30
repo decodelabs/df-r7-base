@@ -63,7 +63,7 @@ class TaskPurgeBuilds extends arch\node\Task
                 Cli::inlineNotice('kept '.$keep.', ');
             }
 
-            Cli::alert('deleted '.$del);
+            Cli::deleteSuccess('deleted '.$del);
 
             if ($buildDir->isEmpty()) {
                 $buildDir->delete();

@@ -270,7 +270,7 @@ class Daemon extends Base
         if (isset($this->_statusData['statusTime'])) {
             if (time() - $this->_statusData['statusTime'] > self::THRESHOLD) {
                 // Has it got stuck?
-                Cli::alert('may have got stuck');
+                Cli::warning('may have got stuck');
                 Cli::{'yellow'}('Status is stale, restarting: ');
 
                 $process->kill();

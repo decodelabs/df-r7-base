@@ -27,7 +27,7 @@ class TaskRebuildSchemas extends arch\node\Task
             try {
                 $unit = axis\Model::loadUnitFromId($unitId);
             } catch (axis\EGlitch $e) {
-                Cli::alert('Skipped '.$unitId.', definition not found');
+                Cli::operative('Skipped '.$unitId.', definition not found');
                 continue;
             }
 

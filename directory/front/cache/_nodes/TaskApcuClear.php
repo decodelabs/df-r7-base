@@ -74,7 +74,7 @@ class TaskApcuClear extends arch\node\Task
                 $type = $url->isSecure() ? 'HTTPS' : 'HTTP';
 
                 if ($cleared === null) {
-                    Cli::alert('APCU unable to pass IP check via '.@$json['addr']);
+                    Cli::warning('APCU unable to pass IP check via '.@$json['addr']);
                 } else {
                     Cli::notice('Cleared '.$cleared.' '.$type.' APCU entries via '.@$json['addr']);
                 }

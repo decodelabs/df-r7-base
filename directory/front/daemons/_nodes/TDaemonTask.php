@@ -20,7 +20,7 @@ trait TDaemonTask
         $env = core\environment\Config::getInstance();
 
         if (!$env->canUseDaemons()) {
-            Cli::alert('Daemons are currently disabled in config');
+            Cli::warning('Daemons are currently disabled in config');
             $this->forceResponse('');
         }
 
