@@ -10,9 +10,9 @@ use df\core;
 use df\spur;
 use df\flow;
 
-
 // Interfaces
-interface IMediator extends spur\IHttpMediator {
+interface IMediator extends spur\IGuzzleMediator
+{
     public function setUrl($url);
     public function getUrl();
     public function setAccessKey($key);

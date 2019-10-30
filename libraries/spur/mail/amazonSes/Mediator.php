@@ -12,10 +12,11 @@ use df\flow;
 use df\link;
 
 use DecodeLabs\Glitch;
+use Psr\Http\Message\ResponseInterface;
 
 class Mediator implements IMediator
 {
-    use spur\THttpMediator;
+    use spur\TGuzzleMediator;
 
     protected $_accessKey;
     protected $_secretKey;
@@ -214,7 +215,7 @@ class Mediator implements IMediator
             $method, '', $data, $headers
         ));
 
-        return simplexml_load_string($response->getContent());
+        return simplexml_load_string((string)$response->getBody());
     }
 
     public function createUrl(string $path): link\http\IUrl
@@ -255,11 +256,11 @@ class Mediator implements IMediator
         return $request;
     }
 
-    protected function _extractResponseError(link\http\IResponse $response)
+    protected function _extractResponseError(ResponseInterface $response)
     {
         return Glitch::EApi([
             'message' => 'SES api error',
-            'data' => $response->getContent()
+            'data' => (string)$response->getBody()
         ]);
     }
 }
