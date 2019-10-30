@@ -11,6 +11,8 @@ use df\spur;
 use df\link;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Atlas;
+use GuzzleHttp\Client as HttpClient;
 
 class Url implements spur\packaging\bower\IResolver
 {
@@ -18,17 +20,12 @@ class Url implements spur\packaging\bower\IResolver
 
     public function __construct()
     {
-        $this->_httpClient = new link\http\Client();
+        $this->_httpClient = new HttpClient();
     }
 
     public function resolvePackageName(spur\packaging\bower\Package $package)
     {
         return $package->name;
-
-        /*
-        $url = link\http\Url::factory($package->url);
-        return $url->path->getFileName();
-        */
     }
 
     public function fetchPackage(spur\packaging\bower\Package $package, $cachePath, $currentVersion=null)
@@ -40,17 +37,15 @@ class Url implements spur\packaging\bower\IResolver
         $package->cacheFileName = $package->name.'-'.md5($package->url).'.zip';
         $package->version = time();
 
-        $response = $this->_httpClient->getFile(
-            $package->url,
-            $cachePath.'/packages/',
-            $package->cacheFileName
-        );
+        $response = $this->_httpClient->get($package->url);
+        $body = $response->getBody();
+        $file = Atlas::$fs->file($cachePath.'/packages/'.$package->cacheFileName, 'wb');
 
-        if (!$response->isOk()) {
-            throw Glitch::ERuntime(
-                'Unable to fetch file: '.$package->url
-            );
+        while (!$body->eof()) {
+            $file->write($body->read(8192));
         }
+
+        $file->close();
 
         return true;
     }
