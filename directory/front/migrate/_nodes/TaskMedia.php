@@ -80,7 +80,7 @@ class TaskMedia extends arch\node\Task
             $path = $handler->getFilePath($fileId, $versionId);
 
             if (is_file($path)) {
-                Cli::warning('Skipping '.$versionId.' - '.$version['fileName']);
+                Cli::operative('Skipping '.$versionId.' - '.$version['fileName']);
                 continue;
             }
 

@@ -48,7 +48,7 @@ class TaskUpdateHashes extends arch\node\Task
             );
 
             if ($hash === null) {
-                Cli::warning('SKIPPED');
+                Cli::operative('SKIPPED');
                 continue;
             }
 

@@ -100,7 +100,7 @@ class TaskScan extends arch\node\Task
             }
 
             if ($skip) {
-                Cli::warning('Skipping '.$skip.' as they are manually scheduled');
+                Cli::operative('Skipping '.$skip.' as they are manually scheduled');
             }
 
 

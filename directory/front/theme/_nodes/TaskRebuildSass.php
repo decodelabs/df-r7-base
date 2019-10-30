@@ -101,7 +101,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
         }
 
         if ($delete) {
-            Cli::warning('Skipping '.$shortPath.' - '.$why);
+            Cli::operative('Skipping '.$shortPath.' - '.$why);
             $exts = ['json', 'css', 'css.map'];
 
             foreach ($exts as $ext) {
