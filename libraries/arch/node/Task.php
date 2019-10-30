@@ -22,8 +22,6 @@ abstract class Task extends Base implements ITaskNode
 
     const CHECK_ACCESS = false;
 
-    public $io;
-
     public function __construct(arch\IContext $context)
     {
         parent::__construct($context);
@@ -64,16 +62,6 @@ abstract class Task extends Base implements ITaskNode
     }
 
 
-    // Dispatch
-    public function dispatch()
-    {
-        if (!$this->io) {
-            $this->io = df\Launchpad::$runner->getMultiplexer();
-        }
-
-        return parent::dispatch();
-    }
-
     public function runChild($request, bool $announce=true)
     {
         $request = $this->context->uri->directoryRequest($request);
@@ -91,7 +79,6 @@ abstract class Task extends Base implements ITaskNode
             Cli::comment($reqString);
         }
 
-        $node->io = $this->io;
         $output = $node->dispatch();
 
         return $output;

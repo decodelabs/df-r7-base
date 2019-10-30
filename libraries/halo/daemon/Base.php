@@ -29,7 +29,6 @@ abstract class Base implements IDaemon
 
     public $terminal;
     public $process;
-    public $io;
     public $events;
 
     protected $_isRunning = false;

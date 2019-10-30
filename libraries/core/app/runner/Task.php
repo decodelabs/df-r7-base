@@ -17,7 +17,6 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
     protected $_context;
     protected $_dispatchRequest;
     protected $_command;
-    protected $_multiplexer;
 
     // Request
     public function getDispatchRequest(): ?arch\IRequest
@@ -38,22 +37,6 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
         return $this->_command;
     }
 
-
-    // Response
-    public function setMultiplexer(core\io\Multiplexer $multiplexer)
-    {
-        $this->_multiplexer = $multiplexer;
-        return $this;
-    }
-
-    public function getMultiplexer()
-    {
-        if (!$this->_multiplexer) {
-            $this->_multiplexer = core\io\Multiplexer::defaultFactory('task');
-        }
-
-        return $this->_multiplexer;
-    }
 
 
     // Context
@@ -181,10 +164,6 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
             throw Glitch::EImplementation(
                 'Request forwarding is no longer supported'
             );
-        }
-
-        if ($response === null) {
-            $response = $this->_multiplexer;
         }
 
         if (is_string($response)) {

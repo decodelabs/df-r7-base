@@ -275,12 +275,6 @@ interface IChannel extends IReader, IWriter, IFlushable
     public function writeErrorLine($line);
 }
 
-interface IMultiplexReaderChannel extends IChannel
-{
-    public function setReadBlocking($flag);
-    public function getReadBlocking();
-}
-
 interface IContainedStateChannel extends IChannel
 {
     public function getErrorBuffer();
@@ -295,53 +289,6 @@ interface IStreamChannel extends IContainedStateChannel
     public function getBlocking();
     public function close();
 }
-
-// File
-interface IMultiplexer extends IFlushable, core\IRegistryObject
-{
-    public function setId(?string $id);
-    public function getId(): ?string;
-
-    public function setChannels(array $channels);
-    public function addChannels(array $channels);
-    public function addChannel(IChannel $channel);
-    public function hasChannel($id);
-    public function getChannel($id);
-    public function getFirstChannel();
-    public function removeChannel($id);
-    public function getChannels();
-    public function clearChannels();
-
-    public function setChunkReceivers(array $receivers);
-    public function addChunkReceivers(array $receivers);
-    public function addChunkReceiver($id, IChunkReceiver $receiver);
-    public function hasChunkReceiver($id);
-    public function getChunkReceiver($id);
-    public function getChunkReceivers();
-    public function clearChunkReceivers();
-
-    public function setDataReceivers(array $receivers);
-    public function addDataReceivers(array $receivers);
-    public function addDataReceiver($id, DataReceiver $receiver);
-    public function hasDataReceiver($id);
-    public function getDataReceiver($id);
-    public function getDataReceivers();
-    public function clearDataReceivers();
-
-    public function write($data);
-    public function writeLine($line='');
-    public function writeError($error);
-    public function writeErrorLine($line);
-
-    public function readLine();
-    public function readChunk($size);
-    public function setReadBlocking($flag);
-
-    public function exportToAtlasLauncher(Launcher $launcher): IMultiplexer;
-}
-
-
-
 
 
 
