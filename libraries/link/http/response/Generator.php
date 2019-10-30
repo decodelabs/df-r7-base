@@ -10,6 +10,7 @@ use df\core;
 use df\link;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Atlas\DataReceiver;
 use DecodeLabs\Atlas\DataReceiverTrait;
 use DecodeLabs\Atlas\DataSender;
 
@@ -19,20 +20,13 @@ class Generator extends Base implements link\http\IGeneratorResponse
 
     protected $_sender;
     protected $_channel;
-    protected $_manualChunk = false;
 
-    public function __construct($contentType, $sender, link\http\IResponseHeaderCollection $headers=null)
+    protected $_writeCallback;
+
+    public function __construct($contentType, callable $sender, link\http\IResponseHeaderCollection $headers=null)
     {
         parent::__construct($headers);
         $this->_sender = $sender;
-
-        if ($this->_sender instanceof DataSender) {
-            $this->_sender->setDataReceiver($this);
-        } elseif (!is_callable($this->_sender)) {
-            throw Glitch::ERuntime(
-                'Generator sender must either be a Atlas\\DataSender or callable'
-            );
-        }
 
         $this->headers
             ->set('content-type', $contentType)
@@ -43,34 +37,29 @@ class Generator extends Base implements link\http\IGeneratorResponse
             ;
     }
 
-    public function shouldChunkManually(bool $flag=null)
+    public function setWriteCallback(callable $callback)
     {
-        if ($flag !== null) {
-            $this->_manualChunk = $flag;
-            return $this;
-        }
-
-        return $this->_manualChunk;
+        $this->_writeCallback = $callback;
+        return $this;
     }
 
-    public function generate(core\io\IChannel $channel)
+    public function generate(DataReceiver $stream)
     {
-        $this->_channel = $channel;
+        $this->_channel = $stream;
 
-        if ($this->_sender instanceof DataSender) {
-            $this->_sender->sendData();
-        } else {
-            $gen = $this->_sender->__invoke($this);
-
-            if ($gen instanceof \Generator) {
-                foreach ($gen as $chunk) {
-                    $this->write($chunk);
-                }
-            }
+        while (ob_get_level()) {
+            ob_end_clean();
         }
 
-        if ($this->_manualChunk) {
-            $this->_channel->write("0\r\n\r\n");
+        flush();
+        ob_implicit_flush(1);
+
+        $gen = ($this->_sender)($this);
+
+        if ($gen instanceof \Generator) {
+            foreach ($gen as $chunk) {
+                $this->write($chunk);
+            }
         }
 
         $this->_channel = null;
@@ -85,6 +74,11 @@ class Generator extends Base implements link\http\IGeneratorResponse
 
     public function write(?string $data, int $length=null): int
     {
+        if ($this->_writeCallback) {
+            ($this->_writeCallback)($this);
+            $this->_writeCallback = null;
+        }
+
         if ($data === null) {
             return 0;
         }
@@ -94,12 +88,7 @@ class Generator extends Base implements link\http\IGeneratorResponse
         }
 
         if ($this->_channel) {
-            if ($this->_manualChunk) {
-                $this->_channel->write(dechex(strlen($data))."\r\n");
-                $this->_channel->write($data."\r\n");
-            } else {
-                $this->_channel->write($data);
-            }
+            $this->_channel->write($data);
         }
 
         return strlen($data);

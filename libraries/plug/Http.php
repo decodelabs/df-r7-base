@@ -316,8 +316,11 @@ class Http implements arch\IDirectoryHelper
 
     public function csvGenerator($fileName, callable $generator)
     {
-        return $this->generator('text/csv', new flex\csv\Builder($generator))
-            ->setAttachmentFileName($fileName);
+        return $this->generator('text/csv', function ($response) use ($generator) {
+            (new flex\csv\Builder($generator))
+                ->setDataReceiver($response)
+                ->sendData();
+        })->setAttachmentFileName($fileName);
     }
 
 

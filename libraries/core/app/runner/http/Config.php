@@ -21,7 +21,6 @@ class Config extends core\Config
             'baseUrl' => $this->_generateRootUrlList(),
             'sendFileHeader' => 'X-Sendfile',
             'secure' => false,
-            'manualChunk' => false,
             'ipRanges' => null,
             'ipRangeAreas' => null,
             'credentials' => []
@@ -199,16 +198,6 @@ class Config extends core\Config
         return (bool)$this->values['secure'];
     }
 
-    // Chunk
-    public function shouldChunkManually(bool $flag=null)
-    {
-        if ($flag !== null) {
-            $this->values->manualChunk = $flag;
-            return $this;
-        }
-
-        return (bool)$this->values['manualChunk'];
-    }
 
     // IP Ranges
     public function setIpRanges(array $ranges=null)

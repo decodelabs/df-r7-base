@@ -258,8 +258,7 @@ interface IRedirectResponse extends IResponse
 
 interface IGeneratorResponse extends IResponse, DataReceiver
 {
-    public function generate(core\io\IChannel $channel);
-    public function shouldChunkManually(bool $flag=null);
+    public function generate(DataReceiver $channel);
     public function writeBrowserKeepAlive();
     public function getChannel();
 }

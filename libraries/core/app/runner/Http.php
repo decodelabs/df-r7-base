@@ -24,7 +24,6 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
     protected $_responseAugmentor;
     protected $_sendFileHeader;
-    protected $_manualChunk = false;
     protected $_credentials = null;
     protected $_dispatchRequest;
 
@@ -72,7 +71,6 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             }
         }
 
-        $this->_manualChunk = $config->shouldChunkManually();
         $this->_credentials = $config->getCredentials();
 
         $this->_httpRequest = new link\http\request\Base(null, true);
@@ -669,41 +667,38 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
                 $response->getHeaders()->send();
             }
         } else {
-            // Send data with triggered headers
-            $channel = new core\io\Stream('php://output');
+            $stream = Atlas::openStream('php://output', 'a+');
             set_time_limit(0);
 
-            $channel->setWriteCallback(function () use ($response) {
-                while (ob_get_level()) {
-                    ob_end_clean();
-                }
+            if ($response instanceof link\http\IGeneratorResponse) {
+                // Generator
+                $response->setWriteCallback(function ($response) {
+                    $response->getHeaders()->send();
+                });
 
-                flush();
-                ob_implicit_flush(1);
-
+                $response->generate($stream);
+            } else {
+                // Standard
                 if ($response->hasHeaders()) {
                     $response->getHeaders()->send();
                 }
-            });
 
-            // TODO: Seek to resume header location if requested
+                if ($response instanceof link\http\IFileResponse) {
+                    // File
+                    $file = $response->getContentFileStream();
 
-            if ($response instanceof link\http\IFileResponse) {
-                $file = $response->getContentFileStream();
+                    while (!$file->isAtEnd()) {
+                        $stream->write($file->read(8192));
+                    }
 
-                while (!$file->isAtEnd()) {
-                    $channel->write($file->read(8192));
+                    $file->close();
+                } else {
+                    // Generic
+                    $stream->write($response->getContent());
                 }
-
-                $file->close();
-            } elseif ($response instanceof link\http\IGeneratorResponse) {
-                $response->shouldChunkManually($this->_manualChunk);
-                $response->generate($channel);
-            } else {
-                $channel->write($response->getContent());
             }
 
-            $channel->close();
+            $stream->close();
         }
     }
 
