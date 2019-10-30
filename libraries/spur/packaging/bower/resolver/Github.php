@@ -58,14 +58,16 @@ class Github implements spur\packaging\bower\IResolver
         }
 
 
-        $http = $this->_mediator->getHttpClient();
-        $response = $http->getFile($url, $cachePath.'/packages/', $package->cacheFileName);
+        $httpClient = $this->_mediator->getHttpClient();
+        $file = Atlas::$fs->file($cachePath.'/packages/'.$package->cacheFileName, 'wb');
+        $response = $httpClient->get($url);
+        $body = $response->getBody();
 
-        if (!$response->isOk()) {
-            throw Glitch::ERuntime(
-                'Unable to fetch file: '.$url
-            );
+        while (!$body->eof()) {
+            $file->write($body->read(8192));
         }
+
+        $file->close();
 
         return true;
     }

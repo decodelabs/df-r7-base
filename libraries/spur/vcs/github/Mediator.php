@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\spur;
 use df\link;
+use df\flex;
 
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
@@ -16,7 +17,7 @@ use DecodeLabs\Glitch\Dumper\Inspector;
 
 class Mediator implements IMediator, Inspectable
 {
-    use spur\THttpMediator;
+    use spur\TGuzzleMediator;
 
     const BASE_URL = 'https://api.github.com/';
     const API_VERSION = 'v3';
@@ -295,7 +296,7 @@ class Mediator implements IMediator, Inspectable
                 'page' => ++$page
             ]);
 
-            $data = $response->getJsonContent();
+            $data = flex\Json::stringToTree((string)$response->getBody());
 
             if ($data->isEmpty()) {
                 break;
@@ -305,7 +306,7 @@ class Mediator implements IMediator, Inspectable
 
             $pagination = [];
 
-            foreach (explode(',', $response->getHeaders()->get('Link')) as $link) {
+            foreach (explode(',', $response->getHeaderLine('Link')) as $link) {
                 if (preg_match('/<(.*)>; rel="(.*)"/i', trim($link, ','), $matches)) {
                     $pagination[$matches[2]] = $matches[1];
                 }

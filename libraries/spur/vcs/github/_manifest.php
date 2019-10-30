@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 use df\link;
 
-interface IMediator extends spur\IHttpMediator
+interface IMediator extends spur\IGuzzleMediator
 {
     // Users
     public function getUser($username);
