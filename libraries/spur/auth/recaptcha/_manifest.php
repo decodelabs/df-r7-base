@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\spur;
 
-interface IMediator extends spur\IHttpMediator
+interface IMediator extends spur\IGuzzleMediator
 {
     public function setSecret(string $secret);
     public function getSecret();

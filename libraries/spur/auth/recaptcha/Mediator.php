@@ -14,7 +14,7 @@ use DecodeLabs\Glitch;
 
 class Mediator implements IMediator
 {
-    use spur\THttpMediator;
+    use spur\TGuzzleMediator;
 
     const ENDPOINT = 'https://www.google.com/recaptcha/api/siteverify';
 
