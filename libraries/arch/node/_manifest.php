@@ -50,7 +50,7 @@ interface ITaskNode extends INode
     public function extractCliArguments(core\cli\ICommand $command);
     public function runChild($request, bool $announce=true);
 
-    public function ensureDfSource();
+    public function ensureDfSource(?string $user=null);
 }
 
 interface IBuildTaskNode extends ITaskNode

@@ -34,7 +34,8 @@ class TaskBuild extends arch\node\Task
 
     public function execute()
     {
-        $this->ensureDfSource();
+        $useDaemons = core\environment\Config::getInstance()->canUseDaemons();
+        $this->ensureDfSource($useDaemons ? 'root' : null);
         Cli::newLine();
 
 

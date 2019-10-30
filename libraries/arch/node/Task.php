@@ -98,7 +98,7 @@ abstract class Task extends Base implements ITaskNode
     }
 
 
-    public function ensureDfSource()
+    public function ensureDfSource(?string $user=null)
     {
         if (!df\Launchpad::$isCompiled) {
             return $this;
