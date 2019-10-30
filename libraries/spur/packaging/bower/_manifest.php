@@ -114,7 +114,7 @@ trait TGitResolver
     }
 }
 
-interface IRegistry extends spur\IHttpMediator
+interface IRegistry extends spur\IGuzzleMediator
 {
     public function lookup($name);
     public function resolveUrl($name);

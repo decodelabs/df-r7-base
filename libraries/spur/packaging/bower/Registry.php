@@ -16,7 +16,7 @@ use DecodeLabs\Atlas;
 
 class Registry implements IRegistry
 {
-    use spur\THttpMediator;
+    use spur\TGuzzleMediator;
 
     const BASE_URL = 'https://registry.bower.io/';
     const TIMEOUT = '1 day';
