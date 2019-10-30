@@ -14,6 +14,8 @@ use df\flex;
 use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 
+use GuzzleHttp\Client as HttpClient;
+
 class Descriptor implements IDescriptor
 {
     const DEFAULT_LIFETIME = '3 days';
@@ -125,16 +127,20 @@ class Descriptor implements IDescriptor
 
             if (!$this->_isSourceLocal) {
                 // Download file
-                $http = new link\http\Client();
                 $download = Atlas::$fs->newTempFile();
-                $response = $http->getFile($this->_sourceLocation, $download);
+                $httpClient = new HttpClient();
 
-                if (!$response->isOk()) {
-                    throw Glitch::{'EUnexpectedValue,ENotFound'}(
-                        'Unable to fetch remote image for transformation'
-                    );
+                $response = $httpClient->get($this->_sourceLocation, [
+                    'verify' => false
+                ]);
+
+                $stream = $response->getBody();
+
+                while (!$stream->eof()) {
+                    $download->write($stream->read(8192));
                 }
 
+                $download->setPosition(0);
                 $this->_location = $download->getPath();
                 $this->_isLocal = true;
 
