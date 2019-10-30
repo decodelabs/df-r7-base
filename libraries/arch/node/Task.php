@@ -213,9 +213,4 @@ abstract class Task extends Base implements ITaskNode
 
         return $answer;
     }
-
-    protected function _askBoolean($label, $default=false)
-    {
-        return Cli::confirm($label, $default)->prompt();
-    }
 }
