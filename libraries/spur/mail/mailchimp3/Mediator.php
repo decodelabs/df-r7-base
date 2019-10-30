@@ -13,9 +13,11 @@ use df\link;
 use df\flex;
 use df\user;
 
+use Psr\Http\Message\ResponseInterface;
+
 class Mediator implements IMediator
 {
-    use spur\THttpMediator;
+    use spur\TGuzzleMediator;
 
     const API_URL = '//api.mailchimp.com/3.0/';
 
@@ -392,9 +394,9 @@ class Mediator implements IMediator
         return $url;
     }
 
-    protected function _extractResponseError(link\http\IResponse $response)
+    protected function _extractResponseError(ResponseInterface $response)
     {
-        $data = flex\Json::fromString($response->getContent());
+        $data = flex\Json::fromString((string)$response->getBody());
         $error = $data['detail'] ?? 'Undefined chimp calamity!';
 
         if (isset($data['title'])) {

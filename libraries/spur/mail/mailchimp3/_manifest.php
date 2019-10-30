@@ -12,24 +12,25 @@ use df\flow;
 use df\link;
 use df\user;
 
-interface IMediator extends spur\IHttpMediator {
+interface IMediator extends spur\IGuzzleMediator
+{
 
 // Transport
     public function isSecure(bool $flag=null);
     public function canConnect(): bool;
 
-// Api key
+    // Api key
     public function setApiKey(string $key);
     public function getApiKey(): ?string;
     public function getDataCenterId(): string;
 
 
-// Account
+    // Account
     public function getAccountDetails(): IDataObject;
     public function getApiLinks(): IDataObject;
 
 
-// Lists
+    // Lists
     public function fetchList(string $id): IDataObject;
 
     public function newListFilter(): IListFilter;
@@ -37,14 +38,14 @@ interface IMediator extends spur\IHttpMediator {
 
 
 
-// Interest categories
+    // Interest categories
     public function fetchInterestCategory(string $listId, string $categoryId): IDataObject;
 
     public function newInterestCategoryFilter(): IInterestCategoryFilter;
     public function fetchInterestCategories(string $listId, IInterestCategoryFilter $filter=null): IDataList;
 
 
-// Interests
+    // Interests
     public function fetchInterest(string $listId, string $categoryId, string $interestId): IDataObject;
 
     public function newInterestFilter(): IInterestFilter;
@@ -52,7 +53,7 @@ interface IMediator extends spur\IHttpMediator {
 
 
 
-// Members
+    // Members
     public function fetchMember(string $listId, string $email): IDataObject;
     public function fetchMemberByHash(string $listId, string $hash): IDataObject;
 
@@ -71,17 +72,23 @@ interface IMediator extends spur\IHttpMediator {
 
 
 // DataObject
-interface IDataObject extends spur\IDataObject {}
-class DataObject extends spur\DataObject implements IDataObject {}
+interface IDataObject extends spur\IDataObject
+{
+}
+class DataObject extends spur\DataObject implements IDataObject
+{
+}
 
 
 // List
-interface IDataList extends spur\IDataList {}
+interface IDataList extends spur\IDataList
+{
+}
 
 
 // Filter
-interface IFilter extends spur\IFilter {
-
+interface IFilter extends spur\IFilter
+{
     public function getKeyName(): ?string;
 
     public function setOffset(int $offset);
@@ -101,7 +108,8 @@ interface IFilter extends spur\IFilter {
 
 
 // Directional
-interface IDirectionalFilter extends IFilter {
+interface IDirectionalFilter extends IFilter
+{
     public function setSortField(?string $field);
     public function getSortField(): ?string;
     public function isReversed(bool $flag=null);
@@ -111,18 +119,23 @@ interface IDirectionalFilter extends IFilter {
 
 
 // Lists
-interface IListFilter extends IDirectionalFilter {}
+interface IListFilter extends IDirectionalFilter
+{
+}
 
-interface IInterestCategoryFilter extends IFilter {
+interface IInterestCategoryFilter extends IFilter
+{
     public function setType(?string $type);
     public function getType(): ?string;
 }
 
-interface IInterestFilter extends IFilter {}
+interface IInterestFilter extends IFilter
+{
+}
 
 
 
 // Members
-interface IMemberFilter extends IFilter {
-
+interface IMemberFilter extends IFilter
+{
 }

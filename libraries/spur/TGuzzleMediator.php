@@ -108,18 +108,18 @@ trait TGuzzleMediator
                 throw $message;
             }
 
-            $code = $response->getHeaders()->getStatusCode();
+            $code = $response->getStatusCode();
 
             if ($code >= 500) {
                 throw Glitch::{'EImplementation'}([
                     'message' => $message,
-                    'data' => $response->getContent(),
+                    'data' => (string)$response->getBody(),
                     'code' => $code
                 ]);
             } else {
                 throw Glitch::{'EApi'}([
                     'message' => $message,
-                    'data' => $this->_normalizeErrorData($response->getContent()),
+                    'data' => $this->_normalizeErrorData((string)$response->getBody()),
                     'code' => $code
                 ]);
             }
