@@ -402,15 +402,7 @@ class Uri implements arch\IDirectoryHelper
     public function fetch($url): File
     {
         $response = $this->_getDataResponse($url);
-        $output = Atlas::$fs->newMemoryFile();
-        $stream = $response->getBody();
-
-        while (!$stream->eof()) {
-            $output->write($stream->read(8192));
-        }
-
-        $output->setPosition(0);
-        return $output;
+        return Atlas::$http->importResponse($response);
     }
 
     protected function _getDataResponse($url): ResponseInterface

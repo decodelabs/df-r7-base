@@ -14,6 +14,7 @@ use df\spur;
 use df\flex;
 
 use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Atlas;
 use DecodeLabs\Glitch;
 
 class TaskMedia extends arch\node\Task
@@ -124,14 +125,7 @@ class TaskMedia extends arch\node\Task
                         throw Glitch::EApi('Migration failed!!!');
                     }
                 } else {
-                    $file = Atlas::$fs->file($path, 'wb');
-                    $stream = $response->getBody();
-
-                    while (!$stream->eof()) {
-                        $file->write($stream->read(8192));
-                    }
-
-                    $file->close();
+                    $file = Atlas::$http->saveResponse($response, $path);
                     Cli::success($this->format->fileSize($file->getSize()));
                 }
             }, function ($total, $downloaded) use ($progressBar) {

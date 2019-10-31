@@ -57,18 +57,7 @@ class Github implements spur\packaging\bower\IResolver
             return true;
         }
 
-
-        $httpClient = $this->_mediator->getHttpClient();
-        $file = Atlas::$fs->file($cachePath.'/packages/'.$package->cacheFileName, 'wb');
-        $response = $httpClient->get($url);
-        $body = $response->getBody();
-
-        while (!$body->eof()) {
-            $file->write($body->read(8192));
-        }
-
-        $file->close();
-
+        Atlas::$http->getFile($url, $cachePath.'/packages/'.$package->cacheFileName);
         return true;
     }
 

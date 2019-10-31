@@ -14,8 +14,6 @@ use df\flex;
 use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 
-use GuzzleHttp\Client as HttpClient;
-
 class Descriptor implements IDescriptor
 {
     const DEFAULT_LIFETIME = '3 days';
@@ -127,20 +125,10 @@ class Descriptor implements IDescriptor
 
             if (!$this->_isSourceLocal) {
                 // Download file
-                $download = Atlas::$fs->newTempFile();
-                $httpClient = new HttpClient();
-
-                $response = $httpClient->get($this->_sourceLocation, [
+                $download = Atlas::$http->getTempFile($this->_sourceLocation, [
                     'verify' => false
                 ]);
 
-                $stream = $response->getBody();
-
-                while (!$stream->eof()) {
-                    $download->write($stream->read(8192));
-                }
-
-                $download->setPosition(0);
                 $this->_location = $download->getPath();
                 $this->_isLocal = true;
 
