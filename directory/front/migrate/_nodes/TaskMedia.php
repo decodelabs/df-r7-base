@@ -80,18 +80,30 @@ class TaskMedia extends arch\node\Task
 
             $path = $handler->getFilePath($fileId, $versionId);
 
+            Cli::{'brightMagenta'}($versionId.' - '.$version['fileName'].' ');
+
             if (is_file($path)) {
-                Cli::operative('Skipping '.$versionId.' - '.$version['fileName']);
+                Cli::operative('skipped');
                 continue;
             }
 
+            $progressBar = null;
 
             $this->_migrator->callAsync($this->_migrator->createRequest(
                 'get', '~devtools/migrate/media', [
                     'file' => $fileId,
                     'version' => $versionId
                 ]
-            ), function ($response) use ($versionId, $version, $path) {
+            ), function ($response) use ($versionId, $version, $path, &$progressBar) {
+                if ($progressBar) {
+                    $progressBar->complete();
+                    Cli::cursorLineUp();
+                    Cli::clearLine();
+                    Cli::cursorLineUp();
+                    Cli::clearLine();
+                    Cli::{'brightMagenta'}($versionId.' - '.$version['fileName'].' ');
+                }
+
                 if ($response->getStatusCode() >= 300) {
                     if ($response->getStatusCode() === 404) {
                         try {
@@ -101,7 +113,7 @@ class TaskMedia extends arch\node\Task
                             $message = null;
                         }
 
-                        Cli::error($versionId.' - '.$version['fileName'].' **NOT FOUND'.($message ? ': '.$message : null).'**');
+                        Cli::error('NOT FOUND'.($message ? ': '.$message : null));
                     } elseif ($response->getStatusCode() === 403) {
                         throw Glitch::{'EInvalidArgument,EApi'}(
                             'Migration key is invalid - check application pass keys match'
@@ -118,8 +130,16 @@ class TaskMedia extends arch\node\Task
                     }
 
                     $file->close();
-                    Cli::success('Fetched '.$versionId.' - '.$version['fileName'].' - '.$this->format->fileSize($file->getSize()));
+                    Cli::success($this->format->fileSize($file->getSize()));
                 }
+            }, function ($total, $downloaded) use (&$progressBar) {
+                if (!$progressBar) {
+                    Cli::operative('fetching...');
+                    $progressBar = Cli::newProgressBar(0, $total)
+                        ->setShowCompleted(false);
+                }
+
+                $progressBar->advance($downloaded);
             })->wait();
         }
     }

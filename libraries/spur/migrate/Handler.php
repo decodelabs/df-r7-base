@@ -159,11 +159,12 @@ class Handler implements IHandler
         ]);
     }
 
-    public function callAsync(link\http\IRequest $request, $callback)
+    public function callAsync(link\http\IRequest $request, callable $callback, ?callable $progress=null)
     {
         $psrRequest = $this->_prepareRequest($request);
         return $this->_httpClient->sendAsync($psrRequest, [
-            'verify' => false
+            'verify' => false,
+            'progress' => $progress
         ])->then($callback);
     }
 

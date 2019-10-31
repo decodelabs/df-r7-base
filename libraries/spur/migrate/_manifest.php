@@ -21,6 +21,6 @@ interface IHandler
 
     public function createRequest($method, $request, array $data=null);
     public function call(link\http\IRequest $request);
-    public function callAsync(link\http\IRequest $request, $callback);
+    public function callAsync(link\http\IRequest $request, callable $callback, ?callable $progress=null);
     public function sync();
 }
