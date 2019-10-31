@@ -88,7 +88,9 @@ class TaskMedia extends arch\node\Task
                 continue;
             }
 
-            $progressBar = null;
+            Cli::operative('fetching...');
+            $progressBar = Cli::newProgressBar(0, $version['fileSize'])
+                ->setShowCompleted(false);
 
             $this->_migrator->callAsync($this->_migrator->createRequest(
                 'get', '~devtools/migrate/media', [
@@ -96,15 +98,13 @@ class TaskMedia extends arch\node\Task
                     'version' => $versionId
                 ]
             ), function ($response) use ($versionId, $version, $path, &$progressBar) {
-                if ($progressBar) {
-                    $progressBar->complete();
-                    Cli::cursorLineUp();
-                    Cli::clearLine();
-                    Cli::cursorLineUp();
-                    Cli::clearLine();
-                    Cli::{'brightMagenta'}($versionId);
-                    Cli::{'brightYellow'}(' '.$version['fileName'].' ');
-                }
+                $progressBar->complete();
+                Cli::cursorLineUp();
+                Cli::clearLine();
+                Cli::cursorLineUp();
+                Cli::clearLine();
+                Cli::{'brightMagenta'}($versionId);
+                Cli::{'brightYellow'}(' '.$version['fileName'].' ');
 
                 if ($response->getStatusCode() >= 300) {
                     if ($response->getStatusCode() === 404) {
@@ -134,13 +134,7 @@ class TaskMedia extends arch\node\Task
                     $file->close();
                     Cli::success($this->format->fileSize($file->getSize()));
                 }
-            }, function ($total, $downloaded) use (&$progressBar, $version) {
-                if (!$progressBar) {
-                    Cli::operative('fetching...');
-                    $progressBar = Cli::newProgressBar(0, $version['fileSize'])
-                        ->setShowCompleted(false);
-                }
-
+            }, function ($total, $downloaded) use ($progressBar) {
                 $progressBar->advance($downloaded);
             })->wait();
         }
