@@ -48,7 +48,7 @@ class File implements link\http\IUploadFile
         $parts = explode('/', $this->_type, 2);
         $top = array_pop($parts);
 
-        if ($top == 'octet-stream' || empty($top)) {
+        if ($this->_extension !== null && ($top == 'octet-stream' || empty($top))) {
             $this->_type = Atlas::$mime->detect($this->_extension);
         }
 
