@@ -134,10 +134,10 @@ class TaskMedia extends arch\node\Task
                     $file->close();
                     Cli::success($this->format->fileSize($file->getSize()));
                 }
-            }, function ($total, $downloaded) use (&$progressBar) {
+            }, function ($total, $downloaded) use (&$progressBar, $version) {
                 if (!$progressBar) {
                     Cli::operative('fetching...');
-                    $progressBar = Cli::newProgressBar(0, $total)
+                    $progressBar = Cli::newProgressBar(0, $version['fileSize'])
                         ->setShowCompleted(false);
                 }
 
