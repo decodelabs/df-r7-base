@@ -48,7 +48,7 @@ class File extends Base implements link\http\IFileResponse
 
             $this->headers
                 ->set('content-type', Atlas::$mime->detect($this->_file->getPath()))
-                //->set('content-length', $this->_file->getSize())
+                ->set('content-length', $this->_file->getSize())
                 ->set('last-modified', core\time\Date::factory($this->_file->getLastModified()));
         }
 
