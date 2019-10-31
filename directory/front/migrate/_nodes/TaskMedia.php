@@ -80,7 +80,8 @@ class TaskMedia extends arch\node\Task
 
             $path = $handler->getFilePath($fileId, $versionId);
 
-            Cli::{'brightMagenta'}($versionId.' - '.$version['fileName'].' ');
+            Cli::{'brightMagenta'}($versionId);
+            Cli::{'brightYellow'}(' '.$version['fileName'].' ');
 
             if (is_file($path)) {
                 Cli::operative('skipped');
@@ -101,7 +102,8 @@ class TaskMedia extends arch\node\Task
                     Cli::clearLine();
                     Cli::cursorLineUp();
                     Cli::clearLine();
-                    Cli::{'brightMagenta'}($versionId.' - '.$version['fileName'].' ');
+                    Cli::{'brightMagenta'}($versionId);
+                    Cli::{'brightYellow'}(' '.$version['fileName'].' ');
                 }
 
                 if ($response->getStatusCode() >= 300) {
