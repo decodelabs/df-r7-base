@@ -109,7 +109,7 @@ class TaskMedia extends arch\node\Task
                 if ($response->getStatusCode() >= 300) {
                     if ($response->getStatusCode() === 404) {
                         try {
-                            $content = flex\Json::stringToTree((string($response->getBody())));
+                            $content = flex\Json::stringToTree((string)$response->getBody());
                             $message = $content['message'];
                         } catch (\Throwable $e) {
                             $message = null;
