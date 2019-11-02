@@ -181,8 +181,8 @@ class Context implements IContext, \Serializable, Inspectable
     {
         if (false !== strpos($path, '#')) {
             $parts = explode('#', $path, 2);
-            $name = array_pop($parts);
-            $rem = array_shift($parts);
+            $name = (string)array_pop($parts);
+            $rem = (string)array_shift($parts);
 
             if (empty($rem)) {
                 $parts = [];
@@ -191,7 +191,7 @@ class Context implements IContext, \Serializable, Inspectable
             }
         } else {
             $parts = explode('/', $path);
-            $name = array_pop($parts);
+            $name = (string)array_pop($parts);
         }
 
         if (empty($parts)) {
@@ -214,7 +214,7 @@ class Context implements IContext, \Serializable, Inspectable
         if (false !== strpos($path, '#')) {
             $parts = explode('#', $path, 2);
             $path = array_pop($parts);
-            $themeId = trim(array_shift($parts), '/');
+            $themeId = trim((string)array_shift($parts), '/');
 
             if (empty($themeId)) {
                 $themeId = null;

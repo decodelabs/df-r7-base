@@ -220,7 +220,7 @@ class Schedule implements ISchedule, Inspectable
             }
 
             $parts = explode('/', $part);
-            $range = array_shift($parts);
+            $range = (string)array_shift($parts);
 
             if ($range == '*') {
                 $range = [$min, $max];
@@ -228,7 +228,7 @@ class Schedule implements ISchedule, Inspectable
                 $range = explode('-', $range, 2);
             }
 
-            $divisor = array_shift($parts);
+            $divisor = (string)array_shift($parts);
 
             if (empty($divisor)) {
                 $divisor = null;

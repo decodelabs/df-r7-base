@@ -43,8 +43,8 @@ class Address implements IAddress, Inspectable
     {
         $parts = explode('<', $string, 2);
 
-        $address = rtrim(trim(array_pop($parts)), '>');
-        $name = trim(array_shift($parts), ' "\'');
+        $address = rtrim(trim((string)array_pop($parts)), '>');
+        $name = trim((string)array_shift($parts), ' "\'');
 
         if (empty($name)) {
             $name = null;
@@ -78,7 +78,7 @@ class Address implements IAddress, Inspectable
     public function getDomain()
     {
         $parts = explode('@', $this->_address, 2);
-        $parts = explode('?', array_pop($parts), 2);
+        $parts = explode('?', (string)array_pop($parts), 2);
         return array_shift($parts);
     }
 

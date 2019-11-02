@@ -22,7 +22,7 @@ class Mail extends Base
         $headerString = $mime->getHeaderString(['to', 'subject']);
         $to = $headers->get('to');
         $body = $mime->getBodyString();
-        $additional = null;
+        $additional = '';
 
         if ($returnPath = $headers->get('return-path')) {
             $additional = '-f'.$returnPath;

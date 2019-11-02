@@ -40,8 +40,8 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Inspectable
         foreach ($parts as $part) {
             $valueParts = explode($valueDelimiter, trim($part), 2);
 
-            $key = str_replace(']', '', urldecode(array_shift($valueParts)));
-            $value = urldecode(array_shift($valueParts));
+            $key = str_replace(']', '', urldecode((string)array_shift($valueParts)));
+            $value = urldecode((string)array_shift($valueParts));
 
             $output->getNestedChild($key, '[')->setValue($value);
         }

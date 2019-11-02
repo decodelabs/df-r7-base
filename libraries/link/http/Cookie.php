@@ -26,14 +26,14 @@ class Cookie implements ICookie
     public static function fromString(string $string)
     {
         $parts = explode(';', $string);
-        $main = explode('=', trim(array_shift($parts)), 2);
+        $main = explode('=', trim((string)array_shift($parts)), 2);
         $output = new self(array_shift($main), array_shift($main));
         $hasMaxAge = false;
 
         foreach ($parts as $part) {
             $set = explode('=', trim($part), 2);
-            $key = strtolower(array_shift($set));
-            $value = trim(array_shift($set));
+            $key = strtolower((string)array_shift($set));
+            $value = trim((string)array_shift($set));
 
             switch ($key) {
                 case 'max-age':

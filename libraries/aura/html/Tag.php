@@ -82,8 +82,8 @@ class Tag implements ITag, Inspectable
 
         if (false !== strpos($name, '#')) {
             $parts = explode('#', $name, 2);
-            $name = array_shift($parts);
-            $id = array_shift($parts);
+            $name = (string)array_shift($parts);
+            $id = (string)array_shift($parts);
 
             if (false !== strpos($id, '.')) {
                 $classes = explode('.', $id);

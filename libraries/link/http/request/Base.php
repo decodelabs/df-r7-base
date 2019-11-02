@@ -54,11 +54,11 @@ class Base implements link\http\IRequest, Inspectable
             throw Glitch::EUnexpectedValue('Unable to parse request string', null, $string);
         }
 
-        $headers = array_shift($parts);
-        $content = array_shift($parts);
+        $headers = (string)array_shift($parts);
+        $content = (string)array_shift($parts);
 
         $lines = explode("\n", $headers);
-        $http = array_shift($lines);
+        $http = (string)array_shift($lines);
 
         $output->setMethod(trim((string)strtok(trim($http), ' ')));
         $headers = $output->getHeaders();
@@ -506,7 +506,7 @@ class Base implements link\http\IRequest, Inspectable
         if ($this->_bodyData instanceof File) {
             return $this->_bodyData->getContents();
         } elseif ($this->_bodyData instanceof Channel) {
-            return $this->_bodyData->readAll();
+            return (string)$this->_bodyData->readAll();
         } else {
             return (string)$this->_bodyData;
         }

@@ -114,7 +114,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource
             }
 
             $parts = explode('/', ltrim($id, arch\Request::AREA_MARKER));
-            $name = array_pop($parts);
+            $name = (string)array_pop($parts);
 
             $classBase = 'df\\apex\\directory\\'.implode('\\', $parts).'\\_menus';
             $class = $classBase.'\\'.$name;
@@ -255,7 +255,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource
 
         foreach ($ids as $id) {
             $parts = explode('/', $id);
-            $area = ltrim(array_shift($parts), arch\Request::AREA_MARKER);
+            $area = ltrim((string)array_shift($parts), arch\Request::AREA_MARKER);
 
             if (!isset($output[$area])) {
                 $output[$area] = flex\Text::formatName($area);

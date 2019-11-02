@@ -72,7 +72,7 @@ class Config extends core\Config
     {
         $address = Address::factory($address, $name);
 
-        if (!$address->isValid()) {
+        if (!$address || !$address->isValid()) {
             throw Glitch::EInvalidArgument(
                 'Email address '.(string)$address.' is invalid'
             );
@@ -97,7 +97,7 @@ class Config extends core\Config
     {
         $address = Address::factory($address);
 
-        if (!$address->isValid()) {
+        if (!$address || !$address->isValid()) {
             throw Glitch::EInvalidArgument(
                 'Return path '.(string)$address.' is invalid'
             );
@@ -121,7 +121,7 @@ class Config extends core\Config
         foreach ($addresses as $i => $address) {
             $address = Address::factory($address);
 
-            if ($address->isValid()) {
+            if ($address && $address->isValid()) {
                 $values[] = (string)$address;
             }
         }
@@ -168,7 +168,7 @@ class Config extends core\Config
         foreach ($addresses as $i => $address) {
             $address = Address::factory($address);
 
-            if ($address->isValid()) {
+            if ($address && $address->isValid()) {
                 $values[] = (string)$address;
             }
         }

@@ -32,7 +32,7 @@ abstract class Primitive implements IPrimitive
     {
         if (!$this->_type) {
             $parts = explode('\\', get_class($this));
-            $parts = explode('_', array_pop($parts), 2);
+            $parts = explode('_', (string)array_pop($parts), 2);
             $this->_type = array_pop($parts);
         }
 

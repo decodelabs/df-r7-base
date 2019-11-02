@@ -65,17 +65,17 @@ class Url implements IGenericUrl, Inspectable
 
         // Fragment
         $parts = explode('#', $url, 2);
-        $url = array_shift($parts);
+        $url = (string)array_shift($parts);
         $this->setFragment(array_shift($parts));
 
         // Query
         $parts = explode('?', $url, 2);
-        $url = array_shift($parts);
+        $url = (string)array_shift($parts);
         $this->setQuery(array_shift($parts));
 
         // Scheme
         $parts = explode('://', $url, 2);
-        $url = array_pop($parts);
+        $url = (string)array_pop($parts);
         $this->setScheme(array_shift($parts));
 
         if (!empty($url)) {

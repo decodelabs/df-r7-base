@@ -91,7 +91,7 @@ trait TApcuClear
             $prefixLength = strlen($this->_prefix);
 
             foreach (core\cache\backend\Apcu::getCacheList() as $set) {
-                if (0 === strpos($set['info'], $prefix)
+                if (0 === strpos($set['info'], (string)$prefix)
                 && preg_match($regex, substr($set['info'], $prefixLength))) {
                     apcu_delete($set['info']);
                     $count++;
@@ -99,7 +99,7 @@ trait TApcuClear
             }
         } else {
             foreach (core\cache\backend\Apcu::getCacheList() as $set) {
-                if (0 === strpos($set['info'], $prefix)) {
+                if (0 === strpos($set['info'], (string)$prefix)) {
                     apcu_delete($set['info']);
                     $count++;
                 }

@@ -27,7 +27,7 @@ class Syntax implements flex\code\IProbe
         $result = Systemic::$process->launch('php', ['-l', $location->path.'/'.$localPath]);
         $result = trim($result->getOutput());
         $lines = explode("\n", $result);
-        $result = array_shift($lines);
+        $result = (string)array_shift($lines);
 
         if (strpos($result, 'No syntax errors detected') === false) {
             $this->_errors[$location->id.'://'.$localPath] = $result;

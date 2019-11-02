@@ -32,7 +32,7 @@ class Json implements IJson
     // Decode
     public static function fromString(?string $data)
     {
-        return json_decode($data, true);
+        return json_decode((string)$data, true);
     }
 
     public static function fromFile($path)

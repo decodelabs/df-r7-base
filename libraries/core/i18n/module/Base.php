@@ -47,7 +47,7 @@ abstract class Base implements IModule
         }
 
         $parts = explode('\\', get_class($this));
-        return lcfirst(array_pop($parts));
+        return lcfirst((string)array_pop($parts));
     }
 
     protected function _loadData()

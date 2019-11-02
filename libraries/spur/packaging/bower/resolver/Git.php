@@ -28,7 +28,7 @@ class Git implements spur\packaging\bower\IResolver
     public function resolvePackageName(spur\packaging\bower\Package $package)
     {
         $parts = explode('/', $package->url);
-        $name = array_pop($parts);
+        $name = (string)array_pop($parts);
         return substr($name, -4);
     }
 

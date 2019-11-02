@@ -68,7 +68,7 @@ abstract class Base implements IArchive
         throw Glitch::EUnsupported($this->getType().' type archives cannot handle string compression');
     }
 
-    protected function _normalizeExtractDestination(string &$file, string $destination): string
+    protected function _normalizeExtractDestination(string &$file, ?string $destination): string
     {
         $file = str_replace(['/', '\\'], \DIRECTORY_SEPARATOR, (string)realpath($file));
 

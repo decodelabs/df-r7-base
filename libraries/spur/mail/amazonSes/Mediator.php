@@ -93,7 +93,9 @@ class Mediator implements IMediator
 
     public function deleteVerifiedAddress($address)
     {
-        $address = flow\mail\Address::factory($address);
+        if (!$address = flow\mail\Address::factory($address)) {
+            throw Glitch::EUnexpectedValue('Invalid verified address');
+        }
 
         $xml = $this->requestXml('delete', [
             'Action' => 'DeleteVerifiedEmailAddress',
@@ -195,7 +197,9 @@ class Mediator implements IMediator
 
     public function sendRawString($from, $string)
     {
-        $from = flow\mail\Address::factory($from);
+        if (!$from = flow\mail\Address::factory($from)) {
+            throw Glitch::EUnexpectedValue('Invalid from address');
+        }
 
         $xml = $this->requestXml('post', [
             'Action' => 'SendRawEmail',

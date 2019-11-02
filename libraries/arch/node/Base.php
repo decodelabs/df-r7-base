@@ -368,7 +368,7 @@ class Base implements INode, Inspectable
 
         $parts = explode('\\', get_class($this));
 
-        $name = array_pop($parts);
+        $name = (string)array_pop($parts);
         $parts = array_slice($parts, 3, -1);
         $parts[] = $this->format->nodeSlug(substr($name, 4));
 

@@ -253,8 +253,9 @@ class Base implements IMenu, \Serializable
     public function generateEntries(arch\navigation\IEntryList $entryList=null): arch\navigation\IEntryList
     {
         $this->initDelegates();
+        $isRoot = ($entryList === null);
 
-        if ($isRoot = $entryList === null) {
+        if ($entryList === null) {
             $entryList = new EntryList();
         }
 

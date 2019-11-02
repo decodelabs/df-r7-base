@@ -44,8 +44,12 @@ class Ratio implements IRatio, Inspectable
     {
         if (false !== strpos($value, '/')) {
             $parts = explode('/', $value, 2);
-            $value = trim(array_shift($parts));
-            $denominator = trim(array_shift($parts));
+            $value = trim((string)array_shift($parts));
+            $denominator = trim((string)array_shift($parts));
+
+            if (empty($denominator)) {
+                $denominator = null;
+            }
         }
 
         if ($denominator !== null) {

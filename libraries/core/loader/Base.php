@@ -115,7 +115,7 @@ class Base implements core\ILoader
             return null;
         }
 
-        $fileName = array_pop($parts);
+        $fileName = (string)array_pop($parts);
         $basePath = df\Launchpad::$rootPath.'/'.$library;
 
         if (!empty($parts)) {

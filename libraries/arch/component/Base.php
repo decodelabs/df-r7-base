@@ -44,7 +44,7 @@ abstract class Base implements arch\IComponent
 
         $parts[] = '_components';
         $nameParts = explode('/', $name);
-        $topName = array_pop($nameParts);
+        $topName = (string)array_pop($nameParts);
 
         if (!empty($nameParts)) {
             $parts = array_merge($parts, $nameParts);
@@ -108,7 +108,7 @@ abstract class Base implements arch\IComponent
     {
         $path = str_replace('\\', '/', get_class($this));
         $parts = explode('_components/', $path, 2);
-        return array_pop($parts);
+        return (string)array_pop($parts);
     }
 
 

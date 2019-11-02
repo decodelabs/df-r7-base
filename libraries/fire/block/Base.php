@@ -64,7 +64,7 @@ abstract class Base implements fire\IBlock
     public function getName(): string
     {
         $parts = explode('\\', get_class($this));
-        return array_pop($parts);
+        return (string)array_pop($parts);
     }
 
     public function getDisplayName(): string

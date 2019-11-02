@@ -182,12 +182,12 @@ class Url extends core\uri\Url implements IUrl
 
         // Fragment
         $parts = explode('#', $url, 2);
-        $url = array_shift($parts);
+        $url = (string)array_shift($parts);
         $this->setFragment(array_shift($parts));
 
         // Query
         $parts = explode('?', $url, 2);
-        $url = array_shift($parts);
+        $url = (string)array_shift($parts);
         $this->setQuery(array_shift($parts));
 
         // Scheme
@@ -196,7 +196,7 @@ class Url extends core\uri\Url implements IUrl
             $this->_scheme = null;
         } else {
             $parts = explode('://', $url, 2);
-            $url = array_pop($parts);
+            $url = (string)array_pop($parts);
             $this->setScheme(array_shift($parts));
         }
 
@@ -219,12 +219,12 @@ class Url extends core\uri\Url implements IUrl
                 $this->_port = $_SERVER['SERVER_PORT'];
             }
         } else {
-            $domain = array_shift($path);
+            $domain = (string)array_shift($path);
 
             // Credentials
             $credentials = explode('@', $domain, 2);
-            $domain = array_pop($credentials);
-            $credentials = array_shift($credentials);
+            $domain = (string)array_pop($credentials);
+            $credentials = (string)array_shift($credentials);
 
             if (!empty($credentials)) {
                 $credentials = explode(':', $credentials, 2);

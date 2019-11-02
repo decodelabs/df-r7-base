@@ -78,7 +78,7 @@ abstract class Base implements IDaemon
     public static function factory($name)
     {
         $parts = explode('/', $name);
-        $top = ucfirst(array_pop($parts));
+        $top = ucfirst((string)array_pop($parts));
         $parts[] = $top;
         $class = 'df\\apex\\daemons\\'.implode('\\', $parts);
 

@@ -157,7 +157,7 @@ class Address extends Base implements Inspectable
 
     public function setMode(?string $mode)
     {
-        switch ($mode = strtolower($mode)) {
+        switch ($mode = strtolower((string)$mode)) {
             case self::SHORT:
             case self::LONG:
             case self::FULL:

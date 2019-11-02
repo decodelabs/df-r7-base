@@ -175,11 +175,11 @@ class Ip implements IStringProvider, Inspectable
                 }
             }
 
-            $ip = preg_replace('/'.$match.'/', ':', $ip, 1);
+            $ip = (string)preg_replace('/'.$match.'/', ':', $ip, 1);
         }
 
-        $ip = preg_replace('/((^:)|(:$))/', '', $ip);
-        $ip = preg_replace('/((^:)|(:$))/', '::', $ip);
+        $ip = (string)preg_replace('/((^:)|(:$))/', '', $ip);
+        $ip = (string)preg_replace('/((^:)|(:$))/', '::', $ip);
 
         return $ip;
     }

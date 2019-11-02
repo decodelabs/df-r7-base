@@ -105,7 +105,9 @@ class Manager implements IManager, core\IShutdownAware
 
             // From
             if (!$from = $message->getFromAddress()) {
-                $from = flow\mail\Address::factory($config->getDefaultAddress());
+                if (!$from = flow\mail\Address::factory($config->getDefaultAddress())) {
+                    throw Glitch::EUnexpectedValue('Unable to provide valid default address');
+                }
 
                 if (!$from->getName()) {
                     $from->setName(df\Launchpad::$app->getName());

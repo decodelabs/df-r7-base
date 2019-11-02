@@ -44,7 +44,7 @@ trait TProbe
     public function getId(): string
     {
         $parts = explode('\\', get_class($this));
-        return lcfirst(array_pop($parts));
+        return lcfirst((string)array_pop($parts));
     }
 }
 

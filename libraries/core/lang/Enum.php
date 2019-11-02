@@ -98,7 +98,7 @@ abstract class Enum implements IStaticEnum, Inspectable
 
     public static function normalizeOption(?string $option)
     {
-        $option = preg_replace('/([a-z])([A-Z])/u', '$1 $2', (string)$option);
+        $option = (string)preg_replace('/([a-z])([A-Z])/u', '$1 $2', (string)$option);
         $option = str_replace(['_', '-'], ' ', $option);
         return lcfirst(str_replace(' ', '', ucwords(strtolower($option))));
     }

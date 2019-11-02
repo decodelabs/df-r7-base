@@ -202,7 +202,10 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
     // Email
     public function email($value, array $options=[]): ?string
     {
-        $value = flow\mail\Address::factory($value);
+        if (!$value = flow\mail\Address::factory($value)) {
+            throw Glitch::EInvalidArgument('Invalid email address');
+        }
+
         $value->setAddress($this->_applyFilter($value->getAddress(), FILTER_SANITIZE_EMAIL));
 
         if ($value->isValid()) {

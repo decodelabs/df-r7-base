@@ -68,7 +68,7 @@ class Result implements arch\node\IRestApiResult
                 $code = 400;
             }
 
-            return $code;
+            return (int)$code;
         }
 
         if ($this->isValid()) {

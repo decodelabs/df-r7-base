@@ -57,13 +57,13 @@ class HeaderMap implements IHeaderMap, Inspectable
                     }
 
                     $parts = explode(':', $line, 2);
-                    $key = trim(array_shift($parts));
+                    $key = trim((string)array_shift($parts));
 
                     if (empty($key)) {
                         continue;
                     }
 
-                    $value = trim(array_shift($parts));
+                    $value = trim((string)array_shift($parts));
                     $data[$key] = $value;
                     $last = &$data[$key];
                 }

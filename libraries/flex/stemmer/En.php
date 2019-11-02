@@ -21,7 +21,7 @@ class En extends Base
 
     public function split($phrase, $natural=false)
     {
-        $phrase = preg_replace('/[&][a-z]+[;]/', '', strtolower($phrase));
+        $phrase = (string)preg_replace('/[&][a-z]+[;]/', '', strtolower((string)$phrase));
         $phrase = str_replace(['-', '_'], ' ', $phrase);
         $phrase = str_replace(['.', '\''], '', $phrase);
 

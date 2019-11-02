@@ -427,7 +427,7 @@ class Router_Map
         $this->area = ltrim($area, '~');
         $domain = trim($domain, '/');
         $parts = explode('://', $domain, 2);
-        $domain = array_pop($parts);
+        $domain = (string)array_pop($parts);
         $scheme = array_shift($parts) ?? 'http';
 
         if (strtolower($scheme) === 'https') {
@@ -435,7 +435,7 @@ class Router_Map
         }
 
         $parts = explode('/', $domain);
-        $this->domain = array_shift($parts);
+        $this->domain = (string)array_shift($parts);
         $this->path = $parts;
 
         if (substr($this->domain, 0, 2) == '*.') {

@@ -379,7 +379,7 @@ class Queue implements IQueue
         $this->_transaction->begin();
 
         try {
-            $this->_jobs = array_filter($this->_jobs);
+            $this->_jobs = (array)array_filter($this->_jobs);
 
             foreach ($this->_jobs as $job) {
                 if ($job instanceof IEventBroadcastingJob) {

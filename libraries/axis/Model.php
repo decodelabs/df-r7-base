@@ -164,8 +164,8 @@ abstract class Model implements IModel, Inspectable
     {
         $parts = explode('/', $id, 2);
 
-        return self::factory(array_shift($parts))
-            ->getUnit(array_shift($parts));
+        return self::factory((string)array_shift($parts))
+            ->getUnit((string)array_shift($parts));
     }
 
     public static function getUnitMetaData(array $unitIds)

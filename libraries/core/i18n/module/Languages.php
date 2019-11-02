@@ -16,12 +16,12 @@ class Languages extends Base implements ILanguagesModule
         $this->_loadData();
 
         $parts = explode('_', $id);
-        $id = strtolower(array_shift($parts));
+        $id = strtolower((string)array_shift($parts));
 
         if (!empty($parts)) {
             $temp = $id;
 
-            $id .= '_'.strtoupper(array_shift($parts));
+            $id .= '_'.strtoupper((string)array_shift($parts));
 
             if (!isset($this->_data[$id])) {
                 $id = $temp;

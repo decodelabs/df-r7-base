@@ -58,7 +58,7 @@ class OutputManifest implements IOutputManifest
             if ($isDerived) {
                 $field = $field->rewriteAsDerived($source);
             }
-            
+
             $this->addOutputField($field);
         }
 
@@ -66,7 +66,7 @@ class OutputManifest implements IOutputManifest
             if ($isDerived) {
                 $field = $field->rewriteAsDerived($source);
             }
-            
+
             $this->_privateFields[$alias] = $field;
         }
 
@@ -76,8 +76,8 @@ class OutputManifest implements IOutputManifest
 
             foreach ($rows[0] as $key => $value) {
                 $parts = explode('.', $key);
-                $alias = $fieldName = array_pop($parts);
-                $s = array_shift($parts);
+                $alias = $fieldName = (string)array_pop($parts);
+                $s = (string)array_shift($parts);
 
                 if ($s == $sourceAlias
                 && substr($fieldName, 0, 1) != '@'

@@ -75,7 +75,7 @@ class ManyToOne extends One implements axis\schema\IManyToOneField, opal\schema\
         $def = $entity->getDefinition();
 
         if ($this->_targetField) {
-            $def = substr($def, 0, -1).' -> '.$this->_targetField.')';
+            $def = substr((string)$def, 0, -1).' -> '.$this->_targetField.')';
         }
 
         $entity->setDefinition($def);

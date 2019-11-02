@@ -97,7 +97,7 @@ trait TNameExtractor
         }
 
         do {
-            $output = array_shift($parts);
+            $output = (string)array_shift($parts);
             $test = strtolower(str_replace([',', '.', '-'], '', $output));
         } while (count($parts) > 1 && in_array($test, $titles));
 

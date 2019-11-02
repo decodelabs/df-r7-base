@@ -10,6 +10,7 @@ use df\core;
 use df\mint;
 use df\user;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -311,6 +312,10 @@ class CreditCard implements ICreditCard, Inspectable
             $year = (int)$year;
         }
 
+        if ($month === null || $year === null) {
+            throw Glitch::EInvalidArgument('Invalid expiry date string', null, $expiry);
+        }
+
         return $this
             ->setExpiryMonth($month)
             ->setExpiryYear($year);
@@ -373,7 +378,12 @@ class CreditCard implements ICreditCard, Inspectable
             return false;
         }
 
-        $date = clone $this->getExpiryDate();
+
+        if (!$date = $this->getExpiryDate()) {
+            return false;
+        }
+
+        $date = clone $date;
 
         if ($date->modify('+1 month')->modify('-1 day')->isPast()) {
             return false;

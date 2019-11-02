@@ -34,7 +34,7 @@ class Argument implements IArgument, Inspectable
 
     public function setOption(?string $option)
     {
-        if (!strlen($option)) {
+        if (!strlen((string)$option)) {
             $option = null;
         }
 
@@ -99,7 +99,7 @@ class Argument implements IArgument, Inspectable
 
     public function setValue(?string $value)
     {
-        if (!strlen($value)) {
+        if (!strlen((string)$value)) {
             $value = null;
         }
 

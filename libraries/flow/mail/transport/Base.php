@@ -73,6 +73,6 @@ abstract class Base implements flow\mail\ITransport
     public static function getName(): string
     {
         $parts = explode('\\', get_called_class());
-        return array_pop($parts);
+        return (string)array_pop($parts);
     }
 }

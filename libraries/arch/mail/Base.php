@@ -50,7 +50,7 @@ abstract class Base extends aura\view\Mail implements arch\IMail
     {
         $path = str_replace('\\', '/', get_class($this));
         $parts = explode('_mail/', $path, 2);
-        return array_pop($parts);
+        return (string)array_pop($parts);
     }
 
     public function getDescription()

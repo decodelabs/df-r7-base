@@ -305,7 +305,7 @@ abstract class Form extends Base implements IFormNode
         $this->content->addClasses(array_map(function ($value) {
             return $this->format->slug($value);
         }, $classes));
-        
+
         $this->content->addClass('form');
 
         if ($setContentProvider) {
@@ -495,8 +495,8 @@ abstract class Form extends Base implements IFormNode
 
 
         $parts = explode('(', $event, 2);
-        $event = array_shift($parts);
-        $args = substr(array_pop($parts), 0, -1);
+        $event = (string)array_shift($parts);
+        $args = substr((string)array_pop($parts), 0, -1);
 
         if (!empty($args)) {
             $args = flex\Delimited::parse($args);
@@ -505,7 +505,7 @@ abstract class Form extends Base implements IFormNode
         }
 
         $targetId = explode('.', trim($event, '.'));
-        $event = array_pop($targetId);
+        $event = (string)array_pop($targetId);
         $targetString = implode('.', $targetId);
         $target = $this;
         $isTargetComplete = false;
@@ -513,7 +513,7 @@ abstract class Form extends Base implements IFormNode
         if (!empty($targetId)) {
             while (!empty($targetId)) {
                 $target->handleDelegateEvent(implode('.', $targetId), $event, $args);
-                $currentId = array_shift($targetId);
+                $currentId = (string)array_shift($targetId);
 
                 try {
                     $target = $target->getDelegate($currentId);

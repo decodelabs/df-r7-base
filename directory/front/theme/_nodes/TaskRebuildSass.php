@@ -122,7 +122,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
 
         $locations = df\Launchpad::$loader->getLocations();
         $locations['app'] = df\Launchpad::$app->path;
-        $path = preg_replace('/[[:^print:]]/', '', $path);
+        $path = (string)preg_replace('/[[:^print:]]/', '', $path);
 
         foreach ($locations as $key => $match) {
             if (substr($path, 0, $len = strlen($match)) == $match) {

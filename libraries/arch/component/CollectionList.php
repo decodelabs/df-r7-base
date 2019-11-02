@@ -44,7 +44,7 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Insp
 
         if ($this->_viewArg === null) {
             $parts = explode('\\', get_class($this));
-            $this->_viewArg = lcfirst(array_pop($parts));
+            $this->_viewArg = lcfirst((string)array_pop($parts));
         }
     }
 

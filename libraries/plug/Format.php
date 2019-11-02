@@ -502,7 +502,7 @@ class Format implements core\ISharedHelper
     public function firstName($fullName)
     {
         $parts = explode(' ', $fullName);
-        $output = array_shift($parts);
+        $output = (string)array_shift($parts);
 
         if (in_array(strtolower($output), ['mr', 'ms', 'mrs', 'miss', 'dr'])) {
             if (isset($parts[1])) {

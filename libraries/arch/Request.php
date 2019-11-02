@@ -60,12 +60,12 @@ class Request extends core\uri\Url implements IRequest, Inspectable
 
             // Fragment
             $parts = explode('#', $url, 2);
-            $url = array_shift($parts);
+            $url = (string)array_shift($parts);
             $this->setFragment(array_shift($parts));
 
             // Query
             $parts = explode('?', $url, 2);
-            $url = array_shift($parts);
+            $url = (string)array_shift($parts);
             $this->setQuery(array_shift($parts));
 
             // Scheme
@@ -246,8 +246,8 @@ class Request extends core\uri\Url implements IRequest, Inspectable
         foreach ($parts as $i => $part) {
             if ($part != '~') {
                 $parts[$i] = lcfirst(
-                    str_replace(' ', '', ucwords(
-                        preg_replace('/[^a-zA-Z0-9_ ]/', '', str_replace(
+                    (string)str_replace(' ', '', ucwords(
+                        (string)preg_replace('/[^a-zA-Z0-9_ ]/', '', str_replace(
                             ['-', '.', '+'], ' ', (string)$part
                         ))
                     ))
@@ -261,7 +261,7 @@ class Request extends core\uri\Url implements IRequest, Inspectable
     // Node
     public function setNode(string $node=null)
     {
-        if (!strlen($node)) {
+        if (!strlen((string)$node)) {
             $node = static::DEFAULT_NODE;
         }
 
@@ -311,8 +311,8 @@ class Request extends core\uri\Url implements IRequest, Inspectable
         }
 
         return lcfirst(
-            str_replace(' ', '', ucwords(
-                preg_replace('/[^a-zA-Z0-9_ ]/', '', str_replace(
+            (string)str_replace(' ', '', ucwords(
+                (string)preg_replace('/[^a-zA-Z0-9_ ]/', '', str_replace(
                     ['-', '.', '+'], ' ', (string)$node
                 ))
             ))
@@ -368,8 +368,8 @@ class Request extends core\uri\Url implements IRequest, Inspectable
 
     public static function formatType($type)
     {
-        return str_replace(' ', '', ucwords(
-            preg_replace('/[^a-zA-Z0-9_ ]/', '', str_replace(
+        return (string)str_replace(' ', '', ucwords(
+            (string)preg_replace('/[^a-zA-Z0-9_ ]/', '', str_replace(
                 ['-', '.', '+'], ' ', (string)$type
             ))
         ));

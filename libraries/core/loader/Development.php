@@ -30,7 +30,7 @@ class Development extends Base
 
             switch ($section) {
                 case 'packages':
-                    $packageName = $pathPackageName = array_shift($parts);
+                    $packageName = $pathPackageName = (string)array_shift($parts);
                     $pathName = implode('/', $parts);
 
                     foreach ($this->_locations as $location) {
@@ -53,7 +53,7 @@ class Development extends Base
             }
         }
 
-        $fileName = array_pop($parts);
+        $fileName = (string)array_pop($parts);
         $basePath = $library;
 
         if (!empty($parts)) {

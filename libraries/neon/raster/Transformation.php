@@ -79,8 +79,8 @@ class Transformation implements ITransformation, Inspectable
 
         foreach ($matches[1] as $match) {
             $parts = explode(':', $match, 2);
-            $key = strtolower(array_shift($parts));
-            $argString = array_shift($parts);
+            $key = strtolower((string)array_shift($parts));
+            $argString = (string)array_shift($parts);
 
             if (!isset($keys[$key])) {
                 continue;

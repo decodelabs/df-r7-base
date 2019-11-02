@@ -22,7 +22,7 @@ abstract class Base implements axis\schema\IField, \Serializable, Inspectable
     public static function factory(axis\schema\ISchema $schema, string $name, string $type, $args=null): axis\schema\IField
     {
         $parts = explode(':', $type);
-        $superType = array_shift($parts);
+        $superType = (string)array_shift($parts);
         $class = 'df\\axis\\schema\\field\\'.ucfirst($superType);
 
         if (!class_exists($class)) {

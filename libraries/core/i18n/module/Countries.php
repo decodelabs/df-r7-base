@@ -68,8 +68,7 @@ class Countries extends Base implements ICountriesModule
         }
 
         if (!empty($match)) {
-            $region = array_shift($match);
-            return substr($region, 3);
+            return substr((string)array_shift($match), 3);
         } else {
             return null;
         }

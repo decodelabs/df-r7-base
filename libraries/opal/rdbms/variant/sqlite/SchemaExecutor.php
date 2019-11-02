@@ -83,8 +83,8 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
         $schema->isAudited(false);
 
         $parts = explode('(', substr($tableData['sql'], 0, -1), 2);
-        $createSql = trim(array_shift($parts));
-        $defSql = trim(preg_replace("/\s+/", ' ', array_shift($parts)));
+        $createSql = trim((string)array_shift($parts));
+        $defSql = trim((string)preg_replace("/\s+/", ' ', (string)array_shift($parts)));
 
         if (preg_match('/TEMPORARY/i', $createSql)) {
             $schema->isTemporary(true);
@@ -181,8 +181,8 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
                         foreach (flex\Delimited::parse($matches[1], ',', null) as $part) {
                             $temp = explode(' ', trim($part), 2);
-                            $fieldName = trim(array_shift($temp), '`\' ');
-                            $isDescending = strtoupper(trim(array_shift($temp))) == 'DESC';
+                            $fieldName = trim((string)array_shift($temp), '`\' ');
+                            $isDescending = strtoupper(trim((string)array_shift($temp))) == 'DESC';
 
                             if (!$field = $schema->getField($fieldName)) {
                                 throw Glitch::{'df/opal/rdbms/EIndexNotFound,ENotFound'}(
@@ -254,8 +254,8 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
             foreach (flex\Delimited::parse($matches[1], ',', null) as $part) {
                 $temp = explode(' ', trim($part), 2);
-                $fieldName = trim(array_shift($temp), '`" ');
-                $isDescending = strtoupper(trim(array_shift($temp))) == 'DESC';
+                $fieldName = trim((string)array_shift($temp), '`" ');
+                $isDescending = strtoupper(trim((string)array_shift($temp))) == 'DESC';
 
                 if (!$field = $schema->getField($fieldName)) {
                     throw Glitch::{'df/opal/rdbms/EIndexNotFound,ENotFound'}(

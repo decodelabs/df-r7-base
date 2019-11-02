@@ -54,12 +54,12 @@ class Paginator implements IPaginator, Inspectable
 
         foreach ($fields as $key => $field) {
             $parts = explode(' as ', $field);
-            $field = array_shift($parts);
-            $key = trim(array_shift($parts));
+            $field = (string)array_shift($parts);
+            $key = trim((string)array_shift($parts));
 
             $parts = explode(' ', $field);
-            $field = array_shift($parts);
-            $direction = array_shift($parts);
+            $field = (string)array_shift($parts);
+            $direction = (string)array_shift($parts);
 
             $field = $sourceManager->extrapolateField($source, $field);
 

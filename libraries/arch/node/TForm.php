@@ -87,7 +87,7 @@ trait TForm
 
         $parts[] = '_formDelegates';
         $nameParts = explode('/', $name);
-        $topName = array_pop($nameParts);
+        $topName = (string)array_pop($nameParts);
 
         if (!empty($nameParts)) {
             $parts = array_merge($parts, $nameParts);

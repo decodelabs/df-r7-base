@@ -25,7 +25,7 @@ class Tree implements ITree, Inspectable
     public static function normalizeString(string $string): string
     {
         $string = iconv('UTF-8', 'UTF-8//TRANSLIT', $string);
-        return preg_replace('/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u', '', (string)$string);
+        return (string)preg_replace('/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u', '', (string)$string);
     }
 
     public static function fromXmlFile($xmlFile)
@@ -99,7 +99,7 @@ class Tree implements ITree, Inspectable
 
     public static function fromDOMDocument($document)
     {
-        if (!$document instanceof \DOMDocument) {
+        if (!$document instanceof \DOMDocument || !$document->documentElement) {
             throw Glitch::ERuntime(
                 'DOMDocument was not loaded'
             );

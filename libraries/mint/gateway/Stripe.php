@@ -229,9 +229,13 @@ class Stripe extends Base implements
     public function refundCharge(mint\IChargeRefund $refund): string
     {
         return $this->_execute(function () use ($refund) {
+            if (!$amount = $refund->getAmount()) {
+                throw Glitch::EUnexpectedValue('Refund amount has not been set', null, $refund);
+            }
+
             return StripePHP\Refund::create([
                 'charge' => $refund->getId(),
-                'amount' => $refund->getAmount()->getIntegerAmount()
+                'amount' => $amount->getIntegerAmount()
             ], [
                 'api_key' => $this->_apiKey
             ])['charge'];
@@ -288,7 +292,7 @@ class Stripe extends Base implements
         }
 
         return $this->_execute(function () use ($customer) {
-            $customer = StripePHP\Customer::update($customer->getId(), [
+            $customer = StripePHP\Customer::update((string)$customer->getId(), [
                 'email' => $customer->getEmailAddress(),
                 'description' => $customer->getDescription(),
                 'source' => $this->_prepareSource($customer->getCard()),
@@ -479,7 +483,11 @@ class Stripe extends Base implements
             $customer->setCachedSubscriptions($subs);
         }
 
-        return $customer->getCachedSubscriptions();
+        if (null === ($output = $customer->getCachedSubscriptions())) {
+            return [];
+        }
+
+        return $output;
     }
 
     public function subscribeCustomer(mint\ISubscription $subscription): mint\ISubscription
@@ -505,7 +513,7 @@ class Stripe extends Base implements
     public function updateSubscription(mint\ISubscription $subscription): mint\ISubscription
     {
         return $this->_execute(function () use ($subscription) {
-            $subscription = StripePHP\Subscription::update($subscription->getId(), [
+            $subscription = StripePHP\Subscription::update((string)$subscription->getId(), [
                 'items' => [[
                     'plan' => $subscription->getPlanId()
                 ]],

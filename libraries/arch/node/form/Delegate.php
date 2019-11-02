@@ -45,7 +45,7 @@ class Delegate implements arch\node\IDelegate
     public function getDelegateKey(): string
     {
         $parts = explode('.', $this->_delegateId);
-        return array_pop($parts);
+        return (string)array_pop($parts);
     }
 
     final public function initialize()

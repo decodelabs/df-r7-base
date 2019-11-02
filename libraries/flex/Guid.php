@@ -144,8 +144,8 @@ class Guid implements IGuid, Inspectable
             return $string;
         }
 
-        $string = preg_replace('/^urn:uuid:/is', '', $string);
-        $string = preg_replace('/[^a-f0-9]/is', '', $string);
+        $string = (string)preg_replace('/^urn:uuid:/is', '', $string);
+        $string = (string)preg_replace('/[^a-f0-9]/is', '', $string);
 
         if (strlen($string) != ($length * 2)) {
             return null;

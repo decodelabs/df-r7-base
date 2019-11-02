@@ -99,7 +99,11 @@ class Reader implements IReader
             );
         }
 
-        $this->setFields(...$this->getRow());
+        if (!$row = $this->getRow()) {
+            throw Glitch::EUnexpectedValue('Unable to extract fields row from CSV', null, $this);
+        }
+
+        $this->setFields(...$row);
         $this->_currentRow = null;
         $this->_rowCount = 0;
         $this->_rewindSeek = $this->_file->getPosition() - strlen($this->_buffer);

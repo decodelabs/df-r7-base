@@ -12,6 +12,8 @@ use df\arch;
 use df\fire;
 use df\aura;
 
+use DecodeLabs\Glitch;
+
 class ContentBlock extends arch\node\form\Delegate implements
     arch\node\IInlineFieldRenderableDelegate,
     arch\node\IResultProviderDelegate
@@ -125,7 +127,12 @@ class ContentBlock extends arch\node\form\Delegate implements
         if ($type === null) {
             $this->_state->removeStore('blockType');
         } else {
-            $this->_block = fire\block\Base::normalize($type)->isNested($this->_isNested);
+            if (!$block = fire\block\Base::normalize($type)) {
+                throw Glitch::EInvalidArgument('Cannot build block of type '.$type);
+            }
+
+            $block->isNested($this->_isNested);
+            $this->_block = $block;
             $this->_state->setStore('blockType', $this->_block->getName());
         }
 

@@ -81,8 +81,8 @@ class IpRange implements IStringProvider, Inspectable
             if (false !== strpos($range, '-')) {
                 // Simple range
                 $parts = explode('-', $range, 2);
-                $this->start = ip2long(trim(array_shift($parts)));
-                $this->end = ip2long(trim(array_shift($parts)));
+                $this->start = ip2long(trim((string)array_shift($parts)));
+                $this->end = ip2long(trim((string)array_shift($parts)));
             } else {
                 // Single ip match
                 $this->start = $this->end = (int)Ip::factory($range)->getV4Decimal();
@@ -129,8 +129,8 @@ class IpRange implements IStringProvider, Inspectable
             if (false !== strpos($range, '-')) {
                 // Simple range
                 $parts = explode('-', $range, 2);
-                $start = ip2long(trim(array_shift($parts)));
-                $end = ip2long(trim(array_shift($parts)));
+                $start = ip2long(trim((string)array_shift($parts)));
+                $end = ip2long(trim((string)array_shift($parts)));
 
                 if ($start < 0) {
                     $start += pow(2, 32);

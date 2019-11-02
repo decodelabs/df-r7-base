@@ -145,7 +145,7 @@ class Ignore
                 while (!empty($pathParts)) {
                     $prev = $last;
 
-                    if (fnmatch($next, $last = array_shift($pathParts), \FNM_CASEFOLD)) {
+                    if (fnmatch((string)$next, (string)$last = array_shift($pathParts), \FNM_CASEFOLD)) {
                         break;
                     }
                 }
@@ -154,7 +154,7 @@ class Ignore
                     $sectionPart = array_shift($sectionParts);
                     $prev = $last;
 
-                    if (!fnmatch($sectionPart, $last = array_shift($pathParts), \FNM_CASEFOLD)) {
+                    if (!fnmatch((string)$sectionPart, (string)$last = array_shift($pathParts), \FNM_CASEFOLD)) {
                         return false;
                     }
                 }
@@ -175,6 +175,10 @@ class Ignore
             if ($prev !== null) {
                 $path = $prev.'/'.$path;
             }
+        }
+
+        if ($pattern === null) {
+            return false;
         }
 
         // Any in

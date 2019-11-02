@@ -122,7 +122,7 @@ abstract class Wizard extends Form
     final protected function onPrevEvent()
     {
         $this->onCurrentEvent();
-        $this->setSection($this->getPrevSection());
+        $this->setSection((string)$this->getPrevSection());
     }
 
     final protected function onCurrentEvent()

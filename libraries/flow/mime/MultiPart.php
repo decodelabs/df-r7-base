@@ -83,7 +83,7 @@ class MultiPart implements IMultiPart, Inspectable
     public function setContentType($type)
     {
         $parts = explode(';', $type, 2);
-        $type = strtolower(array_shift($parts));
+        $type = strtolower((string)array_shift($parts));
         $suffix = array_pop($parts);
 
         switch ($type) {

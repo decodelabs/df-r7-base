@@ -65,7 +65,7 @@ class MaxMindDb implements Adapter
     public function getName(): string
     {
         $parts = explode('\\', get_class($this));
-        return array_pop($parts);
+        return (string)array_pop($parts);
     }
 
     public function lookup(Ip $ip, Result $result): Result

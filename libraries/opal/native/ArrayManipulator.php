@@ -1233,8 +1233,8 @@ class ArrayManipulator implements IArrayManipulator
                         }
 
                         $parts = explode('.', $key, 2);
-                        $fieldName = array_pop($parts);
-                        $s = array_shift($parts);
+                        $fieldName = (string)array_pop($parts);
+                        $s = (string)array_shift($parts);
 
                         if (substr($fieldName, 0, 1) == '@') {
                             continue;
@@ -1357,7 +1357,7 @@ class ArrayManipulator implements IArrayManipulator
             if ($keyName) {
                 if (isset($row[$keyName])) {
                     $key = $row[$keyName];
-                } elseif (isset($row[$t = $keyField->getAlias()])) {
+                } elseif ($keyField && isset($row[$t = $keyField->getAlias()])) {
                     $key = $row[$t];
                     $keyName = $t;
                 } elseif ($keyNameList !== null) {

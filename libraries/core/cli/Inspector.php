@@ -47,7 +47,7 @@ class Inspector implements IInspector
                 );
             }
 
-            if ($char == ':') {
+            if ($lastRule && $char == ':') {
                 $lastRule->requiresValue(true);
             } else {
                 $lastRule = new Rule($char);
@@ -195,7 +195,7 @@ class Inspector implements IInspector
                 break;
 
             case ValueType::WORD:
-                if (!preg_match('/^[a-zA-Z]+$/', $value)) {
+                if (!preg_match('/^[a-zA-Z]+$/', (string)$value)) {
                     throw Glitch::Evalue(
                         'Expected word value for '.$rule->getName().' rule'
                     );

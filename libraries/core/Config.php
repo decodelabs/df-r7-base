@@ -76,7 +76,7 @@ abstract class Config implements IConfig, Inspectable
     public function __construct($id)
     {
         $parts = explode('/', $id);
-        $parts[] = ucfirst(array_pop($parts));
+        $parts[] = ucfirst((string)array_pop($parts));
 
         $this->_id = implode('/', $parts);
 
