@@ -12,7 +12,7 @@ use df\flex;
 
 use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Tagged\Builder\Tag as TagInterface;
-use DecodeLabs\Tagged\Builder\Html\Tag;
+use DecodeLabs\Tagged\Html\Tag;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
