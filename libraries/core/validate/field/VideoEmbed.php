@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 
 use DecodeLabs\Tagged\Html;
-use DecodeLabs\Tagged\Embed;
+use DecodeLabs\Tagged\Html\Embed;
 
 class VideoEmbed extends Base implements core\validate\IVideoEmbedField
 {
