@@ -304,9 +304,9 @@ class Html implements arch\IDirectoryHelper
             $first = true;
             $i = $more = 0;
 
-            try {
+            if ($list instanceof \Countable || is_array($list)) {
                 $total = count($list);
-            } catch (\Throwable $e) {
+            } else {
                 $total = null;
             }
 

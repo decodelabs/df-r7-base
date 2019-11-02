@@ -46,7 +46,7 @@ class SassBridge implements ISassBridge
         $this->context = $context;
         $path = realpath($path);
 
-        if (!is_file($path)) {
+        if ($path === false || !is_file($path)) {
             throw Glitch::ENotFound([
                 'message' => 'Sass file not found',
                 'data' => $path
@@ -132,7 +132,11 @@ class SassBridge implements ISassBridge
             if (!is_file($manifestPath)) {
                 $this->compile();
             } else {
-                $files = json_decode(file_get_contents($manifestPath), true);
+                if (false === ($manifestData = file_get_contents($manifestPath))) {
+                    throw Glitch::ERuntime('Unable to read manifest data', null, $manifestPath);
+                }
+
+                $files = json_decode($manifestData, true);
 
                 foreach ($files as $file) {
                     if (!is_file($file) || $mtime < filemtime($file)) {
@@ -341,8 +345,11 @@ class SassBridge implements ISassBridge
             }
         }
 
+        $cssFilePath = $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css';
 
-        $content = file_get_contents($this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css');
+        if (false === ($content = file_get_contents($cssFilePath))) {
+            throw Glitch::ERuntime('Unable to read temp css file', null, $cssFilePath);
+        }
 
         // Replace map url
         $mapPath = $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css.map';
@@ -361,7 +368,9 @@ class SassBridge implements ISassBridge
 
         // Replace map file paths
         if ($mapExists && $envMode != 'production') {
-            $content = file_get_contents($mapPath);
+            if (false === ($content = file_get_contents($mapPath))) {
+                throw Glitch::ERuntime('Unable to read map file', null, $mapPath);
+            }
 
             $content = str_replace(
                 $this->_key.'.css',
@@ -470,7 +479,7 @@ class SassBridge implements ISassBridge
             }
 
             foreach ($urls as $match => $url) {
-                $sass = str_replace($match, 'url(\''.$url.'\')', $sass);
+                $sass = str_replace((string)$match, 'url(\''.$url.'\')', $sass);
             }
         }
 

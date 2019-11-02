@@ -96,10 +96,11 @@ abstract class Enum implements IStaticEnum, Inspectable
         return in_array($option, $options);
     }
 
-    public static function normalizeOption($option)
+    public static function normalizeOption(?string $option)
     {
-        $option = preg_replace('/([a-z])([A-Z])/u', '$1 $2', $option);
-        return lcfirst(str_replace(' ', '', ucwords(strtolower(str_replace(['_', '-'], ' ', $option)))));
+        $option = preg_replace('/([a-z])([A-Z])/u', '$1 $2', (string)$option);
+        $option = str_replace(['_', '-'], ' ', $option);
+        return lcfirst(str_replace(' ', '', ucwords(strtolower($option))));
     }
 
     public static function getLabels()
@@ -124,7 +125,7 @@ abstract class Enum implements IStaticEnum, Inspectable
             throw Glitch::EInvalidArgument('Invalid option: '.$option);
         }
 
-        return array_slice($options, 0, $key);
+        return array_slice($options, 0, (int)$key);
     }
 
     public static function getLte($option): array
@@ -136,7 +137,7 @@ abstract class Enum implements IStaticEnum, Inspectable
             throw Glitch::EInvalidArgument('Invalid option: '.$option);
         }
 
-        return array_slice($options, 0, $key + 1);
+        return array_slice($options, 0, (int)$key + 1);
     }
 
     public static function getGt($option): array
@@ -148,7 +149,7 @@ abstract class Enum implements IStaticEnum, Inspectable
             throw Glitch::EInvalidArgument('Invalid option: '.$option);
         }
 
-        return array_slice($options, $key + 1);
+        return array_slice($options, (int)$key + 1);
     }
 
     public static function getGte($option): array
@@ -160,7 +161,7 @@ abstract class Enum implements IStaticEnum, Inspectable
             throw Glitch::EInvalidArgument('Invalid option: '.$option);
         }
 
-        return array_slice($options, $key);
+        return array_slice($options, (int)$key);
     }
 
 

@@ -21,7 +21,8 @@ class TypeRef implements ITypeRef, \Serializable, Inspectable
     public static function __callStatic($method, array $args)
     {
         if (method_exists(__CLASS__, '__'.$method)) {
-            return call_user_func_array([__CLASS__, '__'.$method], $args);
+            $class = __CLASS__;
+            return $class::{'__'.$method}(...$args);
         }
 
         throw Glitch::EBadMethodCall(

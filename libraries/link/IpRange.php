@@ -118,7 +118,7 @@ class IpRange implements IStringProvider, Inspectable
 
             $this->start = Text::baseConvert($range, 10, 16, 32);
             $this->end = Text::baseConvert($range, 10, 2, 128);
-            $this->end = str_pad(substr($this->end, 0, $netmask), 128, '1', STR_PAD_RIGHT);
+            $this->end = str_pad(substr($this->end, 0, (int)$netmask), 128, '1', STR_PAD_RIGHT);
             $this->end = Text::baseConvert($this->end, 2, 16, 32);
         } else {
             if (false !== strpos($range, '*')) {

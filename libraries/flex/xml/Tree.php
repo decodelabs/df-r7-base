@@ -22,10 +22,10 @@ class Tree implements ITree, Inspectable
 
     protected $_element;
 
-    public static function normalizeString($string)
+    public static function normalizeString(string $string): string
     {
         $string = iconv('UTF-8', 'UTF-8//TRANSLIT', $string);
-        return preg_replace('/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u', '', $string);
+        return preg_replace('/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u', '', (string)$string);
     }
 
     public static function fromXmlFile($xmlFile)
@@ -251,6 +251,11 @@ class Tree implements ITree, Inspectable
         $output = $this->getInnerXml();
         $output = preg_replace('/  +/', ' ', $output);
         $output = str_replace(["\r", "\n\n", "\n "], ["\n", "\n", "\n"], $output);
+
+        if (is_array($output)) {
+            $output = implode('', $output);
+        }
+
         return trim($output);
     }
 

@@ -248,6 +248,10 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Inspectable
                     $this->_separator,
                     str_replace(['\\', '/'], $this->_separator, (string)$input)
                 );
+
+                if ($input === false) {
+                    throw Glitch::EUnexpectedValue('Unable to parse path info');
+                }
             } else {
                 $input = [];
             }

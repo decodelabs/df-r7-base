@@ -70,7 +70,7 @@ abstract class Base implements IArchive
 
     protected function _normalizeExtractDestination(string &$file, string $destination): string
     {
-        $file = str_replace(['/', '\\'], \DIRECTORY_SEPARATOR, realpath($file));
+        $file = str_replace(['/', '\\'], \DIRECTORY_SEPARATOR, (string)realpath($file));
 
         if (!is_file($file)) {
             throw Glitch::ENotFound(
@@ -88,7 +88,7 @@ abstract class Base implements IArchive
 
     protected function _normalizeDecompressDestination(string &$file, ?string $destFile, string $extension): string
     {
-        $file = str_replace(['/', '\\'], \DIRECTORY_SEPARATOR, realpath($file));
+        $file = str_replace(['/', '\\'], \DIRECTORY_SEPARATOR, (string)realpath($file));
 
         if ($destFile !== null) {
             $destFile = str_replace('\\', '/', $destFile);

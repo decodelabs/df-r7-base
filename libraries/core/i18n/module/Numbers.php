@@ -148,7 +148,7 @@ class Numbers extends Base implements core\i18n\module\INumbersModule
                     } else {
                         $pos = strpos($part, '≤');
                         $t = strlen('≤')-1;
-                        $a = substr($part, 0, $pos);
+                        $a = substr($part, 0, (int)$pos);
                         $s = substr($part, $pos + $t + 1);
 
                         if ($amount == $a) {

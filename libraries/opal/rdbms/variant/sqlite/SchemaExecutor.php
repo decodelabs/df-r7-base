@@ -90,7 +90,9 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
             $schema->isTemporary(true);
         }
 
-        $defs = preg_split('/,[^0-9]/', $defSql);
+        if (false === ($defs = preg_split('/,[^0-9]/', $defSql))) {
+            throw Glitch::ERuntime('Unable to parse table def', null, $defSql);
+        }
 
         foreach ($defs as $def) {
             if (preg_match('/^[`"]?([^"`]+)[`"]? ([a-zA-Z]+)( )?(\((.*)\))?/i', $def, $matches)) {

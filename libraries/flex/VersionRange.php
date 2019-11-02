@@ -28,9 +28,9 @@ class VersionRange implements core\IStringProvider, Inspectable
         return new self($range);
     }
 
-    public function __construct($range)
+    public function __construct(string $range=null)
     {
-        $range = preg_replace('/\s+/', ' ', $range);
+        $range = (string)preg_replace('/\s+/', ' ', (string)$range);
         $range = str_replace(['*', 'X'], 'x', $range);
         $parts = explode(' ', $range);
         $group = [];

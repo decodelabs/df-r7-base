@@ -34,8 +34,8 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     {
         if (!self::$_init) {
             // If you're on apache, it sometimes hides some env variables = v. annoying
-            if (function_exists('apache_request_headers')) {
-                foreach (apache_request_headers() as $key => $value) {
+            if (function_exists('apache_request_headers') && false !== ($apache = apache_request_headers())) {
+                foreach ($apache as $key => $value) {
                     $_SERVER['HTTP_'.strtoupper(str_replace('-', '_', $key))] = $value;
                 }
             }
@@ -233,7 +233,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             return;
         }
 
-        $current = link\Ip::factory(gethostbyname(gethostname()));
+        $current = link\Ip::factory(gethostbyname((string)gethostname()));
 
         if ($current->toString() == $ip->toString()) {
             $augmentor->setHeaderForAnyRequest('x-allow-ip-range', 'loopback');
@@ -544,8 +544,13 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     protected function _normalizeResponse($response)
     {
         // Callback
-        if ($response instanceof \Closure
-        || $response instanceof core\lang\ICallback) {
+        if (
+            is_callable($response) &&
+            (
+                $response instanceof \Closure ||
+                $response instanceof core\lang\ICallback
+            )
+        ) {
             $response = $response();
         }
 

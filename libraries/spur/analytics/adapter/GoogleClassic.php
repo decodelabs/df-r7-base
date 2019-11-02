@@ -10,6 +10,8 @@ use df\core;
 use df\spur;
 use df\aura;
 
+use DecodeLabs\Glitch;
+
 class GoogleClassic extends Base implements spur\analytics\ILegacyAdapter
 {
     protected $_options = [
@@ -68,7 +70,12 @@ class GoogleClassic extends Base implements spur\analytics\ILegacyAdapter
     protected function _createCallString($method, array $args=[])
     {
         array_unshift($args, $method);
-        return '_gaq.push('.str_replace('"', '\'', json_encode($args)).');';
+
+        if (false === ($json = json_encode($args))) {
+            throw Glitch::ERuntime('Unable to encode json', null, $args);
+        }
+
+        return '_gaq.push('.str_replace('"', '\'', $json).');';
     }
 
     public function setTrackingId($id)

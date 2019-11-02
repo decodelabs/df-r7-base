@@ -61,7 +61,9 @@ class Counter implements flex\code\IProbe, core\lang\IAcceptTypeProcessor, \Arra
         $lines = 0;
 
         if (in_array($ext, self::TEXT_TYPES)) {
-            $fp = fopen($path, 'r');
+            if (false === ($fp = fopen($path, 'r'))) {
+                throw Glitch::ERuntime('Unable to open probe target', null, $path);
+            }
 
             while (fgets($fp)) {
                 $lines++;

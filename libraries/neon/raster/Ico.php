@@ -40,7 +40,10 @@ class Ico implements IIcoGenerator
             );
         }
 
-        $image = imageCreateFromString($file->getContents());
+        if (false === ($image = imageCreateFromString($file->getContents()))) {
+            throw Glitch::ERuntime('Unable to create image from string');
+        }
+
         $sourceWidth = imagesx($image);
         $sourceHeight = imagesy($image);
 
@@ -49,7 +52,10 @@ class Ico implements IIcoGenerator
         }
 
         foreach ($sizes as $size) {
-            $newImage = imageCreateTrueColor($size, $size);
+            if (false === ($newImage = imageCreateTrueColor($size, $size))) {
+                throw Glitch::ERuntime('Unable to create true color image');
+            }
+
             imageColorTransparent($newImage, imageColorAllocateAlpha($newImage, 0, 0, 0, 127));
             imageAlphaBlending($newImage, false);
             imageSaveAlpha($newImage, true);

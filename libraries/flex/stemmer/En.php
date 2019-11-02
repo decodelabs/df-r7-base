@@ -9,26 +9,28 @@ use df;
 use df\core;
 use df\flex;
 
-class En extends Base {
-
+class En extends Base
+{
     const CONSONANTS = '(?:[bcdfghjklmnpqrstvwxz]|(?<=[aeiou])y|^y)';
     const VOWELS = '(?:[aeiou]|(?<![aeiou])y)';
 
-    public function stem($phrase, $natural=false) {
+    public function stem($phrase, $natural=false)
+    {
         return $this->split($phrase, $natural);
     }
 
-    public function split($phrase, $natural=false) {
+    public function split($phrase, $natural=false)
+    {
         $phrase = preg_replace('/[&][a-z]+[;]/', '', strtolower($phrase));
         $phrase = str_replace(['-', '_'], ' ', $phrase);
         $phrase = str_replace(['.', '\''], '', $phrase);
 
         $words = str_word_count(strip_tags($phrase), 1);
-        $temp = array_values($words);
+        $temp = array_values((array)$words);
         $words = [];
 
-        foreach($temp as $key => $word) {
-            if(!($word = $this->stemWord($word, $natural))) {
+        foreach ($temp as $key => $word) {
+            if (!($word = $this->stemWord($word, $natural))) {
                 continue;
             }
 
@@ -39,8 +41,9 @@ class En extends Base {
     }
 
 
-    public function stemWord($word, $natural=false) {
-        if(strlen($word) <= 4) {
+    public function stemWord($word, $natural=false)
+    {
+        if (strlen($word) <= 4) {
             return $word;
         }
 
@@ -55,32 +58,33 @@ class En extends Base {
         return $word;
     }
 
-    protected static function _step1($word, $natural) {
+    protected static function _step1($word, $natural)
+    {
         $v = self::VOWELS;
 
-        if(substr($word, -1) == 's') {
+        if (substr($word, -1) == 's') {
             self::_replace($word, 'sses', 'ss') ||
             self::_replace($word, 'ies', 'i');//   ||
             //self::_replace($word, 'ss', 'ss');
 
-            if(strlen($word) > 4 || preg_match("#$v+#", substr($word, 0, 1))) {
+            if (strlen($word) > 4 || preg_match("#$v+#", substr($word, 0, 1))) {
                 self::_replace($word, 's', '');
             }
         }
 
-        if(substr($word, -2, 1) != 'e' || !self::_replace($word, 'eed', 'ee', 0)) {
-            if(preg_match("#$v+#", substr($word, 0, -3)) && self::_replace($word, 'ing', '')
+        if (substr($word, -2, 1) != 'e' || !self::_replace($word, 'eed', 'ee', 0)) {
+            if (preg_match("#$v+#", substr($word, 0, -3)) && self::_replace($word, 'ing', '')
             || preg_match("#$v+#", substr($word, 0, -2)) && self::_replace($word, 'ed', '')) {
-                if(!self::_replace($word, 'at', 'ate')
+                if (!self::_replace($word, 'at', 'ate')
                 && !self::_replace($word, 'bl', 'ble')
                 && !self::_replace($word, 'iz', 'ize')
                 && !self::_replace($word, 'is', 'ise')) {
-                    if(self::_doubleConsonant($word)
+                    if (self::_doubleConsonant($word)
                     && substr($word, -2) != 'll'
                     && substr($word, -2) != 'ss'
                     && substr($word, -2) != 'zz') {
                         $word = substr($word, 0, -1);
-                    } else if(self::_measure($word) == 1 && self::_cvc($word)) {
+                    } elseif (self::_measure($word) == 1 && self::_cvc($word)) {
                         $word .= 'e';
                     }
                 }
@@ -88,14 +92,15 @@ class En extends Base {
         }
 
         //if(strlen($word) > 4 && substr($word, -1) == 'y' && preg_match("#$v+#", substr($word, 0, -1))) {
-            //self::_replace($word, 'y', 'i');
+        //self::_replace($word, 'y', 'i');
         //}
 
         return $word;
     }
 
-    protected static function _step2($word, $natural) {
-        switch(substr($word, -2, 1)) {
+    protected static function _step2($word, $natural)
+    {
+        switch (substr($word, -2, 1)) {
             case 'a':
                 self::_replace($word, 'ational', 'ate', 0, !$natural)
                 || self::_replace($word, 'tional', 'tion', 0);
@@ -153,8 +158,9 @@ class En extends Base {
         return $word;
     }
 
-    protected static function _step3($word, $natural) {
-        switch(substr($word, -2, 1)) {
+    protected static function _step3($word, $natural)
+    {
+        switch (substr($word, -2, 1)) {
             case 'a':
                 self::_replace($word, 'ical', 'ic', 0)
                 || self::_replace($word, 'cial', 'ce', null, !$natural)
@@ -186,11 +192,12 @@ class En extends Base {
         return $word;
     }
 
-    protected static function _step4($word, $natural) {
-        switch(substr($word, -2, 1)) {
+    protected static function _step4($word, $natural)
+    {
+        switch (substr($word, -2, 1)) {
             case 'a':
                 $v = self::VOWELS;
-                if(!preg_match("#$v+#", substr($word, 0, -3))) {
+                if (!preg_match("#$v+#", substr($word, 0, -3))) {
                     self::_replace($word, 'al', '', 1);
                 }
                 break;
@@ -221,7 +228,7 @@ class En extends Base {
                 break;
 
             case 'o':
-                if(substr($word, -4) == 'tion' || substr($word, -4) == 'sion') {
+                if (substr($word, -4) == 'tion' || substr($word, -4) == 'sion') {
                     self::_replace($word, 'ion', '', 1);
                 } else {
                     self::_replace($word, 'ou', '', 1);
@@ -253,9 +260,10 @@ class En extends Base {
         return $word;
     }
 
-    protected static function _step5($word, $natural) {
-        if(substr($word, -1) == 'e') {
-            if(self::_doubleConsonant(substr($word, 0, -1))
+    protected static function _step5($word, $natural)
+    {
+        if (substr($word, -1) == 'e') {
+            if (self::_doubleConsonant(substr($word, 0, -1))
             || substr($word, -2, 1) == 'y') {
                 self::_replace($word, 'e', '');
             }
@@ -269,24 +277,25 @@ class En extends Base {
             //}
         }
 
-        if(self::_measure($word) > 1 && self::_doubleConsonant($word) && substr($word, -1) == 'l') {
+        if (self::_measure($word) > 1 && self::_doubleConsonant($word) && substr($word, -1) == 'l') {
             $word = substr($word, 0, -1);
         }
 
         return $word;
     }
 
-    protected static function _replace(&$str, $check, $repl, $m=null, $natural=null) {
-        if($natural === false) {
+    protected static function _replace(&$str, $check, $repl, $m=null, $natural=null)
+    {
+        if ($natural === false) {
             return false;
         }
 
         $len = 0 - strlen($check);
 
-        if(substr($str, $len) == $check) {
+        if (substr($str, $len) == $check) {
             $substr = substr($str, 0, $len);
 
-            if(is_null($m) || self::_measure($substr) > $m) {
+            if (is_null($m) || self::_measure($substr) > $m) {
                 $str = $substr.$repl;
             }
 
@@ -296,24 +305,27 @@ class En extends Base {
         return false;
     }
 
-    protected static function _measure($str) {
+    protected static function _measure(string $str)
+    {
         $c = self::CONSONANTS;
         $v = self::VOWELS;
 
-        $str = preg_replace("#^$c+#", '', $str);
-        $str = preg_replace("#$v+$#", '', $str);
+        $str = (string)preg_replace("#^$c+#", '', $str);
+        $str = (string)preg_replace("#$v+$#", '', $str);
 
         preg_match_all("#($v+$c+)#", $str, $matches);
 
         return count($matches[1]);
     }
 
-    protected static function _doubleConsonant($str) {
+    protected static function _doubleConsonant($str)
+    {
         $c = self::CONSONANTS;
         return preg_match("#$c{2}$#", $str, $matches) && $matches[0]{0} == $matches[0]{1};
     }
 
-    protected static function _cvc($str) {
+    protected static function _cvc($str)
+    {
         $c = self::CONSONANTS;
         $v = self::VOWELS;
 

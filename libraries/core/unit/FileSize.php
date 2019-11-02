@@ -217,7 +217,7 @@ class FileSize implements IFileSize, Inspectable
             $value /= 8;
         }
 
-        $key = array_search($unit, self::UNITS);
+        $key = (int)array_search($unit, self::UNITS);
 
         while ($value > 1024 && isset(self::UNITS[$key + 1])) {
             $unit = self::UNITS[++$key];

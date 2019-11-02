@@ -301,7 +301,7 @@ class StackCall implements IStackCall, Inspectable
 
     public function toJson(): string
     {
-        return json_encode($this->toJsonArray());
+        return (string)json_encode($this->toJsonArray());
     }
 
 

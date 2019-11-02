@@ -232,8 +232,8 @@ class Base implements ISchema, Inspectable
             );
         }
 
-        if (!$unit instanceof axis\IUnit) {
-            throw Glitch::ELogic('Schema context is not a unit', null, $unit);
+        if (!$unit instanceof axis\ISchemaBasedStorageUnit) {
+            throw Glitch::ELogic('Schema context is not a storage unit', null, $unit);
         }
 
         $output = new self($unit, $unit->getUnitName());

@@ -79,7 +79,7 @@ class Argument implements IArgument, Inspectable
 
     public function isOptionCluster(): bool
     {
-        return preg_match('/^-[a-zA-Z0-9]{2,}/', $this->_option);
+        return (bool)preg_match('/^-[a-zA-Z0-9]{2,}/', $this->_option);
     }
 
     public function getClusterOptions(): array

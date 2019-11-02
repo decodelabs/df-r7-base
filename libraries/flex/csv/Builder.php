@@ -196,7 +196,7 @@ class Builder implements IBuilder
         foreach ($data as $value) {
             if (is_array($value)) {
                 $value = implode(',', $value);
-            } elseif (!is_scalar($value)) {
+            } else {
                 $value = (string)$value;
             }
 

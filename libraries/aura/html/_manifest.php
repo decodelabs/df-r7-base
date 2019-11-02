@@ -195,8 +195,7 @@ trait TElementContent
             $stringValue = (string)$this->_renderChild($value);
             $isBlock = false;
 
-            if ($value instanceof aura\html\widget\IWidget
-            || $value instanceof aura\html\widget\IWidgetProxy) {
+            if ($value instanceof aura\html\widget\IWidget) {
                 $isBlock = $value->isTagBlock();
                 $stringValue = trim($stringValue);
             } elseif ($value instanceof ITag || $value instanceof TagInterface) {

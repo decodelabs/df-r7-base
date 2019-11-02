@@ -98,7 +98,11 @@ class Reader implements IReader
 
     protected function _findAddressInTree(link\Ip $ip)
     {
-        $rawAddress = array_merge(unpack('C*', inet_pton($ip->toString())));
+        if (false === ($packed = inet_pton($ip->toString()))) {
+            throw Glitch::ERuntime('Unable to pack IP string', null, $ip);
+        }
+
+        $rawAddress = array_merge(unpack('C*', $packed));
         $bitCount = count($rawAddress) * 8;
 
         $node = $this->_startNode($bitCount);

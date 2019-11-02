@@ -120,7 +120,7 @@ trait TSchema
 
     public function toJson(): string
     {
-        return json_encode($this->toStorageArray());
+        return (string)json_encode($this->toStorageArray());
     }
 
     protected function _setGenericStorageArray(array $data)

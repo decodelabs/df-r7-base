@@ -1,12 +1,12 @@
 parameters:
+    level: 6
+    bootstrap: %rootDir%/../../../../base/tests/bootstrap.php
+    inferPrivatePropertyTypeFromConstructor: true
+
     excludes_analyse:
         - */_templates/*.html.php
         - */_templates/*.xml.php
         - */_templates/*.mail.php
-
-    bootstrap: %rootDir%/../../../../base/tests/bootstrap.php
-    level: 5
-    inferPrivatePropertyTypeFromConstructor: true
 
     universalObjectCratesClasses:
         - df\arch\scaffold\IScaffold

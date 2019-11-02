@@ -432,7 +432,7 @@ class Text implements IText, \IteratorAggregate, Inspectable
         return preg_replace_callback(
             "/\\\([0-9A-Fa-f]{2})/",
             function ($matches) {
-                return chr(hexdec($matches[0]));
+                return chr((int)hexdec($matches[0]));
             },
             $string
         );
@@ -556,21 +556,21 @@ class Text implements IText, \IteratorAggregate, Inspectable
 
     public function translitToAscii()
     {
-        $this->_value = str_replace(['À','Á','Â','Ã','Ä','Å'], 'A', $this->_value);
-        $this->_value = str_replace(['È','É','Ê','Ë'], 'E', $this->_value);
-        $this->_value = str_replace(['Ì','Í','Î','Ï'], 'I', $this->_value);
-        $this->_value = str_replace(['Ò','Ó','Ô','Õ','Ö','Ø'], 'O', $this->_value);
-        $this->_value = str_replace(['Ù','Ú','Û','Ü'], 'U', $this->_value);
-        $this->_value = str_replace(['¥','Ý'], 'Y', $this->_value);
+        $this->_value = (string)str_replace(['À','Á','Â','Ã','Ä','Å'], 'A', (string)$this->_value);
+        $this->_value = (string)str_replace(['È','É','Ê','Ë'], 'E', $this->_value);
+        $this->_value = (string)str_replace(['Ì','Í','Î','Ï'], 'I', $this->_value);
+        $this->_value = (string)str_replace(['Ò','Ó','Ô','Õ','Ö','Ø'], 'O', $this->_value);
+        $this->_value = (string)str_replace(['Ù','Ú','Û','Ü'], 'U', $this->_value);
+        $this->_value = (string)str_replace(['¥','Ý'], 'Y', $this->_value);
 
-        $this->_value = str_replace(['à','á','â','ã','ä','å'], 'a', $this->_value);
-        $this->_value = str_replace(['è','é','ê','ë'], 'e', $this->_value);
-        $this->_value = str_replace(['ì','í','î','ï'], 'i', $this->_value);
-        $this->_value = str_replace(['ð','ò','ó','ô','õ','ö','ø'], 'o', $this->_value);
-        $this->_value = str_replace(['µ','ù','ú','û','ü'], 'u', $this->_value);
-        $this->_value = str_replace(['ý','ÿ'], 'y', $this->_value);
+        $this->_value = (string)str_replace(['à','á','â','ã','ä','å'], 'a', $this->_value);
+        $this->_value = (string)str_replace(['è','é','ê','ë'], 'e', $this->_value);
+        $this->_value = (string)str_replace(['ì','í','î','ï'], 'i', $this->_value);
+        $this->_value = (string)str_replace(['ð','ò','ó','ô','õ','ö','ø'], 'o', $this->_value);
+        $this->_value = (string)str_replace(['µ','ù','ú','û','ü'], 'u', $this->_value);
+        $this->_value = (string)str_replace(['ý','ÿ'], 'y', $this->_value);
 
-        $this->_value = str_replace(
+        $this->_value = (string)str_replace(
             ['Æ', 'æ', 'ß', 'Ç','ç','Ð','Ñ','ñ'],
             ['AE','ae','ss','C','c','D','N','n'],
             $this->_value
@@ -754,7 +754,7 @@ class Text implements IText, \IteratorAggregate, Inspectable
     public function firstToUpper()
     {
         $this->_value = mb_strtoupper(mb_substr($this->_value, 0, 1, $this->_encoding)).
-            mb_substr($this->_value, 1, mb_strlen($this->_value, $this->_encoding), $this->_encoding);
+            mb_substr($this->_value, 1, (int)mb_strlen($this->_value, $this->_encoding), $this->_encoding);
         return $this;
     }
 
@@ -773,7 +773,7 @@ class Text implements IText, \IteratorAggregate, Inspectable
     public function firstToLower()
     {
         $this->_value = mb_strtolower(mb_substr($this->_value, 0, 1, $this->_encoding)).
-            mb_substr($this->_value, 1, mb_strlen($this->_value, $this->_encoding), $this->_encoding);
+            mb_substr($this->_value, 1, (int)mb_strlen($this->_value, $this->_encoding), $this->_encoding);
         return $this;
     }
 
@@ -819,12 +819,20 @@ class Text implements IText, \IteratorAggregate, Inspectable
 
     public function split(string $delimiter): array
     {
-        return explode($delimiter, $this->_value);
+        if (false === ($output = explode($delimiter, $this->_value))) {
+            throw Glitch::EUnexpectedValue('Unable to split text', null, $this);
+        }
+
+        return $output;
     }
 
     public function regexSplit(string $pattern, int $limit=-1, int $flags=0): array
     {
-        return preg_split($pattern, $this->_value, $limit, $flags);
+        if (false === ($output = preg_split($pattern, $this->_value, $limit, $flags))) {
+            throw Glitch::EUnexpectedValue('Unable to split text', null, $this);
+        }
+
+        return $output;
     }
 
 
@@ -871,7 +879,11 @@ class Text implements IText, \IteratorAggregate, Inspectable
 
     public function toArray(): array
     {
-        return preg_split('/(?<!^)(?!$)/u', $this->_value);
+        if (false === ($output = preg_split('/(?<!^)(?!$)/u', $this->_value))) {
+            throw Glitch::EUnexpectedValue('Unable to split text', null, $this);
+        }
+
+        return $output;
     }
 
     public function isEmpty(): bool
@@ -1072,7 +1084,7 @@ class Text implements IText, \IteratorAggregate, Inspectable
     public function shift()
     {
         $output = mb_substr($this->_value, 0, 1, $this->_encoding);
-        $this->_value = mb_substr($this->_value, 1, mb_strlen($this->_value, $this->_encoding), $this->_encoding);
+        $this->_value = mb_substr($this->_value, 1, (int)mb_strlen($this->_value, $this->_encoding), $this->_encoding);
         return $output;
     }
 
@@ -1089,12 +1101,22 @@ class Text implements IText, \IteratorAggregate, Inspectable
         $this->_value = mb_substr($this->_value, 0, $offset, $this->_encoding).
             ($length !== null ? mb_substr($this->_value, $length) : null);
 
-        return preg_split('/(?<!^)(?!$)/u', $output);
+        if (false === ($output = preg_split('/(?<!^)(?!$)/u', $output))) {
+            throw Glitch::EUnexpectedValue('Unable to split text', null, $this);
+        }
+
+        return $output;
     }
 
     public function getSlice(int $offset, int $length=null): array
     {
-        return preg_split('/(?<!^)(?!$)/u', mb_substr($this->_value, $offset, $length, $this->_encoding));
+        $value = mb_substr($this->_value, $offset, $length, $this->_encoding);
+
+        if (false === ($output = preg_split('/(?<!^)(?!$)/u', $value))) {
+            throw Glitch::EUnexpectedValue('Unable to split text', null, $this);
+        }
+
+        return $output;
     }
 
     public function removeSlice(int $offset, int $length=null)

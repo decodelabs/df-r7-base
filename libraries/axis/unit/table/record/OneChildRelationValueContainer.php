@@ -86,8 +86,11 @@ class OneChildRelationValueContainer implements
             return false;
         }
 
-        if ($value instanceof self
-        || $value instanceof opal\record\IRecord) {
+        if ($value instanceof self) {
+            $value = $value->getValue();
+        }
+
+        if ($value instanceof opal\record\IPrimaryKeySetProvider) {
             $value = $value->getPrimaryKeySet();
         } elseif (!$value instanceof opal\record\IPrimaryKeySet) {
             return false;

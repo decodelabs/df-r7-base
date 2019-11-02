@@ -204,7 +204,7 @@ class Package
     {
         if ($path === null) {
             $ref = new \ReflectionObject($this);
-            $path = dirname($ref->getFileName());
+            $path = dirname((string)$ref->getFileName());
         }
 
         if (df\Launchpad::$isCompiled) {

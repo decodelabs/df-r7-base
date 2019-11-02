@@ -10,6 +10,8 @@ use df\core;
 use df\spur;
 use df\aura;
 
+use DecodeLabs\Glitch;
+
 class Woopra extends Base
 {
     protected $_defaultUserAttributes = [];
@@ -68,7 +70,11 @@ class Woopra extends Base
 
     protected function _encodeString($string)
     {
-        return str_replace('\\/', '/', json_encode($string));
+        if (false === ($json = json_encode($string))) {
+            throw Glitch::ERuntime('Unable to encode json', null, $string);
+        }
+
+        return str_replace('\\/', '/', $json);
     }
 
     protected function _getTrackArgs($handler)

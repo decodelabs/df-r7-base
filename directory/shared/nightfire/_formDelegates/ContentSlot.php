@@ -381,7 +381,7 @@ class ContentSlot extends arch\node\form\Delegate implements
             $delegateId = 'block-1';
         } else {
             krsort($delegateId, \SORT_NATURAL);
-            $delegateId = array_keys($delegateId)[0];
+            $delegateId = (string)array_keys($delegateId)[0];
 
             $parts = explode('-', $delegateId, 2);
             $key = array_pop($parts);

@@ -98,7 +98,7 @@ class Currency extends NumberTextbox
         $number = $value->getValue();
 
         if ($number !== null && is_numeric($number)) {
-            $number = number_format((float)str_replace(',', '', $number), 2, '.', '');
+            $number = number_format((float)str_replace(',', '', (string)$number), 2, '.', '');
             $number = str_replace('.00', '', $number);
         }
 

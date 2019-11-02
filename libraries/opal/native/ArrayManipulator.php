@@ -820,7 +820,7 @@ class ArrayManipulator implements IArrayManipulator
 
         foreach ($attachments as $attachKey => $attachment) {
             $this->_outputManifest->addOutputField(
-                $attachmentQueryField = new opal\query\field\Attachment($attachKey, $attachment)
+                $attachmentQueryField = new opal\query\field\Attachment((string)$attachKey, $attachment)
             );
 
             $source = $attachment->getSource();
@@ -1027,7 +1027,7 @@ class ArrayManipulator implements IArrayManipulator
 
 
         foreach ($combines as $name => $combine) {
-            $this->_outputManifest->addOutputField(new opal\query\field\Combine($name, $combine));
+            $this->_outputManifest->addOutputField(new opal\query\field\Combine((string)$name, $combine));
         }
 
         return $this;

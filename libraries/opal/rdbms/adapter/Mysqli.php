@@ -45,6 +45,8 @@ class Mysqli extends opal\rdbms\adapter\Base
         if ($num = mysqli_connect_errno()) {
             $this->_closeConnection();
             throw opal\rdbms\variant\mysql\Server::getConnectionException($this, $num, mysqli_connect_error());
+        } elseif (!$connection) {
+            throw opal\rdbms\variant\mysql\Server::getConnectionException($this, 0, 'Unable to connect');
         }
 
         $this->_connection = $connection;
@@ -213,7 +215,7 @@ class Mysqli extends opal\rdbms\adapter\Base
             $id = null;
             $result = mysqli_query($this->_connection, 'SELECT LAST_INSERT_ID()');
 
-            if ($result) {
+            if ($result instanceof \mysqli_result) {
                 $row = mysqli_fetch_row($result);
 
                 if (isset($row[0])) {

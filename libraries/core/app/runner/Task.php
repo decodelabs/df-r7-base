@@ -154,8 +154,13 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
     protected function _handleResponse($response)
     {
         // Callback
-        if ($response instanceof \Closure
-        || $response instanceof core\lang\ICallback) {
+        if (
+            is_callable($response) &&
+            (
+                $response instanceof \Closure ||
+                $response instanceof core\lang\ICallback
+            )
+        ) {
             $response = $response();
         }
 

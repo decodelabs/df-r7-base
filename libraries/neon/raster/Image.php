@@ -307,7 +307,7 @@ class Image implements IImage
             $y = 0;
         }
 
-        return $this->crop($x, $y, $width, $height);
+        return $this->crop((int)$x, (int)$y, $width, $height);
     }
 
     public function frame(?int $width, int $height=null, $color=null)

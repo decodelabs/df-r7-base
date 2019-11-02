@@ -110,7 +110,7 @@ class StackTrace implements IStackTrace, Inspectable
 
     public function toJson(): string
     {
-        return json_encode($this->toJsonArray());
+        return (string)json_encode($this->toJsonArray());
     }
 
     public function getCalls(): array

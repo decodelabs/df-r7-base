@@ -197,7 +197,7 @@ trait TPaginator
             }
         }
 
-        return $output;
+        return (int)$output;
     }
 
     public function getKeyMap(): array
@@ -219,7 +219,7 @@ trait TPaginator
         if (!$this->_limit) {
             return 1;
         } else {
-            return ceil($total / $this->getLimit());
+            return (int)ceil($total / $this->getLimit());
         }
     }
 

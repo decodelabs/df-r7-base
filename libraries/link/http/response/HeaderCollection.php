@@ -157,7 +157,10 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         $output->setStatusMessage($matches[4] ?? self::statusCodeToMessage($matches[2]));
 
         foreach ($lines as $line) {
-            $output->add(trim(strtok(trim($line), ':')), trim(strtok('')));
+            $output->add(trim(
+                (string)strtok(trim($line), ':')),
+                trim((string)strtok('')
+            ));
         }
 
         return $output;

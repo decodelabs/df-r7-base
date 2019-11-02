@@ -36,8 +36,13 @@ class Bz2 extends Base
     {
         $destFile = $this->_normalizeDecompressDestination($file, $destFile, 'bz2');
 
-        $output = fopen($destFile, 'w');
-        $archive = bzopen($file, 'r');
+        if (false === ($output = fopen($destFile, 'w'))) {
+            throw Glitch::ERuntime('Unable to open destination file for writing', null, $destFile);
+        }
+
+        if (false === ($archive = bzopen($file, 'r'))) {
+            throw Glitch::ERuntime('Unable to open bz2 file for reading', null, $file);
+        }
 
         while (!feof($archive)) {
             fwrite($output, bzread($archive, 4096));

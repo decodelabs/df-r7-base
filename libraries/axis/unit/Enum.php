@@ -102,7 +102,7 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
             throw Glitch::EInvalidArgument('Invalid option: '.$option);
         }
 
-        return array_slice($options, 0, $key);
+        return array_slice($options, 0, (int)$key);
     }
 
     public function getLte($option): array
@@ -114,7 +114,7 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
             throw Glitch::EInvalidArgument('Invalid option: '.$option);
         }
 
-        return array_slice($options, 0, $key + 1);
+        return array_slice($options, 0, (int)$key + 1);
     }
 
     public function getGt($option): array
@@ -126,7 +126,7 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
             throw Glitch::EInvalidArgument('Invalid option: '.$option);
         }
 
-        return array_slice($options, $key + 1);
+        return array_slice($options, (int)$key + 1);
     }
 
     public function getGte($option): array
@@ -138,7 +138,7 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
             throw Glitch::EInvalidArgument('Invalid option: '.$option);
         }
 
-        return array_slice($options, $key);
+        return array_slice($options, (int)$key);
     }
 }
 

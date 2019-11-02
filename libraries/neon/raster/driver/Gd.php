@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\neon;
 
+use DecodeLabs\Glitch;
+
 class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\raster\IImageFilterDriver
 {
     const READ_FORMATS = [
@@ -69,7 +71,11 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
                     break;
 
                 default:
-                    $this->_pointer = imageCreateFromString(file_get_contents($file));
+                    if (false === ($data = file_get_contents($file))) {
+                        throw Glitch::ERuntime('Unable to load file contents', null, $file);
+                    }
+
+                    $this->_pointer = imageCreateFromString($data);
                     $this->_outputFormat = 'PNG';
                     break;
             }
@@ -112,7 +118,11 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
             $color = new neon\Color(0, 0, 0, 0);
         }
 
-        $this->_pointer = imageCreateTrueColor($width, $height);
+        if (false === ($pointer = imageCreateTrueColor($width, $height))) {
+            throw Glitch::ERuntime('Unable to create true color image');
+        }
+
+        $this->_pointer = $pointer;
         $this->_width = $width;
         $this->_height = $height;
 
@@ -175,7 +185,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
             throw $e;
         }
 
-        return ob_get_clean();
+        return (string)ob_get_clean();
     }
 
 
@@ -183,7 +193,10 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
     // Manipulations
     public function resize(int $width, int $height)
     {
-        $img = imageCreateTrueColor($width, $height);
+        if (false === ($img = imageCreateTrueColor($width, $height))) {
+            throw Glitch::ERuntime('Unable to create true color image');
+        }
+
         $background = imageColorAllocateAlpha($img, 255, 255, 255, 127);
         imageColorTransparent($img, $background);
 
@@ -203,7 +216,10 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
 
     public function crop(int $x, int $y, int $width, int $height)
     {
-        $img = imageCreateTrueColor($width, $height);
+        if (false === ($img = imageCreateTrueColor($width, $height))) {
+            throw Glitch::ERuntime('Unable to create true color image');
+        }
+
         $background = imageColorAllocateAlpha($img, 255, 255, 255, 127);
         imageColorTransparent($img, $background);
 
@@ -252,7 +268,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         }
 
         if (false === ($pointer = imageRotate($this->_pointer, $angle->getDegrees() * -1, $background))) {
-            return $this;
+            throw Glitch::ERuntime('Unable to rotate image');
         }
 
         imageDestroy($this->_pointer);
@@ -265,13 +281,16 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
 
     public function mirror()
     {
-        $tmp = imageCreateTrueColor($this->_width, $this->_height);
+        if (false === ($tmp = imageCreateTrueColor($this->_width, $this->_height))) {
+            throw Glitch::ERuntime('Unable to create true color image');
+        }
+
         imageAlphaBlending($tmp, true);
 
         for ($x = 0; $x < $this->_width; $x++) {
             imageCopy(
                 $tmp, $this->_pointer, $x, 0,
-                $this->_width - $x - 1, 0,
+                (int)($this->_width - $x - 1), 0,
                 1, $this->_height
             );
         }
@@ -285,13 +304,16 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
 
     public function flip()
     {
-        $tmp = imageCreateTrueColor($this->_width, $this->_height);
+        if (false === ($tmp = imageCreateTrueColor($this->_width, $this->_height))) {
+            throw Glitch::ERuntime('Unable to create true color image');
+        }
+
         imageAlphaBlending($tmp, true);
 
         for ($y = 0; $y < $this->_height; $y++) {
             imageCopy(
                 $tmp, $this->_pointer, 0, $y,
-                0, $this->_height - $y - 1,
+                0, (int)($this->_height - $y - 1),
                 $this->_width, 1
             );
         }

@@ -8,6 +8,7 @@ namespace df\core\collection;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -28,10 +29,13 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Inspectable
 
     protected $_value;
 
-    public static function fromArrayDelimitedString($string, $setDelimiter='&', $valueDelimiter='=')
+    public static function fromArrayDelimitedString(?string $string, $setDelimiter='&', $valueDelimiter='=')
     {
         $output = new self();
-        $parts = explode($setDelimiter, $string);
+
+        if (false === ($parts = explode($setDelimiter, (string)$string))) {
+            throw Glitch::EUnexpectedValue('Unable to parse array delimited string', null, $string);
+        }
 
         foreach ($parts as $part) {
             $valueParts = explode($valueDelimiter, trim($part), 2);
@@ -176,6 +180,10 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Inspectable
                 $ref = new \ReflectionClass($childData['cl'] ?? $parentClass);
                 $child = $ref->newInstanceWithoutConstructor();
 
+                if (!$child instanceof self) {
+                    throw Glitch::ERuntime('Invalid tree child', null, $child);
+                }
+
                 if (!empty($childData)) {
                     $child->_setUnserializedValues($childData);
                 }
@@ -208,7 +216,9 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Inspectable
     public function getNestedChild($parts, $separator='.')
     {
         if (!is_array($parts)) {
-            $parts = explode($separator, $parts);
+            if (false === ($parts = explode($separator, (string)$parts))) {
+                throw Glitch::EUnexpectedValue('Unable to parse nested child key', null, $parts);
+            }
         }
 
         $node = $this;
@@ -219,7 +229,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Inspectable
                     $k = array_keys($node->_collection);
 
                     try {
-                        $part = max($k) + 1;
+                        $part = (int)max($k) + 1;
                     } catch (\Throwable $e) {
                         $part = array_pop($k);
                     }

@@ -301,7 +301,11 @@ abstract class Form extends Base implements IFormNode
 
         $classes = $this->request->getControllerParts();
         $classes[] = $this->request->getNode();
-        $this->content->addClasses(array_map([$this->format, 'slug'], $classes));
+
+        $this->content->addClasses(array_map(function ($value) {
+            return $this->format->slug($value);
+        }, $classes));
+        
         $this->content->addClass('form');
 
         if ($setContentProvider) {

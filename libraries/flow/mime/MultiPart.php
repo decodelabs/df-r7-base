@@ -45,6 +45,11 @@ class MultiPart implements IMultiPart, Inspectable
             $output = new $class($contentType, $headers);
             $boundary = $output->getBoundary();
             $parts = explode("\n".'--'.$boundary, "\n".trim($body));
+
+            if ($parts === false) {
+                throw Glitch::EUnexpectedValue('Unable to parse mime string', null, $body);
+            }
+
             array_shift($parts);
             array_pop($parts);
 

@@ -78,7 +78,7 @@ class Color implements IColor, Inspectable
             $a = trim(array_shift($args));
             $b = trim(array_shift($args));
             $c = trim(array_shift($args));
-            $alpha = $hasAlpha ? trim(array_shift($args)) : 1;
+            $alpha = $hasAlpha ? trim(array_shift($args)) : '1';
 
             switch ($mode) {
                 case IColor::RGB:

@@ -36,7 +36,7 @@ class Gz extends Base
     {
         $destFile = $this->_normalizeDecompressDestination($file, $destFile, 'gz');
 
-        if (!$archive = fopen($file, 'rb')) {
+        if (false === ($archive = fopen($file, 'rb'))) {
             throw Glitch::ENotFound(
                 'Unable to open gz file: '.$file
             );
@@ -44,13 +44,19 @@ class Gz extends Base
 
         fseek($archive, -4, \SEEK_END);
         $packet = fread($archive, 4);
-        $bytes = unpack('V', $packet);
+        $bytes = unpack('V', (string)$packet);
         $size = end($bytes);
         fclose($archive);
 
 
-        $output = fopen($destFile, 'w');
-        $archive = gzopen($file, 'r');
+        if (false === ($output = fopen($destFile, 'w'))) {
+            throw Glitch::ERuntime('Unable to open gz file for writing', null, $destFile);
+        }
+
+        if (false === ($archive = gzopen($file, 'r'))) {
+            throw Glitch::ERuntime('Unable to open gz file', null, $file);
+        }
+
         $block = 1024;
 
         while ($size > 0) {

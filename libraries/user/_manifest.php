@@ -89,8 +89,12 @@ trait TNameExtractor
 {
     public function getFirstName()
     {
-        $parts = preg_split('/\s+|\./', trim($this->getFullName()));
         static $titles = ['mr', 'mrs', 'miss', 'ms', 'mx', 'master', 'maid', 'madam', 'dr'];
+        $fullName = trim($this->getFullName());
+
+        if (false === ($parts = preg_split('/\s+|\./', $fullName))) {
+            $parts = explode(' ', $fullName);
+        }
 
         do {
             $output = array_shift($parts);

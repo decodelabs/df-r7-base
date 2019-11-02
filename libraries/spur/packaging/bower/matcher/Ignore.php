@@ -10,6 +10,10 @@ use df\core;
 
 use DecodeLabs\Atlas;
 
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
+use FilesystemIterator;
+
 class Ignore
 {
     protected $_path;
@@ -33,15 +37,15 @@ class Ignore
 
     public function match(array $patterns, array $blacklist=[]): iterable
     {
-        $it = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator(
+        $it = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(
                 $this->_path,
-                \FilesystemIterator::KEY_AS_PATHNAME |
-                \FilesystemIterator::CURRENT_AS_SELF |
-                \FilesystemIterator::SKIP_DOTS
+                FilesystemIterator::KEY_AS_PATHNAME |
+                FilesystemIterator::CURRENT_AS_SELF |
+                FilesystemIterator::SKIP_DOTS
             ),
-            \RecursiveIteratorIterator::SELF_FIRST |
-            \RecursiveIteratorIterator::CATCH_GET_CHILD
+            RecursiveIteratorIterator::SELF_FIRST |
+            RecursiveIteratorIterator::CATCH_GET_CHILD
         );
 
         foreach ($it as $name => $entry) {
@@ -73,6 +77,10 @@ class Ignore
                 }
 
                 $pattern = str_replace('\\!', '!', $pattern);
+
+                if (is_array($pattern)) {
+                    $pattern = implode($pattern);
+                }
 
 
                 // Root slash

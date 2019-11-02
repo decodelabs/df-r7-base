@@ -66,7 +66,7 @@ class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, cor
 
             $title = ucwords(
                 preg_replace('/([A-Z])/u', ' $1', str_replace(
-                    ['-', '_'], ' ', $title
+                    ['-', '_'], ' ', (string)$title
                 ))
             );
 

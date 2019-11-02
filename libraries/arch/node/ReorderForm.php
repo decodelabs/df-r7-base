@@ -10,39 +10,44 @@ use df\core;
 use df\arch;
 use df\aura;
 
-abstract class ReorderForm extends Form {
-
+abstract class ReorderForm extends Form
+{
     const ITEM_NAME = 'item';
     const PARENT_ITEM_NAME = 'parent';
     const DEFAULT_EVENT = 'reorder';
 
     const WEIGHT_FIELD = 'weight';
 
-    protected function getItemName() {
+    protected function getItemName()
+    {
         return static::ITEM_NAME;
     }
 
-    protected function getParentItemName() {
+    protected function getParentItemName()
+    {
         return static::PARENT_ITEM_NAME;
     }
 
-    protected function getParentName() {
+    protected function getParentName()
+    {
         return null;
     }
 
 
-    protected function setDefaultValues() {
+    protected function setDefaultValues()
+    {
         $this->values->items = array_keys($this->fetchNameList());
     }
 
     abstract protected function fetchNameList();
 
-    protected function createUi() {
+    protected function createUi()
+    {
         $form = $this->content->addForm();
         $itemName = $this->getItemName();
         $fs = $form->addFieldSet($this->_('Re-order %n% list', ['%n%' => $itemName]));
 
-        if(null !== ($parentName = $this->getParentName())) {
+        if (null !== ($parentName = $this->getParentName())) {
             $fs->addField(ucfirst($this->getParentItemName()))->push(
                 $this->html('strong', $parentName)
             );
@@ -55,8 +60,8 @@ abstract class ReorderForm extends Form {
         $names = [];
         $count = count($nameList);
 
-        foreach($weights as $id => $weight) {
-            if(!isset($nameList[$id])) {
+        foreach ($weights as $id => $weight) {
+            if (!isset($nameList[$id])) {
                 unset($this->values->weights->{$id});
                 continue;
             }
@@ -65,13 +70,13 @@ abstract class ReorderForm extends Form {
             unset($nameList[$id]);
         }
 
-        foreach($nameList as $id => $name) {
+        foreach ($nameList as $id => $name) {
             $names[$id] = $name;
         }
 
         $i = 0;
 
-        foreach($names as $id => $name) {
+        foreach ($names as $id => $name) {
             $fa->push(
                 $this->html('div.w.list.selection', [
                     $this->html('div.body', $name)
@@ -81,12 +86,12 @@ abstract class ReorderForm extends Form {
                         $this->html->textbox('weights['.$id.']', $i + 1)
                             ->setStyle('width', '4rem'),
 
-                        $this->html->eventButton($this->eventName('up', $id), $this->_('Up'))
+                        $this->html->eventButton($this->eventName('up', (string)$id), $this->_('Up'))
                             ->setIcon('arrow-up')
                             ->setDisposition('transitive')
                             ->isDisabled($i == 0),
 
-                        $this->html->eventButton($this->eventName('down', $id), $this->_('Down'))
+                        $this->html->eventButton($this->eventName('down', (string)$id), $this->_('Down'))
                             ->setIcon('arrow-down')
                             ->setDisposition('transitive')
                             ->isDisabled($i == $count - 1)
@@ -110,38 +115,42 @@ abstract class ReorderForm extends Form {
         );
     }
 
-    protected function onUpEvent($id) {
+    protected function onUpEvent($id)
+    {
         $this->values->weights->move($id, -1);
     }
 
-    protected function onDownEvent($id) {
+    protected function onDownEvent($id)
+    {
         $this->values->weights->move($id, 1);
     }
 
-    protected function onUpdateEvent() {
+    protected function onUpdateEvent()
+    {
         $weights = $this->values->weights->toArray();
 
-        uasort($weights, function($a, $b) {
+        uasort($weights, function ($a, $b) {
             return $a >= $b;
         });
 
         $weights = array_flip(array_keys($weights));
 
-        array_walk($weights, function(&$value) {
+        array_walk($weights, function (&$value) {
             $value = $value + 1;
         });
 
         $this->values->weights = $weights;
     }
 
-    protected function onReorderEvent() {
+    protected function onReorderEvent()
+    {
         $this->onUpdateEvent();
 
         $weights = $this->values->weights->toArray();
         $output = $this->apply($weights);
 
-        if($this->values->isValid()) {
-            if($message = $this->getFlashMessage()) {
+        if ($this->values->isValid()) {
+            if ($message = $this->getFlashMessage()) {
                 $this->comms->flash(
                     $this->format->id($this->getItemName()).'.reorder',
                     $message,
@@ -151,7 +160,7 @@ abstract class ReorderForm extends Form {
 
             $complete = $this->finalize();
 
-            if($output !== null) {
+            if ($output !== null) {
                 return $output;
             } else {
                 return $complete;
@@ -161,14 +170,16 @@ abstract class ReorderForm extends Form {
 
     abstract protected function apply(array $weights);
 
-    protected function getFlashMessage() {
+    protected function getFlashMessage()
+    {
         return $this->_(
             'The %n% list has been successfully re-ordered',
             ['%n%' => $this->getItemName()]
         );
     }
 
-    protected function finalize() {
+    protected function finalize()
+    {
         return $this->complete();
     }
 }

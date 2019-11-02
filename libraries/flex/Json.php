@@ -19,7 +19,7 @@ class Json implements IJson
 // Encode
     public static function toString($data, int $flags=0): string
     {
-        return json_encode(self::prepare($data), $flags);
+        return (string)json_encode(self::prepare($data), $flags);
     }
 
     public static function toFile($path, $data, int $flags=0): File

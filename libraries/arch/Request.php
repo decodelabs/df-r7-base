@@ -248,7 +248,7 @@ class Request extends core\uri\Url implements IRequest, Inspectable
                 $parts[$i] = lcfirst(
                     str_replace(' ', '', ucwords(
                         preg_replace('/[^a-zA-Z0-9_ ]/', '', str_replace(
-                            ['-', '.', '+'], ' ', $part
+                            ['-', '.', '+'], ' ', (string)$part
                         ))
                     ))
                 );
@@ -313,7 +313,7 @@ class Request extends core\uri\Url implements IRequest, Inspectable
         return lcfirst(
             str_replace(' ', '', ucwords(
                 preg_replace('/[^a-zA-Z0-9_ ]/', '', str_replace(
-                    ['-', '.', '+'], ' ', $node
+                    ['-', '.', '+'], ' ', (string)$node
                 ))
             ))
         );
@@ -370,7 +370,7 @@ class Request extends core\uri\Url implements IRequest, Inspectable
     {
         return str_replace(' ', '', ucwords(
             preg_replace('/[^a-zA-Z0-9_ ]/', '', str_replace(
-                ['-', '.', '+'], ' ', $type
+                ['-', '.', '+'], ' ', (string)$type
             ))
         ));
     }

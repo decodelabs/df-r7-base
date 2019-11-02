@@ -356,8 +356,13 @@ class Date implements IDate, Inspectable
         $locale = (string)core\i18n\Locale::factory($locale);
         $size = $this->_normalizeFormatterSize($size);
 
-        return \IntlDateFormatter::create($locale, $size, \IntlDateFormatter::NONE, $this->_date->getTimezone())
-            ->format($this->toTimestamp());
+        $formatter = \IntlDateFormatter::create($locale, $size, \IntlDateFormatter::NONE, $this->_date->getTimezone());
+
+        if (!$formatter) {
+            throw Glitch::ERuntime('Unable to create IntlDateFormatter', null, $locale);
+        }
+
+        return $formatter->format($this->toTimestamp());
     }
 
     public function localeTimeFormat($size='long', $locale=true)
@@ -365,8 +370,13 @@ class Date implements IDate, Inspectable
         $locale = (string)core\i18n\Locale::factory($locale);
         $size = $this->_normalizeFormatterSize($size);
 
-        return \IntlDateFormatter::create($locale, \IntlDateFormatter::NONE, $size, $this->_date->getTimezone())
-            ->format($this->toTimestamp());
+        $formatter = \IntlDateFormatter::create($locale, \IntlDateFormatter::NONE, $size, $this->_date->getTimezone());
+
+        if (!$formatter) {
+            throw Glitch::ERuntime('Unable to create IntlDateFormatter', null, $locale);
+        }
+
+        return $formatter->format($this->toTimestamp());
     }
 
     protected function _normalizeFormatterSize($size)

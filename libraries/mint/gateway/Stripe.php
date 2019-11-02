@@ -72,7 +72,7 @@ class Stripe extends Base implements
     // Testing
     public function isTesting(): bool
     {
-        return stristr($this->_apiKey, '_test_');
+        return false !== stristr($this->_apiKey, '_test_');
     }
 
     public function getApiKey(): ?string
@@ -91,7 +91,7 @@ class Stripe extends Base implements
     {
         return $this->_getCachedValue('apiIps', function () {
             try {
-                $data = json_decode(file_get_contents('https://stripe.com/files/ips/ips_api.json'), true);
+                $data = json_decode((string)file_get_contents('https://stripe.com/files/ips/ips_api.json'), true);
                 return $data['API'] ?? null;
             } catch (\Exception $e) {
                 return null;
@@ -103,7 +103,7 @@ class Stripe extends Base implements
     {
         return $this->_getCachedValue('webhookIps', function () {
             try {
-                $data = json_decode(file_get_contents('https://stripe.com/files/ips/ips_webhooks.json'), true);
+                $data = json_decode((string)file_get_contents('https://stripe.com/files/ips/ips_webhooks.json'), true);
                 return $data['WEBHOOKS'] ?? null;
             } catch (\Exception $e) {
                 return null;

@@ -11,6 +11,7 @@ use df\aura;
 use df\spur;
 use df\flex;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Terminus\Session;
 
@@ -46,7 +47,10 @@ class Autoprefixer extends Base
             $this->settings->remove = true;
         }
 
-        $content = file_get_contents($cssPath);
+        if (false === ($content = file_get_contents($cssPath))) {
+            throw Glitch::ERuntime('Unable to read css file contents', null, $cssPath);
+        }
+
         $map = null;
 
         if (preg_match('/sourceMappingURL\=([^ ]+) \*/i', $content, $matches)) {

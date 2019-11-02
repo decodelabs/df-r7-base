@@ -50,7 +50,9 @@ class Base implements link\http\IRequest, Inspectable
         $class = get_called_class();
         $output = new $class();
 
-        $parts = preg_split('|(?:\r?\n){2}|m', $string, 2);
+        if (false === ($parts = preg_split('|(?:\r?\n){2}|m', $string, 2))) {
+            throw Glitch::EUnexpectedValue('Unable to parse request string', null, $string);
+        }
 
         $headers = array_shift($parts);
         $content = array_shift($parts);
@@ -58,11 +60,11 @@ class Base implements link\http\IRequest, Inspectable
         $lines = explode("\n", $headers);
         $http = array_shift($lines);
 
-        $output->setMethod(trim(strtok(trim($http), ' ')));
+        $output->setMethod(trim((string)strtok(trim($http), ' ')));
         $headers = $output->getHeaders();
 
-        $url = trim(strtok(' '));
-        $protocol = strtok('/');
+        $url = trim((string)strtok(' '));
+        $protocol = (string)strtok('/');
 
         if ($protocol !== 'HTTP') {
             throw Glitch::EUnexpectedValue(
@@ -70,10 +72,13 @@ class Base implements link\http\IRequest, Inspectable
             );
         }
 
-        $headers->setHttpVersion(trim(strtok('')));
+        $headers->setHttpVersion(trim((string)strtok('')));
 
         foreach ($lines as $line) {
-            $headers->set(trim(strtok(trim($line), ':')), trim(strtok('')));
+            $headers->set(trim(
+                (string)strtok(trim($line), ':')),
+                trim((string)strtok('')
+            ));
         }
 
         $output->setUrl($headers->get('host').$url);
