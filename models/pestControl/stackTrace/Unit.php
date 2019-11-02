@@ -10,9 +10,12 @@ use df\core;
 use df\apex;
 use df\axis;
 
-class Unit extends axis\unit\Table {
+use DecodeLabs\Glitch\Stack\Trace;
 
-    protected function createSchema($schema) {
+class Unit extends axis\unit\Table
+{
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addIndexedField('hash', 'Binary', 32);
         $schema->addField('body', 'Text', 'huge');
@@ -20,27 +23,30 @@ class Unit extends axis\unit\Table {
         $schema->addField('errorLogs', 'OneToMany', 'errorLog', 'stackTrace');
     }
 
-    public function logException(\Throwable $e) {
-        $stackTrace = core\debug\StackTrace::fromException($e);
+    public function logException(\Throwable $e)
+    {
+        $stackTrace = Trace::fromException($e);
         return $this->logObject($stackTrace);
     }
 
-    public function logArray(array $trace, $rewind=0) {
-        $stackTrace = core\debug\StackTrace::factory($rewind, $trace);
+    public function logArray(array $trace, $rewind=0)
+    {
+        $stackTrace = Trace::fromArray($trace, $rewind);
         return $this->logObject($stackTrace);
     }
 
-    public function logObject(core\debug\IStackTrace $stackTrace) {
-        $json = $stackTrace->toJson();
-        return $this->logJson($json);
+    public function logObject(Trace $stackTrace)
+    {
+        return $this->logJson(json_encode($stackTrace));
     }
 
-    public function logJson($json) {
-        if(empty($json)) {
+    public function logJson($json)
+    {
+        if (empty($json)) {
             return null;
         }
 
-        if(!is_string($json)) {
+        if (!is_string($json)) {
             $json = json_encode($json);
         }
 
@@ -50,7 +56,7 @@ class Unit extends axis\unit\Table {
             ->where('hash', '=', $hash)
             ->toRow();
 
-        if(!$output) {
+        if (!$output) {
             $output = $this->newRecord([
                     'hash' => $hash,
                     'body' => $json
