@@ -33,7 +33,7 @@ class TaskInstall extends arch\node\Task implements arch\node\IBuildTaskNode
 
         Systemic::$process->newLauncher('composer install', $args)
             ->setWorkingDirectory($this->app->path)
-            ->setIoBroker(Cli::getSession()->getBroker())
+            ->setBroker(Cli::getSession()->getBroker())
             ->launch();
     }
 }

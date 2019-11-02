@@ -309,7 +309,7 @@ class SassBridge implements ISassBridge
 
         $result = Systemic::$process->newLauncher($path, $args)
             ->thenIf($this->_session, function ($launcher) {
-                $launcher->setIoBroker($this->_session->getBroker());
+                $launcher->setBroker($this->_session->getBroker());
             })
             ->setWorkingDirectory($this->_workDir)
             ->launch();

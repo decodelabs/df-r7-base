@@ -169,7 +169,7 @@ trait TRepository
         $launcher = Systemic::$process->newLauncher(basename(self::$_gitPath), $args, dirname(self::$_gitPath))
             ->setUser($user)
             ->thenIf($session, function ($launcher, $session) {
-                $launcher->setIoBroker($session->getBroker());
+                $launcher->setBroker($session->getBroker());
             });
 
         if ($path !== null) {

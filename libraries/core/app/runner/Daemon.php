@@ -166,7 +166,7 @@ class Daemon extends Base
         $res = Systemic::$process->newScriptLauncher($entryPath, [
                 'daemon', $name, '__spawn'
             ])
-            ->setIoBroker(Cli::getSession()->getBroker())
+            ->setBroker(Cli::getSession()->getBroker())
             ->setDecoratable(false)
             ->launch();
 

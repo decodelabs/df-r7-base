@@ -183,7 +183,7 @@ class Remote implements IRemote
                 'daemon', $this->_daemon->getName(), $command
             ])
             ->thenIf($this->_session, function ($launcher) {
-                $launcher->setIoBroker($this->_session->getBroker());
+                $launcher->setBroker($this->_session->getBroker());
             })
             //->setDecoratable(false)
             ->launch();
