@@ -1,5 +1,5 @@
 parameters:
-    level: 7
+    level: max
     bootstrap: %rootDir%/../../../../base/tests/bootstrap.php
     inferPrivatePropertyTypeFromConstructor: true
 
