@@ -66,18 +66,17 @@ trait TReaderInterchange
 
 interface IWriterInterchange
 {
-    public function toXmlString($embedded=false);
+    public function toXmlString(bool $embedded=false);
 }
 
 trait TWriterInterchange
 {
-    public function toXmlString($embedded=false)
+    public function toXmlString(bool $embedded=false)
     {
-        $writer = Writer::factory($this);
+        $writer = Writer::factory();
 
         if (!$embedded) {
             $writer->writeHeader();
-            $this->_writeXmlDtd($writer);
         }
 
         if (method_exists($this, 'writeXml')) {
@@ -87,51 +86,22 @@ trait TWriterInterchange
         $writer->finalize();
         return $writer->toXmlString();
     }
-
-    protected function _writeXmlDtd(IWritable $writer)
-    {
-    }
 }
 
 interface IRootInterchange extends IInterchange, IReaderInterchange, IWriterInterchange
 {
 }
 
-interface IRootInterchangeProvider
-{
-    public function setRootInterchange(IRootInterchange $root=null);
-    public function getRootInterchange();
-}
-
-trait TRootInterchangeProvider
-{
-    protected $_rootInterchange;
-
-    public function setRootInterchange(IRootInterchange $root=null)
-    {
-        $this->_rootInterchange = $root;
-        return $this;
-    }
-
-    public function getRootInterchange()
-    {
-        return $this->_rootInterchange;
-    }
-}
-
-
-interface IReadable extends IReaderInterchange, IRootInterchangeProvider
-{
-}
-
-interface IWritable extends IWriterInterchange, IRootInterchangeProvider
-{
-}
-
 
 
 // Tree
-interface ITree extends IReadable, IWritable, core\collection\IAttributeContainer, \Countable, \ArrayAccess, core\IStringProvider
+interface ITree extends
+    IReaderInterchange,
+    IWriterInterchange,
+    core\collection\IAttributeContainer,
+    \Countable,
+    \ArrayAccess,
+    core\IStringProvider
 {
     // Node info
     public function setTagName($name);
@@ -232,7 +202,10 @@ interface ITree extends IReadable, IWritable, core\collection\IAttributeContaine
 
 
 // Writer
-interface IWriter extends IWritable, core\collection\IAttributeContainer, core\IStringProvider
+interface IWriter extends
+    IWriterInterchange,
+    core\collection\IAttributeContainer,
+    core\IStringProvider
 {
     // Header
     public function writeHeader($version='1.0', $encoding='UTF-8', $isStandalone=false);

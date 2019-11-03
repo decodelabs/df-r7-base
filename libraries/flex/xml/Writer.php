@@ -20,7 +20,6 @@ class Writer implements IWriter
 
     use core\TStringProvider;
     use core\collection\TAttributeContainer;
-    use TRootInterchangeProvider;
 
     protected $_document;
     protected $_isMemory = true;
@@ -32,7 +31,7 @@ class Writer implements IWriter
     protected $_rawAttributeNames = [];
     protected $_currentNode = null;
 
-    public static function fileFactory($path, IRootInterchange $interchange=null)
+    public static function fileFactory($path)
     {
         if (empty($path)) {
             throw Glitch::EInvalidArgument(
@@ -40,20 +39,16 @@ class Writer implements IWriter
             );
         }
 
-        return new self($interchange, $path);
+        return new self($path);
     }
 
-    public static function factory(IRootInterchange $interchange=null)
+    public static function factory()
     {
-        return new self($interchange);
+        return new self();
     }
 
-    public function __construct(IRootInterchange $interchange=null, $path=null)
+    public function __construct($path=null)
     {
-        if ($interchange) {
-            $this->setRootInterchange($interchange);
-        }
-
         $this->_document = new \XMLWriter();
 
         if ($path !== null) {
@@ -462,7 +457,7 @@ class Writer implements IWriter
         return $this->toXmlString();
     }
 
-    public function toXmlString($embedded=false)
+    public function toXmlString(bool $embedded=false)
     {
         if ($embedded) {
             // TODO: ensure embedded xml

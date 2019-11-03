@@ -18,7 +18,6 @@ class Tree implements ITree, Inspectable
 {
     use core\TStringProvider;
     use core\collection\TAttributeContainerArrayAccessProxy;
-    use TRootInterchangeProvider;
 
     protected $_element;
 
@@ -1060,7 +1059,7 @@ class Tree implements ITree, Inspectable
         return $this->getComposedTextContent();
     }
 
-    public function toXmlString($embedded=false)
+    public function toXmlString(bool $embedded=false)
     {
         if ($embedded) {
             // TODO: return embedded xml
