@@ -9,6 +9,9 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Tagged\Xml\Element;
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\File;
 use DecodeLabs\Glitch;
 
 class Writer implements IWriter
@@ -22,6 +25,7 @@ class Writer implements IWriter
     use core\collection\TAttributeContainer;
 
     protected $_document;
+    protected $_path;
     protected $_isMemory = true;
     protected $_headerWritten = false;
     protected $_dtdWritten = false;
@@ -47,9 +51,10 @@ class Writer implements IWriter
         return new self();
     }
 
-    public function __construct($path=null)
+    public function __construct(?string $path=null)
     {
         $this->_document = new \XMLWriter();
+        $this->_path = $path;
 
         if ($path !== null) {
             $this->_isMemory = false;
@@ -468,6 +473,38 @@ class Writer implements IWriter
         }
 
         Glitch::incomplete();
+    }
+
+    /**
+     * Export to file
+     */
+    public function toXmlFile(string $path): File
+    {
+        $this->finalize();
+
+        if ($path === $this->_path) {
+            return Atlas::$fs->file($this->_path);
+        }
+
+        if ($this->_path !== null) {
+            return Atlas::$fs->copyFile($this->_path, $path);
+        }
+
+        return Atlas::$fs->createFile($path, $this->__toString());
+    }
+
+    /**
+     * Convert to Element instance
+     */
+    public function toXmlElement(): Element
+    {
+        $this->finalize();
+
+        if ($this->_path !== null) {
+            return Element::fromXmlFile($this->_path);
+        } else {
+            return Element::fromXmlString($this->__toString());
+        }
     }
 
     public static function normalizeString(?string $string): string

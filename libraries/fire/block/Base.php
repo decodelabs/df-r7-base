@@ -16,8 +16,7 @@ use DecodeLabs\Glitch;
 
 abstract class Base implements fire\IBlock
 {
-    use flex\xml\TReaderInterchange;
-    use flex\xml\TWriterInterchange;
+    use flex\xml\TInterchange;
     use aura\view\TView_DeferredRenderable;
     use core\TStringProvider;
 
@@ -26,7 +25,7 @@ abstract class Base implements fire\IBlock
 
     protected $_isNested = false;
 
-    public static function fromXmlElement(flex\xml\ITree $element)
+    public static function fromXmlTree(flex\xml\ITree $element)
     {
         $output = self::factory($element->getAttribute('type'));
 

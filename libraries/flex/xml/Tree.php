@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Tagged\Xml\Provider;
 use DecodeLabs\Tagged\Xml\Element;
 
 use DecodeLabs\Atlas;
@@ -18,6 +19,9 @@ use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
+
+use DOMDocument;
+use DOMElement;
 
 class Tree implements ITree, Inspectable
 {
@@ -32,7 +36,29 @@ class Tree implements ITree, Inspectable
         return (string)preg_replace('/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u', '', (string)$string);
     }
 
-    public static function fromXmlFile($xmlFile)
+    /**
+     * Create from any xml type
+     */
+    public static function fromXml($xml)
+    {
+        if ($xml instanceof self) {
+            return $xml;
+        } elseif ($xml instanceof Provider) {
+            return static::fromXmlElement($xml->toXmlElement());
+        } elseif ($xml instanceof DOMDocument) {
+            return static::fromDOMDocument($xml);
+        } elseif ($xml instanceof DOMElement) {
+            return static::fromDOMElement($xml);
+        } elseif ($xml instanceof File) {
+            return static::fromXmlFile($xml->getPath());
+        } elseif (is_string($xml) || (is_object($xml) && method_exists($xml, '__toString'))) {
+            return static::fromXmlString((string)$xml);
+        } else {
+            throw Glitch::EUnexpectedValue('Unable to convert item to XML Element', null, $xml);
+        }
+    }
+
+    public static function fromXmlFile(string $xmlFile)
     {
         try {
             $document = self::_newDOMDocument();
@@ -46,7 +72,7 @@ class Tree implements ITree, Inspectable
         return self::fromDOMDocument($document);
     }
 
-    public static function fromXmlString($xmlString)
+    public static function fromXmlString(string $xmlString)
     {
         $xmlString = trim($xmlString);
 
@@ -68,7 +94,12 @@ class Tree implements ITree, Inspectable
         return self::fromDOMDocument($document);
     }
 
-    public static function fromXmlElement(ITree $element)
+    public static function fromXmlElement(Element $element)
+    {
+        return self::fromDOMElement($element->getDomElement());
+    }
+
+    public static function fromXmlTree(ITree $element)
     {
         return $element;
     }
@@ -112,6 +143,12 @@ class Tree implements ITree, Inspectable
         $document->formatOutput = true;
 
         return new self($document->documentElement);
+    }
+
+    public static function fromDOMElement(\DOMElement $element)
+    {
+        $element->ownerDocument->formatOutput = true;
+        return new self($element);
     }
 
     private static function _newDOMDocument()

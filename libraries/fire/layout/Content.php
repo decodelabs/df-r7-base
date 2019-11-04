@@ -17,8 +17,7 @@ use DecodeLabs\Glitch;
 class Content implements fire\ILayoutContent
 {
     use core\collection\TAttributeContainer;
-    use flex\xml\TReaderInterchange;
-    use flex\xml\TWriterInterchange;
+    use flex\xml\TInterchange;
 
     protected $_slots = [];
 

@@ -13,9 +13,9 @@ use df\arch;
 use df\apex;
 use df\flex;
 
-
 // Manager
-interface IManager extends core\IManager {
+interface IManager extends core\IManager
+{
     public function getConfig(): Config;
 
     public function getCategories(): array;
@@ -34,9 +34,10 @@ interface IManager extends core\IManager {
 
 // Block
 interface IBlock extends
-    flex\xml\IRootInterchange,
+    flex\xml\IInterchange,
     aura\view\IDeferredRenderable,
-    arch\node\IDelegateProxy {
+    arch\node\IDelegateProxy
+{
     public static function factory(string $name): IBlock;
     public static function normalize($block): ?IBlock;
 
@@ -52,19 +53,20 @@ interface IBlock extends
     public function isHidden(): bool;
     public function getTransitionValue();
     public function setTransitionValue($value);
-
-
 }
 
 interface IBlockDelegate extends
     arch\node\IDelegate,
     arch\node\IInlineFieldRenderableDelegate,
-    arch\node\IResultProviderDelegate {}
+    arch\node\IResultProviderDelegate
+{
+}
 
 
 
 // Category
-interface ICategory extends core\IStringProvider {
+interface ICategory extends core\IStringProvider
+{
     public static function factory(string $name): ICategory;
     public static function normalize($category): ?ICategory;
     public static function normalizeName($category): ?string;
@@ -87,7 +89,8 @@ interface ICategory extends core\IStringProvider {
 
 
 // Slots
-interface ISlotDefinition extends core\IArrayInterchange {
+interface ISlotDefinition extends core\IArrayInterchange
+{
     public static function fromArray(array $values): ISlotDefinition;
     public static function createDefault(): ISlotDefinition;
 
@@ -113,9 +116,9 @@ interface ISlotDefinition extends core\IArrayInterchange {
 
 interface ISlotContent extends
     core\collection\IAttributeContainer,
-    flex\xml\IRootInterchange,
-    aura\view\IDeferredRenderable {
-
+    flex\xml\IInterchange,
+    aura\view\IDeferredRenderable
+{
     public function setId(?string $id);
     public function getId(): ?string;
     public function isPrimary(): bool;
@@ -139,7 +142,8 @@ interface ISlotContent extends
 
 
 // Layout
-interface ILayoutConfig extends core\IConfig {
+interface ILayoutConfig extends core\IConfig
+{
     public function getLayoutList(string $area=null): array;
     public function getLayoutDefinition(string $id): ILayoutDefinition;
     public function isStaticLayout(string $id): bool;
@@ -150,7 +154,8 @@ interface ILayoutConfig extends core\IConfig {
 }
 
 
-interface ILayoutDefinition {
+interface ILayoutDefinition
+{
     public function setId(?string $id);
     public function getId(): string;
 
@@ -178,7 +183,8 @@ interface ILayoutDefinition {
 
 interface ILayoutContent extends
     core\collection\IAttributeContainer,
-    flex\xml\IRootInterchange {
+    flex\xml\IInterchange
+{
     public function setId(?string $id);
     public function getId(): ?string;
 
@@ -193,7 +199,8 @@ interface ILayoutContent extends
     public function countSlots(): int;
 }
 
-interface ILayoutMap extends aura\view\ILayoutMap {
+interface ILayoutMap extends aura\view\ILayoutMap
+{
     public function getTheme(): aura\theme\ITheme;
 
     public function setGenerator(callable $generator=null);
@@ -207,7 +214,8 @@ interface ILayoutMap extends aura\view\ILayoutMap {
     public function clearEntries();
 }
 
-interface ILayoutMapEntry {
+interface ILayoutMapEntry
+{
     public function getId(): string;
     public function allowsTheme(aura\theme\ITheme $theme);
     public function matches(arch\IRequest $request);
@@ -217,4 +225,6 @@ interface ILayoutMapEntry {
 
 
 // Cache
-class Cache extends core\cache\Base {}
+class Cache extends core\cache\Base
+{
+}

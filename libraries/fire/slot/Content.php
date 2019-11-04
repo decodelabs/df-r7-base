@@ -17,8 +17,7 @@ use DecodeLabs\Glitch;
 class Content implements fire\ISlotContent
 {
     use core\collection\TAttributeContainer;
-    use flex\xml\TReaderInterchange;
-    use flex\xml\TWriterInterchange;
+    use flex\xml\TInterchange;
     use aura\view\TView_DeferredRenderable;
     use core\TStringProvider;
 
@@ -192,7 +191,7 @@ class Content implements fire\ISlotContent
 
         foreach ($reader->block as $blockNode) {
             try {
-                $block = fire\block\Base::fromXmlElement($blockNode);
+                $block = fire\block\Base::fromXml($blockNode);
             } catch (fire\block\ENotFound $e) {
                 $block = new fire\block\Error();
                 $block->setError($e);

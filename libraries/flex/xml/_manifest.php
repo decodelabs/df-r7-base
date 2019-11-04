@@ -10,39 +10,50 @@ use df\core;
 use df\flex;
 
 use DecodeLabs\Tagged\Xml\Provider;
+use DecodeLabs\Tagged\Xml\Consumer;
+use DecodeLabs\Tagged\Xml\Element;
+
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\File;
 use DecodeLabs\Glitch;
 
-interface IReaderInterchange
+interface IInterchange extends Consumer, Provider
 {
-    public static function fromXmlFile($xmlFile);
-    public static function fromXmlString($xmlString);
-    public static function fromXmlElement(ITree $element);
+    public static function fromXmlTree(ITree $element);
+
+    public function readXml(ITree $reader);
+    public function writeXml(IWriter $writer);
 }
 
-trait TReaderInterchange
+trait TInterchange
 {
     public static function fromXml($xml)
     {
         if ($xml instanceof ITree) {
-            return static::fromXmlElement($xml);
+            return static::fromXmlTree($xml);
         } else {
             return static::fromXmlString($xml);
         }
     }
 
-    public static function fromXmlFile($xmlFile)
+    public static function fromXmlFile(string $xmlFile)
     {
         $reader = Tree::fromXmlFile($xmlFile);
-        return static::fromXmlElement($reader);
+        return static::fromXmlTree($reader);
     }
 
-    public static function fromXmlString($xmlString)
+    public static function fromXmlString(string $xmlString)
     {
         $reader = Tree::fromXmlString($xmlString);
-        return static::fromXmlElement($reader);
+        return static::fromXmlTree($reader);
     }
 
-    public static function fromXmlElement(ITree $element)
+    public static function fromXmlElement(Element $element)
+    {
+        return static::fromXmlTree(Tree::fromXmlElement($element));
+    }
+
+    public static function fromXmlTree(ITree $element)
     {
         $class = get_called_class();
         $ref = new \ReflectionClass($class);
@@ -56,16 +67,7 @@ trait TReaderInterchange
 
         return $output;
     }
-}
 
-
-interface IWriterInterchange
-{
-    public function toXmlString(bool $embedded=false): string;
-}
-
-trait TWriterInterchange
-{
     public function toXmlString(bool $embedded=false): string
     {
         $writer = Writer::factory();
@@ -81,12 +83,19 @@ trait TWriterInterchange
         $writer->finalize();
         return $writer->toXmlString();
     }
-}
 
-interface IRootInterchange extends IReaderInterchange, IWriterInterchange
-{
-    public function readXml(ITree $reader);
-    public function writeXml(IWriter $writer);
+    public function toXmlFile(string $path): File
+    {
+        $dir = dirname($path);
+        Atlas::$fs->createDir($dir);
+
+        return Atlas::$fs->createFile($path, $this->toXmlString());
+    }
+
+    public function toXmlElement(): Element
+    {
+        return Element::fromXmlString($this->toXmlString());
+    }
 }
 
 
@@ -94,8 +103,7 @@ interface IRootInterchange extends IReaderInterchange, IWriterInterchange
 // Tree
 interface ITree extends
     Provider,
-    IReaderInterchange,
-    IWriterInterchange,
+    Consumer,
     core\collection\IAttributeContainer,
     \Countable,
     \ArrayAccess,
@@ -201,7 +209,7 @@ interface ITree extends
 
 // Writer
 interface IWriter extends
-    IWriterInterchange,
+    Provider,
     core\collection\IAttributeContainer,
     core\IStringProvider
 {
