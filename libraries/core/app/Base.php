@@ -267,12 +267,14 @@ PHP;
     {
         if (isset($_SERVER['HTTP_HOST'])) {
             $runMode = 'Http';
-        } else {
+        } elseif (isset($_SERVER['argv'])) {
             if (isset($_SERVER['argv'][1])) {
                 $runMode = ucfirst($_SERVER['argv'][1]);
             } else {
                 $runMode = 'Task';
             }
+        } else {
+            $runMode = null;
         }
 
         switch ($runMode) {
