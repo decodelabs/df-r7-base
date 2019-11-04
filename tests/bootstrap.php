@@ -3,12 +3,29 @@
 require_once dirname(__DIR__).'/Df.php';
 
 use df\core;
+use df\apex;
 use DecodeLabs\Glitch;
 
 $startTime = df\Launchpad::initEnvironment();
-df\Launchpad::initLoaders(__DIR__, $startTime);
-Glitch::setRunMode('development');
+$appDir = getcwd();
+$hasAppFile = file_exists($appDir.'/App.php');
 
-df\Launchpad::$loader->loadPackages([
-    'nightfire', 'touchstone', 'webCore'
-]);
+if (!$hasAppFile) {
+    $appDir = dirname(__DIR__);
+}
+
+df\Launchpad::initLoaders($appDir, $startTime);
+Glitch::setRunMode('development');
+$appClass = 'df\\apex\\App';
+
+if ($hasAppFile) {
+    require_once $appDir.'/App.php';
+}
+
+if (class_exists($appClass)) {
+    df\Launchpad::$loader->loadPackages(array_keys($appClass::PACKAGES));
+} else {
+    df\Launchpad::$loader->loadPackages([
+        'nightfire', 'touchstone', 'webCore'
+    ]);
+}
