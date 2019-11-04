@@ -12,12 +12,17 @@ use df\flex;
 use df\arch;
 use df\aura;
 
+use DecodeLabs\Tagged\Xml\Element as XmlElement;
+use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
+use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
+use DecodeLabs\Tagged\Xml\SerializableTrait as XmlSerializableTrait;
+
 use DecodeLabs\Glitch;
 
 class Content implements fire\ISlotContent
 {
     use core\collection\TAttributeContainer;
-    use flex\xml\TInterchange;
+    use XmlSerializableTrait;
     use aura\view\TView_DeferredRenderable;
     use core\TStringProvider;
 
@@ -178,18 +183,19 @@ class Content implements fire\ISlotContent
         return new aura\html\ElementContent($output, $this);
     }
 
-    // XML interchange
-    public function readXml(flex\xml\ITree $reader)
+    public function xmlUnserialize(XmlElement $element): void
     {
-        if ($reader->getTagName() != 'slot') {
+        $this->blocks = new core\collection\Queue();
+
+        if ($element->getTagName() != 'slot') {
             throw Glitch::EUnexpectedValue(
-                'Slot content object expected slot xml element - found '.$reader->getTagName()
+                'Slot content object expected slot xml element - found '.$element->getTagName()
             );
         }
 
-        $this->setAttributes($reader->getAttributes());
+        $this->setAttributes($element->getAttributes());
 
-        foreach ($reader->block as $blockNode) {
+        foreach ($element->block as $blockNode) {
             try {
                 $block = fire\block\Base::fromXml($blockNode);
             } catch (fire\block\ENotFound $e) {
@@ -201,20 +207,18 @@ class Content implements fire\ISlotContent
 
             $this->addBlock($block);
         }
-
-        return $this;
     }
 
-    public function writeXml(flex\xml\IWriter $writer)
+    public function xmlSerialize(XmlWriter $writer): void
     {
-        $writer->startElement('slot');
-        $writer->setAttributes($this->_attributes);
-
-        foreach ($this->blocks as $block) {
-            $block->writeXml($writer);
-        }
-
-        $writer->endElement();
-        return $this;
+        $writer->writeElement('slot', function ($writer) {
+            foreach ($this->blocks as $block) {
+                if ($block instanceof XmlSerializable) {
+                    $block->xmlSerialize($writer);
+                } else {
+                    $writer->importXmlElement($block->toXmlElement());
+                }
+            }
+        }, $this->_attributes);
     }
 }

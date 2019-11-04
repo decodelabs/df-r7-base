@@ -12,6 +12,8 @@ use df\flex;
 use df\aura;
 use df\arch;
 
+use DecodeLabs\Tagged\Xml\Element as XmlElement;
+use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
 use DecodeLabs\Glitch;
 
 abstract class Base implements fire\IBlock
@@ -25,12 +27,27 @@ abstract class Base implements fire\IBlock
 
     protected $_isNested = false;
 
-    public static function fromXmlTree(flex\xml\ITree $element)
+    public static function fromXmlElement(XmlElement $element)
     {
         $output = self::factory($element->getAttribute('type'));
 
-        if (method_exists($output, 'readXml')) {
-            $output->readXml($element);
+        if ($output instanceof XmlSerializable) {
+            $output->xmlUnserialize($element);
+        } elseif (method_exists($output, 'readXml')) {
+            $output->readXml(flex\xml\Tree::fromXmlElement($element));
+        }
+
+        return $output;
+    }
+
+    public static function fromXmlTree(flex\xml\ITree $tree)
+    {
+        $output = self::factory($tree->getAttribute('type'));
+
+        if ($output instanceof XmlSerializable) {
+            $output->xmlUnserialize($tree->toXmlElement());
+        } elseif (method_exists($output, 'readXml')) {
+            $output->readXml($tree);
         }
 
         return $output;

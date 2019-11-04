@@ -12,12 +12,17 @@ use df\flex;
 use df\arch;
 use df\aura;
 
+use DecodeLabs\Tagged\Xml\Element as XmlElement;
+use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
+use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
+use DecodeLabs\Tagged\Xml\SerializableTrait as XmlSerializableTrait;
+
 use DecodeLabs\Glitch;
 
 class Content implements fire\ILayoutContent
 {
     use core\collection\TAttributeContainer;
-    use flex\xml\TInterchange;
+    use XmlSerializableTrait;
 
     protected $_slots = [];
 
@@ -113,36 +118,28 @@ class Content implements fire\ILayoutContent
         return count($this->_slots);
     }
 
-    // XML interchange
-    public function readXml(flex\xml\ITree $reader)
+    public function xmlUnserialize(XmlElement $element): void
     {
-        if ($reader->getTagName() != 'layout') {
+        if ($element->getTagName() != 'layout') {
             throw Glitch::EUnexpectedValue(
                 'Layout content object expected layout xml element'
             );
         }
 
-        $this->setId($reader->getAttribute('id'));
+        $this->setId($element->getAttribute('id'));
 
-        foreach ($reader->slot as $slotNode) {
-            $slot = new fire\slot\Content();
-            $slot->readXml($slotNode);
+        foreach ($element->slot as $slotNode) {
+            $slot = fire\slot\Content::fromXmlElement($slotNode);
             $this->setSlot($slot);
         }
-
-        return $this;
     }
 
-    public function writeXml(flex\xml\IWriter $writer)
+    public function xmlSerialize(XmlWriter $writer): void
     {
-        $writer->startElement('layout');
-        $writer->setAttributes($this->_attributes);
-
-        foreach ($this->_slots as $slot) {
-            $slot->writeXml($writer);
-        }
-
-        $writer->endElement();
-        return $this;
+        $writer->writeElement('layout', function ($writer) {
+            foreach ($this->_slots as $slot) {
+                $slot->xmlSerialize($writer);
+            }
+        }, $this->_attributes);
     }
 }

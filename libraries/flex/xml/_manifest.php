@@ -12,10 +12,15 @@ use df\flex;
 use DecodeLabs\Tagged\Xml\Provider;
 use DecodeLabs\Tagged\Xml\Consumer;
 use DecodeLabs\Tagged\Xml\Element;
+use DecodeLabs\Tagged\Xml\Serializable;
+use DecodeLabs\Tagged\Xml\Writer as TaggedWriter;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Glitch;
+
+use DOMDocument;
+use DOMElement;
 
 interface IInterchange extends Consumer, Provider
 {
@@ -29,10 +34,22 @@ trait TInterchange
 {
     public static function fromXml($xml)
     {
-        if ($xml instanceof ITree) {
+        if ($xml instanceof self) {
+            return $xml;
+        } elseif ($xml instanceof ITree) {
             return static::fromXmlTree($xml);
+        } elseif ($xml instanceof Provider) {
+            return static::fromXmlElement($xml->toXmlElement());
+        } elseif ($xml instanceof DOMDocument) {
+            return static::fromXmlElement(Element::fromDomDocument($xml));
+        } elseif ($xml instanceof DOMElement) {
+            return static::fromXmlElement(Element::fromDomElement($xml));
+        } elseif ($xml instanceof File) {
+            return static::fromXmlFile($xml->getPath());
+        } elseif (is_string($xml) || (is_object($xml) && method_exists($xml, '__toString'))) {
+            return static::fromXmlString((string)$xml);
         } else {
-            return static::fromXmlString($xml);
+            throw Glitch::EUnexpectedValue('Unable to convert item to XML Element', null, $xml);
         }
     }
 
@@ -50,10 +67,29 @@ trait TInterchange
 
     public static function fromXmlElement(Element $element)
     {
-        return static::fromXmlTree(Tree::fromXmlElement($element));
+        $class = get_called_class();
+        $ref = new \ReflectionClass($class);
+
+        if ($ref->isAbstract()) {
+            throw Glitch::ELogic('Xml reader interchange cannot be instantiated');
+        }
+
+        if ($ref->implementsInterface(Serializable::class)) {
+            $output = $ref->newInstanceWithoutConstructor();
+
+            if ($output instanceof Serializable) {
+                $output->xmlUnserialize($element);
+            }
+
+            return $output;
+        } else {
+            $output = new $class();
+            $output->readXml(Tree::fromXmlElement($element));
+            return $output;
+        }
     }
 
-    public static function fromXmlTree(ITree $element)
+    public static function fromXmlTree(ITree $tree)
     {
         $class = get_called_class();
         $ref = new \ReflectionClass($class);
@@ -62,26 +98,43 @@ trait TInterchange
             throw Glitch::ELogic('Xml reader interchange cannot be instantiated');
         }
 
-        $output = new $class();
-        $output->readXml($element);
+        if ($ref->implementsInterface(Serializable::class)) {
+            $output = $ref->newInstanceWithoutConstructor();
 
-        return $output;
+            if ($output instanceof Serializable) {
+                $output->xmlUnserialize($tree->toXmlElement());
+            }
+
+            return $output;
+        } else {
+            $output = new $class();
+            $output->readXml($tree);
+            return $output;
+        }
     }
 
     public function toXmlString(bool $embedded=false): string
     {
-        $writer = Writer::factory();
+        if ($this instanceof Serializable) {
+            $writer = TaggedWriter::create();
 
-        if (!$embedded) {
-            $writer->writeHeader();
-        }
+            if (!$embedded) {
+                $writer->writeHeader();
+            }
 
-        if (method_exists($this, 'writeXml')) {
+            $this->xmlSerialize($writer);
+            return $writer->toXmlString($embedded);
+        } else {
+            $writer = Writer::factory();
+
+            if (!$embedded) {
+                $writer->writeHeader();
+            }
+
             $this->writeXml($writer);
+            $writer->finalize();
+            return $writer->toXmlString();
         }
-
-        $writer->finalize();
-        return $writer->toXmlString();
     }
 
     public function toXmlFile(string $path): File

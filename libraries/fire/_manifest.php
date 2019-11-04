@@ -13,6 +13,8 @@ use df\arch;
 use df\apex;
 use df\flex;
 
+use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
+
 // Manager
 interface IManager extends core\IManager
 {
@@ -116,8 +118,8 @@ interface ISlotDefinition extends core\IArrayInterchange
 
 interface ISlotContent extends
     core\collection\IAttributeContainer,
-    flex\xml\IInterchange,
-    aura\view\IDeferredRenderable
+    aura\view\IDeferredRenderable,
+    XmlSerializable
 {
     public function setId(?string $id);
     public function getId(): ?string;
@@ -183,7 +185,7 @@ interface ILayoutDefinition
 
 interface ILayoutContent extends
     core\collection\IAttributeContainer,
-    flex\xml\IInterchange
+    XmlSerializable
 {
     public function setId(?string $id);
     public function getId(): ?string;
