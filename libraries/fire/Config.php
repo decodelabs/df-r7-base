@@ -65,7 +65,7 @@ class Config extends core\Config implements ILayoutConfig
 
         foreach ($this->values->layouts as $id => $set) {
             if (isset(self::STATIC_LAYOUTS[$id])) {
-                $output[$id] = isset(self::STATIC_LAYOUTS[$id]['name']) ?? $id;
+                $output[$id] = self::STATIC_LAYOUTS[$id]['name'] ?? $id;
                 continue;
             }
 
