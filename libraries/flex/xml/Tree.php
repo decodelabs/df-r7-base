@@ -9,6 +9,11 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Tagged\Xml\Element;
+
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\File;
+
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
@@ -1059,7 +1064,7 @@ class Tree implements ITree, Inspectable
         return $this->getComposedTextContent();
     }
 
-    public function toXmlString(bool $embedded=false)
+    public function toXmlString(bool $embedded=false): string
     {
         if ($embedded) {
             // TODO: return embedded xml
@@ -1067,6 +1072,26 @@ class Tree implements ITree, Inspectable
         }
 
         return $this->_element->ownerDocument->saveXML();
+    }
+
+    /**
+     * Export xml to file
+     */
+    public function toXmlFile(string $path): File
+    {
+        $dir = dirname($path);
+        Atlas::$fs->createDir($dir);
+
+        $this->_element->ownerDocument->save($path);
+        return Atlas::$fs->file($path);
+    }
+
+    /**
+     * Passthrough
+     */
+    public function toXmlElement(): Element
+    {
+        return Element::fromDomElement($this->_element);
     }
 
     public function toNodeXmlString()

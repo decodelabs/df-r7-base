@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Tagged\Xml\Provider;
 use DecodeLabs\Glitch;
 
 interface IReaderInterchange
@@ -60,12 +61,12 @@ trait TReaderInterchange
 
 interface IWriterInterchange
 {
-    public function toXmlString(bool $embedded=false);
+    public function toXmlString(bool $embedded=false): string;
 }
 
 trait TWriterInterchange
 {
-    public function toXmlString(bool $embedded=false)
+    public function toXmlString(bool $embedded=false): string
     {
         $writer = Writer::factory();
 
@@ -92,6 +93,7 @@ interface IRootInterchange extends IReaderInterchange, IWriterInterchange
 
 // Tree
 interface ITree extends
+    Provider,
     IReaderInterchange,
     IWriterInterchange,
     core\collection\IAttributeContainer,
