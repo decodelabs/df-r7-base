@@ -1,6 +1,6 @@
 parameters:
     level: max
-    bootstrap: %rootDir%/../../../../base/tests/bootstrap.php
+    bootstrap: %currentWorkingDirectory%/vendor/df-r7/base/tests/bootstrap.php
     inferPrivatePropertyTypeFromConstructor: true
 
     excludes_analyse:
