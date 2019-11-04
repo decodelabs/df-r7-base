@@ -281,15 +281,26 @@ PHP;
             case 'Http':
             case 'Daemon':
             case 'Task':
-                return $runMode;
-
-            default:
-                if (in_array(\PHP_SAPI, ['cli', 'phpdbg'])) {
-                    return 'Task';
-                }
-
-                throw Glitch::EUnexpectedValue('Unexpected run mode: '.$runMode.' ('.\PHP_SAPI.')');
+                return (string)$runMode;
         }
+
+        switch (\PHP_SAPI) {
+            case 'cli':
+            case 'phpdbg':
+                return 'Task';
+
+            case 'apache':
+            case 'apache2filter':
+            case 'apache2handler':
+            case 'fpm-fcgi':
+            case 'cgi-fcgi':
+            case 'phttpd':
+            case 'pi3web':
+            case 'thttpd':
+                return 'Http';
+        }
+
+        throw Glitch::EUnexpectedValue('Unable to detect run mode ('.\PHP_SAPI.')');
     }
 
 
