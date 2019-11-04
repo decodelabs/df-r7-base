@@ -34,13 +34,13 @@ class Reader implements IReader
     protected $_buffer;
     protected $_rewindSeek = 0;
 
-    public static function openFile($path): IReader
+    public static function openFile($path): Reader
     {
         ini_set('auto_detect_line_endings', true);
         return new self(Atlas::$fs->file($path, Mode::READ_ONLY));
     }
 
-    public static function openString(string $string): IReader
+    public static function openString(string $string): Reader
     {
         return new self(Atlas::$fs->createMemoryFile($string));
     }
