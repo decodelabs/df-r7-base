@@ -380,6 +380,7 @@ abstract class Base implements IDaemon
         }
 
         $this->_isStopping = true;
+        $this->events->stop();
         Cli::info('STOPPING');
         return $this;
     }
