@@ -11,12 +11,6 @@ use df\flex;
 
 use DecodeLabs\Glitch;
 
-interface IInterchange
-{
-    public function readXml(ITree $reader);
-    public function writeXml(IWriter $writer);
-}
-
 interface IReaderInterchange
 {
     public static function fromXmlFile($xmlFile);
@@ -88,8 +82,10 @@ trait TWriterInterchange
     }
 }
 
-interface IRootInterchange extends IInterchange, IReaderInterchange, IWriterInterchange
+interface IRootInterchange extends IReaderInterchange, IWriterInterchange
 {
+    public function readXml(ITree $reader);
+    public function writeXml(IWriter $writer);
 }
 
 
