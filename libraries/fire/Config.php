@@ -204,7 +204,7 @@ class Config extends core\Config implements ILayoutConfig
                 //continue;
             }
 
-            $slots[$id] = [
+            $slots[$slotId] = [
                 'name' => $slot->getName(),
                 'minBlocks' => $slot->getMinBlocks(),
                 'maxBlocks' => $slot->getMaxBlocks(),
