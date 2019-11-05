@@ -15,12 +15,13 @@ use df\arch;
 use DecodeLabs\Tagged\Xml\Element as XmlElement;
 use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
 use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
+use DecodeLabs\Tagged\Xml\SerializableTrait as XmlSerializableTrait;
 
 use DecodeLabs\Glitch;
 
 abstract class Base implements fire\IBlock
 {
-    use flex\xml\TInterchange;
+    use XmlSerializableTrait;
     use aura\view\TView_DeferredRenderable;
     use core\TStringProvider;
 
@@ -31,14 +32,17 @@ abstract class Base implements fire\IBlock
 
     public static function fromXmlElement(XmlElement $element)
     {
-        $output = self::factory($element->getAttribute('type'));
-
-        if ($output instanceof XmlSerializable) {
-            $output->xmlUnserialize($element);
-        } elseif (method_exists($output, 'readFlexXml')) {
-            $output->readFlexXml(flex\xml\Tree::fromXmlElement($element));
+        if (null === ($type = $element->getAttribute('type'))) {
+            throw Glitch::EUnexpectedValue('Block XML does not contain type attribute', null, $element);
         }
 
+        $output = self::factory($type);
+
+        if (!$output instanceof XmlSerializable) {
+            throw Glitch::EUnexpectedValue('Block object is not instanceof XmlSerializable', null, $block);
+        }
+
+        $output->xmlUnserialize($element);
         return $output;
     }
 
@@ -144,16 +148,6 @@ abstract class Base implements fire\IBlock
     }
 
     protected function writeXml(XmlWriter $writer): void
-    {
-        Glitch::incomplete();
-    }
-
-    public function readFlexXml(flex\xml\ITree $reader)
-    {
-        Glitch::incomplete();
-    }
-
-    public function writeFlexXml(flex\xml\IWriter $writer)
     {
         Glitch::incomplete();
     }

@@ -36,7 +36,7 @@ interface IManager extends core\IManager
 
 // Block
 interface IBlock extends
-    flex\xml\IInterchange,
+    XmlSerializable,
     aura\view\IDeferredRenderable,
     arch\node\IDelegateProxy
 {

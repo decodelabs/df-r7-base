@@ -14,9 +14,8 @@ use df\aura;
 
 use DecodeLabs\Tagged\Xml\Element as XmlElement;
 use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
-use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
 
-class Markdown extends Base implements XmlSerializable
+class Markdown extends Base
 {
     const DEFAULT_CATEGORIES = ['Description'];
 

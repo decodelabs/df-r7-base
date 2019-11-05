@@ -15,9 +15,8 @@ use df\aura;
 use DecodeLabs\Tagged\Html;
 use DecodeLabs\Tagged\Xml\Element as XmlElement;
 use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
-use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
 
-class AudioEmbed extends Base implements XmlSerializable
+class AudioEmbed extends Base
 {
     const DEFAULT_CATEGORIES = ['Article', 'Description'];
 

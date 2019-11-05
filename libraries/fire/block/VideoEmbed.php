@@ -14,11 +14,10 @@ use df\aura;
 
 use DecodeLabs\Tagged\Xml\Element as XmlElement;
 use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
-use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
 
 use DecodeLabs\Tagged\Html;
 
-class VideoEmbed extends Base implements XmlSerializable
+class VideoEmbed extends Base
 {
     const DEFAULT_CATEGORIES = ['Article', 'Description'];
 
