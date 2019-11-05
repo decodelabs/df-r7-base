@@ -143,6 +143,8 @@ interface IRecord extends IDataProvider, mesh\job\IJobProvider, core\IExporterVa
     public function deploySaveJobs(mesh\job\IQueue $queue);
     public function deployDeleteJobs(mesh\job\IQueue $queue);
     public function triggerJobEvent(mesh\job\IQueue $queue, opal\record\IJob $job, $when);
+
+    public function __toString(): string;
 }
 
 interface ILocationalRecord extends IRecord
