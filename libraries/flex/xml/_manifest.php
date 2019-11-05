@@ -25,8 +25,8 @@ use DOMElement;
 
 interface IInterchange extends Consumer, Provider
 {
-    public function readXml(ITree $reader);
-    public function writeXml(IWriter $writer);
+    public function readFlexXml(ITree $reader);
+    public function writeFlexXml(IWriter $writer);
 }
 
 trait TInterchange
@@ -52,7 +52,7 @@ trait TInterchange
             return $output;
         } else {
             $output = new $class();
-            $output->readXml(Tree::fromXmlElement($element));
+            $output->readFlexXml(Tree::fromXmlElement($element));
             return $output;
         }
     }
@@ -75,7 +75,7 @@ trait TInterchange
                 $writer->writeHeader();
             }
 
-            $this->writeXml($writer);
+            $this->writeFlexXml($writer);
             $writer->finalize();
             return $writer->toXmlString();
         }

@@ -12,7 +12,11 @@ use df\arch;
 use df\flex;
 use df\aura;
 
-class LibraryImage extends Base
+use DecodeLabs\Tagged\Xml\Element as XmlElement;
+use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
+use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
+
+class LibraryImage extends Base implements XmlSerializable
 {
     const DEFAULT_CATEGORIES = ['Description'];
 
@@ -70,31 +74,21 @@ class LibraryImage extends Base
         return empty($this->_imageId);
     }
 
-    public function readXml(flex\xml\ITree $reader)
+    protected function readXml(XmlElement $element): void
     {
-        $this->_validateXmlReader($reader);
-
-        $this->_imageId = $reader->getAttribute('image');
-        $this->_alt = $reader->getAttribute('alt');
-        $this->setLink($reader->getAttribute('href'));
-
-        return $this;
+        $this->_imageId = $element->getAttribute('image');
+        $this->_alt = $element->getAttribute('alt');
+        $this->setLink($element->getAttribute('href'));
     }
 
-    public function writeXml(flex\xml\IWriter $writer)
+    protected function writeXml(XmlWriter $writer): void
     {
-        $this->_startWriterBlockElement($writer);
-
         $writer->setAttribute('image', $this->_imageId);
         $writer->setAttribute('alt', $this->_alt);
 
         if ($this->_link) {
             $writer->setAttribute('href', $this->_link);
         }
-
-        $this->_endWriterBlockElement($writer);
-
-        return $this;
     }
 
 

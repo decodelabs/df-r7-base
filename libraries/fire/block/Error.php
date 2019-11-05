@@ -12,9 +12,13 @@ use df\flex;
 use df\arch;
 use df\aura;
 
+use DecodeLabs\Tagged\Xml\Element as XmlElement;
+use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
+use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
+
 use DecodeLabs\Glitch;
 
-class Error extends Base
+class Error extends Base implements XmlSerializable
 {
     const DEFAULT_CATEGORIES = [];
 
@@ -77,12 +81,11 @@ class Error extends Base
 
 
     // Io
-    public function readXml(flex\xml\ITree $reader)
+    protected function readXml(XmlElement $element): void
     {
-        return $this;
     }
 
-    public function writeXml(flex\xml\IWriter $writer)
+    protected function writeXml(XmlWriter $writer): void
     {
         throw Glitch::ERuntime(
             'Error block type cannot be saved to xml'

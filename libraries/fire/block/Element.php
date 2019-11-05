@@ -12,7 +12,11 @@ use df\arch;
 use df\flex;
 use df\aura;
 
-class Element extends Base
+use DecodeLabs\Tagged\Xml\Element as XmlElement;
+use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
+use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
+
+class Element extends Base implements XmlSerializable
 {
     const DEFAULT_CATEGORIES = [];
 
@@ -43,21 +47,14 @@ class Element extends Base
 
 
     // Io
-    public function readXml(flex\xml\ITree $reader)
+    protected function readXml(XmlElement $element): void
     {
-        $this->_validateXmlReader($reader);
-        $this->_slug = $reader->getAttribute('slug');
-
-        return $this;
+        $this->_slug = $element->getAttribute('slug');
     }
 
-    public function writeXml(flex\xml\IWriter $writer)
+    protected function writeXml(XmlWriter $writer): void
     {
-        $this->_startWriterBlockElement($writer);
         $writer->setAttribute('slug', $this->_slug);
-        $this->_endWriterBlockElement($writer);
-
-        return $this;
     }
 
 

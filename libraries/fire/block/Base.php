@@ -13,7 +13,9 @@ use df\aura;
 use df\arch;
 
 use DecodeLabs\Tagged\Xml\Element as XmlElement;
+use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
 use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
+
 use DecodeLabs\Glitch;
 
 abstract class Base implements fire\IBlock
@@ -33,8 +35,8 @@ abstract class Base implements fire\IBlock
 
         if ($output instanceof XmlSerializable) {
             $output->xmlUnserialize($element);
-        } elseif (method_exists($output, 'readXml')) {
-            $output->readXml(flex\xml\Tree::fromXmlElement($element));
+        } elseif (method_exists($output, 'readFlexXml')) {
+            $output->readFlexXml(flex\xml\Tree::fromXmlElement($element));
         }
 
         return $output;
@@ -122,7 +124,42 @@ abstract class Base implements fire\IBlock
     }
 
 
-    protected function _validateXmlReader(flex\xml\ITree $reader)
+    public function xmlUnserialize(XmlElement $element): void
+    {
+        $this->_validateXmlReader($element);
+        $this->readXml($element);
+    }
+
+    public function xmlSerialize(XmlWriter $writer): void
+    {
+        $this->_startWriterBlockElement($writer);
+        $this->writeXml($writer);
+        $this->_endWriterBlockElement($writer);
+    }
+
+
+    protected function readXml(XmlElement $element): void
+    {
+        Glitch::incomplete();
+    }
+
+    protected function writeXml(XmlWriter $writer): void
+    {
+        Glitch::incomplete();
+    }
+
+    public function readFlexXml(flex\xml\ITree $reader)
+    {
+        Glitch::incomplete();
+    }
+
+    public function writeFlexXml(flex\xml\IWriter $writer)
+    {
+        Glitch::incomplete();
+    }
+
+
+    protected function _validateXmlReader(/*XmlElement*/ $reader)
     {
         if ($reader->getTagName() != 'block') {
             throw Glitch::EUnexpectedValue(
@@ -146,7 +183,7 @@ abstract class Base implements fire\IBlock
     }
 
 
-    protected function _startWriterBlockElement(flex\xml\IWriter $writer)
+    protected function _startWriterBlockElement(/*XmlWriter*/ $writer)
     {
         $writer->startElement('block');
         $writer->setAttribute('version', $this->getVersion());
@@ -157,10 +194,8 @@ abstract class Base implements fire\IBlock
         }
     }
 
-    protected function _endWriterBlockElement(flex\xml\IWriter $writer)
+    protected function _endWriterBlockElement(/*XmlWriter*/ $writer)
     {
-        // TODO: End any unclosed child elements
-
         $writer->endElement();
     }
 }

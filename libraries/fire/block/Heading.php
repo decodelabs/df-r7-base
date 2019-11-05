@@ -12,7 +12,11 @@ use df\flex;
 use df\arch;
 use df\aura;
 
-class Heading extends Base
+use DecodeLabs\Tagged\Xml\Element as XmlElement;
+use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
+use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
+
+class Heading extends Base implements XmlSerializable
 {
     const DEFAULT_CATEGORIES = ['Description'];
 
@@ -110,20 +114,16 @@ class Heading extends Base
         return $this;
     }
 
-    public function readXml(flex\xml\ITree $reader)
-    {
-        $this->_validateXmlReader($reader);
-        $this->_heading = $reader->getFirstCDataSection();
-        $this->_level = $reader->getAttribute('level');
-        $this->_class = $reader->getAttribute('class');
 
-        return $this;
+    protected function readXml(XmlElement $element): void
+    {
+        $this->_heading = $element->getFirstCDataSection();
+        $this->_level = $element->getAttribute('level');
+        $this->_class = $element->getAttribute('class');
     }
 
-    public function writeXml(flex\xml\IWriter $writer)
+    protected function writeXml(XmlWriter $writer): void
     {
-        $this->_startWriterBlockElement($writer);
-
         $writer->setAttribute('level', $this->_level);
 
         if ($this->_class !== null) {
@@ -131,10 +131,8 @@ class Heading extends Base
         }
 
         $writer->writeCData($this->_heading);
-
-        $this->_endWriterBlockElement($writer);
-        return $this;
     }
+
 
     // Render
     public function render()

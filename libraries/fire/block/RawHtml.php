@@ -12,7 +12,11 @@ use df\flex;
 use df\arch;
 use df\aura;
 
-class RawHtml extends Base
+use DecodeLabs\Tagged\Xml\Element as XmlElement;
+use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
+use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
+
+class RawHtml extends Base implements XmlSerializable
 {
     const DEFAULT_CATEGORIES = ['Description'];
 
@@ -52,21 +56,14 @@ class RawHtml extends Base
 
 
     // Io
-    public function readXml(flex\xml\ITree $reader)
+    protected function readXml(XmlElement $element): void
     {
-        $this->_validateXmlReader($reader);
-
-        $this->_content = $reader->getFirstCDataSection();
-        return $this;
+        $this->_content = $element->getFirstCDataSection();
     }
 
-    public function writeXml(flex\xml\IWriter $writer)
+    protected function writeXml(XmlWriter $writer): void
     {
-        $this->_startWriterBlockElement($writer);
         $writer->writeCData($this->_content);
-        $this->_endWriterBlockElement($writer);
-
-        return $this;
     }
 
 
