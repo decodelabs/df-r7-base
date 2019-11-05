@@ -39,7 +39,7 @@ abstract class Base implements fire\IBlock
         $output = self::factory($type);
 
         if (!$output instanceof XmlSerializable) {
-            throw Glitch::EUnexpectedValue('Block object is not instanceof XmlSerializable', null, $block);
+            throw Glitch::EUnexpectedValue('Block object is not instanceof XmlSerializable', null, $output);
         }
 
         $output->xmlUnserialize($element);
