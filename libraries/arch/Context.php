@@ -25,7 +25,23 @@ class Context implements IContext, \Serializable, Inspectable
     public $request;
     public $location;
 
-    public static function getCurrent($onlyActive=false)
+    public static function getCurrent(): IContext
+    {
+        $runner = df\Launchpad::$runner;
+
+        if ($runner instanceof core\IContextAware) {
+            try {
+                if ($context = $runner->getContext()) {
+                    return $context;
+                }
+            } catch (\ENoContext $e) {
+            }
+        }
+
+        return self::factory();
+    }
+
+    public static function getActive(): ?IContext
     {
         $runner = df\Launchpad::$runner;
 
@@ -36,11 +52,7 @@ class Context implements IContext, \Serializable, Inspectable
             }
         }
 
-        if ($onlyActive) {
-            return null;
-        }
-
-        return self::factory();
+        return null;
     }
 
     public static function factory($location=null, $runMode=null, $request=null): IContext

@@ -104,12 +104,6 @@ trait TDirectoryHelper
                 $target = null;
             } else {
                 $context = Context::getCurrent();
-
-                if (!$context) {
-                    throw Glitch::{'df/arch/ENoContext'}(
-                        'No arch context is available for '.__CLASS__.' helper'
-                    );
-                }
             }
         }
 

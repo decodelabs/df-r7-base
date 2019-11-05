@@ -81,7 +81,7 @@ class Request extends core\uri\Url implements IRequest, Inspectable
             $first = $this->_path->get(0);
 
             if ($first == '~') {
-                if ($context = arch\Context::getCurrent(true)) {
+                if ($context = arch\Context::getActive()) {
                     $this->setArea($context->request->getArea());
                 } else {
                     $this->setArea(static::DEFAULT_AREA);
