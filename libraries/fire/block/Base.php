@@ -40,19 +40,6 @@ abstract class Base implements fire\IBlock
         return $output;
     }
 
-    public static function fromXmlTree(flex\xml\ITree $tree)
-    {
-        $output = self::factory($tree->getAttribute('type'));
-
-        if ($output instanceof XmlSerializable) {
-            $output->xmlUnserialize($tree->toXmlElement());
-        } elseif (method_exists($output, 'readXml')) {
-            $output->readXml($tree);
-        }
-
-        return $output;
-    }
-
     public static function factory(string $name): fire\IBlock
     {
         $class = 'df\\fire\\block\\'.ucfirst($name);

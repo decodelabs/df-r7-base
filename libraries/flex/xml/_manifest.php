@@ -13,6 +13,7 @@ use DecodeLabs\Tagged\Xml\Provider;
 use DecodeLabs\Tagged\Xml\Consumer;
 use DecodeLabs\Tagged\Xml\Element;
 use DecodeLabs\Tagged\Xml\Serializable;
+use DecodeLabs\Tagged\Xml\SerializableTrait;
 use DecodeLabs\Tagged\Xml\Writer as TaggedWriter;
 
 use DecodeLabs\Atlas;
@@ -24,20 +25,18 @@ use DOMElement;
 
 interface IInterchange extends Consumer, Provider
 {
-    public static function fromXmlTree(ITree $element);
-
     public function readXml(ITree $reader);
     public function writeXml(IWriter $writer);
 }
 
 trait TInterchange
 {
+    use SerializableTrait;
+
     public static function fromXml($xml)
     {
         if ($xml instanceof self) {
             return $xml;
-        } elseif ($xml instanceof ITree) {
-            return static::fromXmlTree($xml);
         } elseif ($xml instanceof Provider) {
             return static::fromXmlElement($xml->toXmlElement());
         } elseif ($xml instanceof DOMDocument) {
@@ -53,17 +52,6 @@ trait TInterchange
         }
     }
 
-    public static function fromXmlFile(string $xmlFile)
-    {
-        $reader = Tree::fromXmlFile($xmlFile);
-        return static::fromXmlTree($reader);
-    }
-
-    public static function fromXmlString(string $xmlString)
-    {
-        $reader = Tree::fromXmlString($xmlString);
-        return static::fromXmlTree($reader);
-    }
 
     public static function fromXmlElement(Element $element)
     {
@@ -85,30 +73,6 @@ trait TInterchange
         } else {
             $output = new $class();
             $output->readXml(Tree::fromXmlElement($element));
-            return $output;
-        }
-    }
-
-    public static function fromXmlTree(ITree $tree)
-    {
-        $class = get_called_class();
-        $ref = new \ReflectionClass($class);
-
-        if ($ref->isAbstract()) {
-            throw Glitch::ELogic('Xml reader interchange cannot be instantiated');
-        }
-
-        if ($ref->implementsInterface(Serializable::class)) {
-            $output = $ref->newInstanceWithoutConstructor();
-
-            if ($output instanceof Serializable) {
-                $output->xmlUnserialize($tree->toXmlElement());
-            }
-
-            return $output;
-        } else {
-            $output = new $class();
-            $output->readXml($tree);
             return $output;
         }
     }
@@ -143,11 +107,6 @@ trait TInterchange
         Atlas::$fs->createDir($dir);
 
         return Atlas::$fs->createFile($path, $this->toXmlString());
-    }
-
-    public function toXmlElement(): Element
-    {
-        return Element::fromXmlString($this->toXmlString());
     }
 }
 

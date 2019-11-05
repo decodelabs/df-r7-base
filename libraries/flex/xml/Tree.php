@@ -99,11 +99,6 @@ class Tree implements ITree, Inspectable
         return self::fromDOMElement($element->getDomElement());
     }
 
-    public static function fromXmlTree(ITree $element)
-    {
-        return $element;
-    }
-
     public static function fromHtmlFile($file)
     {
         try {
