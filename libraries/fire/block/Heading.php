@@ -118,16 +118,16 @@ class Heading extends Base implements XmlSerializable
     protected function readXml(XmlElement $element): void
     {
         $this->_heading = $element->getFirstCDataSection();
-        $this->_level = $element->getAttribute('level');
-        $this->_class = $element->getAttribute('class');
+        $this->_level = $element['level'];
+        $this->_class = $element['class'];
     }
 
     protected function writeXml(XmlWriter $writer): void
     {
-        $writer->setAttribute('level', $this->_level);
+        $writer['level'] = $this->_level;
 
         if ($this->_class !== null) {
-            $writer->setAttribute('class', $this->_class);
+            $writer['class'] = $this->_class;
         }
 
         $writer->writeCData($this->_heading);

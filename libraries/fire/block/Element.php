@@ -49,12 +49,12 @@ class Element extends Base implements XmlSerializable
     // Io
     protected function readXml(XmlElement $element): void
     {
-        $this->_slug = $element->getAttribute('slug');
+        $this->_slug = $element['slug'];
     }
 
     protected function writeXml(XmlWriter $writer): void
     {
-        $writer->setAttribute('slug', $this->_slug);
+        $writer['slug'] = $this->_slug;
     }
 
 

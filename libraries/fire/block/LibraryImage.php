@@ -76,18 +76,18 @@ class LibraryImage extends Base implements XmlSerializable
 
     protected function readXml(XmlElement $element): void
     {
-        $this->_imageId = $element->getAttribute('image');
-        $this->_alt = $element->getAttribute('alt');
-        $this->setLink($element->getAttribute('href'));
+        $this->_imageId = $element['image'];
+        $this->_alt = $element['alt'];
+        $this->setLink($element['href']);
     }
 
     protected function writeXml(XmlWriter $writer): void
     {
-        $writer->setAttribute('image', $this->_imageId);
-        $writer->setAttribute('alt', $this->_alt);
+        $writer['image'] = $this->_imageId;
+        $writer['alt'] = $this->_alt;
 
         if ($this->_link) {
-            $writer->setAttribute('href', $this->_link);
+            $writer['href'] = $this->_link;
         }
     }
 
