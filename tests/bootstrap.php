@@ -24,8 +24,4 @@ if ($hasAppFile) {
 
 if (class_exists($appClass)) {
     df\Launchpad::$loader->loadPackages(array_keys($appClass::PACKAGES));
-} else {
-    df\Launchpad::$loader->loadPackages([
-        'nightfire', 'touchstone', 'webCore'
-    ]);
 }
