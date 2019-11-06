@@ -122,6 +122,11 @@ class Launchpad
 
     public static function initLoaders(string $appPath, float $startTime=null, bool $loadComposer=false): void
     {
+        // Ensure root has not been mangled by symlink
+        if (self::$rootPath === __DIR__) {
+            self::$rootPath = $appPath.'/vendor/df-r7/base';
+        }
+
         // Load core library
         self::loadBaseClass('core/_manifest');
 
