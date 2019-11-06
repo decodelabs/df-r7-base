@@ -124,7 +124,11 @@ class Launchpad
     {
         // Ensure root has not been mangled by symlink
         if (self::$rootPath === __DIR__) {
-            self::$rootPath = $appPath.'/vendor/df-r7/base';
+            $dir = $appPath.'/vendor/df-r7/base';
+
+            if (is_dir($dir)) {
+                self::$rootPath = $dir;
+            }
         }
 
         // Load core library
