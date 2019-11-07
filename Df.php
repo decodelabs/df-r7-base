@@ -121,14 +121,14 @@ class Launchpad
             define('df\\COMPILE_TIMESTAMP', null);
             define('df\\COMPILE_BUILD_ID', null);
             define('df\\COMPILE_ROOT_PATH', null);
-            define('df\\COMPILE_ENV_NODE', null);
+            define('df\\COMPILE_ENV_MODE', null);
         }
     }
 
     public static function initLoaders(string $appPath, float $startTime=null, bool $loadComposer=false): void
     {
         self::ensureCompileConstants();
-        
+
         // Ensure root has not been mangled by symlink
         if (self::$rootPath === __DIR__) {
             $dir = $appPath.'/vendor/df-r7/base';
