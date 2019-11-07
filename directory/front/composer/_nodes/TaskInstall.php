@@ -15,7 +15,7 @@ use DecodeLabs\Systemic;
 use DecodeLabs\Atlas;
 use DecodeLabs\Terminus\Cli;
 
-class TaskInstall extends arch\node\Task implements arch\node\IBuildTaskNode
+class TaskInstall extends arch\node\Task
 {
     public function execute()
     {
