@@ -106,12 +106,7 @@ class Launchpad
             require $activePath;
         }
 
-        if (!defined('df\\COMPILE_TIMESTAMP')) {
-            define('df\\COMPILE_TIMESTAMP', null);
-            define('df\\COMPILE_BUILD_ID', null);
-            define('df\\COMPILE_ROOT_PATH', null);
-            define('df\\COMPILE_ENV_NODE', null);
-        }
+        self::ensureCompileConstants();
 
         if (df\COMPILE_ROOT_PATH && is_dir(df\COMPILE_ROOT_PATH)) {
             self::$isCompiled = true;
@@ -120,8 +115,20 @@ class Launchpad
         }
     }
 
+    private static function ensureCompileConstants()
+    {
+        if (!defined('df\\COMPILE_TIMESTAMP')) {
+            define('df\\COMPILE_TIMESTAMP', null);
+            define('df\\COMPILE_BUILD_ID', null);
+            define('df\\COMPILE_ROOT_PATH', null);
+            define('df\\COMPILE_ENV_NODE', null);
+        }
+    }
+
     public static function initLoaders(string $appPath, float $startTime=null, bool $loadComposer=false): void
     {
+        self::ensureCompileConstants();
+        
         // Ensure root has not been mangled by symlink
         if (self::$rootPath === __DIR__) {
             $dir = $appPath.'/vendor/df-r7/base';
