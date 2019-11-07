@@ -126,7 +126,7 @@ class Launchpad
         if (self::$rootPath === __DIR__) {
             $dir = $appPath.'/vendor/df-r7/base';
 
-            if (is_dir($dir)) {
+            if (self::$rootPath !== $dir && is_dir($dir)) {
                 self::$rootPath = $dir;
             }
         }
