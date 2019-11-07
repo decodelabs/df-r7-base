@@ -112,8 +112,7 @@ PHP;
         $this->path = $path;
 
         $this->envId = $envId;
-        $this->envMode = defined('df\\COMPILE_ENV_MODE') && df\COMPILE_ENV_MODE !== null ?
-            df\COMPILE_ENV_MODE : 'testing';
+        $this->envMode = @df\COMPILE_ENV_MODE ?? 'testing';
     }
 
 
