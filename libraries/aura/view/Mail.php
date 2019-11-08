@@ -12,6 +12,7 @@ use df\flow;
 use df\arch;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Tagged\Html\Mail\Generator;
 
 class Mail extends flow\mail\Message implements ILayoutView
 {
@@ -19,6 +20,8 @@ class Mail extends flow\mail\Message implements ILayoutView
     use TView_Layout;
 
     const DEFAULT_LAYOUT = 'Default';
+
+    public $generator;
 
     protected $_textMode = false;
     protected $_hasRendered = false;
@@ -29,6 +32,7 @@ class Mail extends flow\mail\Message implements ILayoutView
         $this->context = $context;
 
         parent::__construct('(no subject)', null);
+        $this->generator = new Generator();
     }
 
     public function isPlainText(bool $flag=null)
@@ -78,6 +82,7 @@ class Mail extends flow\mail\Message implements ILayoutView
         }
 
         $this->getTheme()->beforeViewRender($this);
+        $this->setSlot('generator', $this->generator);
     }
 
     protected function _onContentRender($content)
