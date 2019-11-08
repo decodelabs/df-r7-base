@@ -12,6 +12,7 @@ use df\arch;
 use df\flex;
 use df\aura;
 
+use DecodeLabs\Tagged\Html;
 use DecodeLabs\Tagged\Xml\Element as XmlElement;
 use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
 
@@ -97,7 +98,7 @@ class LibraryImage extends Base
         $view = $this->getView();
 
         $url = $view->media->getImageUrl($this->_imageId);
-        $output = $view->html->image($url, $this->_alt);
+        $output = Html::image($url, $this->_alt);
 
         if ($this->_link) {
             $output = $view->html->link($this->_link, $output);

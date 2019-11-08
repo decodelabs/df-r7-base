@@ -12,6 +12,7 @@ use df\arch;
 use df\flex;
 use df\aura;
 
+use DecodeLabs\Tagged\Html;
 use DecodeLabs\Tagged\Xml\Element as XmlElement;
 use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
 
@@ -73,7 +74,7 @@ class Markdown extends Base
     {
         $view = $this->getView();
 
-        return $view->html('div.block', $view->html->markdown($this->_body))
+        return Html::{'div.block'}($view->html->markdown($this->_body))
             ->setDataAttribute('type', $this->getName());
     }
 

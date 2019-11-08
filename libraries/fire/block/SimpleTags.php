@@ -12,6 +12,7 @@ use df\arch;
 use df\flex;
 use df\aura;
 
+use DecodeLabs\Tagged\Html;
 use DecodeLabs\Tagged\Xml\Element as XmlElement;
 use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
 
@@ -75,7 +76,7 @@ class SimpleTags extends Base
     {
         $view = $this->getView();
 
-        return $view->html('div.block', $view->html->simpleTags($this->_body, true))
+        return Html::{'div.block'}($view->html->simpleTags($this->_body, true))
             ->setDataAttribute('type', $this->getName());
     }
 

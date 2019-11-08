@@ -12,6 +12,7 @@ use df\flex;
 use df\arch;
 use df\aura;
 
+use DecodeLabs\Tagged\Html;
 use DecodeLabs\Tagged\Xml\Element as XmlElement;
 use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
 
@@ -136,7 +137,7 @@ class Heading extends Base
     // Render
     public function render()
     {
-        return $this->getView()->html('h'.$this->_level.'.block', $this->_heading)
+        return Html::{'h'.$this->_level}($this->_heading)
             ->addClass($this->_class)
             ->setDataAttribute('type', $this->getName());
     }

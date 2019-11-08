@@ -12,10 +12,9 @@ use df\arch;
 use df\flex;
 use df\aura;
 
+use DecodeLabs\Tagged\Html;
 use DecodeLabs\Tagged\Xml\Element as XmlElement;
 use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
-
-use DecodeLabs\Tagged\Html;
 
 class VideoEmbed extends Base
 {
@@ -86,7 +85,7 @@ class VideoEmbed extends Base
         }
 
         if ($output) {
-            $output = $view->html('div.block', $output)
+            $output = Html::{'div.block'}($output)
                 ->setDataAttribute('type', $this->getName());
         }
 

@@ -24,7 +24,7 @@ interface IRenderable
     public function render();
 }
 
-interface IElementRepresentation extends core\IStringProvider, IRenderable
+interface IElementRepresentation extends core\IStringProvider, IRenderable, Markup
 {
 }
 

@@ -12,6 +12,7 @@ use df\flex;
 use df\arch;
 use df\aura;
 
+use DecodeLabs\Tagged\Html;
 use DecodeLabs\Tagged\Xml\Element as XmlElement;
 use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
 
@@ -76,7 +77,7 @@ class RawHtml extends Base
             return ' '.$matches[1].'="'.$view->uri->__invoke($matches[2]).'"';
         }, $this->_content);
 
-        return $view->html('div.block', $view->html->string($content))
+        return Html::{'div.block'}(Html::raw($content))
             ->setDataAttribute('type', $this->getName());
     }
 

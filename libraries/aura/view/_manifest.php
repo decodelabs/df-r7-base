@@ -13,6 +13,8 @@ use df\link;
 use df\flow;
 use df\flex;
 
+use DecodeLabs\Tagged\Markup;
+
 interface IRenderable
 {
     public function renderTo(IRenderTarget $target);
@@ -64,7 +66,8 @@ interface ISlotProvider extends ISlotContainer
 
 interface IContentProvider extends
     IDeferredRenderable,
-    arch\IProxyResponse
+    arch\IProxyResponse,
+    Markup
 {
 }
 
