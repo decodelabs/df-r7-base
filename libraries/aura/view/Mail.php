@@ -73,6 +73,11 @@ class Mail extends flow\mail\Message implements ILayoutView
         return !$this->_textMode && $this->_useLayout;
     }
 
+    protected function _canThemeProcess(): bool
+    {
+        return true;
+    }
+
     protected function _beforeRender()
     {
         if ($this->_hasRendered) {
