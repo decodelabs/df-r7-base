@@ -57,11 +57,15 @@ class Unit extends axis\unit\Table
             ->toRow();
 
         if (!$output) {
-            $output = $this->newRecord([
-                    'hash' => $hash,
-                    'body' => $json
-                ])
-                ->save();
+            try {
+                $output = $this->newRecord([
+                        'hash' => $hash,
+                        'body' => $json
+                    ])
+                    ->save();
+            } catch (\Throwable $e) {
+                $output = null;
+            }
         }
 
         return $output;
