@@ -336,9 +336,9 @@ class Text implements IText, \IteratorAggregate, Inspectable
     public static function baseConvert($input, $fromBase, $toBase, $pad=1)
     {
         if ($fromBase < 2
-        || $fromBase > 36
+        || $fromBase > 62
         || $toBase < 2
-        || $toBase > 36) {
+        || $toBase > 62) {
             return false;
         }
 
@@ -358,7 +358,7 @@ class Text implements IText, \IteratorAggregate, Inspectable
         }
 
 
-        $digitChars = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $digitChars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $inDigits = [];
         $outChars = '';
 
