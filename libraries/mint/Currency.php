@@ -169,6 +169,7 @@ class Currency implements ICurrency, Inspectable
         'MGA' => 0,
         'PYG' => 0,
         'RWF' => 0,
+        'UGX' => 0,
         'VND' => 0,
         'VUV' => 0,
         'XAF' => 0,
