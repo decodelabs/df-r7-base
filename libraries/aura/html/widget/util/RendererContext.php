@@ -10,8 +10,12 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class RendererContext implements aura\html\widget\IRendererContext {
+use DecodeLabs\Tagged\Markup;
+use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged\Html\Element;
 
+class RendererContext implements aura\html\widget\IRendererContext
+{
     use core\collection\TArrayCollection;
     use core\collection\TArrayCollection_Constructor;
     use core\collection\TArrayCollection_AssociativeValueMap;
@@ -32,78 +36,93 @@ class RendererContext implements aura\html\widget\IRendererContext {
     protected $_skipRow = false;
     protected $_skipCells = 0;
 
-    public function __construct(aura\html\widget\IWidget $widget) {
+    public function __construct(aura\html\widget\IWidget $widget)
+    {
         $this->_widget = $widget;
 
-        if($widget instanceof aura\html\widget\IMappedListWidget) {
+        if ($widget instanceof aura\html\widget\IMappedListWidget) {
             $this->_rowProcessor = $widget->getRowProcessor();
         }
     }
 
-    public function setComponent(?arch\IComponent $component) {
+    public function setComponent(?arch\IComponent $component)
+    {
         $this->component = $component;
         return $this;
     }
 
-    public function getComponent(): ?arch\IComponent {
+    public function getComponent(): ?arch\IComponent
+    {
         return $this->component;
     }
 
-    public function getWidget(): aura\html\widget\IWidget {
+    public function getWidget(): aura\html\widget\IWidget
+    {
         return $this->_widget;
     }
 
-    public function getKey() {
+    public function getKey()
+    {
         return $this->key;
     }
 
-    public function getField() {
+    public function getField()
+    {
         return $this->field;
     }
 
-    public function getCounter(): int {
+    public function getCounter(): int
+    {
         return $this->counter;
     }
 
-    public function getCellTag(): ?aura\html\ITag {
+    public function getCellTag(): ?aura\html\ITag
+    {
         return $this->cellTag;
     }
 
-    public function getRowTag(): ?aura\html\ITag {
+    public function getRowTag(): ?aura\html\ITag
+    {
         return $this->rowTag;
     }
 
-    public function getFieldTag(): ?aura\html\ITag {
+    public function getFieldTag(): ?aura\html\ITag
+    {
         return $this->fieldTag;
     }
 
-    public function addDivider() {
-        if($this->divider === null) {
+    public function addDivider()
+    {
+        if ($this->divider === null) {
             $this->divider = '';
         }
 
         return $this;
     }
 
-    public function setDivider(?string $label) {
+    public function setDivider(?string $label)
+    {
         $this->divider = $label;
         return $this;
     }
 
-    public function getDivider(): ?string {
+    public function getDivider(): ?string
+    {
         return $this->divider;
     }
 
-    public function prepareRow($row) {
-        if($this->_rowProcessor) {
+    public function prepareRow($row)
+    {
+        if ($this->_rowProcessor) {
             $row = core\lang\Callback::call($this->_rowProcessor, $row);
         }
 
         return $row;
     }
 
-    public function shouldConvertNullToNa(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldConvertNullToNa(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_nullToNa = $flag;
             return $this;
         }
@@ -111,7 +130,8 @@ class RendererContext implements aura\html\widget\IRendererContext {
         return $this->_nullToNa;
     }
 
-    public function reset() {
+    public function reset()
+    {
         $this->counter = 0;
         $this->clear();
         $this->key = $this->cellTag = $this->rowTag = $this->fieldTag = null;
@@ -121,7 +141,8 @@ class RendererContext implements aura\html\widget\IRendererContext {
         return $this;
     }
 
-    public function iterate($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null, aura\html\ITag $fieldTag=null) {
+    public function iterate($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null, aura\html\ITag $fieldTag=null)
+    {
         $this->counter++;
         $this->clear();
 
@@ -137,7 +158,8 @@ class RendererContext implements aura\html\widget\IRendererContext {
         return $this;
     }
 
-    public function iterateRow($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null, aura\html\ITag $fieldTag=null) {
+    public function iterateRow($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null, aura\html\ITag $fieldTag=null)
+    {
         $this->counter++;
 
         $this->key = $key;
@@ -151,25 +173,27 @@ class RendererContext implements aura\html\widget\IRendererContext {
         return $this;
     }
 
-    public function iterateField($field, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null, aura\html\ITag $fieldTag=null) {
+    public function iterateField($field, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null, aura\html\ITag $fieldTag=null)
+    {
         $this->field = $field;
         $this->cellTag = $cellTag;
         $this->rowTag = $rowTag;
         $this->fieldTag = $fieldTag;
 
-        if($this->_skipCells) {
+        if ($this->_skipCells) {
             $this->_skipCells--;
         }
 
         return $this;
     }
 
-    public function renderCell($value, $renderer=null) {
-        if($renderer) {
+    public function renderCell($value, $renderer=null)
+    {
+        if ($renderer) {
             try {
                 $value = core\lang\Callback($renderer, $value, $this);
-            } catch(\Throwable $e) {
-                if(!df\Launchpad::$app->isTesting()) {
+            } catch (\Throwable $e) {
+                if (!df\Launchpad::$app->isTesting()) {
                     $value = new aura\html\ElementString('<span class="error">ERROR: '.$e->getMessage().'</span>');
                 } else {
                     throw $e;
@@ -177,69 +201,80 @@ class RendererContext implements aura\html\widget\IRendererContext {
             }
         }
 
-        if($value instanceof core\IDescribable) {
+        if ($value instanceof core\IDescribable) {
             $value = $value->getOutputDescription();
         }
 
-        if($value instanceof aura\html\IRenderable
-        || $value instanceof aura\view\IDeferredRenderable) {
+        if (
+            $value instanceof aura\html\IRenderable ||
+            $value instanceof aura\view\IDeferredRenderable ||
+            $value instanceof Element
+        ) {
             $value = $value->render();
+        } elseif ($value instanceof Markup) {
+            $value = (string)$value;
         }
 
-        if($value instanceof \Generator) {
+        if ($value instanceof \Generator) {
             $gen = $value;
             $value = null;
 
-            foreach($gen as $part) {
+            foreach ($gen as $part) {
                 $value .= aura\html\ElementContent::normalize($part);
             }
 
-            if($value !== null) {
+            if ($value !== null) {
                 $value = new aura\html\ElementString($value);
             }
         }
 
-        if(is_numeric($value)) {
+        if (is_numeric($value)) {
             $value = $this->_widget->getContext()->html->number($value);
-        } else if(is_bool($value)) {
+        } elseif (is_bool($value)) {
             $value = $this->_widget->getContext()->html->booleanIcon($value);
-        } else if($this->_nullToNa && empty($value) && $value != '0') {
+        } elseif ($this->_nullToNa && empty($value) && $value != '0') {
             $value = new aura\html\ElementString('<span class="na">n/a</span>');
-        } else if($value instanceof core\time\IDate) {
+        } elseif ($value instanceof core\time\IDate) {
             $value = $this->_widget->getContext()->html->date($value);
         }
 
         return $value;
     }
 
-    public function skipRow() {
+    public function skipRow()
+    {
         $this->_skipRow = true;
         return $this;
     }
 
-    public function skipCells(int $count=1) {
+    public function skipCells(int $count=1)
+    {
         $this->_skipCells = $count;
         return $this;
     }
 
-    public function shouldSkipRow(): bool {
+    public function shouldSkipRow(): bool
+    {
         return $this->_skipRow;
     }
 
-    public function shouldSkipCells(): bool {
+    public function shouldSkipCells(): bool
+    {
         return $this->_skipCells;
     }
 
 
-// Store
-    public function setStore($key, $value) {
+    // Store
+    public function setStore($key, $value)
+    {
         $this->_store[$key] = $value;
         return $this;
     }
 
-    public function hasStore(...$keys): bool {
-        foreach($keys as $key) {
-            if(isset($this->_store[$key])) {
+    public function hasStore(...$keys): bool
+    {
+        foreach ($keys as $key) {
+            if (isset($this->_store[$key])) {
                 return true;
             }
         }
@@ -247,16 +282,18 @@ class RendererContext implements aura\html\widget\IRendererContext {
         return false;
     }
 
-    public function getStore($key, $default=null) {
-        if(isset($this->_store[$key])) {
+    public function getStore($key, $default=null)
+    {
+        if (isset($this->_store[$key])) {
             return $this->_store[$key];
         }
 
         return $default;
     }
 
-    public function removeStore(...$keys) {
-        foreach($keys as $key) {
+    public function removeStore(...$keys)
+    {
+        foreach ($keys as $key) {
             unset($this->_store[$key]);
         }
 
