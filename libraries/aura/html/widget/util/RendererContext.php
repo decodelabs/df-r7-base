@@ -207,12 +207,21 @@ class RendererContext implements aura\html\widget\IRendererContext
 
         if (
             $value instanceof aura\html\IRenderable ||
-            $value instanceof aura\view\IDeferredRenderable ||
-            $value instanceof Element
+            $value instanceof aura\view\IDeferredRenderable
         ) {
             $value = $value->render();
+        } elseif ($value instanceof Element) {
+            $value = $value->render();
+
+            if ($value !== null) {
+                $value = Html::raw($value);
+            }
         } elseif ($value instanceof Markup) {
             $value = (string)$value;
+
+            if (!strlen($value)) {
+                $value = Html::raw($value);
+            }
         }
 
         if ($value instanceof \Generator) {
