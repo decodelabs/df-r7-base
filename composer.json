@@ -24,7 +24,8 @@
         "decodelabs/enlighten": "dev-develop",
 
         "guzzlehttp/guzzle": "^6.4",
-        "erusev/parsedown": "^1.7"
+        "erusev/parsedown": "^1.7",
+        "nesbot/carbon": "^2.26"
     },
     "require-dev": {
         "phpunit/phpunit": "^8",
