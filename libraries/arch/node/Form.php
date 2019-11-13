@@ -180,17 +180,26 @@ abstract class Form extends Base implements IFormNode
 
     private function _createSessionNamespace()
     {
-        $output = 'form://'.implode('/', $this->context->request->getLiteralPathArray());
+        $request = clone $this->context->request;
+        $ext = $this->getSessionNamespaceExtension();
 
-        if (substr($output, -5) == '.ajax') {
-            $output = substr($output, 0, -5);
+        if ($ext === 'ajax') {
+            $ext = null;
         }
+
+        $request->setType($ext);
+        $output = 'form://'.implode('/', $request->getLiteralPathArray());
 
         if (null !== ($dataId = $this->getInstanceId())) {
             $output .= '#'.$dataId;
         }
 
         return $output;
+    }
+
+    protected function getSessionNamespaceExtension(): ?string
+    {
+        return $this->context->request->getPath()->getExtension();
     }
 
     protected function getInstanceId()
