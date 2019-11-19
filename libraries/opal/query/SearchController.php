@@ -355,10 +355,14 @@ class SearchController implements ISearchController, Inspectable
         $entity->setText($this->_phrase);
         $fields = [];
 
-        foreach ($this->_fields as $name => $set) {
-            $fields[$name] = 'x'.$set['weight'].', '.$set['operator'];
+        if (!empty($this->_fields)) {
+            foreach ($this->_fields as $name => $set) {
+                $fields[$name] = 'x'.$set['weight'].', '.$set['operator'];
+            }
         }
 
-        $entity->setValues($inspector->inspectList($fields));
+        $entity
+            ->setProperty('*type', $inspector($this->_type))
+            ->setValues($inspector->inspectList($fields));
     }
 }
