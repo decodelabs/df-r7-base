@@ -12,7 +12,7 @@ use df\arch;
 
 class TaskPurgeLogs extends arch\node\Task
 {
-    const SCHEDULE = '0 4 30 * *';
+    const SCHEDULE = '30 4 * * *';
     const SCHEDULE_AUTOMATIC = true;
 
     public function execute()
