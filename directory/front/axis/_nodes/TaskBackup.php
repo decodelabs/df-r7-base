@@ -18,8 +18,6 @@ use DecodeLabs\Glitch;
 
 class TaskBackup extends arch\node\Task
 {
-    const SCHEDULE = '0 0 * * 1';
-
     protected $_unitAdapters = [];
     protected $_backupAdapters = [];
     protected $_path;
