@@ -11,25 +11,29 @@ use df\arch;
 use df\aura;
 use df\flex;
 
-abstract class DeleteForm extends Form {
+use DecodeLabs\Tagged\Html;
 
+abstract class DeleteForm extends Form
+{
     const ITEM_NAME = 'item';
     const IS_PERMANENT = true;
 
     const DEFAULT_EVENT = 'delete';
 
-    protected function getItemName() {
+    protected function getItemName()
+    {
         return static::ITEM_NAME;
     }
 
-    protected function createUi() {
+    protected function createUi()
+    {
         $itemName = $this->getItemName();
         $form = $this->content->addForm();
         $fs = $form->addFieldSet($this->_('%n% information', ['%n%' => ucfirst($itemName)]));
 
-        $fs->push($this->html('p', $this->getMainMessage()));
+        $fs->push(Html::{'p'}($this->getMainMessage()));
 
-        if(static::IS_PERMANENT) {
+        if (static::IS_PERMANENT) {
             $fs->push(
                 $this->html->flashMessage(
                     $this->_('CAUTION: This action is permanent!'), 'warning'
@@ -37,7 +41,7 @@ abstract class DeleteForm extends Form {
             );
         }
 
-        if(!$this->isValid()) {
+        if (!$this->isValid()) {
             $fs->push($this->html->fieldError($this->values));
         }
 
@@ -65,7 +69,8 @@ abstract class DeleteForm extends Form {
         );
     }
 
-    protected function getMainMessage() {
+    protected function getMainMessage()
+    {
         return $this->_(
             'Are you sure you want to delete this %n%?',
             ['%n%' => $this->getItemName()]
@@ -73,17 +78,24 @@ abstract class DeleteForm extends Form {
     }
 
 
-    protected function createItemUi(/*aura\html\widget\IContainerWidget*/ $container) {}
+    protected function createItemUi(/*aura\html\widget\IContainerWidget*/ $container)
+    {
+    }
 
-    protected function customizeMainButton($button) {}
-    protected function customizeCancelButton($button) {}
+    protected function customizeMainButton($button)
+    {
+    }
+    protected function customizeCancelButton($button)
+    {
+    }
 
 
-    protected function onDeleteEvent() {
+    protected function onDeleteEvent()
+    {
         $output = $this->apply();
 
-        if($this->values->isValid()) {
-            if($message = $this->getFlashMessage()) {
+        if ($this->values->isValid()) {
+            if ($message = $this->getFlashMessage()) {
                 $this->comms->flash(
                     flex\Text::formatId($this->getItemName()).'.deleted',
                     $message,
@@ -93,7 +105,7 @@ abstract class DeleteForm extends Form {
 
             $complete = $this->finalize();
 
-            if($output !== null) {
+            if ($output !== null) {
                 return $output;
             } else {
                 return $complete;
@@ -103,14 +115,16 @@ abstract class DeleteForm extends Form {
 
     abstract protected function apply();
 
-    protected function getFlashMessage() {
+    protected function getFlashMessage()
+    {
         return $this->_(
             'The %n% has been successfully deleted',
             ['%n%' => $this->getItemName()]
         );
     }
 
-    protected function finalize() {
+    protected function finalize()
+    {
         return $this->complete();
     }
 }

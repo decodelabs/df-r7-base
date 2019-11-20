@@ -261,7 +261,7 @@ trait TElementContent
                 $value = new ElementString($value);
             }
 
-            $output = $value = $this->_renderChild($value);
+            $output = $this->_renderChild($value);
         } elseif ($value instanceof aura\view\IRenderable) {
             if ($this instanceof aura\view\IRenderTargetProvider) {
                 $value = $value->renderTo($this->getRenderTarget());

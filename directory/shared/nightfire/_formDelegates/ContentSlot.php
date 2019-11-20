@@ -12,6 +12,8 @@ use df\fire;
 use df\arch;
 use df\aura;
 
+use DecodeLabs\Tagged\Html;
+
 class ContentSlot extends arch\node\form\Delegate implements
     arch\node\IInlineFieldRenderableDelegate,
     arch\node\IResultProviderDelegate
@@ -232,7 +234,7 @@ class ContentSlot extends arch\node\form\Delegate implements
             $this->values->blockType->{$delegateId}->setValue($blockName);
 
             $fa->add('nav.buttons', [
-                $this->html('div.type', [
+                Html::{'div.type'}([
                     $this->html->groupedSelect(
                             $this->fieldName('blockType['.$delegateId.']'),
                             $this->values->blockType->{$delegateId},
@@ -249,7 +251,7 @@ class ContentSlot extends arch\node\form\Delegate implements
                         ->shouldValidate(false)
                 ]),
 
-                $this->html('div.control', [
+                Html::{'div.control'}([
                     $this->html->eventButton(
                             $this->eventName('removeBlock', $delegateId),
                             $this->_('Remove')

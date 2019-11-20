@@ -10,6 +10,8 @@ use df\core;
 use df\arch;
 use df\aura;
 
+use DecodeLabs\Tagged\Html;
+
 class DeleteSelectedForm extends AffectSelectedForm
 {
     const IS_PERMANENT = true;
@@ -23,7 +25,7 @@ class DeleteSelectedForm extends AffectSelectedForm
 
     protected function renderUi($fs)
     {
-        $fs->push($this->html('p', $this->getMainMessage()));
+        $fs->push(Html::{'p'}($this->getMainMessage()));
 
         if (static::IS_PERMANENT) {
             $fs->push(

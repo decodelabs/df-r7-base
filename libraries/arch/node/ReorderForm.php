@@ -10,6 +10,8 @@ use df\core;
 use df\arch;
 use df\aura;
 
+use DecodeLabs\Tagged\Html;
+
 abstract class ReorderForm extends Form
 {
     const ITEM_NAME = 'item';
@@ -49,7 +51,7 @@ abstract class ReorderForm extends Form
 
         if (null !== ($parentName = $this->getParentName())) {
             $fs->addField(ucfirst($this->getParentItemName()))->push(
-                $this->html('strong', $parentName)
+                Html::{'strong'}($parentName)
             );
         }
 
@@ -78,8 +80,8 @@ abstract class ReorderForm extends Form
 
         foreach ($names as $id => $name) {
             $fa->push(
-                $this->html('div.w.list.selection', [
-                    $this->html('div.body', $name)
+                Html::{'div.w.list.selection'}([
+                    Html::{'div.body'}($name)
                         ->setTitle($id),
 
                     $this->html->buttonArea(

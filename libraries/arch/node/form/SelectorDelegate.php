@@ -12,6 +12,7 @@ use df\aura;
 use df\opal;
 use df\mesh;
 
+use DecodeLabs\Tagged\Html;
 use DecodeLabs\Glitch;
 
 abstract class SelectorDelegate extends Delegate implements
@@ -284,7 +285,7 @@ abstract class SelectorDelegate extends Delegate implements
             static::ONE_LIST_THRESHOLD;
 
         if ($this->_isForMany) {
-            $select = $this->html('div.w.list.checkbox', function () use ($options) {
+            $select = Html::{'div.w.list.checkbox'}(function () use ($options) {
                 foreach ($options as $key => $val) {
                     yield $this->html->checkbox(
                             $this->fieldName('selected['.$key.']'),
@@ -309,8 +310,8 @@ abstract class SelectorDelegate extends Delegate implements
         }
 
         $fa->push(
-            $this->html('div.w.list.selection', [
-                $this->html('div.body', $select),
+            Html::{'div.w.list.selection'}([
+                Html::{'div.body'}($select),
                 $this->html->hidden($this->fieldName('_poke'), 1),
 
                 $ba = $this->html->buttonArea()
@@ -329,7 +330,7 @@ abstract class SelectorDelegate extends Delegate implements
             // Multiple entry
             if (empty($selected)) {
                 $fa->push(
-                    $this->html('em', $this->_('nothing selected')),
+                    Html::{'em'}($this->_('nothing selected')),
                     $this->html->string('</div>')
                 );
             } else {
@@ -379,7 +380,7 @@ abstract class SelectorDelegate extends Delegate implements
                 $resultName = $this->_getResultDisplayName($selected);
 
                 $fa->push(
-                    $this->html('strong', $resultName),
+                    Html::{'strong'}($resultName),
 
                     $this->html->hidden(
                             $this->fieldName('selected'),
@@ -389,7 +390,7 @@ abstract class SelectorDelegate extends Delegate implements
             } else {
                 // No selection
                 $fa->push(
-                    $this->html('em', $this->_('nothing selected'))
+                    Html::{'em'}($this->_('nothing selected'))
                 );
             }
 
@@ -685,10 +686,10 @@ abstract class SelectorDelegate extends Delegate implements
         $name = $this->_getResultDisplayName($selected);
 
         $fa->push(
-            $this->html('div.w.list.selection', [
+            Html::{'div.w.list.selection'}([
                 $this->html->hidden($this->fieldName('selected'), $id),
 
-                $this->html('div.body', $name),
+                Html::{'div.body'}($name),
 
                 $this->html->buttonArea(
                     $this->html->eventButton(
@@ -716,10 +717,10 @@ abstract class SelectorDelegate extends Delegate implements
             $name = $this->_getResultDisplayName($result);
 
             $fa->push(
-                $this->html('div.w.list.selection', [
+                Html::{'div.w.list.selection'}([
                     $this->html->hidden($this->fieldName('selected['.$id.']'), $id),
 
-                    $this->html('div.body', $name),
+                    Html::{'div.body'}($name),
 
                     $this->html->buttonArea(
                         $this->html->eventButton(

@@ -10,6 +10,8 @@ use df\core;
 use df\arch;
 use df\aura;
 
+use DecodeLabs\Tagged\Html;
+
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -117,10 +119,10 @@ abstract class HeaderBar extends Base implements Inspectable
         }
 
         if ($title !== null) {
-            $output[] = $title = $this->html('h2', $title);
+            $output[] = $title = Html::{'h2'}($title);
 
             if ($this->_icon) {
-                $title->unshift($this->html->icon($this->_icon));
+                $title->prepend($this->html->icon($this->_icon));
             }
         }
 
@@ -134,12 +136,12 @@ abstract class HeaderBar extends Base implements Inspectable
         }
 
         if ($subTitle !== null) {
-            $output[] = $this->html('h3', $subTitle);
+            $output[] = Html::{'h3'}($subTitle);
         }
 
         // Selector area
         if ($selectorArea = $this->_renderSelectorArea()) {
-            $output[] = $this->html('div.w.selectorArea.floated', [$selectorArea]);
+            $output[] = Html::{'div.w.selectorArea.floated'}([$selectorArea]);
         }
 
 
@@ -157,7 +159,7 @@ abstract class HeaderBar extends Base implements Inspectable
         $output[] = $secondaryMenu = $this->html->menuBar()->addClass('secondary');
         $this->_addSectionLinks($secondaryMenu);
 
-        return $this->html('header.w.bar', $output);
+        return Html::{'header.w.bar'}($output);
     }
 
 

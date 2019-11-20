@@ -11,24 +11,28 @@ use df\arch;
 use df\aura;
 use df\flex;
 
-abstract class ConfirmForm extends Form {
+use DecodeLabs\Tagged\Html;
 
+abstract class ConfirmForm extends Form
+{
     const ITEM_NAME = 'item';
     const DEFAULT_EVENT = 'confirm';
     const DISPOSITION = 'positive';
 
-    protected function getItemName() {
+    protected function getItemName()
+    {
         return static::ITEM_NAME;
     }
 
-    protected function createUi() {
+    protected function createUi()
+    {
         $itemName = $this->getItemName();
         $form = $this->content->addForm();
         $fs = $form->addFieldSet($this->_('%n% information', ['%n%' => ucfirst($itemName)]));
 
-        $fs->push($this->html('p', $this->getMainMessage()));
+        $fs->push(Html::{'p'}($this->getMainMessage()));
 
-        if(!$this->isValid()) {
+        if (!$this->isValid()) {
             $fs->push($this->html->fieldError($this->values));
         }
 
@@ -57,21 +61,29 @@ abstract class ConfirmForm extends Form {
         );
     }
 
-    protected function getMainMessage() {
+    protected function getMainMessage()
+    {
         return $this->_('Are you sure?');
     }
 
-    protected function createItemUi(/*aura\html\widget\IContainerWidget*/ $container) {}
+    protected function createItemUi(/*aura\html\widget\IContainerWidget*/ $container)
+    {
+    }
 
-    protected function customizeMainButton($button) {}
-    protected function customizeCancelButton($button) {}
+    protected function customizeMainButton($button)
+    {
+    }
+    protected function customizeCancelButton($button)
+    {
+    }
 
 
-    protected function onConfirmEvent() {
+    protected function onConfirmEvent()
+    {
         $output = $this->apply();
 
-        if($this->values->isValid()) {
-            if($message = $this->getFlashMessage()) {
+        if ($this->values->isValid()) {
+            if ($message = $this->getFlashMessage()) {
                 $this->comms->flash(
                     flex\Text::formatId($this->getItemName()).'.confirm',
                     $message,
@@ -81,7 +93,7 @@ abstract class ConfirmForm extends Form {
 
             $complete = $this->finalize();
 
-            if($output !== null) {
+            if ($output !== null) {
                 return $output;
             } else {
                 return $complete;
@@ -91,11 +103,13 @@ abstract class ConfirmForm extends Form {
 
     abstract protected function apply();
 
-    protected function getFlashMessage() {
+    protected function getFlashMessage()
+    {
         return $this->_('Action successfully completed');
     }
 
-    protected function finalize() {
+    protected function finalize()
+    {
         return $this->complete();
     }
 }

@@ -15,6 +15,7 @@ use df\mesh;
 use df\flex;
 use df\user;
 
+use DecodeLabs\Tagged\Html;
 use DecodeLabs\Glitch;
 
 // Record loader
@@ -181,19 +182,19 @@ trait TScaffold_RecordDataProvider
             if ($available) {
                 switch ($key) {
                     case 'title':
-                        $output = $this->html('em', $this->_('untitled %c%', ['%c%' => $this->getRecordItemName()]));
+                        $output = Html::{'em'}($this->_('untitled %c%', ['%c%' => $this->getRecordItemName()]));
                         break;
 
                     case 'name':
-                        $output = $this->html('em', $this->_('unnamed %c%', ['%c%' => $this->getRecordItemName()]));
+                        $output = Html::{'em'}($this->_('unnamed %c%', ['%c%' => $this->getRecordItemName()]));
                         break;
                 }
             } else {
-                $output = $this->html('em', $this->getRecordItemName());
+                $output = Html::{'em'}($this->getRecordItemName());
             }
 
             if (is_numeric($id)) {
-                $output = [$output, $this->html('samp', '#'.$id)];
+                $output = [$output, Html::{'samp'}('#'.$id)];
             }
         }
 
@@ -468,7 +469,7 @@ trait TScaffold_RecordDataProvider
             $output = $this->getRecordName($item);
 
             if ($fieldName == 'slug') {
-                $output = $this->html('samp', $output);
+                $output = Html::{'samp'}($output);
             }
 
             return $output;
@@ -478,7 +479,7 @@ trait TScaffold_RecordDataProvider
     public function defineSlugField($list, $mode)
     {
         $list->addField('slug', function ($item) {
-            return $this->html('samp', $item['slug']);
+            return Html::{'samp'}($item['slug']);
         });
     }
 
@@ -630,7 +631,7 @@ trait TScaffold_RecordDataProvider
                 return $item['color'];
             }
 
-            return $this->html('span', $item['color'])
+            return Html::{'span'}($item['color'])
                 ->setStyle('background', $item['color'])
                 ->setStyle('color', $color->getTextContrastColor())
                 ->setStyle('padding', '0 0.6em');
@@ -642,11 +643,11 @@ trait TScaffold_RecordDataProvider
         $list->addField('environmentMode', $mode == 'list' ? $this->_('Env.') : null, function ($mail) use ($mode) {
             switch ($mail['environmentMode']) {
                 case 'development':
-                    return $this->html('span.priority-low.inactive', $mode == 'list' ? $this->_('Dev') : $this->_('Development'));
+                    return Html::{'span.priority-low.inactive'}($mode == 'list' ? $this->_('Dev') : $this->_('Development'));
                 case 'testing':
-                    return $this->html('span.priority-medium.inactive', $mode == 'list' ? $this->_('Test') : $this->_('Testing'));
+                    return Html::{'span.priority-medium.inactive'}($mode == 'list' ? $this->_('Test') : $this->_('Testing'));
                 case 'production':
-                    return $this->html('span.priority-high.active', $mode == 'list' ? $this->_('Prod') : $this->_('Production'));
+                    return Html::{'span.priority-high.active'}($mode == 'list' ? $this->_('Prod') : $this->_('Production'));
             }
         });
     }

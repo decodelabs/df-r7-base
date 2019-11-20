@@ -11,6 +11,7 @@ use df\aura;
 use df\arch;
 use df\flow;
 
+use DecodeLabs\Tagged\Html as Tagged;
 use DecodeLabs\Tagged\Builder\StyleBlock;
 
 use DecodeLabs\Glitch\Inspectable;
@@ -343,7 +344,7 @@ class Html extends Base implements IHtmlView, Inspectable
             $attributes = array_merge($attributes, $attr);
         }
 
-        $this->_links[$id] = $this->html('link', null, $attributes);
+        $this->_links[$id] = Tagged::el('link', null, $attributes);
         return $this;
     }
 
