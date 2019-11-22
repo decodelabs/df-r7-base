@@ -14,6 +14,7 @@ use df\spur;
 use df\flow;
 
 use DecodeLabs\Tagged\Html as Tagged;
+use DecodeLabs\Tagged\Buffer;
 use DecodeLabs\Chirp\Parser as Chirp;
 
 use DecodeLabs\Glitch;
@@ -553,7 +554,7 @@ class Html implements arch\IDirectoryHelper
     }
 
 
-    public function jsonLd(string $type, $data, string $context=null): aura\html\IElementRepresentation
+    public function jsonLd(string $type, $data, string $context=null): Buffer
     {
         if ($context === null) {
             $context = 'http://schema.org';
