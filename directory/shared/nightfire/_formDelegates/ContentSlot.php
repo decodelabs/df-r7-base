@@ -229,7 +229,7 @@ class ContentSlot extends arch\node\form\Delegate implements
             }
 
             $fa->setId($this->elementId($delegateId));
-            $fa->push($this->html->string('<div class="fire-block">'));
+            $fa->push(Html::raw('<div class="fire-block">'));
 
             $this->values->blockType->{$delegateId}->setValue($blockName);
 
@@ -282,7 +282,7 @@ class ContentSlot extends arch\node\form\Delegate implements
             $delegate = $this[$delegateId];
             $delegate->renderFieldContent($fa);
 
-            $fa->push($this->html->string('</div>'));
+            $fa->push(Html::raw('</div>'));
             $counter++;
         }
 

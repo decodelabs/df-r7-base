@@ -12,6 +12,7 @@ use df\arch;
 use df\fire;
 use df\aura;
 
+use DecodeLabs\Tagged\Html;
 use DecodeLabs\Glitch;
 
 class ContentBlock extends arch\node\form\Delegate implements
@@ -175,7 +176,7 @@ class ContentBlock extends arch\node\form\Delegate implements
     public function renderFieldContent(aura\html\widget\Field $fa)
     {
         $fa->setId($this->elementId('block'));
-        $fa->push($this->html->string('<div class="fire-block">'));
+        $fa->push(Html::raw('<div class="fire-block">'));
 
         $available = $this->_getAvailableBlockTypes();
         $availableCount = $this->_state->getStore('availableBlockCount');
@@ -208,7 +209,7 @@ class ContentBlock extends arch\node\form\Delegate implements
             $this['block']->renderFieldContent($fa);
         }
 
-        $fa->push($this->html->string('</div>'));
+        $fa->push(Html::raw('</div>'));
     }
 
     protected function onSelectBlockTypeEvent()

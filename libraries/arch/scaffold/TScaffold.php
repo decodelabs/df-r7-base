@@ -664,8 +664,7 @@ trait TScaffold_RecordDataProvider
                     return $addr;
                 }
 
-                return $this->html(
-                    'span',
+                return Html::{'span'}(
                     $addr->getLocality().', '.$addr->getCountryName(),
                     ['title' => str_replace("\n", ', ', $addr->toString())]
                 );

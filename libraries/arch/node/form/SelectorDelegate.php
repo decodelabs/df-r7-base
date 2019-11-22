@@ -323,7 +323,7 @@ abstract class SelectorDelegate extends Delegate implements
 
     protected function _renderInlineTextDetails(aura\html\widget\Field $fa)
     {
-        $fa->push($this->html->string('<div class="w list selection"><div class="body">'));
+        $fa->push(Html::raw('<div class="w list selection"><div class="body">'));
         $selected = $this->_fetchSelectionList();
 
         if ($this->_isForMany) {
@@ -331,7 +331,7 @@ abstract class SelectorDelegate extends Delegate implements
             if (empty($selected)) {
                 $fa->push(
                     Html::{'em'}($this->_('nothing selected')),
-                    $this->html->string('</div>')
+                    Html::raw('</div>')
                 );
             } else {
                 $tempList = $selected;
@@ -341,8 +341,7 @@ abstract class SelectorDelegate extends Delegate implements
                 for ($i = 0; $i < 3 && !empty($tempList); $i++) {
                     $count--;
 
-                    $displayList[] = $this->html(
-                        'strong',
+                    $displayList[] = Html::{'strong'}(
                         $this->_getResultDisplayName(array_shift($tempList))
                     );
                 }
@@ -355,8 +354,8 @@ abstract class SelectorDelegate extends Delegate implements
                 }
 
                 $fa->push(
-                    $this->html->uList($displayList),
-                    $this->html->string('</div>')
+                    Html::uList($displayList),
+                    Html::raw('</div>')
                 );
 
                 foreach ($selected as $row) {
@@ -394,13 +393,13 @@ abstract class SelectorDelegate extends Delegate implements
                 );
             }
 
-            $fa->push($this->html->string('</div>'));
+            $fa->push(Html::raw('</div>'));
         }
 
         $ba = $fa->addButtonArea();
         $this->_renderDetailsButtonGroup($ba, $selected);
 
-        $fa->push($this->html->string('</div>'));
+        $fa->push(Html::raw('</div>'));
     }
 
     protected function _renderDetailsButtonGroup(aura\html\widget\ButtonArea $ba, $selected, $isList=false)
@@ -598,7 +597,7 @@ abstract class SelectorDelegate extends Delegate implements
                     $fa->push(
                         $this->html->hidden($this->fieldName('searchResults[]'), $id),
                         $this->_renderCheckbox($id, $name),
-                        $this->html('br')
+                        Html::{'br'}()
                     );
                 }
             }

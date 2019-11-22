@@ -752,7 +752,7 @@ class Html extends Base implements IHtmlView, Inspectable
 
     protected function _normalizeSlotContent($content)
     {
-        return $this->html->string($content);
+        return Tagged::raw($content);
     }
 
     // Rendering

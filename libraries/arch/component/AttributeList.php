@@ -10,6 +10,8 @@ use df\core;
 use df\arch;
 use df\aura;
 
+use DecodeLabs\Tagged\Html;
+
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -183,17 +185,6 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Inspe
                     $context->skipRow();
                 });
 
-                /*
-                if($list->hasFields()) {
-                    $output[] = $list;
-                }
-
-                if(strlen($title)) {
-                    $output[] = $this->view->html('h4', $title);
-                }
-
-                $list = $this->_createBaseList();
-                */
                 continue;
             }
 
@@ -217,7 +208,7 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Inspe
         if (count($output) < 2) {
             $output = array_pop($output);
         } else {
-            $output = $this->view->html('div', $output);
+            $output = Html::{'div'}($output);
         }
 
         return $output;

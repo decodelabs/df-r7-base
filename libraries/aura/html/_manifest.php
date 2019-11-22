@@ -32,7 +32,7 @@ interface IElementRepresentation extends core\IStringProvider, IRenderable, Mark
 interface ITagDataContainer extends core\collection\IAttributeContainer
 {
     // Data attributes
-    public function addDataAttributes(array $attributes);
+    public function setDataAttributes(array $attributes);
     public function setDataAttribute($key, $value);
     public function getDataAttribute($key, $default=null);
     public function hasDataAttribute($key);

@@ -251,7 +251,7 @@ class Tag implements ITag, Inspectable
 
 
     // Data attributes
-    public function addDataAttributes(array $attributes)
+    public function setDataAttributes(array $attributes)
     {
         foreach ($attributes as $key => $value) {
             $this->setDataAttribute($key, $value);

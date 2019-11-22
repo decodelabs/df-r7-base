@@ -29,22 +29,6 @@ class Html implements arch\IDirectoryHelper
         return aura\html\widget\Base::factory($this->context, $member, $args);
     }
 
-    public function __invoke($name, $content=null, array $attributes=null)
-    {
-        if (false !== strpos($name, '>')) {
-            $parts = explode('>', $name);
-
-            foreach (array_reverse($parts) as $name) {
-                $content = new aura\html\Element(trim($name), $content, $attributes);
-                $attributes = null;
-            }
-
-            return $content;
-        }
-
-        return new aura\html\Element($name, $content, $attributes);
-    }
-
     public function previewText($html, $length=null)
     {
         $output = $this->toText($html);
@@ -57,7 +41,7 @@ class Html implements arch\IDirectoryHelper
             $output = $this->context->format->shorten($output, $length);
         }
 
-        return $this->string($output);
+        return Tagged::raw($output);
     }
 
     public function toText($html)
@@ -86,7 +70,7 @@ class Html implements arch\IDirectoryHelper
         $text = $this->esc($text);
         $text = str_replace("\n", "\n".'<br />', $text);
 
-        return $this->string($text);
+        return Tagged::raw($text);
     }
 
     public function markdown($text)
@@ -111,7 +95,7 @@ class Html implements arch\IDirectoryHelper
             return ' '.$matches[1].'="'.$this->context->uri->__invoke($matches[2]).'"';
         }, $output);
 
-        $output = $this->string($output);
+        $output = Tagged::raw($output);
         return $output;
     }
 
@@ -120,7 +104,7 @@ class Html implements arch\IDirectoryHelper
         $output = (new flex\simpleTags\Parser($text, $extended))->toHtml();
 
         if ($output !== null) {
-            $output = $this->string($output);
+            $output = Tagged::raw($output);
         }
 
         return $output;
@@ -131,7 +115,7 @@ class Html implements arch\IDirectoryHelper
         $output = (new flex\simpleTags\Parser($text))->toInlineHtml();
 
         if ($output !== null) {
-            $output = $this->string($output);
+            $output = Tagged::raw($output);
         }
 
         return $output;
@@ -146,7 +130,7 @@ class Html implements arch\IDirectoryHelper
         $output = (new Chirp())->parse($text);
 
         if ($output !== null) {
-            $output = $this->string($output);
+            $output = Tagged::raw($output);
         }
 
         return $output;
@@ -169,7 +153,7 @@ class Html implements arch\IDirectoryHelper
 
             case 'rawhtml':
             case 'html':
-                return $this->string($body);
+                return Tagged::raw($body);
         }
     }
 
@@ -180,7 +164,7 @@ class Html implements arch\IDirectoryHelper
         }
 
         $newString = flex\Text::shorten($string, $length);
-        return $this->element('abbr', $newString)->setTitle($string);
+        return Tagged::{'abbr'}($newString)->setTitle($string);
     }
 
     public function _($phrase='', $b=null, $c=null): aura\html\IElementRepresentation
@@ -193,187 +177,10 @@ class Html implements arch\IDirectoryHelper
         return new aura\html\ElementString($this->context->i18n->translate($args));
     }
 
-    public function string(...$values)
-    {
-        return new aura\html\ElementString(implode('', $values));
-    }
-
-    public function tag($name, array $attributes=[])
-    {
-        return new aura\html\Tag($name, $attributes);
-    }
-
-    public function element($name, $content=null, array $attributes=[]): aura\html\IElement
-    {
-        return new aura\html\Element($name, $content, $attributes);
-    }
-
     public function elementContentContainer($content=null): aura\html\IElementContent
     {
         return new aura\html\ElementContent($content);
     }
-
-    public function list(?iterable $list, string $container, string $name, callable $callback, array $attributes=[]): aura\html\IElementRepresentation
-    {
-        return (new aura\html\Element($container, function () use ($list, $name, $callback) {
-            if (!$list) {
-                return;
-            }
-
-            $i = 0;
-
-            foreach ($list as $key => $item) {
-                yield $this->__invoke($name, function ($el) use ($key, $item, $callback, &$i) {
-                    return $callback($item, $el, $key, ++$i);
-                });
-            }
-        }, $attributes))->shouldRenderIfEmpty(false);
-    }
-
-    public function elements(?iterable $list, string $name, callable $callback, array $attributes=[]): aura\html\IElementRepresentation
-    {
-        return aura\html\ElementContent::normalize(function () use ($list, $name, $callback, $attributes) {
-            if (!$list) {
-                return;
-            }
-
-            $i = 0;
-
-            foreach ($list as $key => $item) {
-                yield $this->__invoke($name, function ($el) use ($key, $item, $callback, &$i) {
-                    return $callback($item, $el, $key, ++$i);
-                }, $attributes);
-            }
-        });
-    }
-
-    public function uList(?iterable $list, callable $renderer=null, array $attributes=[]): aura\html\IElementRepresentation
-    {
-        return $this->list($list, 'ul', 'li', $renderer ?? function ($value) {
-            return $value;
-        }, $attributes);
-    }
-
-    public function oList(?iterable $list, callable $renderer=null, array $attributes=[]): aura\html\IElementRepresentation
-    {
-        return $this->list($list, 'ol', 'li', $renderer ?? function ($value) {
-            return $value;
-        }, $attributes);
-    }
-
-    public function dList(?iterable $list, callable $renderer=null, array $attributes=[]): aura\html\IElementRepresentation
-    {
-        $renderer = $renderer ?? function ($value) {
-            return $value;
-        };
-
-        return $this->__invoke('dl', function () use ($list, $renderer) {
-            if (!$list) {
-                return;
-            }
-
-            foreach ($list as $key => $item) {
-                $dt = $this->__invoke('dt', null);
-                $dd = (string)$this->__invoke('dd', function ($dd) use ($key, $item, $renderer, &$i, $dt) {
-                    return $renderer($item, $dt, $dd, $key, ++$i);
-                });
-
-                if ($dt->isEmpty()) {
-                    $dt->push($key);
-                }
-
-                yield $dt;
-                yield $this->string($dd);
-            }
-        }, $attributes)->shouldRenderIfEmpty(false);
-    }
-
-    public function iList(?iterable $list, callable $renderer=null, int $limit=null, string $delimiter=', ', string $finalDelimiter=null): aura\html\IElementRepresentation
-    {
-        $renderer = $renderer ?? function ($value) {
-            return $value;
-        };
-
-        return (new aura\html\Element('span.list', function ($el) use ($list, $renderer, $delimiter, $finalDelimiter, $limit) {
-            $el->shouldRenderIfEmpty(false);
-
-            if (!$list) {
-                return;
-            }
-
-            $first = true;
-            $i = $more = 0;
-
-            if ($list instanceof \Countable || is_array($list)) {
-                $total = count($list);
-            } else {
-                $total = null;
-            }
-
-            if ($finalDelimiter === null) {
-                $finalDelimiter = $delimiter;
-            }
-
-            $items = [];
-
-            foreach ($list as $key => $item) {
-                if ($item === null) {
-                    continue;
-                }
-
-                $i++;
-
-                $cellTag = new aura\html\Element('?span', function ($el) use ($key, $item, $renderer, &$i) {
-                    return $renderer($item, $el, $key, $i);
-                });
-
-                if (empty($tagString = (string)$cellTag)) {
-                    $i--;
-                    continue;
-                }
-
-                if ($limit !== null && $i > $limit) {
-                    $more++;
-                    continue;
-                }
-
-
-                $items[] = $this->string($cellTag);
-            }
-
-            $total = count($items);
-
-            foreach ($items as $i => $item) {
-                if (!$first) {
-                    if ($i + 1 == $total) {
-                        yield $finalDelimiter;
-                    } else {
-                        yield $delimiter;
-                    }
-                }
-
-                yield $item;
-
-                $first = false;
-            }
-
-            if ($more) {
-                if (!$first) {
-                    yield $delimiter;
-                }
-
-                yield new aura\html\Element('em.inactive', $this->context->_('...and %c% more', ['%c%' => $more]));
-            }
-        }));
-    }
-
-    public function span($content, array $attributes=[])
-    {
-        return $this->element('span', $content, $attributes);
-    }
-
-
-
 
     public function autoField($key, $name, core\collection\ITree $values=null)
     {
@@ -484,7 +291,7 @@ class Html implements arch\IDirectoryHelper
             $body = $url;
         }
 
-        return $this->element('a', $body, ['href' => $url]);
+        return Tagged::{'a'}($body, ['href' => $url]);
     }
 
     public function plainMailLink($address, $body=null)
@@ -725,17 +532,17 @@ class Html implements arch\IDirectoryHelper
             list($value, $unit) = explode(' ', $value, 2);
         }
 
-        return $this->element('span.numeric', function () use ($value, $unit) {
+        return Tagged::{'span.numeric'}(function () use ($value, $unit) {
             if (is_int($value)
             || is_float($value)
             || is_string($value) && (string)((float)$value) === $value) {
                 $value = $this->context->format->number($value);
             }
 
-            yield $this->element('span.value', $value);
+            yield Tagged::{'span.value'}($value);
 
             if ($unit !== null) {
-                yield $this->element('span.unit', $unit);
+                yield Tagged::{'span.unit'}($unit);
             }
         });
     }
@@ -755,9 +562,11 @@ class Html implements arch\IDirectoryHelper
         $tree->merge(core\collection\Tree::factory($data));
         $tree->removeEmpty();
 
-        return $this->string($this->tag('script', ['type' => 'application/ld+json']).
+        return Tagged::raw(
+            Tagged::tag('script', ['type' => 'application/ld+json']).
             flex\Json::toString($tree, \JSON_UNESCAPED_SLASHES).
-            '</script>');
+            '</script>')
+        ;
     }
 
     public function breadcrumbsLd(arch\navigation\breadcrumbs\EntryList $breadcrumbs)
@@ -957,8 +766,7 @@ class Html implements arch\IDirectoryHelper
 
     protected function _timeTag($w3cString, $formattedString)
     {
-        return $this->element(
-            'time',
+        return Tagged::{'time'}(
             $formattedString,
             ['datetime' => $w3cString]
         );
@@ -968,14 +776,10 @@ class Html implements arch\IDirectoryHelper
     // Image
     public function image($url, $alt=null, $width=null, $height=null)
     {
-        $output = $this->element(
-            'img',
-            null,
-            [
-                'src' => $this->context->uri->__invoke($url),
-                'alt' => $alt
-            ]
-        );
+        $output = Tagged::{'img'}(null, [
+            'src' => $this->context->uri->__invoke($url),
+            'alt' => $alt
+        ]);
 
         if ($width !== null) {
             $output->setAttribute('width', $width);
