@@ -214,7 +214,7 @@ class RendererContext implements aura\html\widget\IRendererContext
             $value = $value->render();
 
             if ($value !== null) {
-                $value = Html::raw($value);
+                $value = Html::raw((string)$value);
             }
         } elseif ($value instanceof Markup) {
             $value = (string)$value;
