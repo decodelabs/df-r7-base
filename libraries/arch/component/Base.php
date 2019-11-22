@@ -12,6 +12,7 @@ use df\user;
 use df\aura;
 use df\link;
 
+use DecodeLabs\Tagged\Html;
 use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Glitch;
 
