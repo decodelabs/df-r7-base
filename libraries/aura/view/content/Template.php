@@ -191,15 +191,12 @@ class Template implements aura\view\ITemplate, Inspectable
             $output = ob_get_clean();
 
             $this->_isRendering = false;
-            $this->view = null;
         } catch (\Throwable $e) {
             if (ob_get_level()) {
                 ob_end_clean();
             }
 
             $this->_isRendering = false;
-            $this->view = null;
-
             throw $e;
         }
 
