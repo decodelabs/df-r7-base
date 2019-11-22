@@ -219,7 +219,7 @@ class RendererContext implements aura\html\widget\IRendererContext
         } elseif ($value instanceof Markup) {
             $value = (string)$value;
 
-            if (!strlen($value)) {
+            if (strlen($value)) {
                 $value = Html::raw($value);
             }
         }
