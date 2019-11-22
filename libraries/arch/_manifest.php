@@ -12,6 +12,7 @@ use df\user;
 use df\aura;
 use df\flow;
 
+use DecodeLabs\Tagged\MarkupProxy;
 use DecodeLabs\Glitch;
 
 // Exceptions
@@ -292,6 +293,7 @@ interface IComponent extends
     aura\view\ICascadingHelperProvider,
     arch\IProxyResponse,
     aura\view\ISlotContainer,
+    MarkupProxy,
     \ArrayAccess
 {
     public static function factory(arch\IContext $context, $name, array $args=null): arch\IComponent;
