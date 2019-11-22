@@ -12,6 +12,7 @@ use df\user;
 use df\aura;
 use df\link;
 
+use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Glitch;
 
 abstract class Base implements arch\IComponent
@@ -133,6 +134,17 @@ abstract class Base implements arch\IComponent
 
         if ($output instanceof aura\view\IDeferredRenderable) {
             $output->setRenderTarget($this->_renderTarget);
+        }
+
+        return $output;
+    }
+
+    public function toMarkup(): Markup
+    {
+        $output = $this->render();
+
+        if (!$output instanceof Markup) {
+            $output = Html::raw($output);
         }
 
         return $output;
