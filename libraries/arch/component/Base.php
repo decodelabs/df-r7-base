@@ -229,11 +229,6 @@ abstract class Base implements arch\IComponent
         return $this;
     }
 
-    public function esc($value): string
-    {
-        return $this->html->esc($value);
-    }
-
     public function offsetSet($key, $value)
     {
         return $this->setSlot($key, $value);

@@ -73,7 +73,6 @@ interface IWidget extends aura\html\IElementRepresentation, aura\html\ITagDataCo
     public function getTag(): aura\html\ITag;
     public function setContext(arch\IContext $context);
     public function getContext(): arch\IContext;
-    public function esc($value): string;
     public function isTagInline(): bool;
     public function isTagBlock(): bool;
 }

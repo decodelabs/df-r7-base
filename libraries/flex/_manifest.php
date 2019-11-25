@@ -137,24 +137,6 @@ interface ITextProducer extends IParser
     public function toText();
 }
 
-interface IStringEscapeHandler
-{
-    public function esc($value): string;
-}
-
-trait THtmlStringEscapeHandler
-{
-    public function esc($value): string
-    {
-        try {
-            return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
-        } catch (\Throwable $e) {
-            return (string)$value;
-        }
-    }
-}
-
-
 interface ICharacterSetAware
 {
     public function setCharacterSet($charset);

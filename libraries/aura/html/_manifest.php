@@ -12,6 +12,7 @@ use df\flex;
 
 use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Tagged\Builder\Tag as TagInterface;
+use DecodeLabs\Tagged\Html;
 use DecodeLabs\Tagged\Html\Tag;
 
 use DecodeLabs\Glitch;
@@ -69,7 +70,7 @@ interface ITagDataContainer extends core\collection\IAttributeContainer
 
 
 
-interface ITag extends IElementRepresentation, \ArrayAccess, ITagDataContainer, flex\IStringEscapeHandler, core\lang\IChainable
+interface ITag extends IElementRepresentation, \ArrayAccess, ITagDataContainer, core\lang\IChainable
 {
     // Name
     public function setName($name);
@@ -104,7 +105,6 @@ interface IElementContent extends IElementRepresentation, core\lang\IChainable
     public function setParentRenderContext($parent);
     public function getParentRenderContext();
     public function getElementContentString();
-    public function esc($value): string;
 }
 
 interface IElementContentCollection extends
@@ -284,7 +284,7 @@ trait TElementContent
 
         if (!$value instanceof IElementRepresentation &&
             !$value instanceof Markup) {
-            $output = $this->esc($output);
+            $output = Html::esc($output);
         }
 
         return $output;
@@ -377,7 +377,6 @@ trait TElementContent
 class ElementContent implements IElementContentCollection, Inspectable
 {
     use TElementContent;
-    use flex\THtmlStringEscapeHandler;
 
     public static function normalize($content, $parent=null)
     {

@@ -23,7 +23,6 @@ class Html implements arch\IDirectoryHelper
 {
     use arch\TDirectoryHelper;
     use aura\view\TView_DirectoryHelper;
-    use flex\THtmlStringEscapeHandler;
 
     public function __call($member, $args)
     {
@@ -73,7 +72,7 @@ class Html implements arch\IDirectoryHelper
             return null;
         }
 
-        $text = $this->esc($text);
+        $text = Tagged::esc($text);
         $text = str_replace("\n", "\n".'<br />', $text);
 
         return Tagged::raw($text);

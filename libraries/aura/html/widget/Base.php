@@ -11,12 +11,12 @@ use df\aura;
 use df\arch;
 use df\flex;
 
+use DecodeLabs\Tagged\Html;
+
 use DecodeLabs\Glitch;
 
 abstract class Base implements IWidget
 {
-    use flex\THtmlStringEscapeHandler;
-
     use TWidget;
 
     const PRIMARY_TAG = 'div';
@@ -86,10 +86,10 @@ abstract class Base implements IWidget
     {
         core\log\Manager::getInstance()->logException($e);
 
-        $message = $this->esc('Error rendering widget '.$this->getWidgetName());
+        $message = Html::esc('Error rendering widget '.$this->getWidgetName());
 
         if (df\Launchpad::$app->isTesting()) {
-            $message .= $this->esc(' - '.$e->getMessage()).'<br /><code>'.$this->esc($e->getFile().' : '.$e->getLine()).'</code>';
+            $message .= Html::esc(' - '.$e->getMessage()).'<br /><code>'.Html::esc($e->getFile().' : '.$e->getLine()).'</code>';
         }
 
         return '<p class="error">'.$message.'</p>';

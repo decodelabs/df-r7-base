@@ -10,6 +10,8 @@ use df\core;
 use df\aura;
 use df\arch;
 
+use DecodeLabs\Tagged\Html;
+
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
@@ -375,14 +377,6 @@ class Template implements aura\view\ITemplate, Inspectable
     public function offsetUnset($key)
     {
         return $this->removeSlot($key);
-    }
-
-
-    // Escaping
-    public function esc($value): string
-    {
-        $this->_checkView();
-        return $this->view->esc($value);
     }
 
 

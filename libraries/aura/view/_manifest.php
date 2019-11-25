@@ -53,7 +53,6 @@ interface ISlotContainer
     public function getSlot(string $key, $default=null);
     public function renderSlot(string $key, $default=null);
     public function removeSlot(string $key);
-    public function esc($value): string;
 }
 
 interface ISlotProvider extends ISlotContainer
@@ -98,7 +97,6 @@ interface IView extends
     ISlotProvider,
     \ArrayAccess,
     core\IHelperProvider,
-    flex\IStringEscapeHandler,
     core\lang\IChainable,
     arch\IAjaxDataProvider
 {
@@ -293,9 +291,6 @@ interface ITemplate extends IContentProvider, ISlotProvider, \ArrayAccess, IRend
 {
     public function isRendering();
     public function isLayout();
-
-    // Escaping
-    public function esc($value): string;
 
     // Helpers
     public function __get($member);

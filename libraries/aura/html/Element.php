@@ -17,7 +17,6 @@ use DecodeLabs\Glitch\Dumper\Inspector;
 class Element extends Tag implements IElement, Inspectable
 {
     use TElementContent;
-    use flex\THtmlStringEscapeHandler;
 
     public function __construct($name, $content=null, array $attributes=null)
     {

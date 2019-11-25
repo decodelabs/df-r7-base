@@ -108,7 +108,6 @@ trait TView
     use TView_SlotContainer;
     use core\TContextAware;
     use core\THelperProvider;
-    use flex\THtmlStringEscapeHandler;
     use core\TStringProvider;
     use core\TTranslator;
     use core\lang\TChainable;

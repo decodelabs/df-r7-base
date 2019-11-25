@@ -820,11 +820,11 @@ class Html extends Base implements IHtmlView, Inspectable
         }
 
         // Title
-        $output .= '    <title>'.$this->esc($this->getFullTitle()).'</title>'."\n";
+        $output .= '    <title>'.Tagged::esc($this->getFullTitle()).'</title>'."\n";
 
         // Base
         if ($this->_baseHref !== null) {
-            $output .= '    <base href="'.$this->esc($this->_baseHref).'" />'."\n";
+            $output .= '    <base href="'.Tagged::esc($this->_baseHref).'" />'."\n";
         }
 
         // Links
@@ -854,7 +854,7 @@ class Html extends Base implements IHtmlView, Inspectable
             $attr = [];
 
             foreach ($this->_data as $key => $value) {
-                $attr[] = 'data-'.$key.'="'.$this->esc($value).'"';
+                $attr[] = 'data-'.$key.'="'.Tagged::esc($value).'"';
             }
 
             $attr[] = 'data-'.df\Launchpad::$app->envMode;

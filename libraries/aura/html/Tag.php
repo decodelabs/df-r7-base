@@ -10,6 +10,7 @@ use df\core;
 use df\aura;
 use df\flex;
 
+use DecodeLabs\Tagged\Html;
 use DecodeLabs\Tagged\Builder\StyleList;
 
 use DecodeLabs\Glitch;
@@ -22,7 +23,6 @@ class Tag implements ITag, Inspectable
     use core\lang\TChainable;
     use core\collection\TArrayAccessedAttributeContainer;
     use core\TStringProvider;
-    use flex\THtmlStringEscapeHandler;
 
     const CLOSED_TAGS = [
         'area', 'base', 'br', 'col', 'command', 'embed',
@@ -376,7 +376,7 @@ class Tag implements ITag, Inspectable
                 continue;
             }
 
-            $class = $this->esc($class);
+            $class = Html::esc($class);
 
             if (false !== strpos($class, ' ')) {
                 array_push($output, ...explode(' ', $class));
@@ -498,7 +498,7 @@ class Tag implements ITag, Inspectable
             } elseif ($value instanceof IElementRepresentation) {
                 $attributes[] = $key.'="'.(string)$value.'"';
             } else {
-                $attributes[] = $key.'="'.$this->esc($value).'"';
+                $attributes[] = $key.'="'.Html::esc($value).'"';
             }
         }
 
