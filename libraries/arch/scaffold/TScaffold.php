@@ -557,9 +557,9 @@ trait TScaffold_RecordDataProvider
     {
         $list->addField('creationDate', $this->_('Created'), function ($item) use ($mode) {
             if ($mode == 'list') {
-                return $this->html->timeSince($item['creationDate']);
+                return Html::$time->fromNowAbs($item['creationDate']);
             } else {
-                return $this->html->timeFromNow($item['creationDate']);
+                return Html::$time->fromNow($item['creationDate']);
             }
         });
     }
@@ -568,9 +568,9 @@ trait TScaffold_RecordDataProvider
     {
         $list->addField('lastEditDate', $this->_('Edited'), function ($item) use ($mode) {
             if ($mode == 'list') {
-                return $this->html->timeSince($item['lastEditDate']);
+                return Html::$time->fromNowAbs($item['lastEditDate']);
             } else {
-                return $this->html->timeFromNow($item['lastEditDate']);
+                return Html::$time->fromNow($item['lastEditDate']);
             }
         });
     }
