@@ -178,19 +178,20 @@ class Format implements core\ISharedHelper
         return $output;
     }
 
-    public function fileSize($bytes, $precision=2, $longNames=false, $locale=null)
+    public function fileSize($bytes)
     {
         if ($bytes === null) {
             return null;
         }
 
-        if ($locale === null) {
-            $locale = $this->context->getLocale();
+        $bytes = (int)$bytes;
+        $units = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'];
+
+        for ($i = 0; $bytes > 1024; $i++) {
+            $bytes /= 1024;
         }
 
-        return core\i18n\Manager::getInstance()
-            ->getModule('numbers', $locale)
-            ->formatFileSize($bytes, $precision, $longNames);
+        return round($bytes, 2).' '.$units[$i];
     }
 
     public function binHex($binary)

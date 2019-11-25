@@ -84,5 +84,4 @@ interface INumbersModule extends IModule
     public function parseOrdinal($number);
     public function formatDuration($number);
     public function parseDuration($number);
-    public function formatFileSize($bytes, $precision=2, $longNames=false);
 }
