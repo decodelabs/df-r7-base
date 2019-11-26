@@ -606,7 +606,7 @@ trait TScaffold_RecordDataProvider
                 $context->getRowTag()->addClass('inactive');
             }
 
-            $output = $this->html->date($date);
+            $output = Html::$time->date($date);
 
             if ($output) {
                 if ($isPast) {

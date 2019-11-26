@@ -13,6 +13,7 @@ use df\arch;
 use df\flex;
 use df\mesh;
 
+use DecodeLabs\Systemic;
 use DecodeLabs\Glitch;
 
 class Manager implements IManager, core\IShutdownAware
@@ -55,6 +56,14 @@ class Manager implements IManager, core\IShutdownAware
 
         if (!$this->client->isLoggedIn() && $this->auth->recallIdentity($isNew)) {
             $regenKeyring = false;
+        }
+
+
+        try {
+            Systemic::$timezone->set($this->client->getTimezone());
+            Systemic::$locale->set($this->client->getLanguage().'_'.$this->client->getCountry());
+        } catch (\Throwable $e) {
+            Glitch::logException($e);
         }
 
 

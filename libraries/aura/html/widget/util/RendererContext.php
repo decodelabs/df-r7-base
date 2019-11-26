@@ -244,7 +244,7 @@ class RendererContext implements aura\html\widget\IRendererContext
         } elseif ($this->_nullToNa && empty($value) && $value != '0') {
             $value = new aura\html\ElementString('<span class="na">n/a</span>');
         } elseif ($value instanceof core\time\IDate) {
-            $value = $this->_widget->getContext()->html->date($value);
+            $value = Html::$time->date($value);
         }
 
         return $value;
