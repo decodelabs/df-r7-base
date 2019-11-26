@@ -238,7 +238,7 @@ class RendererContext implements aura\html\widget\IRendererContext
         }
 
         if (is_numeric($value)) {
-            $value = $this->_widget->getContext()->html->number($value);
+            $value = Html::$number->wrap($value);
         } elseif (is_bool($value)) {
             $value = $this->_widget->getContext()->html->booleanIcon($value);
         } elseif ($this->_nullToNa && empty($value) && $value != '0') {

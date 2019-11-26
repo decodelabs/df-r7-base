@@ -262,32 +262,6 @@ class Html implements arch\IDirectoryHelper
     }
 
 
-    public function diff($diff, $invert=false, $tag='sup')
-    {
-        if ($diff > 0) {
-            $arrow = '⬆';
-        } elseif ($diff < 0) {
-            $arrow = '⬇';
-        } else {
-            $arrow = '⬌';
-        }
-
-        $output = $this($tag, [
-            $arrow,
-            $this->number(abs($diff))
-        ])->addClass('w.diff');
-
-        if ($invert !== null) {
-            if ($invert) {
-                $diff *= -1;
-            }
-            $output->addClass($diff < 0 ? 'negative' : 'positive');
-        }
-
-        return $output;
-    }
-
-
     public function basicLink($url, $body=null)
     {
         $url = $this->context->uri->__invoke($url);
@@ -524,34 +498,6 @@ class Html implements arch\IDirectoryHelper
             ->setDisposition($disposition)
             ->shouldValidate(false);
     }
-
-
-
-    public function number($value, $unit=null)
-    {
-        if ($value === null) {
-            return null;
-        }
-
-        if ($unit === null && false !== strpos($value, ' ')) {
-            list($value, $unit) = explode(' ', $value, 2);
-        }
-
-        return Tagged::{'span.numeric'}(function () use ($value, $unit) {
-            if (is_int($value)
-            || is_float($value)
-            || is_string($value) && (string)((float)$value) === $value) {
-                $value = $this->context->format->number($value);
-            }
-
-            yield Tagged::{'span.value'}($value);
-
-            if ($unit !== null) {
-                yield Tagged::{'span.unit'}($unit);
-            }
-        });
-    }
-
 
     public function jsonLd(string $type, $data, string $context=null): Buffer
     {
