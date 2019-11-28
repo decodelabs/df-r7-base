@@ -187,16 +187,6 @@ class Model extends axis\Model implements user\session\IBackend
                 ->where('descriptor', '=', $descriptor['id'])
                 ->execute();
         }
-
-        /*
-        $this->node->delete()
-            ->whereCorrelation('descriptor', 'in', 'id')
-                ->from('axis://session/Descriptor')
-                ->where('user', '=', $userId)
-                ->endCorrelation()
-            ->where('bucket', $operator ?? '=', $bucket)
-            ->execute();
-            */
     }
 
     public function clearBucketForAll(string $bucket, string $operator=null)
@@ -292,11 +282,22 @@ class Model extends axis\Model implements user\session\IBackend
     {
         $time = time() - $this->_lifeTime;
 
+        $descriptors = $this->descriptor->select('id')
+            ->where('accessTime', '<', $time)
+            ->toArray();
+
+        foreach ($descriptors as $descriptor) {
+            $this->node->delete()
+                ->where('descriptor', '=', $descriptor['id'])
+                ->execute();
+
+            $this->descriptor->delete()
+                ->where('id', '=', $descriptor['id'])
+                ->execute();
+        }
+
+
         $this->node->delete()
-            ->whereCorrelation('descriptor', 'in', 'id')
-                ->from($this->descriptor, 'descriptor')
-                ->where('descriptor.accessTime', '<', $time)
-                ->endCorrelation()
             ->beginOrWhereClause()
                 ->where('node.updateTime', '!=', null)
                 ->where('node.updateTime', '<', $time)
@@ -305,10 +306,6 @@ class Model extends axis\Model implements user\session\IBackend
                 ->where('node.updateTime', '=', null)
                 ->where('node.creationTime', '<', $time)
                 ->endClause()
-            ->execute();
-
-        $this->descriptor->delete()
-            ->where('accessTime', '<', $time)
             ->execute();
 
         return $this;
