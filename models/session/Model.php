@@ -297,6 +297,7 @@ class Model extends axis\Model implements user\session\IBackend
         }
 
 
+        /*
         $nodes = $this->node->select('bucket', 'key', 'descriptor')
             ->beginOrWhereClause()
                 ->where('node.updateTime', '!=', null)
@@ -315,6 +316,7 @@ class Model extends axis\Model implements user\session\IBackend
                 ->where('descriptor', '=', $node['descriptor'])
                 ->execute();
         }
+        */
 
         /*
         $this->node->delete()
