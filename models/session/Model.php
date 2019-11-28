@@ -280,6 +280,7 @@ class Model extends axis\Model implements user\session\IBackend
 
     public function collectGarbage()
     {
+        /*
         $time = time() - $this->_lifeTime;
 
         $descriptors = $this->descriptor->select('id')
@@ -297,7 +298,6 @@ class Model extends axis\Model implements user\session\IBackend
         }
 
 
-        /*
         $nodes = $this->node->select('bucket', 'key', 'descriptor')
             ->beginOrWhereClause()
                 ->where('node.updateTime', '!=', null)
