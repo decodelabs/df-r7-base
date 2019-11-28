@@ -49,7 +49,7 @@ class TaskCollectSessionGarbage extends arch\node\Task
                     ->where('id', '=', $descriptor['id'])
                     ->execute();
 
-                usleep(30000);
+                usleep(10000);
             }
 
 
