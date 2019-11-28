@@ -49,10 +49,10 @@ class TaskCollectSessionGarbage extends arch\node\Task
                     ->where('id', '=', $descriptor['id'])
                     ->execute();
 
-                usleep(1000);
+                usleep(500);
             }
 
-            usleep(100000);
+            usleep(50000);
 
 
             Cli::operative($nodeCount.' nodes');
