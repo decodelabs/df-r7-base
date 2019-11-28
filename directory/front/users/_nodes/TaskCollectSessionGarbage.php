@@ -31,7 +31,7 @@ class TaskCollectSessionGarbage extends arch\node\Task
         while (true) {
             $descriptors = $this->data->session->descriptor->select('id')
                 ->where('accessTime', '<', $time)
-                ->limit(50)
+                ->limit(100)
                 ->toArray();
 
             if (empty($descriptors)) {
@@ -49,7 +49,7 @@ class TaskCollectSessionGarbage extends arch\node\Task
                     ->where('id', '=', $descriptor['id'])
                     ->execute();
 
-                usleep(100000);
+                usleep(30000);
             }
 
 
