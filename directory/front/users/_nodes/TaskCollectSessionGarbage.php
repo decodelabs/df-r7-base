@@ -19,6 +19,11 @@ class TaskCollectSessionGarbage extends arch\node\Task
     public function execute()
     {
         $time = time() - static::LIFETIME;
+        $total = $this->data->session->descriptor->select('COUNT(*) as total')
+            ->where('accessTime', '<', $time)
+            ->toValue('total');
+
+        Cli::info($total.' descriptors found');
 
         while (true) {
             $descriptors = $this->data->session->descriptor->select('id')
