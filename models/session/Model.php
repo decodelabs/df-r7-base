@@ -297,6 +297,26 @@ class Model extends axis\Model implements user\session\IBackend
         }
 
 
+        $nodes = $this->node->select('bucket', 'key', 'descriptor')
+            ->beginOrWhereClause()
+                ->where('node.updateTime', '!=', null)
+                ->where('node.updateTime', '<', $time)
+                ->endClause()
+            ->beginOrWhereClause()
+                ->where('node.updateTime', '=', null)
+                ->where('node.creationTime', '<', $time)
+                ->endClause()
+            ->limit(10);
+
+        foreach ($nodes as $node) {
+            $this->node->delete()
+                ->where('bucket', '=', $node['bucket'])
+                ->where('key', '=', $node['key'])
+                ->where('descriptor', '=', $node['descriptor'])
+                ->execute();
+        }
+
+        /*
         $this->node->delete()
             ->beginOrWhereClause()
                 ->where('node.updateTime', '!=', null)
@@ -307,6 +327,7 @@ class Model extends axis\Model implements user\session\IBackend
                 ->where('node.creationTime', '<', $time)
                 ->endClause()
             ->execute();
+        */
 
         return $this;
     }
