@@ -14,6 +14,9 @@ use DecodeLabs\Terminus\Cli;
 
 class TaskCollectSessionGarbage extends arch\node\Task
 {
+    const SCHEDULE = '*/30 * * * *';
+    const SCHEDULE_AUTOMATIC = true;
+
     const LIFETIME = 86400; // 24 hours
 
     public function execute()

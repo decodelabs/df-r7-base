@@ -280,57 +280,7 @@ class Model extends axis\Model implements user\session\IBackend
 
     public function collectGarbage()
     {
-        /*
-        $time = time() - $this->_lifeTime;
-
-        $descriptors = $this->descriptor->select('id')
-            ->where('accessTime', '<', $time)
-            ->toArray();
-
-        foreach ($descriptors as $descriptor) {
-            $this->node->delete()
-                ->where('descriptor', '=', $descriptor['id'])
-                ->execute();
-
-            $this->descriptor->delete()
-                ->where('id', '=', $descriptor['id'])
-                ->execute();
-        }
-
-
-        $nodes = $this->node->select('bucket', 'key', 'descriptor')
-            ->beginOrWhereClause()
-                ->where('node.updateTime', '!=', null)
-                ->where('node.updateTime', '<', $time)
-                ->endClause()
-            ->beginOrWhereClause()
-                ->where('node.updateTime', '=', null)
-                ->where('node.creationTime', '<', $time)
-                ->endClause()
-            ->limit(10);
-
-        foreach ($nodes as $node) {
-            $this->node->delete()
-                ->where('bucket', '=', $node['bucket'])
-                ->where('key', '=', $node['key'])
-                ->where('descriptor', '=', $node['descriptor'])
-                ->execute();
-        }
-        */
-
-        /*
-        $this->node->delete()
-            ->beginOrWhereClause()
-                ->where('node.updateTime', '!=', null)
-                ->where('node.updateTime', '<', $time)
-                ->endClause()
-            ->beginOrWhereClause()
-                ->where('node.updateTime', '=', null)
-                ->where('node.creationTime', '<', $time)
-                ->endClause()
-            ->execute();
-        */
-
+        // This is now in a background task :)
         return $this;
     }
 
