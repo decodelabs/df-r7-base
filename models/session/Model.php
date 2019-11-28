@@ -177,6 +177,18 @@ class Model extends axis\Model implements user\session\IBackend
 
     public function clearBucketForUser(string $userId, string $bucket, string $operator=null)
     {
+        $descriptors = $this->descriptor->select('id')
+            ->where('user', '=', $userId)
+            ->toArray();
+
+        foreach ($descriptors as $descriptor) {
+            $this->node->delete()
+                ->where('bucket', $operator ?? '=', $bucket)
+                ->where('descriptor', '=', $descriptor['id'])
+                ->execute();
+        }
+
+        /*
         $this->node->delete()
             ->whereCorrelation('descriptor', 'in', 'id')
                 ->from('axis://session/Descriptor')
@@ -184,6 +196,7 @@ class Model extends axis\Model implements user\session\IBackend
                 ->endCorrelation()
             ->where('bucket', $operator ?? '=', $bucket)
             ->execute();
+            */
     }
 
     public function clearBucketForAll(string $bucket, string $operator=null)
