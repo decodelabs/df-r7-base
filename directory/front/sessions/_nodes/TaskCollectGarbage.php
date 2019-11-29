@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\apex\directory\front\users\_nodes;
+namespace df\apex\directory\front\sessions\_nodes;
 
 use df;
 use df\core;
@@ -12,7 +12,7 @@ use df\arch;
 
 use DecodeLabs\Terminus\Cli;
 
-class TaskCollectSessionGarbage extends arch\node\Task
+class TaskCollectGarbage extends arch\node\Task
 {
     const SCHEDULE = '*/30 * * * *';
     const SCHEDULE_AUTOMATIC = true;

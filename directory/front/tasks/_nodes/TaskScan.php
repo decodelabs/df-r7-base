@@ -14,12 +14,9 @@ use DecodeLabs\Terminus\Cli;
 
 class TaskScan extends arch\node\Task
 {
-    const SCHEDULE = '0 18 * * *';
-    const SCHEDULE_AUTOMATIC = true;
-
     public function execute()
     {
-        Cli::{'yellow'}('Compiling task list: ');
+        Cli::inlineInfo('Compiling task list: ');
 
         // Fetch full file list
         $fileList = df\Launchpad::$loader->lookupFileListRecursive('apex/directory', ['php'], function ($path) {
@@ -27,10 +24,17 @@ class TaskScan extends arch\node\Task
         });
 
         $total = $scheduled = 0;
-        $schedules = [];
-        $reset = isset($this->request['reset']);
+        $schedules = $this->getFilteredTaskList($fileList, $total, $scheduled);
+        Cli::operative('found '.$total.', '.$scheduled.' schedulable');
 
-        // Filter to task list
+        $schedules = $this->updateSchedules($schedules);
+        $this->writeSchedules($schedules);
+    }
+
+    protected function getFilteredTaskList(iterable $fileList, &$total=0, &$scheduled=0): array
+    {
+        $schedules = [];
+
         foreach ($fileList as $key => $path) {
             $basename = substr(basename($path), 0, -4);
 
@@ -72,7 +76,12 @@ class TaskScan extends arch\node\Task
             ];
         }
 
-        Cli::success('found '.$total.', '.$scheduled.' schedulable');
+        return $schedules;
+    }
+
+    protected function updateSchedules(array $schedules): array
+    {
+        $reset = isset($this->request['reset']);
         $lastRuns = null;
 
         if ($reset) {
@@ -84,9 +93,10 @@ class TaskScan extends arch\node\Task
 
             $deleted = $this->data->task->schedule->delete()
                 ->where('request', 'in', array_keys($schedules))
+                ->orWhere('isAuto', '=', true)
                 ->execute();
 
-            Cli::success($deleted.' found');
+            Cli::deleteSuccess($deleted.' found');
         } else {
             // Filter skippable
             $skip = 0;
@@ -112,9 +122,28 @@ class TaskScan extends arch\node\Task
             foreach ($updateList as $task) {
                 $schedules[$task['request']]['record'] = $task;
             }
+
+
+            // Delete old
+            $delete = $this->data->task->schedule->select('request')
+                ->where('request', '!in', array_keys($schedules))
+                ->where('isAuto', '=', true);
+
+            foreach ($delete as $schedule) {
+                $this->data->task->schedule->delete()
+                    ->where('request', '=', $schedule['request'])
+                    ->execute();
+
+                Cli::deleteSuccess('Deleted '.$schedule['request']);
+            }
         }
 
+        return $schedules;
+    }
 
+
+    protected function writeSchedules(array $schedules): void
+    {
         $spaced = false;
 
         // Write
@@ -144,7 +173,6 @@ class TaskScan extends arch\node\Task
             ]);
 
             if (!$schedule->hasChanged()) {
-                //Cli::info('Not updating '.$request.' because it hasn\'t changed');
                 continue;
             }
 
@@ -153,7 +181,11 @@ class TaskScan extends arch\node\Task
                 Cli::newLine();
             }
 
-            Cli::{'yellow'}($request.' : '.$set['schedule'].', '.$set['priority'].' priority');
+            Cli::{'brightMagenta'}($request);
+            Cli::write(' : ');
+            Cli::{'brightYellow'}($set['schedule'].' ');
+            Cli::{'yellow'}($set['priority'].' priority ');
+
             $schedule->save();
             Cli::success('done');
         }
