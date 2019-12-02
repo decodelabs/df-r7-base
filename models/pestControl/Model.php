@@ -45,17 +45,27 @@ class Model extends axis\Model
         }
 
 
-        // Update counts
-        $count = $this->miss->update([
-                'lastSeen' => 'now',
-                'archiveDate' => null
-            ])
-            ->express('seen', 'seen', '+', 1)
-            ->chainIf($isBot, function ($query) {
-                $query->express('botsSeen', 'botsSeen', '+', 1);
-            })
+        // Find miss
+        $missId = (string)$this->miss->select('id')
             ->where('request', '=', $request)
-            ->execute();
+            ->toValue('id');
+
+        $count = 0;
+
+        if ($missId) {
+            // Update counts
+            $count = $this->miss->update([
+                    'lastSeen' => 'now',
+                    'archiveDate' => null
+                ])
+                ->express('seen', 'seen', '+', 1)
+                ->chainIf($isBot, function ($query) {
+                    $query->express('botsSeen', 'botsSeen', '+', 1);
+                })
+                ->where('request', '=', $request)
+                ->where('id', '=', $missId)
+                ->execute();
+        }
 
 
         // Insert or fetch id
@@ -68,12 +78,6 @@ class Model extends axis\Model
                 'firstSeen' => 'now',
                 'lastSeen' => 'now'
             ])->execute()['id'];
-        } elseif (!$isBot) {
-            $missId = (string)$this->miss->select('id')
-                ->where('request', '=', $request)
-                ->toValue('id');
-        } else {
-            $missId = null;
         }
 
 
