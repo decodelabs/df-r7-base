@@ -15,6 +15,7 @@ use df\link;
 class Model extends axis\Model
 {
     const PURGE_THRESHOLD = '1 month';
+    const LOG_BOTS = false;
 
     public function logCurrentAgent(bool $logBots=false): array
     {
@@ -31,6 +32,11 @@ class Model extends axis\Model
         // Prepare
         $agent = $this->logCurrentAgent();
         $isBot = $agent['isBot'];
+
+        if ($isBot && !static::LOG_BOTS) {
+            return;
+        }
+
         $mode = $this->context->getRunMode();
         $request = $this->normalizeLogRequest($request, $mode, $url);
 
