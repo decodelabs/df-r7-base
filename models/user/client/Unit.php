@@ -28,7 +28,7 @@ class Unit extends axis\unit\Table
         'loginDate', 'timezone', 'country', 'language'
     ];
 
-    const DEFAULT_ORDER = 'fullName';
+    const DEFAULT_ORDER = 'loginDate DESC';
 
     protected function createSchema($schema)
     {
