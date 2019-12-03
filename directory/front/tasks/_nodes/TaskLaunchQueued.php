@@ -52,7 +52,7 @@ class TaskLaunchQueued extends arch\node\Task
 
         $this->_entry->status = 'processing';
         $this->_entry->save();
-        
+
         $this->_timer = new core\time\Timer();
 
         $this->task->launch(
@@ -98,6 +98,7 @@ class TaskLaunchQueued extends arch\node\Task
         $this->_log->output = $output;
         $this->_log->errorOutput = $error;
         $this->_log->runTime = $this->_timer->getTime();
+        $this->_log->status = 'complete';
         $this->_log->save();
     }
 }
