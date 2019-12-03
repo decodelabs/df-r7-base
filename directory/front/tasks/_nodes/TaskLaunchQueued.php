@@ -97,7 +97,11 @@ class TaskLaunchQueued extends arch\node\Task
 
         $this->_log->output = $output;
         $this->_log->errorOutput = $error;
-        $this->_log->runTime = $this->_timer->getTime();
+
+        if ($this->_timer) {
+            $this->_log->runTime = $this->_timer->getTime();
+        }
+
         $this->_log->status = 'complete';
         $this->_log->save();
     }
