@@ -18,9 +18,12 @@ class TaskCollectGarbage extends arch\node\Task
     const SCHEDULE_AUTOMATIC = true;
 
     const LIFETIME = 86400; // 24 hours
+    const CLOSE_THRESHOLD = '22 minutes';
 
     public function execute()
     {
+        $startDate = new core\time\Date('now');
+
         $time = time() - static::LIFETIME;
         $total = $this->data->session->descriptor->select('COUNT(*) as total')
             ->where('accessTime', '<', $time)
@@ -53,9 +56,12 @@ class TaskCollectGarbage extends arch\node\Task
             }
 
             usleep(50000);
-
-
             Cli::operative($nodeCount.' nodes');
+
+            if ($startDate->lt('-'.self::CLOSE_THRESHOLD)) {
+                Cli::info('Reached time limit');
+                return;
+            }
         }
     }
 }
