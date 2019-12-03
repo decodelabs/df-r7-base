@@ -51,6 +51,15 @@ class TaskSpool extends arch\node\Task
             return;
         }
 
+        // DELETE THIS!
+        try {
+            $this->data->task->log->select('status')
+                ->where('status', '=', 'complete')
+                ->count();
+        } catch (\Throwable $e) {
+            return;
+        }
+
         // Clear out old logs
         $this->runChild('tasks/purge-logs?log='.$this->_log['id'], false);
 
