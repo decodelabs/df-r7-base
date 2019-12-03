@@ -1,0 +1,30 @@
+<?php
+/**
+ * This file is part of the Decode Framework
+ * @license http://opensource.org/licenses/MIT
+ */
+namespace df\apex\directory\front\tasks\_nodes;
+
+use df;
+use df\core;
+use df\apex;
+use df\arch;
+
+use DecodeLabs\Terminus\Cli;
+
+class TaskPurgeQueue extends arch\node\Task
+{
+    const THRESHOLD = '24 hours';
+
+    public function execute()
+    {
+        // Clear out old logs
+        Cli::{'yellow'}('Clearing broken queued tasks: ');
+
+        $count = $this->data->task->queue->delete()
+            ->where('lockDate', '<', '-'.static::THRESHOLD)
+            ->execute();
+
+        Cli::{$count ? 'deleteSuccess' : 'success'}($count.' tasks');
+    }
+}

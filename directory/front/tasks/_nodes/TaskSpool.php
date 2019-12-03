@@ -46,54 +46,15 @@ class TaskSpool extends arch\node\Task
 
 
         // Test to see if spool has run recently
-        $justRun = $this->data->task->log->select('id')
-            ->where('request', '=', self::SELF_REQUEST)
-            ->where('id', '!=', $this->_log['id'])
-            ->beginWhereClause()
-                ->where('startDate', '>', '-'.self::COOLOFF.' seconds')
-                ->beginOrWhereClause()
-                    ->where('startDate', '>', '-30 minutes')
-                    ->where('runTime', '=', null)
-                ->endClause()
-            ->endClause()
-            ->count();
-
-        if ($justRun) {
-            Cli::info('The spool task has run recently - please try again later');
-            $this->_log->delete();
+        if (!$this->_checkLastRun()) {
             return;
         }
 
-
         // Clear out old logs
-        Cli::{'yellow'}('Clearing old logs: ');
-
-        $count = $this->data->task->log->delete()
-            ->beginWhereClause()
-                ->beginWhereClause()
-                    ->where('startDate', '<', '-1 week')
-                    ->where('errorOutput', '=', null)
-                    ->endClause()
-                ->beginOrWhereClause()
-                    ->where('startDate', '<', '-4 weeks')
-                    ->where('errorOutput', '!=', null)
-                    ->endClause()
-                ->endClause()
-            ->beginOrWhereClause()
-                ->where('request', '=', self::SELF_REQUEST)
-                ->where('id', '!=', $this->_log['id'])
-                ->where('errorOutput', '=', null)
-                ->endClause()
-            ->execute();
-
-        Cli::success('deleted '.$count.' entries');
-
+        $this->runChild('tasks/purge-logs?log='.$this->_log['id'], false);
 
         // Clear broken queue items
-        $this->data->task->queue->delete()
-            ->where('lockDate', '<', '-1 week')
-            ->execute();
-
+        $this->runChild('tasks/purge-queue', false);
 
         // Queue scheduled tasks
         $this->runChild('tasks/queue-scheduled', false);
@@ -136,6 +97,29 @@ class TaskSpool extends arch\node\Task
         $this->data->task->queue->delete()
             ->where('id', 'in', array_keys($taskIds))
             ->execute();
+    }
+
+    protected function _checkLastRun(): bool
+    {
+        $justRun = $this->data->task->log->select('id')
+            ->where('request', '=', self::SELF_REQUEST)
+            ->where('id', '!=', $this->_log['id'])
+            ->beginWhereClause()
+                ->where('startDate', '>', '-'.self::COOLOFF.' seconds')
+                ->beginOrWhereClause()
+                    ->where('startDate', '>', '-30 minutes')
+                    ->where('runTime', '=', null)
+                ->endClause()
+            ->endClause()
+            ->count();
+
+        if ($justRun) {
+            Cli::info('The spool task has run recently - please try again later');
+            $this->_log->delete();
+            return false;
+        }
+
+        return true;
     }
 
     protected function _afterDispatch($output)

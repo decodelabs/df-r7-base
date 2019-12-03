@@ -56,7 +56,7 @@ class TaskQueueScheduled extends arch\node\Task
             }
         }
 
-        Cli::success($this->_count.' entries queued');
+        Cli::success($this->_count.' tasks queued');
     }
 
     protected function _trigger($task)
