@@ -111,8 +111,13 @@ class TaskBuild extends arch\node\Task
         // Task spool
         $this->runChild('tasks/scan');
         Cli::newLine();
+
+        try {
+            $this->runChild('tasks/spool');
+        } catch (\Exception $e) {
+            Cli::error($e->getMessage());
+        }
         
-        $this->runChild('tasks/spool');
         Cli::newLine();
     }
 }
