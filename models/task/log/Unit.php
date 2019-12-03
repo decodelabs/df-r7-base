@@ -10,8 +10,8 @@ use df\core;
 use df\apex;
 use df\axis;
 
-class Unit extends axis\unit\Table {
-
+class Unit extends axis\unit\Table
+{
     const BROADCAST_HOOK_EVENTS = false;
 
     const ORDERABLE_FIELDS = [
@@ -20,18 +20,25 @@ class Unit extends axis\unit\Table {
 
     const DEFAULT_ORDER = 'startDate DESC';
 
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addField('request', 'Text', 1024);
         $schema->addField('environmentMode', 'Enum', 'core/environment/Mode');
 
         $schema->addField('startDate', 'Timestamp');
+        $schema->addField('lastActivity', 'Date:Time')
+            ->isNullable(true);
+
         $schema->addField('runTime', 'Duration')
             ->isNullable(true);
 
         $schema->addField('output', 'Text', 'huge')
             ->isNullable(true);
         $schema->addField('errorOutput', 'Text', 'huge')
+            ->isNullable(true);
+
+        $schema->addField('status', 'Enum', 'axis://task/Status')
             ->isNullable(true);
     }
 }
