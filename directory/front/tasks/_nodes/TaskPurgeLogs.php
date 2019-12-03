@@ -42,6 +42,11 @@ class TaskPurgeLogs extends arch\node\Task
 
             ->execute();
 
+        $this->data->task->log->update(['status' => 'lagging'])
+            ->where('startDate', '<', '-30 minutes')
+            ->where('status', '=', 'processing')
+            ->execute();
+
         Cli::success($count.' logs');
     }
 }

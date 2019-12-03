@@ -35,7 +35,8 @@ class TaskSpool extends arch\node\Task
 
         $this->_log = $this->data->task->log->newRecord([
                 'request' => self::SELF_REQUEST,
-                'environmentMode' => df\Launchpad::$app->envMode
+                'environmentMode' => df\Launchpad::$app->envMode,
+                'status' => 'processing'
             ])
             ->save();
     }
@@ -169,6 +170,7 @@ class TaskSpool extends arch\node\Task
         $this->_log->output = $output;
         $this->_log->errorOutput = $error;
         $this->_log->runTime = $this->_timer->getTime();
+        $this->_log->status = 'complete';
         $this->_log->save();
     }
 }

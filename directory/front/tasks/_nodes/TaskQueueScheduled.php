@@ -68,7 +68,8 @@ class TaskQueueScheduled extends arch\node\Task
 
         $queue = $this->data->newRecord('axis://task/Queue', [
                 'request' => $task['request'],
-                'priority' => $task['priority']
+                'priority' => $task['priority'],
+                'status' => 'pending'
             ])
             ->save();
     }

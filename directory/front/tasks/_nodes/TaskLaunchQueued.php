@@ -48,10 +48,13 @@ class TaskLaunchQueued extends arch\node\Task
         if (!$this->_entry['lockDate'] || !$this->_entry['lockId']) {
             $this->_entry->lockDate = 'now';
             $this->_entry->lockId = $this->_log['id'];
-            $this->_entry->save();
         }
 
+        $this->_entry->status = 'processing';
+        $this->_entry->save();
+        
         $this->_timer = new core\time\Timer();
+
         $this->task->launch(
             $this->_entry['request'],
             Cli::getSession(),

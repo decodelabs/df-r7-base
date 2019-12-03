@@ -15,7 +15,8 @@ class Unit extends axis\unit\Table
     const BROADCAST_HOOK_EVENTS = false;
 
     const ORDERABLE_FIELDS = [
-        'request', 'environmentMode', 'startDate', 'runTime', 'status'
+        'request', 'environmentMode', 'startDate',
+        'lastActivity', 'runTime', 'status'
     ];
 
     const DEFAULT_ORDER = 'startDate DESC';

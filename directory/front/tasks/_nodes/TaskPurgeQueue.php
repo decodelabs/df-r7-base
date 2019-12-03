@@ -25,6 +25,10 @@ class TaskPurgeQueue extends arch\node\Task
             ->where('lockDate', '<', '-'.static::THRESHOLD)
             ->execute();
 
+        $this->data->task->queue->update(['status' => 'lagging'])
+            ->where('lockDate', '<', '-30 minutes')
+            ->execute();
+
         Cli::{$count ? 'deleteSuccess' : 'success'}($count.' tasks');
     }
 }
