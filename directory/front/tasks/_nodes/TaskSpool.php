@@ -167,10 +167,14 @@ class TaskSpool extends arch\node\Task
             $error = null;
         }
 
-        $this->_log->output = $output;
-        $this->_log->errorOutput = $error;
-        $this->_log->runTime = $this->_timer->getTime();
-        $this->_log->status = 'complete';
-        $this->_log->save();
+        try {
+            $this->_log->output = $output;
+            $this->_log->errorOutput = $error;
+            $this->_log->runTime = $this->_timer->getTime();
+            $this->_log->status = 'complete';
+            $this->_log->save();
+        } catch (\Exception $e) {
+            $this->_log->delete();
+        }
     }
 }
