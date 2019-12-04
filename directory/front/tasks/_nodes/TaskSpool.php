@@ -10,6 +10,7 @@ use df\core;
 use df\apex;
 use df\arch;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Terminus\Cli;
 
 class TaskSpool extends arch\node\Task
@@ -48,15 +49,6 @@ class TaskSpool extends arch\node\Task
 
         // Test to see if spool has run recently
         if (!$this->_checkLastRun()) {
-            return;
-        }
-
-        // DELETE THIS!
-        try {
-            $this->data->task->log->select('status')
-                ->where('status', '=', 'complete')
-                ->count();
-        } catch (\Throwable $e) {
             return;
         }
 
@@ -143,19 +135,7 @@ class TaskSpool extends arch\node\Task
         Cli::writeErrorLine((string)$e);
         $this->_finalizeLog();
 
-        $this->logs->logException($e);
-
-        /*
-        try {
-            $this->comms->adminNotify(
-                'Task manager failure',
-                'The task manager spool process failed with the following exception: '."\n\n".$exception
-            );
-        } catch(\Throwable $e) {
-            // Never mind :)
-        }
-        */
-
+        Glitch::logException($e);
         parent::handleException($e);
     }
 
@@ -183,6 +163,7 @@ class TaskSpool extends arch\node\Task
             $this->_log->status = 'complete';
             $this->_log->save();
         } catch (\Exception $e) {
+            Glitch::logException($e);
             $this->_log->delete();
         }
     }
