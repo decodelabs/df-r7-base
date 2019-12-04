@@ -325,7 +325,7 @@ class Schedule implements ISchedule, Inspectable
                     $minute--;
 
                     if ($minute < 0) {
-                        $time->modify(($time->format('H')-1).':59:00');
+                        $time->modify($time->format('H').':59:00 -1 hour');
                         continue 2;
                     }
                 }
