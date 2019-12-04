@@ -14,7 +14,7 @@ use DecodeLabs\Terminus\Cli;
 
 class TaskPurgeQueue extends arch\node\Task
 {
-    const THRESHOLD = '24 hours';
+    const THRESHOLD = '2 hours';
 
     public function execute()
     {
