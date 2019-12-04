@@ -14,11 +14,11 @@ use DecodeLabs\Terminus\Cli;
 
 class TaskCollectGarbage extends arch\node\Task
 {
-    const SCHEDULE = '*/20 * * * *';
+    const SCHEDULE = '*/15 * * * *';
     const SCHEDULE_AUTOMATIC = true;
 
     const LIFETIME = 86400; // 24 hours
-    const CLOSE_THRESHOLD = '13 minutes';
+    const CLOSE_THRESHOLD = '9 minutes';
 
     public function execute()
     {
