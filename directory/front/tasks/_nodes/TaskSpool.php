@@ -48,11 +48,9 @@ class TaskSpool extends arch\node\Task
 
 
         // Test to see if spool has run recently
-        /*
         if (!$this->_checkLastRun()) {
             return;
         }
-        */
 
         // Clear out old logs
         $this->runChild('tasks/purge-logs?log='.$this->_log['id'], false);
