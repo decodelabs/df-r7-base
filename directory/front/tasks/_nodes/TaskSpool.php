@@ -48,9 +48,11 @@ class TaskSpool extends arch\node\Task
 
 
         // Test to see if spool has run recently
+        /*
         if (!$this->_checkLastRun()) {
             return;
         }
+        */
 
         // Clear out old logs
         $this->runChild('tasks/purge-logs?log='.$this->_log['id'], false);
@@ -61,45 +63,33 @@ class TaskSpool extends arch\node\Task
         // Queue scheduled tasks
         $this->runChild('tasks/queue-scheduled', false);
 
+        Cli::newLine();
 
-        // Select and lock queued tasks
-        Cli::{'yellow'}('Selecting queued tasks: ');
+        // Loop tasks
+        $i = self::QUEUE_LIMIT;
 
-        $count = $this->data->task->queue->update([
-                'lockDate' => 'now',
-                'lockId' => $this->_log['id']
-            ])
-            ->where('lockDate', '=', null)
-            ->where('lockId', '=', null)
-            ->orderBy('queueDate ASC')
-            ->limit(self::QUEUE_LIMIT)
-            ->execute();
+        while ($i > 0) {
+            $i--;
 
-        if (!$count) {
-            Cli::success('no tasks to launch right now!');
-            return;
+            if (!$task = $this->_lockNextTask()) {
+                return;
+            }
+
+            Cli::{'brightMagenta'}($task['request'].' ');
+
+            $this->task->launchBackground(
+                'tasks/launch-queued?id='.$task['id'],
+                null,
+                false,
+                false
+            );
+
+            if (!$this->_checkCompleted($task['id'])) {
+                return;
+            }
         }
-
-        Cli::success('locked '.$count.' entries');
-
-
-        // Launch tasks
-        $taskIds = $this->data->task->queue->select('id', 'request')
-            ->where('lockId', '=', $this->_log['id'])
-            ->orderBy('priority DESC', 'queueDate ASC')
-            ->toList('id', 'request');
-
-        foreach ($taskIds as $taskId => $request) {
-            Cli::newLine();
-            Cli::comment($request.' : '.$taskId);
-
-            $this->runChild('tasks/launch-queued?id='.$taskId, false);
-        }
-
-        $this->data->task->queue->delete()
-            ->where('id', 'in', array_keys($taskIds))
-            ->execute();
     }
+
 
     protected function _checkLastRun(): bool
     {
@@ -124,6 +114,68 @@ class TaskSpool extends arch\node\Task
         return true;
     }
 
+    protected function _lockNextTask(): ?array
+    {
+        $count = $this->data->task->queue->update([
+                'lockDate' => 'now',
+                'lockId' => $this->_log['id'],
+                'status' => 'locked'
+            ])
+            ->where('lockDate', '=', null)
+            ->where('lockId', '=', null)
+            ->orderBy('queueDate ASC')
+            ->limit(1)
+            ->execute();
+
+        if (!$count) {
+            return null;
+        }
+
+        return $this->data->task->queue->select('id', 'request')
+            ->where('lockId', '=', $this->_log['id'])
+            ->orderBy('priority DESC', 'queueDate ASC')
+            ->toRow();
+    }
+
+    protected function _checkCompleted(string $taskId): bool
+    {
+        $sleeps = [0.5, 1, 2, 3];
+        $check = null;
+        $progress = Cli::newSpinner();
+        $tick = 100000;
+        $second = 1000000;
+
+        do {
+            $sleep = array_shift($sleeps) * $second;
+
+            while ($sleep > 0) {
+                $progress->advance();
+                usleep($tick);
+                $sleep -= $tick;
+            }
+
+            $check = $this->data->task->queue->select('id', 'request', 'status')
+                ->where('id', '=', $taskId)
+                ->toRow();
+
+            if (!$check) {
+                break;
+            }
+        } while (!empty($sleeps));
+
+        $this->_updateLog('processing');
+
+
+        // Task is still running
+        if ($check !== null) {
+            $progress->complete('still running', 'operative');
+            return false;
+        }
+
+        $progress->complete('complete');
+        return true;
+    }
+
     protected function _afterDispatch($output)
     {
         $this->_finalizeLog();
@@ -141,6 +193,16 @@ class TaskSpool extends arch\node\Task
 
     protected function _finalizeLog()
     {
+        try {
+            $this->_updateLog('complete');
+        } catch (\Exception $e) {
+            Glitch::logException($e);
+            $this->_log->delete();
+        }
+    }
+
+    protected function _updateLog(string $status)
+    {
         if (!$this->_log || $this->_log->isNew()) {
             return;
         }
@@ -156,15 +218,10 @@ class TaskSpool extends arch\node\Task
             $error = null;
         }
 
-        try {
-            $this->_log->output = $output;
-            $this->_log->errorOutput = $error;
-            $this->_log->runTime = $this->_timer->getTime();
-            $this->_log->status = 'complete';
-            $this->_log->save();
-        } catch (\Exception $e) {
-            Glitch::logException($e);
-            $this->_log->delete();
-        }
+        $this->_log->output = $output;
+        $this->_log->errorOutput = $error;
+        $this->_log->runTime = $this->_timer->getTime();
+        $this->_log->status = $status;
+        $this->_log->save();
     }
 }
