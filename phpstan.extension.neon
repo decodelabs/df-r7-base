@@ -29,7 +29,6 @@ parameters:
         - '#^Instantiated class (df\\apex\\App|df\\apex\\directory\\front\\HttpRootNodeRouter) not found\.$#'
         - '#^Cannot access offset .+ on object\.$#'
         - '#^Strict comparison using === between false and (resource|RarArchive) will always evaluate to false\.#'
-        - '#^Strict comparison using === between DOMNode and null will always evaluate to false\.#'
 
         # Extensions
         - '#^Function snappy_[a-zA-Z0-9_]+ not found\.$#'
@@ -39,5 +38,4 @@ parameters:
         - '#expects rararchive, RarArchive given#'
 
         # Exceptions
-        - '#^Call to an undefined static method df\\core\\Error#'
         - '#^Class df\\opal\\rdbms\\ETableNotFound not found\.#'
