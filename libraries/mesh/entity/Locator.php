@@ -81,12 +81,12 @@ class Locator implements ILocator, Inspectable
         ];
 
         for ($i = 0; $i < $length; $i++) {
-            $char = $path{$i};
+            $char = $path[$i];
 
             switch ($mode) {
                 // Location
                 case 0:
-                    if (!isset($part{0}) && ctype_upper($char)) {
+                    if (!isset($part[0]) && ctype_upper($char)) {
                         $part .= $char;
                         $mode = 1; // Type
                     } elseif ($char == '/') {

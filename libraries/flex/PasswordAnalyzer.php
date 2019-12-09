@@ -85,11 +85,11 @@ class PasswordAnalyzer implements IPasswordAnalyzer
         $length = strlen($str);
 
         for ($pos = 0; $pos < $length;) {
-            $c = ord($str{$pos++}) - $s;
+            $c = ord($str[$pos++]) - $s;
             $c /= 95;
-            $c += ord($str{$pos++}) - $s;
+            $c += ord($str[$pos++]) - $s;
             $c /= 95;
-            $c += ord($str{$pos++}) - $s;
+            $c += ord($str[$pos++]) - $s;
             $c /= 95;
 
             $freqs[] = $c;

@@ -89,7 +89,7 @@ trait TSingleValueUnit
 
             if (strlen($unit) == 1) {
                 foreach (self::UNITS as $test) {
-                    if ($test{0} == $unit) {
+                    if ($test[0] == $unit) {
                         $unit = $test;
                         $found = true;
                         break;

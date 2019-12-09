@@ -262,7 +262,7 @@ trait TAcceptTypeProcessor
                 continue;
             }
 
-            if ($type{0} == '.') {
+            if ($type[0] == '.') {
                 $type = Atlas::$mime->detect($type);
             }
 
@@ -294,7 +294,7 @@ trait TAcceptTypeProcessor
                 continue;
             }
 
-            if ($type{0} == '.') {
+            if ($type[0] == '.') {
                 $type = Atlas::$mime->detect($type);
             }
 

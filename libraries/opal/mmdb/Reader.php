@@ -63,7 +63,7 @@ class Reader implements IReader
                 $matchBit = $this->_file->readChar();
                 $read = $matchBit.$read;
 
-                if ($matchBit != $marker{$markerLength - $j - 1}) {
+                if ($matchBit != $marker[$markerLength - $j - 1]) {
                     continue 2;
                 }
             }

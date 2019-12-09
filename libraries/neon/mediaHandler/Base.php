@@ -140,9 +140,9 @@ abstract class Base implements IMediaHandler
         }
 
         $fileId = str_replace('-', '', (string)$fileId);
-        $k1 = hexdec($fileId{0});
-        $k2 = hexdec($fileId{1});
-        $k3 = hexdec($fileId{2});
-        return $fileId{$k3}.$fileId{$k2}.$fileId{$k1};
+        $k1 = hexdec($fileId[0]);
+        $k2 = hexdec($fileId[1]);
+        $k3 = hexdec($fileId[2]);
+        return $fileId[$k3].$fileId[$k2].$fileId[$k1];
     }
 }

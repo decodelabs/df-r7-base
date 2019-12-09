@@ -39,7 +39,7 @@ class Inspector implements IInspector
         $lastRule = null;
 
         for ($i = 0; $i < $length; $i++) {
-            $char = $string{$i};
+            $char = $string[$i];
 
             if (!preg_match('/^[a-zA-Z\:]$/', $char)) {
                 throw Glitch::EInvalidArgument(

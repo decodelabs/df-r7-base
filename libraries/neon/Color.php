@@ -414,12 +414,12 @@ class Color implements IColor, Inspectable
         }
 
         if ($allowShort
-        && $r{0} == $r{1}
-        && $g{0} == $g{1}
-        && $b{0} == $b{1}) {
-            $r = $r{0};
-            $g = $g{0};
-            $b = $b{0};
+        && $r[0] == $r[1]
+        && $g[0] == $g[1]
+        && $b[0] == $b[1]) {
+            $r = $r[0];
+            $g = $g[0];
+            $b = $b[0];
         }
 
         return '#'.$r.$g.$b;

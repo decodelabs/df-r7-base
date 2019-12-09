@@ -46,11 +46,11 @@ class Guid implements IGuid, Inspectable
         $time = base_convert($time, 10, 16);
         $time = pack('H*', str_pad($time, 16, '0', STR_PAD_LEFT));
 
-        $uuid = $time{4}.$time{5}.$time{6}.$time{7}.$time{2}.$time{3}.$time{0}.$time{1};
+        $uuid = $time[4].$time[5].$time[6].$time[7].$time[2].$time[3].$time[0].$time[1];
         $uuid .= Generator::randomBytes(2);
 
-        $uuid{8} = chr(ord($uuid{8}) & self::CLEAR_VARIANT | self::VARIANT_RFC);
-        $uuid{6} = chr(ord($uuid{6}) & self::CLEAR_VERSION | self::VERSION_1);
+        $uuid[8] = chr(ord($uuid[8]) & self::CLEAR_VARIANT | self::VARIANT_RFC);
+        $uuid[6] = chr(ord($uuid[6]) & self::CLEAR_VERSION | self::VERSION_1);
 
         if ($node !== null) {
             $node = self::_makeBin($node, 6);
@@ -58,7 +58,7 @@ class Guid implements IGuid, Inspectable
 
         if (!$node) {
             $node = Generator::randomBytes(6);
-            $node{0} = pack('C', ord($node{0}) | 1);
+            $node[0] = pack('C', ord($node[0]) | 1);
         }
 
         $uuid .= $node;
@@ -74,8 +74,8 @@ class Guid implements IGuid, Inspectable
         }
 
         $uuid = md5($namespace.$name, true);
-        $uuid{8} = chr(ord($uuid{8}) & self::CLEAR_VARIANT | self::VARIANT_RFC);
-        $uuid{6} = chr(ord($uuid{6}) & self::CLEAR_VERSION | self::VERSION_3);
+        $uuid[8] = chr(ord($uuid[8]) & self::CLEAR_VARIANT | self::VARIANT_RFC);
+        $uuid[6] = chr(ord($uuid[6]) & self::CLEAR_VERSION | self::VERSION_3);
 
         return new self($uuid);
     }
@@ -83,8 +83,8 @@ class Guid implements IGuid, Inspectable
     public static function uuid4()
     {
         $uuid = Generator::randomBytes(16);
-        $uuid{8} = chr(ord($uuid{8}) & self::CLEAR_VARIANT | self::VARIANT_RFC);
-        $uuid{6} = chr(ord($uuid{6}) & self::CLEAR_VERSION | self::VERSION_4);
+        $uuid[8] = chr(ord($uuid[8]) & self::CLEAR_VARIANT | self::VARIANT_RFC);
+        $uuid[6] = chr(ord($uuid[6]) & self::CLEAR_VERSION | self::VERSION_4);
 
         return new self($uuid);
     }
@@ -98,8 +98,8 @@ class Guid implements IGuid, Inspectable
         }
 
         $uuid = md5($namespace.$name, true);
-        $uuid{8} = chr(ord($uuid{8}) & self::CLEAR_VARIANT | self::VARIANT_RFC);
-        $uuid{6} = chr(ord($uuid{6}) & self::CLEAR_VERSION | self::VERSION_5);
+        $uuid[8] = chr(ord($uuid[8]) & self::CLEAR_VARIANT | self::VARIANT_RFC);
+        $uuid[6] = chr(ord($uuid[6]) & self::CLEAR_VERSION | self::VERSION_5);
 
         return new self($uuid);
     }
@@ -113,10 +113,10 @@ class Guid implements IGuid, Inspectable
         $time = base_convert($time, 10, 16);
         $time = pack('H*', str_pad($time, 16, '0', STR_PAD_LEFT));
 
-        $uuid .= $time{1}.$time{0}.$time{7}.$time{6}.$time{5}.$time{4}.$time{3}.$time{2};
+        $uuid .= $time[1].$time[0].$time[7].$time[6].$time[5].$time[4].$time[3].$time[2];
 
-        $uuid{8} = chr(ord($uuid{8}) & self::CLEAR_VARIANT | self::VARIANT_RESERVED);
-        $uuid{6} = chr(ord($uuid{6}) & self::CLEAR_VERSION | self::VERSION_COMB);
+        $uuid[8] = chr(ord($uuid[8]) & self::CLEAR_VARIANT | self::VARIANT_RESERVED);
+        $uuid[6] = chr(ord($uuid[6]) & self::CLEAR_VERSION | self::VERSION_COMB);
 
         return new self($uuid);
     }
@@ -206,12 +206,12 @@ class Guid implements IGuid, Inspectable
 
     public function getVersion()
     {
-        return ord($this->_bytes{6}) >> 4;
+        return ord($this->_bytes[6]) >> 4;
     }
 
     public function getVariant()
     {
-        $byte = ord($this->_bytes{8});
+        $byte = ord($this->_bytes[8]);
 
         if ($byte >= self::VARIANT_RESERVED) {
             return self::VARIANT_RESERVED;
@@ -243,7 +243,7 @@ class Guid implements IGuid, Inspectable
 
     public function getNode()
     {
-        if (ord($this->_bytes{6}) >> 4 != 1) {
+        if (ord($this->_bytes[6]) >> 4 != 1) {
             return null;
         }
 
@@ -252,22 +252,22 @@ class Guid implements IGuid, Inspectable
 
     public function getTime()
     {
-        if (ord($this->_bytes{6}) >> 4 != 1) {
+        if (ord($this->_bytes[6]) >> 4 != 1) {
             return null;
         }
 
         $time = bin2hex(
-            $this->_bytes{6}.
-            $this->_bytes{7}.
-            $this->_bytes{4}.
-            $this->_bytes{5}.
-            $this->_bytes{0}.
-            $this->_bytes{1}.
-            $this->_bytes{2}.
-            $this->_bytes{3}
+            $this->_bytes[6].
+            $this->_bytes[7].
+            $this->_bytes[4].
+            $this->_bytes[5].
+            $this->_bytes[0].
+            $this->_bytes[1].
+            $this->_bytes[2].
+            $this->_bytes[3]
         );
 
-        $time{0} = '0';
+        $time[0] = '0';
 
         return (hexdec($time) - self::INTERVAL) / 1000000;
     }

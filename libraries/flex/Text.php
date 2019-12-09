@@ -47,8 +47,8 @@ class Text implements IText, \IteratorAggregate, Inspectable
         if ($extendShort && strlen($output) == 1) {
             $chars = str_replace(['a', 'e', 'i', 'o', 'u'], '', $name);
 
-            if (isset($chars{1})) {
-                $output .= $chars{1};
+            if (isset($chars[1])) {
+                $output .= $chars[1];
             }
         }
 
@@ -258,7 +258,7 @@ class Text implements IText, \IteratorAggregate, Inspectable
 
         while ($number >= 0) {
             $key = $number % 26;
-            $output = $alphabet{$key}.$output;
+            $output = $alphabet[$key].$output;
             $number = (($number - $key) / 26) - 1;
         }
 
@@ -270,7 +270,7 @@ class Text implements IText, \IteratorAggregate, Inspectable
         $output = -1;
 
         for ($i = 0; $i < $length = strlen($alpha); $i++) {
-            $output = (($output + 1) * 26) + ((int)base_convert($alpha{$i}, 36, 10) - 10);
+            $output = (($output + 1) * 26) + ((int)base_convert($alpha[$i], 36, 10) - 10);
         }
 
         return $output;
@@ -367,7 +367,7 @@ class Text implements IText, \IteratorAggregate, Inspectable
 
 
         for ($i = 0; $i < $length; $i++) {
-            $digit = ord($input{$i}) - 48;
+            $digit = ord($input[$i]) - 48;
 
             if ($digit > 9) {
                 $digit -= 39;
@@ -400,7 +400,7 @@ class Text implements IText, \IteratorAggregate, Inspectable
                 }
             }
 
-            $outChars = $digitChars{$work}.$outChars;
+            $outChars = $digitChars[$work].$outChars;
             $inDigits = $workDigits;
         }
 
@@ -440,21 +440,21 @@ class Text implements IText, \IteratorAggregate, Inspectable
 
     public static function mbOrd($chr)
     {
-        $h = ord($chr{0});
+        $h = ord($chr[0]);
 
         if ($h <= 0x7F) {
             return $h;
         } elseif ($h < 0xC2) {
             return false;
         } elseif ($h <= 0xDF) {
-            return ($h & 0x1F) << 6 | (ord($chr{1}) & 0x3F);
+            return ($h & 0x1F) << 6 | (ord($chr[1]) & 0x3F);
         } elseif ($h <= 0xEF) {
-            return ($h & 0x0F) << 12 | (ord($chr{1}) & 0x3F) << 6
-                                     | (ord($chr{2}) & 0x3F);
+            return ($h & 0x0F) << 12 | (ord($chr[1]) & 0x3F) << 6
+                                     | (ord($chr[2]) & 0x3F);
         } elseif ($h <= 0xF4) {
-            return ($h & 0x0F) << 18 | (ord($chr{1}) & 0x3F) << 12
-                                     | (ord($chr{2}) & 0x3F) << 6
-                                     | (ord($chr{3}) & 0x3F);
+            return ($h & 0x0F) << 18 | (ord($chr[1]) & 0x3F) << 12
+                                     | (ord($chr[2]) & 0x3F) << 6
+                                     | (ord($chr[3]) & 0x3F);
         } else {
             return false;
         }

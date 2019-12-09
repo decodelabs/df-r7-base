@@ -78,7 +78,7 @@ class Delimited implements IDelimited
         $quote = null;
 
         for ($i = 0; $i < $length; $i++) {
-            $char = $input{$i};
+            $char = $input[$i];
 
             switch ($mode) {
                 // post delimiter or start

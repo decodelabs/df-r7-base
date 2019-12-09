@@ -53,7 +53,7 @@ class Argument implements IArgument, Inspectable
 
         if ($this->isOptionCluster()) {
             for ($i = 1; $i < strlen($this->_option); $i++) {
-                $output[] = '-'.$this->_option{$i};
+                $output[] = '-'.$this->_option[$i];
             }
         } else {
             $output[] = $this->_option;
@@ -88,7 +88,7 @@ class Argument implements IArgument, Inspectable
 
         if ($this->isOptionCluster()) {
             for ($i = 1; $i < strlen($this->_option); $i++) {
-                $output[] = $this->_option{$i};
+                $output[] = $this->_option[$i];
             }
         }
 

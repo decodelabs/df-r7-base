@@ -76,7 +76,7 @@ class Clause implements opal\query\IClause, Inspectable
             $adapter = $adapter->getDerivationQuery()->getDerivationSourceAdapter();
         }
 
-        if ($name{0} == '@') {
+        if ($name[0] == '@') {
             switch (strtolower($name)) {
                 case '@primary':
                     return self::mapVirtualClause(

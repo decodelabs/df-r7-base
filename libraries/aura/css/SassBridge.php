@@ -427,7 +427,7 @@ class SassBridge implements ISassBridge
                     $activePath .= '.'.$this->_type;
                 }
 
-                if ($path{0} == '/') {
+                if ($path[0] == '/') {
                     $importPath = $activePath;
                 } elseif (false !== strpos($activePath, '://')) {
                     $importPath = $this->_uriToPath($activePath);
@@ -470,7 +470,7 @@ class SassBridge implements ISassBridge
             $urls = [];
 
             foreach ($matches[1] as $i => $path) {
-                if ($cts !== null && $path{0} == '.') {
+                if ($cts !== null && $path[0] == '.') {
                     $separator = false !== strpos($path, '?') ? '&' : '?';
                     $urls[$matches[0][$i]] = $path.$separator.'cts='.$cts;
                 } elseif (false !== strpos($path, '://')) {

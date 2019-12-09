@@ -167,8 +167,8 @@ class Template implements ITemplate
 
         $output = new Template_Expression();
 
-        if (isset(self::OPERATORS[$expression{0}])) {
-            $output->operator = $expression{0};
+        if (isset(self::OPERATORS[$expression[0]])) {
+            $output->operator = $expression[0];
             $expression = substr($expression, 1);
         }
 

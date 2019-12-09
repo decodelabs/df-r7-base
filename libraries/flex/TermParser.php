@@ -38,14 +38,14 @@ class TermParser implements ITermParser
 
         while ($pos < $length) {
             // Skip unwanted chars
-            while ($pos < $length && !$this->_testChar($phrase{$pos})) {
+            while ($pos < $length && !$this->_testChar($phrase[$pos])) {
                 $pos++;
             }
 
             // Buffer to next unwanted
             $start = $pos;
 
-            while ($pos < $length && $this->_testChar($phrase{$pos})) {
+            while ($pos < $length && $this->_testChar($phrase[$pos])) {
                 $pos++;
             }
 

@@ -86,7 +86,7 @@ class Request extends core\uri\Url implements IRequest, Inspectable
                 } else {
                     $this->setArea(static::DEFAULT_AREA);
                 }
-            } elseif ((isset($first{0}) && $first{0} == '~' && $pathCount == 1)) {
+            } elseif ((isset($first[0]) && $first[0] == '~' && $pathCount == 1)) {
                 $this->_path->shouldAddTrailingSlash(true);
             }
         }

@@ -321,7 +321,7 @@ class En extends Base
     protected static function _doubleConsonant($str)
     {
         $c = self::CONSONANTS;
-        return preg_match("#$c{2}$#", $str, $matches) && $matches[0]{0} == $matches[0]{1};
+        return preg_match("#$c{2}$#", $str, $matches) && $matches[0][0] == $matches[0][1];
     }
 
     protected static function _cvc($str)
@@ -331,8 +331,8 @@ class En extends Base
 
         return preg_match("#($c$v$c)$#", $str, $matches)
             && strlen($matches[1]) == 3
-            && $matches[1]{2} != 'w'
-            && $matches[1]{2} != 'x'
-            && $matches[1]{2} != 'y';
+            && $matches[1][2] != 'w'
+            && $matches[1][2] != 'x'
+            && $matches[1][2] != 'y';
     }
 }

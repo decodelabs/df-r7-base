@@ -21,7 +21,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource
         $parentName = array_shift($nameParts);
         $subId = array_shift($nameParts);
 
-        if (isset($parts[0]{0}) && $parts[0]{0} == arch\Request::AREA_MARKER) {
+        if (isset($parts[0][0]) && $parts[0][0] == arch\Request::AREA_MARKER) {
             $area = ltrim(array_shift($parts), arch\Request::AREA_MARKER);
         } else {
             $area = arch\Request::DEFAULT_AREA;

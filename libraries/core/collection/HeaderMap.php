@@ -51,7 +51,7 @@ class HeaderMap implements IHeaderMap, Inspectable
                 $last = null;
 
                 foreach ($lines as $line) {
-                    if (isset($line{0}) && $line{0} == ' ') {
+                    if (isset($line[0]) && $line[0] == ' ') {
                         $last .= "\r\n".$line;
                         continue;
                     }
