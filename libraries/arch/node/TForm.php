@@ -1039,38 +1039,6 @@ trait TForm_MediaBucketAwareSelector
 
     protected function _setupBucket()
     {
-        if (isset($this->_bucketData['context1'])
-        && $this->_bucketData['context1'] instanceof arch\node\ISelectorDelegate) {
-            if (!$this->_bucketData['context1']->hasSelection()) {
-                $this->_bucket = null;
-                $this->addDependency(
-                    $this->_bucketData['context1'],
-                    $this->_('Please make a selection')
-                );
-            } else {
-                $id = $this->_bucketData['context1']->getSelected();
-                $locator = clone $this->_bucketData['context1']->getSourceEntityLocator();
-                $locator->setId($id);
-                $this->_bucketData['context1'] = $locator;
-            }
-        }
-
-        if (isset($this->_bucketData['context2'])
-        && $this->_bucketData['context2'] instanceof arch\node\ISelectorDelegate) {
-            if (!$this->_bucketData['context2']->hasSelection()) {
-                $this->_bucket = null;
-                $this->addDependency(
-                    $this->_bucketData['context1'],
-                    $this->_('Please make a selection')
-                );
-            } else {
-                $id = $this->_bucketData['context2']->getSelected();
-                $locator = clone $this->_bucketData['context2']->getSourceEntityLocator();
-                $locator->setId($id);
-                $this->_bucketData['context2'] = $locator;
-            }
-        }
-
         if ($this->_bucket) {
             if (!$this->_bucket instanceof opal\record\IRecord) {
                 $this->_bucket = $this->data->media->bucket->ensureSlugExists(
