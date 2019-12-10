@@ -50,14 +50,13 @@ class Server implements opal\rdbms\IServer
 
     public function createDatabase($name, $checkExists=false)
     {
-        $encoding = $this->_adapter->getEncoding();
         $sql = 'CREATE DATABASE';
 
         if (!$checkExists) {
             $sql .= ' IF NOT EXISTS';
         }
 
-        $sql .= ' '.$this->_adapter->quoteIdentifier($name).' CHARACTER SET '.$encoding.' COLLATE '.$encoding.'_general_ci';
+        $sql .= ' '.$this->_adapter->quoteIdentifier($name).' CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci';
         $this->_adapter->executeSql($sql);
         return opal\rdbms\Database::factory($this->_adapter, $name);
     }

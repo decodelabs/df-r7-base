@@ -51,10 +51,10 @@ class TaskSetCollation extends arch\node\Task
 
 
         $server = $adapter->getServer();
-        $collation = $this->request->query->get('collation', 'utf8mb4_general_ci');
+        $collation = $this->request->query->get('collation', 'utf8mb4_unicode_ci');
 
         if (false === strpos($collation, '_')) {
-            $collation .= '_general_ci';
+            $collation .= '_unicode_ci';
         }
 
         $charset = $this->request->query->get('charset', explode('_', $collation)[0]);

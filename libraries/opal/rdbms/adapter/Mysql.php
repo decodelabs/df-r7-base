@@ -33,14 +33,19 @@ class Mysql extends Base_Pdo
 
     protected function _createDb()
     {
-        $encoding = $this->getEncoding();
-        $this->executeSql('CREATE DATABASE `'.$this->_dsn->getDatabase().'` CHARACTER SET '.$encoding.' COLLATE '.$encoding.'_general_ci');
+        $this->executeSql('CREATE DATABASE `'.$this->_dsn->getDatabase().'` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
     }
 
     protected function _getPdoDsn($global=false)
     {
         if (!($charset = $this->_dsn->getOption('encoding'))) {
             $charset = 'utf8';
+        }
+
+        $charset = strtolower($charset);
+
+        if ($charset === 'utf8') {
+            $charset = 'utf8mb4';
         }
 
         $output = 'mysql:host='.$this->_dsn->getHostname();
@@ -61,8 +66,10 @@ class Mysql extends Base_Pdo
             $charset = 'utf8';
         }
 
-        if (strtolower($charset) == 'utf8') {
-            $output[\PDO::MYSQL_ATTR_INIT_COMMAND] = 'SET NAMES utf8';
+        $charset = strtolower($charset);
+
+        if ($charset === 'utf8') {
+            $output[\PDO::MYSQL_ATTR_INIT_COMMAND] = 'SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci';
         }
 
         return $output;

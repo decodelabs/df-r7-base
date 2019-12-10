@@ -59,19 +59,22 @@ class Mysqli extends opal\rdbms\adapter\Base
             );
         }
 
-        if (!$encoding = $this->_dsn->getOption('encoding')) {
-            $encoding = 'utf8';
+        if (!($charset = $this->_dsn->getOption('encoding'))) {
+            $charset = 'utf8';
         }
 
-        mysqli_query($this->_connection, 'SET NAMES '.$encoding);
+        $charset = strtolower($charset);
+
+        if ($charset === 'utf8') {
+            mysqli_query($this->_connection, ' SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci');
+        }
 
         $this->executeSql('SET time_zone = \'+00:00\'');
     }
 
     protected function _createDb()
     {
-        $encoding = $this->getEncoding();
-        $this->executeSql('CREATE DATABASE `'.$this->_dsn->getDatabase().'` CHARACTER SET '.$encoding.' COLLATE '.$encoding.'_general_ci');
+        $this->executeSql('CREATE DATABASE `'.$this->_dsn->getDatabase().'` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
     }
 
     protected function _closeConnection()

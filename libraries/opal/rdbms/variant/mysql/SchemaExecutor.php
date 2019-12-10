@@ -286,8 +286,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
     // Table
     protected function _generateTableOptions(opal\rdbms\schema\ISchema $schema)
     {
-        $encoding = $this->_adapter->getEncoding();
-        return ' CHARACTER SET '.$encoding.' COLLATE '.$encoding.'_general_ci';
+        return ' CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci';
     }
 
 
@@ -867,6 +866,6 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
             return $row['collation_name'];
         }
 
-        return 'utf8_general_ci';
+        return 'utf8mb4_unicode_ci';
     }
 }

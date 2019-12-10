@@ -23,7 +23,7 @@ class Text extends Base implements core\validate\ITextField
     protected $_minWords = null;
     protected $_maxWords = null;
     protected $_shouldTrim = true;
-    protected $_accept4Byte = false;
+    protected $_accept4Byte = true;
 
 
     // Pattern
