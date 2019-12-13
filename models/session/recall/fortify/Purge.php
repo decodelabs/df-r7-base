@@ -10,15 +10,34 @@ use df\core;
 use df\apex;
 use df\axis;
 
-class Purge extends axis\fortify\Base {
+class Purge extends axis\fortify\Base
+{
+    protected function execute()
+    {
+        $total = 0;
 
-    protected function execute() {
-        $unit = $this->_unit;
+        while (true) {
+            $items = $this->_unit->select('user', 'key')
 
-        $count = $this->_unit->delete()
-            ->where('date', '<', $unit::PURGE_THRESHOLD)
-            ->execute();
+                ->where('date', '<', $this->_unit::PURGE_THRESHOLD)
 
-        yield $count.' removed';
+                ->limit(100)
+                ->toArray();
+
+            if (empty($items)) {
+                break;
+            }
+
+            foreach ($items as $item) {
+                $total += $this->_unit->delete()
+                    ->where('user', '=', $item['user'])
+                    ->where('key', '=', $item['key'])
+                    ->execute();
+            }
+
+            usleep(10000);
+        }
+
+        yield $total.' removed';
     }
 }

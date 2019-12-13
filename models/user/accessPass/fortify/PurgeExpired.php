@@ -10,13 +10,33 @@ use df\core;
 use df\apex;
 use df\axis;
 
-class PurgeExpired extends axis\fortify\Base {
+class PurgeExpired extends axis\fortify\Base
+{
+    protected function execute()
+    {
+        $total = 0;
 
-    protected function execute() {
-        $count = $this->data->user->accessPass->delete()
-            ->where('expiryDate', '<', '-1 hour')
-            ->execute();
+        while (true) {
+            $items = $this->_unit->select('id')
 
-        yield $count.' deleted';
+                ->where('expiryDate', '<', '-1 hour')
+
+                ->limit(100)
+                ->toArray();
+
+            if (empty($items)) {
+                break;
+            }
+
+            foreach ($items as $item) {
+                $total += $this->_unit->delete()
+                    ->where('id', '=', $item['id'])
+                    ->execute();
+            }
+
+            usleep(10000);
+        }
+
+        yield $total.' removed';
     }
 }
