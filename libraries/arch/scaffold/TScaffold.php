@@ -834,11 +834,7 @@ trait TScaffold_SectionProvider
     protected function _getSections()
     {
         if ($this->_sections === null) {
-            if (defined('static::SECTIONS') && !empty(static::SECTIONS)) {
-                $definition = static::SECTIONS;
-            } else {
-                $definition = $this->generateSections();
-            }
+            $definition = $this->generateSections();
 
             if (!is_array($definition) || empty($definition)) {
                 $definition = ['details'];
@@ -877,7 +873,11 @@ trait TScaffold_SectionProvider
 
     protected function generateSections()
     {
-        return ['details'];
+        if (defined('static::SECTIONS') && !empty(static::SECTIONS)) {
+            return static::SECTIONS;
+        } else {
+            return ['details'];
+        }
     }
 
     public function loadSectionNode()
