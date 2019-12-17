@@ -146,7 +146,7 @@ class Manager implements IManager, core\IShutdownAware
             if ($domain) {
                 $headers->set('Message-Id', sprintf(
                     "<%s.%s@%s>",
-                    base_convert(microtime(true), 10, 36),
+                    base_convert(round(microtime(true)), 10, 36),
                     base_convert(bin2hex((string)openssl_random_pseudo_bytes(8)), 16, 36),
                     $domain
                 ));
