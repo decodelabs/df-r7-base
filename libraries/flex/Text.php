@@ -37,6 +37,10 @@ class Text implements IText, \IteratorAggregate, Inspectable
 
     public static function formatInitials($name, bool $extendShort=true)
     {
+        if (!preg_match('/[a-z]/', $name)) {
+            $name = ucwords(strtolower($name));
+        }
+
         $output = self::factory($name)
             ->replace(['-', '_'], ' ')
             ->regexReplace('/([^ ])([A-Z])/u', '$1 $2')
