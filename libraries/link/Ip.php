@@ -80,6 +80,9 @@ class Ip implements IStringProvider, Inspectable
         $ip = strtolower($ip);
         $ip = preg_replace('/::(:+)/', '::', $ip);
 
+        $hex = unpack("H*hex", inet_pton($ip));
+        $ip = substr(preg_replace("/([A-f0-9]{4})/", "$1:", $hex['hex']), 0, -1);
+
         $this->ip = $ip;
     }
 
@@ -148,24 +151,21 @@ class Ip implements IStringProvider, Inspectable
 
     public function getCompressedV6String(): string
     {
-        $ip = ':'.$this->ip.':';
-        preg_match_all('/(:0)+/', $ip, $matches);
+        $ip = preg_replace('/(^|:)0+([0-9])/', '\1\2', $this->ip);
 
-        if (isset($matches[0]) && !empty($matches[0])) {
-            $match = '';
+        if (preg_match_all('/(?:^|:)(?:0(?::|$))+/', $ip, $matches, \PREG_OFFSET_CAPTURE)) {
+            $max = 0;
+            $pos = null;
 
-            foreach ($matches[0] as $zero) {
-                if (strlen($zero) > strlen($match)) {
-                    $match = $zero;
+            foreach ($matches[0] as $match) {
+                if (strlen($match[0]) > $max) {
+                    $max = strlen($match[0]);
+                    $pos = $match[1];
                 }
             }
 
-            $ip = (string)preg_replace('/'.$match.'/', ':', $ip, 1);
+            $ip = substr_replace($ip, '::', $pos, $max);
         }
-
-        $ip = (string)preg_replace('/((^:)|(:$))/', '', $ip);
-        $ip = (string)preg_replace('/((^:)|(:$))/', '::', $ip);
-        $ip = preg_replace('/::(:+)/', '::', $ip);
 
         return $ip;
     }
@@ -250,12 +250,12 @@ class Ip implements IStringProvider, Inspectable
 
     public function isV6Loopback(): bool
     {
-        return $this->ip == '0:0:0:0:0:0:0:1';
+        return $this->ip == '0000:0000:0000:0000:0000:0000:0000:0001';
     }
 
     public function isV4Loopback(): bool
     {
-        return $this->ip == '0:0:0:0:0:ffff:7f00:1';
+        return $this->ip == '0000:0000:0000:0000:0000:ffff:7f00:0001';
     }
 
     /**
