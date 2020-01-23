@@ -78,14 +78,7 @@ class Ip implements IStringProvider, Inspectable
         }
 
         $ip = strtolower($ip);
-
-        if (false !== strpos($ip, '::')) {
-            $ip = str_replace('::', str_repeat(':0', 8 - substr_count($ip, ':')).':', $ip);
-        }
-
-        if (0 === strpos($ip, ':')) {
-            $ip = '0'.$ip;
-        }
+        $ip = preg_replace('/::(:+)/', '::', $ip);
 
         $this->ip = $ip;
     }
@@ -150,19 +143,11 @@ class Ip implements IStringProvider, Inspectable
 
     public function getV6String(): string
     {
-        if ($this->isV4) {
-            return '0:0:0:0:0:ffff:'.$this->getV4String();
-        }
-
         return $this->ip;
     }
 
     public function getCompressedV6String(): string
     {
-        if ($this->isV4) {
-            return '::ffff:'.$this->getV4String();
-        }
-
         $ip = ':'.$this->ip.':';
         preg_match_all('/(:0)+/', $ip, $matches);
 
@@ -180,6 +165,7 @@ class Ip implements IStringProvider, Inspectable
 
         $ip = (string)preg_replace('/((^:)|(:$))/', '', $ip);
         $ip = (string)preg_replace('/((^:)|(:$))/', '::', $ip);
+        $ip = preg_replace('/::(:+)/', '::', $ip);
 
         return $ip;
     }
@@ -190,9 +176,10 @@ class Ip implements IStringProvider, Inspectable
             throw Glitch::ERuntime('Ip is not in V4 range');
         }
 
-        $pos = strrpos($this->ip, ':');
-        $part1 = (int)base_convert(substr($this->ip, 15, $pos - 15), 16, 10);
-        $part2 = (int)base_convert(substr($this->ip, $pos + 1), 16, 10);
+        $parts = explode(':', $this->ip);
+
+        $part2 = (int)base_convert(array_pop($parts), 16, 10);
+        $part1 = (int)base_convert(array_pop($parts), 16, 10);
 
         $b = ($part1 % 256);
         $a = ($part1 - $b) / 256;

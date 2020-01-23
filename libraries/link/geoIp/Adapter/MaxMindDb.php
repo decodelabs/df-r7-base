@@ -70,7 +70,12 @@ class MaxMindDb implements Adapter
 
     public function lookup(Ip $ip, Result $result): Result
     {
-        $data = $this->reader->get($ip);
+        try {
+            $data = $this->reader->get($ip);
+        } catch (\Exception $e) {
+            // inet_pton issue
+            return $result;
+        }
 
         if ($data === null) {
             return $result;
