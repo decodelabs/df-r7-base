@@ -57,6 +57,16 @@ class Form extends Container implements IFormWidget, IWidgetShortcutProvider
 
         if ($this->_encoding !== null) {
             $tag->setAttribute('enctype', $this->_encoding);
+        } else {
+            switch ($this->_method) {
+                case 'post':
+                    $tag->setAttribute('enctype', self::ENC_MULTIPART);
+                    break;
+
+                case 'get':
+                    $tag->setAttribute('enctype', self::ENC_URLENCODED);
+                    break;
+            }
         }
 
         if ($this->_name !== null) {
