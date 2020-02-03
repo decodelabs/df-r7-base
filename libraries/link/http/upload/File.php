@@ -297,12 +297,14 @@ class File implements link\http\IUploadFile
                 $quahog = new Quahog($socket, 30, \PHP_NORMAL_READ);
                 $result = $quahog->scanFile($this->_tempPath);
 
-                if ($result['status'] !== Quahog::RESULT_OK) {
+                if ($result['status'] === Quahog::RESULT_FOUND) {
                     $inputNode->addError('virus', $i18n->_(
                         'The uploaded file did not pass AV scan'
                     ));
 
                     unlink($this->_tempPath);
+                } elseif ($result['status'] === Quahog::RESULT_ERROR) {
+                    Glitch::logException(Glitch::EScan($result['reason']));
                 }
             } catch (\Throwable $e) {
                 Glitch::logException($e);
