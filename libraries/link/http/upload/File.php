@@ -295,6 +295,7 @@ class File implements link\http\IUploadFile
             try {
                 $socket = (new SocketFactory())->createClient($this->_handler->getClamAvSocket());
                 $quahog = new Quahog($socket, 30, \PHP_NORMAL_READ);
+                chmod($this->_tempPath, 0644);
                 $result = $quahog->scanFile($this->_tempPath);
 
                 if ($result['status'] === Quahog::RESULT_FOUND) {
