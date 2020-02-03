@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\neon;
 
+use DecodeLabs\Glitch;
+
 class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, neon\raster\IImageFilterDriver
 {
     const READ_FORMATS = [
