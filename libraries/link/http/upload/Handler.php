@@ -21,6 +21,9 @@ class Handler implements link\http\IUploadHandler
     protected $_extensions = [];
     protected $_maxSize;
 
+    protected $_avScan = true;
+    protected $_clamAvSocket = 'unix:///var/run/clamav/clamd.ctl';
+
 
     public static function createUploadTemp(?string $path=null): Dir
     {
@@ -179,6 +182,30 @@ class Handler implements link\http\IUploadHandler
     {
         return $this->_maxSize;
     }
+
+
+    public function shouldAvScan(bool $flag=null)
+    {
+        if ($flag !== null) {
+            $this->_avScan = $flag;
+            return $this;
+        }
+
+        return $this->_avScan;
+    }
+
+    public function setClamAvSocket(string $socket)
+    {
+        $this->_clamAvSocket = $socket;
+        return $this;
+    }
+
+    public function getClamAvSocket(): string
+    {
+        return $this->_clamAvSocket;
+    }
+
+
 
     public function uploadAll($destination, core\collection\IInputTree $inputCollection, $conflictAction=link\http\IUploadFile::RENAME)
     {

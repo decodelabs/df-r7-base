@@ -12,6 +12,9 @@ use df\link;
 use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 
+use Socket\Raw\Factory as SocketFactory;
+use Xenolope\Quahog\Client as Quahog;
+
 class File implements link\http\IUploadFile
 {
     protected $_fieldName;
@@ -286,6 +289,24 @@ class File implements link\http\IUploadFile
             $inputNode->addError('uploadNotFound', $i18n->_(
                 'There was a problem finding the uploaded file in the temp location - please try again'
             ));
+        }
+
+        if ($this->_handler->shouldAvScan() && class_exists(Quahog::class)) {
+            try {
+                $socket = (new SocketFactory())->createClient($this->_handler->getClamAvSocket());
+                $quahog = new Quahog($socket, 30, \PHP_NORMAL_READ);
+                $result = $quahog->scanFile($this->_tempPath);
+
+                if ($result['status'] !== Quahog::RESULT_OK) {
+                    $inputNode->addError('virus', $i18n->_(
+                        'The uploaded file did not pass AV scan'
+                    ));
+
+                    unlink($this->_tempPath);
+                }
+            } catch (\Throwable $e) {
+                Glitch::logException($e);
+            }
         }
     }
 
