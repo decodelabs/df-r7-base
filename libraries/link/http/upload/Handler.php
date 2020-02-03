@@ -21,7 +21,7 @@ class Handler implements link\http\IUploadHandler
     protected $_extensions = [];
     protected $_maxSize;
 
-    protected $_avScan = true;
+    protected $_avScan = false;
     protected $_clamAvSocket = 'unix:///var/run/clamav/clamd.ctl';
 
 
