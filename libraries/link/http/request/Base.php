@@ -269,7 +269,8 @@ class Base implements link\http\IRequest, Inspectable
 
             default:
                 throw Glitch::EUnexpectedValue(
-                    $method.' is not a valid request method'
+                    $method.' is not a valid request method',
+                    ['http' => 405]
                 );
         }
 
