@@ -241,7 +241,8 @@ class Media implements arch\IDirectoryHelper
                 break;
 
             default:
-                $file = $this->_generateFallbackRaster($contentType, $transformation);
+                $file = $this->_generateFallbackRaster($transformation);
+                $contentType = 'image/jpg';
                 break;
         }
 
@@ -267,7 +268,7 @@ class Media implements arch\IDirectoryHelper
             '</svg>';
     }
 
-    protected function _generateFallbackRaster(string $contentType, $transformation=null)
+    protected function _generateFallbackRaster($transformation=null)
     {
         $image = neon\raster\Image::newCanvas(100, 100, '#DDD')
             ->setOutputFormat('JPEG');
