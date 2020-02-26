@@ -263,35 +263,17 @@ class Media implements arch\IDirectoryHelper
             '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'."\n".
             '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'."\n".
             '<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">'."\n".
-            '<rect x="0" y="0" width="100" height="100" fill="#CCC"/>'."\n".
+            '<rect x="0" y="0" width="100" height="100" fill="#DDD"/>'."\n".
             '</svg>';
     }
 
     protected function _generateFallbackRaster(string $contentType, $transformation=null)
     {
-        $image = neon\raster\Image::newCanvas(100, 100, '#CCC');
+        $image = neon\raster\Image::newCanvas(100, 100, '#DDD')
+            ->setOutputFormat('JPEG');
 
         if ($transformation !== null) {
             $image->transform($transformation)->apply();
-        }
-
-        switch ($contentType) {
-            case 'image/jpg':
-            case 'image/jpeg':
-                $image->setOutputFormat('JPEG');
-                break;
-
-            case 'image/png':
-                $image->setOutputFormat('PNG');
-                break;
-
-            case 'image/gif':
-                $image->setOutputFormat('GIF');
-                break;
-
-            default:
-                $image->setOutputFormat('PNG');
-                break;
         }
 
         return $image->toString(10);
