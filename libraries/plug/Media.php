@@ -241,7 +241,7 @@ class Media implements arch\IDirectoryHelper
                 break;
 
             default:
-                $file = $this->_generateFallbackRaster($transformation);
+                $file = $this->_generateFallbackRaster();
                 $contentType = 'image/jpg';
                 break;
         }
@@ -263,21 +263,16 @@ class Media implements arch\IDirectoryHelper
         return
             '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'."\n".
             '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'."\n".
-            '<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">'."\n".
-            '<rect x="0" y="0" width="100" height="100" fill="#DDD"/>'."\n".
+            '<svg width="500" height="500" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">'."\n".
+            '<rect x="0" y="0" width="500" height="500" fill="#DDD"/>'."\n".
             '</svg>';
     }
 
-    protected function _generateFallbackRaster($transformation=null)
+    protected function _generateFallbackRaster()
     {
-        $image = neon\raster\Image::newCanvas(100, 100, '#DDD')
-            ->setOutputFormat('JPEG');
-
-        if ($transformation !== null) {
-            $image->transform($transformation)->apply();
-        }
-
-        return $image->toString(10);
+        return neon\raster\Image::newCanvas(500, 500, '#DDD')
+            ->setOutputFormat('JPEG')
+            ->toString(10);
     }
 
     public function getImageFilePath($fileId, $versionId, $isActive, $contentType, $transformation=null, $modificationDate=null)
