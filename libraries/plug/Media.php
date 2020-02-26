@@ -189,7 +189,16 @@ class Media implements arch\IDirectoryHelper
 
     public function serveImage($fileId, $versionId, $isActive, $contentType, $fileName=null, $transformation=null, $modificationDate=null)
     {
-        $filePath = $this->_getDownloadFileLocation($fileId, $versionId, $isActive);
+        try {
+            $filePath = $this->_getDownloadFileLocation($fileId, $versionId, $isActive);
+        } catch (core\fs\ENotFound $e) {
+            if (!df\Launchpad::$app->isProduction()) {
+                return $this->serveFallbackImage($contentType, $fileName, $transformation);
+            }
+
+            throw $e;
+        }
+
         $descriptor = new neon\raster\Descriptor($filePath, $contentType);
         $descriptor->setFileName($fileName);
 
@@ -222,6 +231,70 @@ class Media implements arch\IDirectoryHelper
         }
 
         return $output;
+    }
+
+    public function serveFallbackImage(string $contentType, string $fileName=null, $transformation=null)
+    {
+        switch ($contentType) {
+            case 'image/svg+xml':
+                $file = $this->_generateFallbackSvg();
+                break;
+
+            default:
+                $file = $this->_generateFallbackRaster($contentType, $transformation);
+                break;
+        }
+
+        $output = $this->context->http->stringResponse($file, $contentType)
+            ->setFileName($fileName);
+
+        $output->getHeaders()
+            ->set('Access-Control-Allow-Origin', '*')
+            ->setCacheAccess('no-cache')
+            ->shouldRevalidateCache(true)
+            ->canStoreCache(false);
+
+        return $output;
+    }
+
+    protected function _generateFallbackSvg()
+    {
+        return
+            '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'."\n".
+            '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'."\n".
+            '<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">'."\n".
+            '<rect x="0" y="0" width="100" height="100" fill="#CCC"/>'."\n".
+            '</svg>';
+    }
+
+    protected function _generateFallbackRaster(string $contentType, $transformation=null)
+    {
+        $image = neon\raster\Image::newCanvas(100, 100, '#CCC');
+
+        if ($transformation !== null) {
+            $image->transform($transformation)->apply();
+        }
+
+        switch ($contentType) {
+            case 'image/jpg':
+            case 'image/jpeg':
+                $image->setOutputFormat('JPEG');
+                break;
+
+            case 'image/png':
+                $image->setOutputFormat('PNG');
+                break;
+
+            case 'image/gif':
+                $image->setOutputFormat('GIF');
+                break;
+
+            default:
+                $image->setOutputFormat('PNG');
+                break;
+        }
+
+        return $image->toString(10);
     }
 
     public function getImageFilePath($fileId, $versionId, $isActive, $contentType, $transformation=null, $modificationDate=null)
