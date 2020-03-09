@@ -32,9 +32,13 @@ class Manager implements IManager
 
     public function ensureActivity()
     {
+        if (df\Launchpad::$app->isDevelopment()) {
+            return $this;
+        }
+
         $spoolOnly = false;
 
-        if (!$this->isEnabled() || !df\Launchpad::$app->isProduction()) {
+        if (!$this->isEnabled()) {
             $spoolOnly = true;
             //return $this;
         }
