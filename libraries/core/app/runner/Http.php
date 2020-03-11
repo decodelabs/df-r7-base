@@ -216,7 +216,6 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
 
-
         // Apply
         $augmentor = $this->getResponseAugmentor();
         $augmentor->setHeaderForAnyRequest('x-allow-ip', (string)$ip);
@@ -240,27 +239,42 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             return;
         }
 
-        if ($request && isset($request['authenticate']) && !isset($_COOKIE['ipbypass'])) {
-            setcookie('ipbypass', '1');
-        }
+        if ($request) {
+            if (
+                isset($request['authenticate']) &&
+                !isset($_COOKIE['ipbypass'])
+            ) {
+                setcookie('ipbypass', '1');
+            }
 
-        if ($request && (isset($request['authenticate']) || isset($_SERVER['PHP_AUTH_USER']) || isset($_COOKIE['ipbypass']))) {
-            $context = new arch\Context($request);
-            static $salt = '3efcf3200384a9968a58841812d78f94d88a61b2e0cc57849a19707e0ebed065';
-            static $username = 'e793f732b58b8c11ae4048214f9171392a864861d35c0881b3993d12001a78b0';
-            static $password = '016ede424aa10ae5895c21c33d200c7b08aa33d961c05c08bfcf946cb7c53619';
+            if (
+                isset($request['authenticate']) ||
+                isset($_SERVER['PHP_AUTH_USER']) ||
+                isset($_COOKIE['ipbypass'])
+            ) {
+                $context = new arch\Context($request);
+                static $salt = '3efcf3200384a9968a58841812d78f94d88a61b2e0cc57849a19707e0ebed065';
+                static $username = 'e793f732b58b8c11ae4048214f9171392a864861d35c0881b3993d12001a78b0';
+                static $password = '016ede424aa10ae5895c21c33d200c7b08aa33d961c05c08bfcf946cb7c53619';
 
-            if (isset($_SERVER['PHP_AUTH_USER'])
-            && $context->data->hexHash($_SERVER['PHP_AUTH_USER'], $salt) == $username
-            && $context->data->hexHash($_SERVER['PHP_AUTH_PW'], $salt) == $password) {
+                if (isset($_SERVER['PHP_AUTH_USER'])
+                && $context->data->hexHash($_SERVER['PHP_AUTH_USER'], $salt) == $username
+                && $context->data->hexHash($_SERVER['PHP_AUTH_PW'], $salt) == $password) {
+                    return;
+                } else {
+                    header('WWW-Authenticate: Basic realm="Private Site"');
+                    header('HTTP/1.0 401 Unauthorized');
+                    echo 'You need to authenticate to view this site';
+                    exit;
+                }
+            }
+
+            // Test for passthrough requests
+            if ($request->matches('.well-known/pki-validation/')) {
                 return;
-            } else {
-                header('WWW-Authenticate: Basic realm="Private Site"');
-                header('HTTP/1.0 401 Unauthorized');
-                echo 'You need to authenticate to view this site';
-                exit;
             }
         }
+
 
         $url = clone $this->_httpRequest->url;
         $url->query->authenticate = null;
