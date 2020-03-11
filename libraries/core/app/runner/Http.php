@@ -240,6 +240,12 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
         if ($request) {
+            // Test for passthrough requests
+            if ($request->matches('.well-known/pki-validation/')) {
+                return;
+            }
+
+            // Authenticate
             if (
                 isset($request['authenticate']) &&
                 !isset($_COOKIE['ipbypass'])
@@ -267,11 +273,6 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
                     echo 'You need to authenticate to view this site';
                     exit;
                 }
-            }
-
-            // Test for passthrough requests
-            if ($request->matches('.well-known/pki-validation/')) {
-                return;
             }
         }
 
