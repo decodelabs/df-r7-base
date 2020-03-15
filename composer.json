@@ -12,7 +12,6 @@
     "require": {
         "php": "^7.2",
         "symfony/polyfill-mbstring": "~1.7",
-
         "decodelabs/glitch": "dev-develop",
         "decodelabs/veneer": "dev-develop",
         "decodelabs/systemic": "dev-develop",
@@ -22,7 +21,6 @@
         "decodelabs/gadgets": "dev-develop",
         "decodelabs/atlas": "dev-develop",
         "decodelabs/enlighten": "dev-develop",
-
         "guzzlehttp/guzzle": "^6.4",
         "erusev/parsedown": "^1.7",
         "nesbot/carbon": "^2.26"
@@ -32,10 +30,10 @@
         "phpstan/phpstan": "^0.11.16",
         "phpstan/extension-installer": "^1.0",
         "decodelabs/phpstan-decodelabs": "^0.2",
-
         "decodelabs/chirp": "dev-develop",
         "auth0/auth0-php": "^5.6",
-        "stripe/stripe-php": "^6.38"
+        "stripe/stripe-php": "^6.38",
+        "xenolope/quahog": "^2.1"
     },
     "extra": {
         "branch-alias": {

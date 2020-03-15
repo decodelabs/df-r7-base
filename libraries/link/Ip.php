@@ -78,9 +78,9 @@ class Ip implements IStringProvider, Inspectable
         }
 
         $ip = strtolower($ip);
-        $ip = preg_replace('/::(:+)/', '::', $ip);
+        $ip = (string)preg_replace('/::(:+)/', '::', $ip);
 
-        $hex = unpack("H*hex", inet_pton($ip));
+        $hex = unpack("H*hex", (string)inet_pton($ip));
         $ip = substr(preg_replace("/([A-f0-9]{4})/", "$1:", $hex['hex']), 0, -1);
 
         $this->ip = $ip;
@@ -178,8 +178,8 @@ class Ip implements IStringProvider, Inspectable
 
         $parts = explode(':', $this->ip);
 
-        $part2 = (int)base_convert(array_pop($parts), 16, 10);
-        $part1 = (int)base_convert(array_pop($parts), 16, 10);
+        $part2 = (int)base_convert((string)array_pop($parts), 16, 10);
+        $part1 = (int)base_convert((string)array_pop($parts), 16, 10);
 
         $b = ($part1 % 256);
         $a = ($part1 - $b) / 256;
