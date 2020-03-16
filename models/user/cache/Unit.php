@@ -10,17 +10,19 @@ use df\core;
 use df\apex;
 use df\axis;
 
-class Unit extends axis\unit\SessionCache {
-
-    public function setAvatarCacheTime() {
+class Unit extends axis\unit\Cache
+{
+    public function setAvatarCacheTime()
+    {
         $this->set('avatarCacheTime', $time = time());
         return $time;
     }
 
-    public function getAvatarCacheTime() {
+    public function getAvatarCacheTime()
+    {
         $time = $this->get('avatarCacheTime');
 
-        if(!$time) {
+        if (!$time) {
             $time = $this->setAvatarCacheTime();
         }
 
