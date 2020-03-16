@@ -187,8 +187,10 @@ class Mailchimp3 extends Base
             $output[$listId] = [];
 
             foreach ($list['groups'] as $groupId => $group) {
-                if (!isset($memberData['interests'][$groupId]) ||
-                    !$memberData['interests'][$groupId]) {
+                if (
+                    !isset($memberData['interests'][$groupId]) ||
+                    !$memberData['interests'][$groupId]
+                ) {
                     continue;
                 }
 
@@ -265,13 +267,21 @@ class Mailchimp3 extends Base
             return null;
         }
 
+        $interests = $member->interests->toArray();
+
+        foreach ($interests as $key => $enabled) {
+            if (!$enabled) {
+                unset($interests[$key]);
+            }
+        }
+
         return [
             'id' => $member['id'],
             'email' => $member['email_address'],
             'emailId' => $member['unique_email_id'],
             'status' => $member['status'],
             'mergeFields' => $member->merge_fields->toArray(),
-            'interests' => $member->interests->toArray()
+            'interests' => $interests
         ];
     }
 }
