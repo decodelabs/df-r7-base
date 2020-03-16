@@ -11,6 +11,7 @@ use df\flow;
 use df\spur;
 use df\user;
 use df\link;
+use df\axis;
 
 use DecodeLabs\Glitch;
 
@@ -19,6 +20,7 @@ class Mailchimp3 extends Base
     const SETTINGS_FIELDS = ['*apiKey' => 'API key'];
 
     protected $_mediator;
+    protected $_memberUnit;
 
     protected function __construct(core\collection\ITree $options)
     {
@@ -29,6 +31,7 @@ class Mailchimp3 extends Base
         }
 
         $this->_mediator = new spur\mail\mailchimp3\Mediator($apiKey);
+        $this->_memberUnit = axis\Model::loadUnitFromId('mailingList/member');
     }
 
     public function getId(): string
@@ -165,8 +168,7 @@ class Mailchimp3 extends Base
         }
 
         if ($result->isSuccessful()) {
-            $cache = flow\mailingList\Cache::getInstance();
-            $cache->removeSession('mailchimp3:'.$listId);
+            $this->_memberUnit->remove('mailchimp', $listId, $client->getId());
         }
 
         return $result;
@@ -199,8 +201,6 @@ class Mailchimp3 extends Base
 
     public function updateListUserDetails(string $oldEmail, user\IClientDataObject $client, array $manifest)
     {
-        $cache = flow\mailingList\Cache::getInstance();
-
         foreach ($manifest as $listId => $list) {
             if (!$member = $this->_getMemberData($listId, $oldEmail)) {
                 continue;
@@ -213,7 +213,7 @@ class Mailchimp3 extends Base
             }
 
             $this->_mediator->updateMemberDetails($listId, $oldEmail, $client);
-            $cache->removeSession('mailchimp3:'.$listId);
+            $this->_memberUnit->remove('mailchimp', $listId, $client->getId());
         }
 
         return $this;
@@ -222,9 +222,7 @@ class Mailchimp3 extends Base
     public function unsubscribeUserFromList(user\IClientDataObject $client, string $listId)
     {
         $this->_mediator->unsubscribe($listId, $client->getEmail());
-
-        $cache = flow\mailingList\Cache::getInstance();
-        $cache->removeSession('mailchimp3:'.$listId);
+        $this->_memberUnit->remove('mailchimp', $listId, $client->getId());
 
         return $this;
     }
@@ -232,15 +230,12 @@ class Mailchimp3 extends Base
 
     protected function _getClientMemberData(string $listId): ?array
     {
-        $sessionKey = 'mailchimp3:'.$listId;
-        $cache = flow\mailingList\Cache::getInstance();
+        $userManager = user\Manager::getInstance();
+        $userId = $userManager->getId();
 
-        if (null === ($member = $cache->getSession($sessionKey))) {
-            $member = $this->_getMemberData($listId);
-            $cache->setSession($sessionKey, $member ?? false);
-        }
-
-        return $member ? $member : null;
+        return $this->_memberUnit->get('mailchimp', $listId, $userId, function () use ($userManager, $listId) {
+            return $this->_fetchMemberData($listId, $userManager->getClient()->getEmail());
+        });
     }
 
     protected function _getMemberData(string $listId, string $email=null): ?array
@@ -255,6 +250,11 @@ class Mailchimp3 extends Base
             $email = $clientEmail;
         }
 
+        return $this->_fetchMemberData($listId, $email);
+    }
+
+    protected function _fetchMemberData(string $listId, string $email): ?array
+    {
         try {
             $member = $this->_mediator->fetchMember($listId, $email);
 
