@@ -41,22 +41,6 @@ interface IFileStore extends IStore
     public function getFileList(): array;
 }
 
-
-interface ISessionExtendedCache extends ICache
-{
-    public function clearGlobal();
-    public function setSession(string $key, $value);
-    public function getSession(string $key, $default=null);
-    public function hasSession(string $key): bool;
-    public function removeSession(string $key);
-    public function clearSession();
-    public function clearSessionForUser($userId);
-    public function clearSessionForClient();
-    public function clearSessionForAll();
-}
-
-
-
 interface IBackend extends \Countable
 {
     public static function purgeApp(core\collection\ITree $options, ?Session $session=null);
