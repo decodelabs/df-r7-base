@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flow;
 use df\user;
+use df\axis;
 
 use DecodeLabs\Glitch;
 
@@ -19,6 +20,8 @@ class Source implements ISource
     protected $_id;
     protected $_adapter;
     protected $_primaryListId;
+
+    protected $_clientManifestUnit;
 
     public function __construct(string $id, $options)
     {
@@ -31,6 +34,8 @@ class Source implements ISource
         if ($this->_primaryListId !== null) {
             $this->_primaryListId = (string)$this->_primaryListId;
         }
+
+        $this->_clientManifestUnit = axis\Model::loadUnitFromId('mailingList/clientManifest');
     }
 
     public function getId(): string
@@ -332,8 +337,7 @@ class Source implements ISource
         }
 
         if ($result->isSuccessful()) {
-            $cache = flow\mailingList\Cache::getInstance();
-            $cache->removeSession('client:'.$this->_id);
+            $this->_clientManifestUnit->remove($this->_id, $client->getId());
         }
 
         return $result;
@@ -363,8 +367,8 @@ class Source implements ISource
 
     protected function _getClientManifest(array $listIds=null): array
     {
-        $cache = Cache::getInstance();
-        $manifest = $cache->getSession('client:'.$this->_id);
+        $userId = user\Manager::getInstance()->getId();
+        $manifest = $this->_clientManifestUnit->get($this->_id, $userId);
         $lists = null;
 
         if (!$manifest) {
@@ -400,7 +404,7 @@ class Source implements ISource
                 ]);
             }
 
-            $cache->setSession('client:'.$this->_id, $manifest);
+            $this->_clientManifestUnit->set($this->_id, $userId, $manifest);
         }
 
         return $manifest;
@@ -437,9 +441,7 @@ class Source implements ISource
             ]);
         }
 
-        $cache = flow\mailingList\Cache::getInstance();
-        $cache->removeSession('client:'.$this->_id);
-
+        $this->_clientManifestUnit->remove($this->_id, $client->getId());
         return $this;
     }
 }
