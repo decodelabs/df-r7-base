@@ -37,6 +37,7 @@ interface ISource
 
     public function getClientManifest(): array;
     public function getClientSubscribedGroupsIn(?string $listId): array;
+    public function refreshClientManifest(): void;
 
     public function updateListUserDetails(string $oldEmail, user\IClientDataObject $client);
     public function unsubscribeUserFromList(user\IClientDataObject $client, string $listId);
@@ -52,6 +53,7 @@ interface IAdapter
 
     public function subscribeUserToList(user\IClientDataObject $client, string $listId, array $manifest, array $groups=null, bool $replace=false): ISubscribeResult;
     public function fetchClientManifest(array $manifest): array;
+    public function refreshClientManifest(): void;
     public function updateListUserDetails(string $oldEmail, user\IClientDataObject $client, array $manifest);
     public function unsubscribeUserFromList(user\IClientDataObject $client, string $listId);
 }

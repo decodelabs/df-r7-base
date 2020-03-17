@@ -74,4 +74,12 @@ class Unit extends axis\unit\Table
             ->where('listId', '=', $listId)
             ->execute();
     }
+
+    public function purge(string $adapter, string $userId)
+    {
+        $this->delete()
+            ->where('user', '=', $userId)
+            ->where('adapter', '=', $adapter)
+            ->execute();
+    }
 }

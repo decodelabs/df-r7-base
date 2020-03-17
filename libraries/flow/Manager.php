@@ -576,6 +576,13 @@ class Manager implements IManager, core\IShutdownAware
     }
 
 
+    public function refreshListClientManifest(): void
+    {
+        foreach ($this->getListSources() as $sourceId => $source) {
+            $source->refreshClientManifest();
+        }
+    }
+
     public function getClientSubscribedGroups(): array
     {
         $output = [];

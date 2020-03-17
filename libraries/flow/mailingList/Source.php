@@ -352,6 +352,17 @@ class Source implements ISource
         return $this->_getClientManifest();
     }
 
+    public function refreshClientManifest(): void
+    {
+        $userId = user\Manager::getInstance()->getId();
+
+        if ($userId) {
+            $this->_clientManifestUnit->remove($this->_id, $userId);
+        }
+
+        $this->_adapter->refreshClientManifest();
+    }
+
     public function getClientSubscribedGroupsIn(?string $listId): array
     {
         if ($listId === null) {
@@ -371,7 +382,7 @@ class Source implements ISource
     {
         $userId = user\Manager::getInstance()->getId();
 
-        if($userId) {
+        if ($userId) {
             $manifest = $this->_clientManifestUnit->get($this->_id, $userId);
         } else {
             $manifest = [];

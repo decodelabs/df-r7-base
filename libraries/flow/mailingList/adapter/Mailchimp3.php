@@ -203,6 +203,15 @@ class Mailchimp3 extends Base
         return $output;
     }
 
+    public function refreshClientManifest(): void
+    {
+        $userId = user\Manager::getInstance()->getId();
+
+        if ($userId) {
+            $this->_memberUnit->purge('mailchimp', $userId);
+        }
+    }
+
     public function updateListUserDetails(string $oldEmail, user\IClientDataObject $client, array $manifest)
     {
         foreach ($manifest as $listId => $list) {
