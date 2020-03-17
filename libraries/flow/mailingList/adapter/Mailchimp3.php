@@ -168,7 +168,9 @@ class Mailchimp3 extends Base
         }
 
         if ($result->isSuccessful()) {
-            $this->_memberUnit->remove('mailchimp', $listId, $client->getId());
+            if ($id = $client->getId()) {
+                $this->_memberUnit->remove('mailchimp', $listId, $id);
+            }
         }
 
         return $result;
@@ -215,7 +217,10 @@ class Mailchimp3 extends Base
             }
 
             $this->_mediator->updateMemberDetails($listId, $oldEmail, $client);
-            $this->_memberUnit->remove('mailchimp', $listId, $client->getId());
+
+            if ($id = $client->getId()) {
+                $this->_memberUnit->remove('mailchimp', $listId, $id);
+            }
         }
 
         return $this;
@@ -224,7 +229,10 @@ class Mailchimp3 extends Base
     public function unsubscribeUserFromList(user\IClientDataObject $client, string $listId)
     {
         $this->_mediator->unsubscribe($listId, $client->getEmail());
-        $this->_memberUnit->remove('mailchimp', $listId, $client->getId());
+
+        if ($id = $client->getId()) {
+            $this->_memberUnit->remove('mailchimp', $listId, $id);
+        }
 
         return $this;
     }
@@ -233,6 +241,11 @@ class Mailchimp3 extends Base
     protected function _getClientMemberData(string $listId): ?array
     {
         $userManager = user\Manager::getInstance();
+
+        if (!$userManager->isLoggedIn()) {
+            return null;
+        }
+
         $userId = $userManager->getId();
 
         return $this->_memberUnit->get('mailchimp', $listId, $userId, function () use ($userManager, $listId) {

@@ -337,7 +337,9 @@ class Source implements ISource
         }
 
         if ($result->isSuccessful()) {
-            $this->_clientManifestUnit->remove($this->_id, $client->getId());
+            if ($id = $client->getId()) {
+                $this->_clientManifestUnit->remove($this->_id, $id);
+            }
         }
 
         return $result;
@@ -368,7 +370,13 @@ class Source implements ISource
     protected function _getClientManifest(array $listIds=null): array
     {
         $userId = user\Manager::getInstance()->getId();
-        $manifest = $this->_clientManifestUnit->get($this->_id, $userId);
+
+        if($userId) {
+            $manifest = $this->_clientManifestUnit->get($this->_id, $userId);
+        } else {
+            $manifest = [];
+        }
+
         $lists = null;
 
         if (!$manifest) {
@@ -404,7 +412,9 @@ class Source implements ISource
                 ]);
             }
 
-            $this->_clientManifestUnit->set($this->_id, $userId, $manifest);
+            if ($userId) {
+                $this->_clientManifestUnit->set($this->_id, $userId, $manifest);
+            }
         }
 
         return $manifest;
