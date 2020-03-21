@@ -75,7 +75,7 @@ class TaskSetMaster extends arch\node\Task
             }, $dsn->getDatabase());
             $dsn->setDatabase($database);
 
-            if (!Cli::confirm('Is this correct? '.$dsn->getDisplayString(true), true)->prompt()) {
+            if (!Cli::confirm('Is this correct? '.$dsn->getDisplayString(true), true)) {
                 continue;
             }
 
