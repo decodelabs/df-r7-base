@@ -23,17 +23,27 @@ class DeleteSelectedForm extends AffectSelectedForm
         parent::__construct($scaffold->getContext());
     }
 
+    protected function requiresConfirmation(): bool
+    {
+        return $this->_scaffold->recordDeleteRequiresConfirmation();
+    }
+
     protected function renderUi($fs)
     {
-        $fs->push(Html::{'p'}($this->getMainMessage()));
+        $fa = $fs->addField();
+        $fa->push(Html::{'p'}($this->getMainMessage()));
 
         if (static::IS_PERMANENT) {
-            $fs->push(
+            $fa->push(
                 $this->html->flashMessage(
                     $this->_('CAUTION: This action is permanent!'),
                     'warning'
                 )
             );
+        }
+
+        if ($this->requiresConfirmation()) {
+            $this->createConfirmationUi($fs);
         }
 
         $mainButton = $this->html->eventButton(
@@ -65,6 +75,16 @@ class DeleteSelectedForm extends AffectSelectedForm
         );
     }
 
+    protected function createConfirmationUi($fs)
+    {
+        $fs->addField('Are you sure?')->addClass('negative')->push(
+            $this->html->checkbox('confirm', $this->values->confirm, [
+                    $this->html->icon('warning'), 'I confirm I understand the consequences of deleting this item'
+                ])
+                ->isRequired(true)
+        );
+    }
+
     protected function customizeMainButton($button)
     {
     }
@@ -74,6 +94,18 @@ class DeleteSelectedForm extends AffectSelectedForm
 
     protected function onDeleteEvent()
     {
+        if ($this->requiresConfirmation()) {
+            $val = $this->data->newValidator()
+                ->addRequiredField('confirm', 'boolean')
+                    ->setRequiredValue(true)
+
+                ->validate($this->values);
+
+            if (!$val->isValid()) {
+                return;
+            }
+        }
+
         $output = $this->apply();
 
         if ($this->values->isValid()) {
