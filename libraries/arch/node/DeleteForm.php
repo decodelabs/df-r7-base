@@ -17,12 +17,18 @@ abstract class DeleteForm extends Form
 {
     const ITEM_NAME = 'item';
     const IS_PERMANENT = true;
+    const REQUIRE_CONFIRMATION = false;
 
     const DEFAULT_EVENT = 'delete';
 
     protected function getItemName()
     {
         return static::ITEM_NAME;
+    }
+
+    protected function requiresConfirmation(): bool
+    {
+        return static::REQUIRE_CONFIRMATION;
     }
 
     protected function createUi()
@@ -47,6 +53,10 @@ abstract class DeleteForm extends Form
 
         $this->createItemUi($fs);
 
+        if ($this->requiresConfirmation()) {
+            $this->createConfirmationUi($form);
+        }
+
 
         $mainButton = $this->html->eventButton(
                 $this->eventName('delete'),
@@ -64,7 +74,7 @@ abstract class DeleteForm extends Form
         $this->customizeCancelButton($cancelButton);
 
 
-        $fs->addButtonArea()->push(
+        $form->addButtonArea()->push(
             $mainButton, $cancelButton
         );
     }
@@ -82,6 +92,16 @@ abstract class DeleteForm extends Form
     {
     }
 
+    protected function createConfirmationUi($form)
+    {
+        $form->addFieldSet('Delete confirmation')->addField('Are you sure?')->addClass('negative')->push(
+            $this->html->checkbox('confirm', $this->values->confirm, [
+                    $this->html->icon('warning'), 'I confirm I understand the consequences of deleting this item'
+                ])
+                ->isRequired(true)
+        );
+    }
+
     protected function customizeMainButton($button)
     {
     }
@@ -92,6 +112,18 @@ abstract class DeleteForm extends Form
 
     protected function onDeleteEvent()
     {
+        if ($this->requiresConfirmation()) {
+            $val = $this->data->newValidator()
+                ->addRequiredField('confirm', 'boolean')
+                    ->setRequiredValue(true)
+
+                ->validate($this->values);
+
+            if (!$val->isValid()) {
+                return;
+            }
+        }
+
         $output = $this->apply();
 
         if ($this->values->isValid()) {

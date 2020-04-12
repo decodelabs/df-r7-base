@@ -93,6 +93,7 @@ trait TScaffold_RecordDataProvider
     //const CAN_ADD = true;
     //const CAN_EDIT = true;
     //const CAN_DELETE = true;
+    //const CONFIRM_DELETE = false;
 
     //const CAN_SELECT = false;
 
@@ -338,6 +339,11 @@ trait TScaffold_RecordDataProvider
     public function canDeleteRecord($record=null)
     {
         return static::CAN_DELETE;
+    }
+
+    public function recordDeleteRequiresConfirmation($record=null): bool
+    {
+        return static::CONFIRM_DELETE;
     }
 
 

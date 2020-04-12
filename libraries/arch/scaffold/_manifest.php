@@ -56,6 +56,7 @@ interface IRecordDataProviderScaffold extends IRecordLoaderScaffold
     public function canAddRecord();
     public function canEditRecord($record=null);
     public function canDeleteRecord($record=null);
+    public function recordDeleteRequiresConfirmation($record=null): bool;
 
     public function getRecordDeleteFlags();
     public function deleteRecord(opal\record\IRecord $record, array $flags=[]);

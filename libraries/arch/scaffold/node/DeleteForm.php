@@ -30,6 +30,11 @@ class DeleteForm extends arch\node\DeleteForm
         return $this->_scaffold->getRecordItemName();
     }
 
+    protected function requiresConfirmation(): bool
+    {
+        return $this->_scaffold->recordDeleteRequiresConfirmation();
+    }
+
     protected function createItemUi($container)
     {
         $container->push(
