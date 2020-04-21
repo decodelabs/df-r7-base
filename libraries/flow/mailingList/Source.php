@@ -462,7 +462,10 @@ class Source implements ISource
             ]);
         }
 
-        $this->_clientManifestUnit->remove($this->_id, $client->getId());
+        if ($clientId = $client->getId()) {
+            $this->_clientManifestUnit->remove($this->_id, $clientId);
+        }
+
         return $this;
     }
 }
