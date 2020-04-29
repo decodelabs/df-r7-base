@@ -13,6 +13,8 @@ use df\opal;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 
+use JsonSerializable;
+
 class Json implements IJson
 {
 
@@ -73,7 +75,9 @@ class Json implements IJson
             return $data->getSeconds();
         }
 
-        if ($data instanceof core\IArrayProvider) {
+        if ($data instanceof JSonSerializable) {
+            $data = $data->jsonSerialize();
+        } elseif ($data instanceof core\IArrayProvider) {
             $data = $data->toArray();
         }
 
