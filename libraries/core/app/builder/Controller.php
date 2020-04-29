@@ -17,7 +17,7 @@ class Controller implements IController
 {
     const APP_EXPORT = [
         'libraries', 'assets', 'daemons', 'directory', 'helpers',
-        'hooks', 'models', 'themes', 'tests', 'vendor'
+        'hooks', 'models', 'provider', 'themes', 'tests', 'vendor'
     ];
 
     const PACKAGE_IGNORE = [
