@@ -18,9 +18,17 @@ class Mediator implements IMediator
 {
     use spur\TGuzzleMediator;
 
+    const ALGORITHM = 'AWS4-HMAC-SHA256';
+
     protected $_accessKey;
     protected $_secretKey;
-    protected $_activeUrl;
+
+    protected $_region = 'us-east-1';
+    protected $_service = 'email';
+    protected $_domain = 'amazonaws.com';
+
+    protected $_date;
+    protected $_amzDate;
 
     public function __construct($url=null, $accessKey=null, $secretKey=null)
     {
@@ -41,14 +49,22 @@ class Mediator implements IMediator
     // Url
     public function setUrl($url)
     {
-        $this->_activeUrl = link\http\Url::factory($url);
-        $this->_activeUrl->isSecure(true);
+        $domain = explode('.', link\http\Url::factory($url)->getDomain());
+        $this->_service = array_shift($domain);
+        $this->_region = array_shift($domain);
+        $this->_domain = implode('.', $domain);
+
         return $this;
     }
 
     public function getUrl()
     {
-        return $this->_activeUrl;
+        return link\http\Url::factory('https://'.$this->getHost());
+    }
+
+    public function getHost(): string
+    {
+        return $this->_service.'.'.$this->_region.'.'.$this->_domain;
     }
 
     // Keys
@@ -224,13 +240,9 @@ class Mediator implements IMediator
 
     public function createUrl(string $path): link\http\IUrl
     {
-        if (!$this->_activeUrl) {
-            throw Glitch::ESetup(
-                'Amazon SES API url has not been set'
-            );
-        }
-
-        return clone $this->_activeUrl;
+        $output = $this->getUrl();
+        $output->setPath($path);
+        return $output;
     }
 
     protected function _prepareRequest(link\http\IRequest $request): link\http\IRequest
@@ -247,15 +259,54 @@ class Mediator implements IMediator
             );
         }
 
+        $this->_date = gmdate('Ymd');
+        $this->_amzDate = gmdate('Ymd\THis\Z');
+        $request->prepareHeaders();
+
+        //$params = $request->post->toArray();
+        //ksort($params);
+        //$canonicalParameters = http_build_query($params, '', '&', PHP_QUERY_RFC3986);
+
+
         $headers = $request->getHeaders();
+        $canonicalHeaders =
+            'content-type:'.$headers->get('content-type')."\n".
+            'host:'.$this->getHost()."\n".
+            'x-amz-date:'.$this->_amzDate."\n";
 
-        $date = gmdate('D, d M Y H:i:s e');
-        $headers->set('Date', $date);
+        $signedHeaders = 'content-type;host;x-amz-date';
+        $hash = hash('sha256', $request->getBodyDataString());
 
-        $auth = 'AWS3-HTTPS AWSAccessKeyId='.$this->_accessKey;
-        $auth .= ',Algorithm=HmacSHA256,Signature='.base64_encode(hash_hmac('sha256', $date, $this->_secretKey, true));
-        $headers->set('X-Amzn-Authorization', $auth);
-        $headers->set('Connection', 'close');
+        // Task 1
+        $canonicalRequest =
+            strtoupper($request->getMethod())."\n".
+            '/'."\n".
+            //$canonicalParameters."\n".
+            ''."\n".
+            $canonicalHeaders."\n".
+            $signedHeaders."\n".
+            $hash;
+
+
+        // Task 2
+        $scope = $this->_date.'/'.$this->_region.'/email/aws4_request';
+        $signatureString =
+            self::ALGORITHM."\n".
+            $this->_amzDate."\n".
+            $scope."\n".
+            hash('sha256', $canonicalRequest);
+
+        // Task 3
+        $dateHmac = hash_hmac('sha256', $this->_date, 'AWS4'.$this->_secretKey, true);
+        $regionHmac = hash_hmac('sha256', $this->_region, $dateHmac, true);
+        $serviceHmac = hash_hmac('sha256', 'email', $regionHmac, true);
+        $signatureKey = hash_hmac('sha256', 'aws4_request', $serviceHmac, true);
+        $signature = hash_hmac('sha256', $signatureString, $signatureKey);
+
+        $auth = self::ALGORITHM.' Credential='.$this->_accessKey.'/'.$scope.', SignedHeaders='.$signedHeaders.', Signature='.$signature;
+        $headers->set('Authorization', $auth);
+        $headers->set('x-amz-date', $this->_amzDate);
+        //$headers->set('Connection', 'close');
 
         return $request;
     }
