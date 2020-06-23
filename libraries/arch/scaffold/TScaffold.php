@@ -482,6 +482,11 @@ trait TScaffold_RecordDataProvider
         });
     }
 
+    public function getNameKeyFieldMaxLength(): int
+    {
+        return static::NAME_KEY_FIELD_MAX_LENGTH ?? 40;
+    }
+
     public function defineSlugField($list, $mode)
     {
         $list->addField('slug', function ($item) {

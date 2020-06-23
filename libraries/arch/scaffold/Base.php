@@ -29,6 +29,7 @@ abstract class Base implements IScaffold
 
     const PROPAGATE_IN_QUERY = [];
     const ACCESS_SIGNIFIERS = null;
+    const NAME_KEY_FIELD_MAX_LENGTH = 40;
 
     private $_directoryKeyName;
 

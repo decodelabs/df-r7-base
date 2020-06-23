@@ -50,6 +50,7 @@ interface IRecordDataProviderScaffold extends IRecordLoaderScaffold
     public function getRecordOperativeLinks($record, $mode);
 
     public function autoDefineNameKeyField($fieldName, $list, $mode, $label=null);
+    public function getNameKeyFieldMaxLength(): int;
 
     public function decorateRecordLink($link, $component);
 
