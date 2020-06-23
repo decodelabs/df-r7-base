@@ -468,7 +468,7 @@ trait TScaffold_RecordDataProvider
                         ucfirst($this->getRecordKeyName().'Link'),
                         $item
                     )
-                    ->setMaxLength(50)
+                    ->setMaxLength($this->getNameKeyFieldMaxLength())
                     ->setDisposition('informative');
             }
 
