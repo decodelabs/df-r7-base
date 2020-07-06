@@ -36,6 +36,38 @@ class Guid implements IGuid, Inspectable
 
     protected $_bytes;
 
+
+    public static function shorten(string $id): string
+    {
+        $bytes = static::factory($id)->getBytes();
+        $hex = bin2hex($bytes);
+        return flex\Text::baseConvert($hex, 16, 62);
+    }
+
+    public static function unshorten(string $id): string
+    {
+        $length = strlen($id);
+
+        // Full
+        if ($length === 36) {
+            return $id;
+        }
+
+        // Short
+        if ($length === 21 || $length === 22) {
+            $hex = flex\Text::baseConvert($id, 62, 16);
+            $hex = str_pad($hex, 32, '0', \STR_PAD_LEFT);
+            return (string)flex\Guid::factory($hex);
+        }
+
+        throw Glitch::EInvalidArgument('Unable to unshorten ID');
+    }
+
+
+
+
+
+
     public static function uuid1($node=null, $time=null)
     {
         if ($time === null) {
