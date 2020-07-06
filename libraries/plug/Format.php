@@ -573,4 +573,18 @@ class Format implements core\ISharedHelper
             return '('.$this->number($counter).')';
         }
     }
+
+
+
+
+
+    public function shortenGuid(string $id): string
+    {
+        return flex\Guid::shorten($id);
+    }
+
+    public function unshortenGuid(string $id): string
+    {
+        return flex\Guild::unshorten($id);
+    }
 }
