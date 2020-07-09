@@ -44,7 +44,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     const CAN_ADD = true;
     const CAN_EDIT = true;
     const CAN_DELETE = true;
-    const CONFIRM_DELETE = false;
+    const CONFIRM_DELETE = true;
 
     const CAN_SEARCH = true;
     const CAN_SELECT = false;
