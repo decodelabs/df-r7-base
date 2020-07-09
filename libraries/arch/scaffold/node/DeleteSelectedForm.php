@@ -77,7 +77,7 @@ class DeleteSelectedForm extends AffectSelectedForm
     {
         $fs->addField('Are you sure?')->addClass('negative')->push(
             $this->html->checkbox('confirm', $this->values->confirm, [
-                    $this->html->icon('warning'), 'I confirm I understand the consequences of deleting these items, permanently, everywhere'
+                    $this->html->icon('warning'), 'I confirm I understand the consequences of DELETING these items, permanently, everywhere'
                 ])
                 ->isRequired(true)
         );
