@@ -41,9 +41,8 @@ abstract class DeleteForm extends Form
 
         if (static::IS_PERMANENT) {
             $fs->push(
-                $this->html->flashMessage(
-                    $this->_('CAUTION: This action is permanent!'), 'warning'
-                )
+                $this->html->flashMessage('CAUTION: This action is permanent!', 'warning')
+                    ->setDescription('This '.$itemName.' will be completely removed from the system and cannot be retrieved!')
             );
         }
 
@@ -81,8 +80,8 @@ abstract class DeleteForm extends Form
 
     protected function getMainMessage()
     {
-        return $this->_(
-            'Are you sure you want to delete this %n%?',
+        return $this->html->_(
+            'Are you sure you want to <strong>delete</strong> this %n%?',
             ['%n%' => $this->getItemName()]
         );
     }
