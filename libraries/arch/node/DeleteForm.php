@@ -93,11 +93,9 @@ abstract class DeleteForm extends Form
 
     protected function createConfirmationUi($form)
     {
-        $form->addFieldSet('Delete confirmation')->addField('Are you sure?')->setDescription(
-            'Confirming here will DELETE this item permanently, everywhere'
-        )->push(
+        $form->addFieldSet('Delete confirmation')->addField('Are you sure?')->push(
             $this->html->checkbox('confirm', $this->values->confirm, [
-                    $this->html->icon('warning', 'I confirm I understand the consequences of DELETING this item')
+                    $this->html->icon('warning', 'I confirm I understand the consequences of DELETING this item, permanently, everywhere')
                     ->addClass('negative')
                 ])
                 ->isRequired(true)
