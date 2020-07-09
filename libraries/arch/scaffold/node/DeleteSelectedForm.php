@@ -35,10 +35,8 @@ class DeleteSelectedForm extends AffectSelectedForm
 
         if (static::IS_PERMANENT) {
             $fa->push(
-                $this->html->flashMessage(
-                    $this->_('CAUTION: This action is permanent!'),
-                    'warning'
-                )
+                $this->html->flashMessage('CAUTION: This action is permanent!', 'warning')
+                    ->setDescription('These items will be completely removed from the system and cannot be retrieved!')
             );
         }
 
@@ -70,8 +68,8 @@ class DeleteSelectedForm extends AffectSelectedForm
 
     protected function getMainMessage()
     {
-        return $this->_(
-            'Are you sure you want to delete these items?'
+        return $this->html->_(
+            'Are you sure you want to <strong>delete</strong> these items?'
         );
     }
 
@@ -79,7 +77,7 @@ class DeleteSelectedForm extends AffectSelectedForm
     {
         $fs->addField('Are you sure?')->addClass('negative')->push(
             $this->html->checkbox('confirm', $this->values->confirm, [
-                    $this->html->icon('warning'), 'I confirm I understand the consequences of deleting this item'
+                    $this->html->icon('warning'), 'I confirm I understand the consequences of deleting these items, permanently, everywhere'
                 ])
                 ->isRequired(true)
         );
