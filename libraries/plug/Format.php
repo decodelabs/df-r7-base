@@ -585,6 +585,6 @@ class Format implements core\ISharedHelper
 
     public function unshortenGuid(string $id): string
     {
-        return flex\Guild::unshorten($id);
+        return flex\Guid::unshorten($id);
     }
 }
