@@ -9,7 +9,8 @@ use df;
 use df\core;
 use df\aura;
 
-interface IFacetProvider {
+interface IFacetProvider
+{
     public function loadFacet($name, $config=null);
     public function hasFacet($name);
     public function getFacet($name);
@@ -17,7 +18,8 @@ interface IFacetProvider {
     public function getFacets();
 }
 
-interface ITheme extends IFacetProvider, aura\view\IViewRenderEventReceiver, aura\view\ILayoutMap {
+interface ITheme extends IFacetProvider, aura\view\IViewRenderEventReceiver, aura\view\ILayoutMap
+{
     public function getId(): string;
 
     public function findAsset($path);
@@ -26,9 +28,14 @@ interface ITheme extends IFacetProvider, aura\view\IViewRenderEventReceiver, aur
     public function mapIcon($name);
 
     public function getDependencies();
+    public function getDefaultContentContainerName(): string;
 }
 
-interface IFacet extends aura\view\IViewRenderEventReceiver {}
+interface IFacet extends aura\view\IViewRenderEventReceiver
+{
+}
 
 // DELETE ME WHEN SITES UPDATED!
-class Dependency extends df\fuse\Dependency {}
+class Dependency extends df\fuse\Dependency
+{
+}

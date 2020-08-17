@@ -28,6 +28,8 @@ class Base implements ITheme, Inspectable
 
     const DEPENDENCIES = [];
 
+    const DEFAULT_CONTENT_CONTAINER_NAME = 'main';
+
     protected $_id;
     protected $_iconMap = null;
     protected $_facets = null;
@@ -398,6 +400,15 @@ class Base implements ITheme, Inspectable
 
         return $current;
     }
+
+
+    // Container name
+    public function getDefaultContentContainerName(): string
+    {
+        return static::DEFAULT_CONTENT_CONTAINER_NAME;
+    }
+
+
 
     /**
      * Inspect for Glitch

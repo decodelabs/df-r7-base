@@ -27,7 +27,9 @@ class WidgetContentProvider extends aura\html\Element implements
 
     public function __construct(arch\IContext $context)
     {
-        parent::__construct($this->_name);
+        $theme = aura\theme\Base::factory($context);
+
+        parent::__construct($theme->getDefaultContentContainerName());
         $this->context = $context;
     }
 
