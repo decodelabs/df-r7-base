@@ -28,7 +28,7 @@ class Base implements ITheme, Inspectable
 
     const DEPENDENCIES = [];
 
-    const DEFAULT_CONTENT_CONTAINER_NAME = 'section';
+    const DEFAULT_CONTENT_CONTAINER_NAME = 'main';
 
     protected $_id;
     protected $_iconMap = null;
