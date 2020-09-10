@@ -165,10 +165,10 @@ class Result implements arch\node\IRestApiResult
             $data['validation'] = $this->validator->data->toArrayDelimitedErrorSet();
         }
 
-        $flags = 0;
+        $flags = \JSON_UNESCAPED_SLASHES;
 
         if (!df\Launchpad::$app->isProduction()) {
-            $flags = \JSON_PRETTY_PRINT;
+            $flags |= \JSON_PRETTY_PRINT;
         }
 
         if ($this->_dataProcessor) {
