@@ -24,6 +24,9 @@ class Result implements arch\node\IRestApiResult
     protected $_exception;
     protected $_dataProcessor;
 
+    protected $_accessToken;
+    protected $_refreshToken;
+
 
     public function __construct($value=null, core\validate\IHandler $validator=null)
     {
@@ -138,6 +141,42 @@ class Result implements arch\node\IRestApiResult
     }
 
 
+
+    // Tokens
+    public function setAccessToken(?string $token)
+    {
+        $this->_accessToken = $token;
+        return $this;
+    }
+
+    public function hasAccessToken(): bool
+    {
+        return $this->_accessToken !== null;
+    }
+
+    public function getAccessToken(): ?string
+    {
+        return $this->_accessToken;
+    }
+
+    public function setRefreshToken(?string $token)
+    {
+        $this->_refreshToken = $token;
+        return $this;
+    }
+
+    public function hasRefreshToken(): bool
+    {
+        return $this->_refreshToken !== null;
+    }
+
+    public function getRefreshToken(): ?string
+    {
+        return $this->_refreshToken;
+    }
+
+
+
     // Response
     public function toResponse()
     {
@@ -163,6 +202,14 @@ class Result implements arch\node\IRestApiResult
 
         if (!$this->validator->isValid()) {
             $data['validation'] = $this->validator->data->toArrayDelimitedErrorSet();
+        }
+
+        if ($this->hasAccessToken()) {
+            $data['tokens']['access'] = $this->_accessToken;
+        }
+
+        if ($this->hasRefreshToken()) {
+            $data['tokens']['refresh'] = $this->_refreshToken;
         }
 
         $flags = \JSON_UNESCAPED_SLASHES;

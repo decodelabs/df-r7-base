@@ -18,6 +18,7 @@ abstract class RestApi extends Base implements IRestApiNode
     const OPTIMIZE = true;
     const CHECK_ACCESS = false;
     const CORS = false;
+    const REGENERATE_ACCESS_TOKEN = false;
 
     protected $_httpRequest;
 
@@ -66,6 +67,17 @@ abstract class RestApi extends Base implements IRestApiNode
         }
 
         $response->setCors(static::CORS);
+
+        if (
+            static::REGENERATE_ACCESS_TOKEN &&
+            !$response->hasException() &&
+            !$response->hasAccessToken()
+        ) {
+            $response->setAccessToken(
+                $this->regenerateAccessToken()
+            );
+        }
+
         return $response;
     }
 
@@ -93,5 +105,10 @@ abstract class RestApi extends Base implements IRestApiNode
     public function authorizeRequest()
     {
         return true;
+    }
+
+    public function regenerateAccessToken(): ?string
+    {
+        return null;
     }
 }

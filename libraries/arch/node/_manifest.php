@@ -98,6 +98,13 @@ interface IRestApiResult extends arch\IProxyResponse
 
     public function setCors(?string $cors);
     public function getCors(): ?string;
+
+    public function setAccessToken(?string $token);
+    public function hasAccessToken(): bool;
+    public function getAccessToken(): ?string;
+    public function setRefreshToken(?string $token);
+    public function hasRefreshToken(): bool;
+    public function getRefreshToken(): ?string;
 }
 
 
