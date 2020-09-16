@@ -575,7 +575,7 @@ trait TScaffold_RecordDataProvider
         });
     }
 
-    public function defineModificatinDateField($list, $mode)
+    public function defineModificationDateField($list, $mode)
     {
         $list->addField('modificationDate', $this->_('Modified'), function ($item) use ($mode) {
             if ($mode == 'list') {
