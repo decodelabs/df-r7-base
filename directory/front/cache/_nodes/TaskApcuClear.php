@@ -61,9 +61,18 @@ class TaskApcuClear extends arch\node\Task
             $httpClient = new HttpClient();
 
             try {
+                $auth = null;
+
+                if ($credentials !== null) {
+                    $auth = [
+                        $credentials['username'] ?? null,
+                        $credentials['password'] ?? null
+                    ];
+                }
+
                 $response = $httpClient->get((string)$url, [
                     'verify' => false,
-                    'auth' => $credentials,
+                    'auth' => $auth,
                     'headers' => [
                         'x-df-self' => md5(apex\App::PASS_KEY)
                     ]
