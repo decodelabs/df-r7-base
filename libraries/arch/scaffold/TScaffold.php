@@ -575,6 +575,17 @@ trait TScaffold_RecordDataProvider
         });
     }
 
+    public function defineModificatinDateField($list, $mode)
+    {
+        $list->addField('modificationDate', $this->_('Modified'), function ($item) use ($mode) {
+            if ($mode == 'list') {
+                return Html::$time->sinceAbs($item['modificationDate']);
+            } else {
+                return Html::$time->since($item['modificationDate']);
+            }
+        });
+    }
+
     public function defineLastEditDateField($list, $mode)
     {
         $list->addField('lastEditDate', $this->_('Edited'), function ($item) use ($mode) {
