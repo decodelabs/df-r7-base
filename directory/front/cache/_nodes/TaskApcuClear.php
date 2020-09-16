@@ -63,7 +63,10 @@ class TaskApcuClear extends arch\node\Task
             try {
                 $response = $httpClient->get((string)$url, [
                     'verify' => false,
-                    'auth' => $credentials
+                    'auth' => $credentials,
+                    'headers' => [
+                        'x-df-self' => md5(apex\App::PASS_KEY)
+                    ]
                 ]);
             } catch (\Exception $e) {
                 Cli::error('Http call failed :(');
