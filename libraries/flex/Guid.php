@@ -54,7 +54,7 @@ class Guid implements IGuid, Inspectable
         }
 
         // Short
-        if ($length === 21 || $length === 22) {
+        if ($length >= 20 && $length <= 22) {
             $hex = flex\Text::baseConvert($id, 62, 16);
             $hex = str_pad($hex, 32, '0', \STR_PAD_LEFT);
             return (string)flex\Guid::factory($hex);
