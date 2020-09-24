@@ -268,7 +268,11 @@ abstract class SelectorDelegate extends Delegate implements
             static::MANY_LIST_THRESHOLD :
             static::ONE_LIST_THRESHOLD;
 
-        if ($count > 0 && ($count <= $threshold || (!$this->hasSelection() && !$this->_isForMany))) {
+        if ($count === 0) {
+            $fa->push(
+                Html::{'div.w.list.selection > div.body > em'}('nothing available')
+            );
+        } elseif ($count > 0 && ($count <= $threshold || (!$this->hasSelection() && !$this->_isForMany))) {
             $this->_renderInlineListDetails($fa);
         } else {
             $this->_renderInlineTextDetails($fa);
