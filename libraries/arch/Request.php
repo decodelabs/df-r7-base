@@ -12,11 +12,9 @@ use df\user;
 use df\link;
 use df\flex;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Request extends core\uri\Url implements IRequest, Inspectable
+class Request extends core\uri\Url implements IRequest, Dumpable
 {
     use user\TAccessLock;
 
@@ -1102,10 +1100,10 @@ class Request extends core\uri\Url implements IRequest, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText($this->toString());
-        $inspector->inspectClassMembers($this, new \ReflectionClass($this), $entity);
-        $entity->setSectionVisible('properties', false);
+        yield 'text' => $this->toString();
+        yield 'classMembers' => [];
+        yield 'section:properties' => false;
     }
 }

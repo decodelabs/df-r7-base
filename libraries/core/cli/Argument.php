@@ -8,11 +8,11 @@ namespace df\core\cli;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class Argument implements IArgument, Inspectable
+class Argument implements IArgument, Dumpable
 {
     use core\TStringProvider;
 
@@ -140,8 +140,8 @@ class Argument implements IArgument, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText($this->toString());
+        yield 'text' => $this->toString();
     }
 }

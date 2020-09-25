@@ -10,11 +10,9 @@ use df\core;
 use df\flex;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Guid implements IGuid, Inspectable
+class Guid implements IGuid, Dumpable
 {
     use core\TStringProvider;
 
@@ -317,11 +315,10 @@ class Guid implements IGuid, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setText($this->toString())
-            ->setMeta('version', $inspector($this->getVersion()))
-            ->setMeta('variant', $inspector($this->getVariantName()));
+        yield 'text' => $this->toString();
+        yield 'meta:version' => $this->getVersion();
+        yield 'meta:variant' => $this->getVariantName();
     }
 }

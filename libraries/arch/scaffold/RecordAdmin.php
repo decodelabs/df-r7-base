@@ -11,16 +11,14 @@ use df\arch;
 use df\aura;
 use df\opal;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
 abstract class RecordAdmin extends arch\scaffold\Base implements
     IRecordLoaderScaffold,
     IRecordDataProviderScaffold,
     IRecordListProviderScaffold,
     ISectionProviderScaffold,
-    Inspectable
+    Dumpable
 {
     use TScaffold_RecordLoader;
     use TScaffold_RecordDataProvider;
@@ -175,13 +173,12 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                'context' => $inspector($this->context),
-                '*adapter' => $inspector($this->_recordAdapter),
-                '*record' => $inspector($this->_record)
-            ]);
+        yield 'properties' => [
+            'context' => $this->context,
+            '*adapter' => $this->_recordAdapter,
+            '*record' => $this->_record
+        ];
     }
 }

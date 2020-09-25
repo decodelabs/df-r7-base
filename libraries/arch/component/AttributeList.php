@@ -12,11 +12,9 @@ use df\aura;
 
 use DecodeLabs\Tagged\Html;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Inspectable
+class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Dumpable
 {
     protected $_record;
     protected $_renderIfEmpty = null;
@@ -230,8 +228,8 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Inspe
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText($this->render());
+        yield 'text' => $this->render();
     }
 }

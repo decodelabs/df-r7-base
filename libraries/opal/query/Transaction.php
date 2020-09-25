@@ -11,11 +11,9 @@ use df\opal;
 use df\mesh;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Transaction extends mesh\job\Transaction implements ITransaction, Inspectable
+class Transaction extends mesh\job\Transaction implements ITransaction, Dumpable
 {
     protected $_source;
 
@@ -200,7 +198,7 @@ class Transaction extends mesh\job\Transaction implements ITransaction, Inspecta
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         $adapters = [];
 
@@ -208,6 +206,6 @@ class Transaction extends mesh\job\Transaction implements ITransaction, Inspecta
             $adapters[] = $adapter->getQuerySourceDisplayName();
         }
 
-        $entity->setValues($inspector->inspectList($adapters));
+        yield 'values' => $adapters;
     }
 }

@@ -10,11 +10,9 @@ use df\core;
 use df\opal;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Wildcard implements opal\query\IWildcardField, Inspectable
+class Wildcard implements opal\query\IWildcardField, Dumpable
 {
     use opal\query\TField;
 

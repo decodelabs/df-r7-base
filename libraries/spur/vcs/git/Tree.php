@@ -10,11 +10,9 @@ use df\core;
 use df\spur;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Tree implements ITree, Inspectable
+class Tree implements ITree, Dumpable
 {
     protected $_id;
     protected $_name = null;
@@ -160,16 +158,16 @@ class Tree implements ITree, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setProperty('*id', $inspector($this->_id));
+        yield 'property:*id' => $this->_id;
 
         if ($this->_name !== null) {
-            $entity->setProperty('*name', $inspector($this->_name));
+            yield 'property:*name' => $this->_name;
         }
 
         if ($this->_mode !== null) {
-            $entity->setProperty('*mode', $inspector($this->_mode));
+            yield 'property:*mode' => $this->_mode;
         }
     }
 }

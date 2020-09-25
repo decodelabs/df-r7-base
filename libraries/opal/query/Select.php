@@ -10,11 +10,9 @@ use df\core;
 use df\opal;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Select implements ISelectQuery, Inspectable
+class Select implements ISelectQuery, Dumpable
 {
     use TQuery;
     use TQuery_LocalSource;
@@ -123,43 +121,43 @@ class Select implements ISelectQuery, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setProperties([
-            '*sources' => $inspector($this->_sourceManager),
-            '*fields' => $inspector($this->_source)
-        ]);
+        yield 'properties' => [
+            '*sources' => $this->_sourceManager,
+            '*fields' => $this->_source
+        ];
 
         if (!empty($this->_populates)) {
-            $entity->setProperty('*populates', $inspector($this->_populates));
+            yield 'property:*populates' => $this->_populates;
         }
 
         if (!empty($this->_combines)) {
-            $entity->setProperty('*combines', $inspector($this->_combines));
+            yield 'property:*combines' => $this->_combines;
         }
 
         if (!empty($this->_joins)) {
-            $entity->setProperty('*join', $inspector($this->_joins));
+            yield 'property:*join' => $this->_joins;
         }
 
         if (!empty($this->_attachments)) {
-            $entity->setProperty('*attach', $inspector($this->_attachments));
+            yield 'property:*attach' => $this->_attachments;
         }
 
         if ($this->hasWhereClauses()) {
-            $entity->setProperty('*where', $inspector($this->getWhereClauseList()));
+            yield 'property:*where' => $this->getWhereClauseList();
         }
 
         if ($this->_searchController) {
-            $entity->setProperty('*search', $inspector($this->_searchController));
+            yield 'property:*search' => $this->_searchController;
         }
 
         if (!empty($this->_group)) {
-            $entity->setProperty('*group', $inspector($this->_groups));
+            yield 'property:*group' => $this->_groups;
         }
 
         if ($this->hasHavingClauses()) {
-            $entity->setProperty('*having', $inspector($this->_havingClauseList));
+            yield 'property:*having' => $this->_havingClauseList;
         }
 
         if (!empty($this->_order)) {
@@ -169,23 +167,23 @@ class Select implements ISelectQuery, Inspectable
                 $order[] = $directive->toString();
             }
 
-            $entity->setProperty('*order', $inspector(implode(', ', $order)));
+            yield 'property:*order' => implode(', ', $order);
         }
 
         if (!empty($this->_nest)) {
-            $entity->setProperty('*nest', $inspector($this->_nest));
+            yield 'property:*nest' => $this->_nest;
         }
 
         if ($this->_limit) {
-            $entity->setProperty('*limit', $inspector($this->_limit));
+            yield 'property:*limit' => $this->_limit;
         }
 
         if ($this->_offset) {
-            $entity->setProperty('*offset', $inspector($this->_offset));
+            yield 'property:*offset' => $this->_offset;
         }
 
         if ($this->_paginator) {
-            $entity->setProperty('*paginator', $inspector($this->_paginator));
+            yield 'property:*paginator' => $this->_paginator;
         }
     }
 }
@@ -213,14 +211,14 @@ class Select_Attach extends Select implements ISelectAttachQuery
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setProperties([
-            '*type' => $inspector(self::typeIdToName($this->_type)),
-            '*on' => $inspector($this->_joinClauseList),
-        ]);
+        yield 'properties' => [
+            '*type' => self::typeIdToName($this->_type),
+            '*on' => $this->_joinClauseList,
+        ];
 
-        parent::glitchInspect($entity, $inspector);
+        yield from parent::glitchDump();
     }
 }
 

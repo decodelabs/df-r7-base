@@ -12,11 +12,9 @@ use df\user;
 use df\mesh;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Partial implements IPartial, Inspectable
+class Partial implements IPartial, Dumpable
 {
     use TRecordAdapterProvider;
     use TPrimaryKeySetProvider;
@@ -170,8 +168,8 @@ class Partial implements IPartial, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setValues($inspector->inspectList($this->_collection));
+        yield 'values' => $this->_collection;
     }
 }

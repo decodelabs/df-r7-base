@@ -10,11 +10,14 @@ use df\core;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class GroupedSelect extends Base implements IGroupedSelectionInputWidget, IFocusableInputWidget, Inspectable
+class GroupedSelect extends Base implements
+    IGroupedSelectionInputWidget,
+    IFocusableInputWidget,
+    Dumpable
 {
     use TWidget_FormData;
     use TWidget_Input;
@@ -116,15 +119,15 @@ class GroupedSelect extends Base implements IGroupedSelectionInputWidget, IFocus
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*name' => $inspector($this->_name),
-                '*value' => $inspector($this->_value),
-                '*groupNames' => $inspector($this->_groupNames),
-                '%tag' => $inspector($this->getTag())
-            ])
-            ->setValues($inspector->inspectList($this->_groupOptions));
+        yield 'properties' => [
+            '*name' => $this->_name,
+            '*value' => $this->_value,
+            '*groupNames' => $this->_groupNames,
+            '%tag' => $this->getTag()
+        ];
+
+        yield 'values' => $this->_groupOptions;
     }
 }

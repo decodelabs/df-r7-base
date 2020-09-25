@@ -9,11 +9,9 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Correlation implements ICorrelationQuery, Inspectable
+class Correlation implements ICorrelationQuery, Dumpable
 {
     use TQuery;
     use TQuery_ParentAware;
@@ -146,32 +144,32 @@ class Correlation implements ICorrelationQuery, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setProperties([
-            '*fieldAlias' => $inspector($this->_fieldAlias),
-            '*fields' => $inspector($this->_source),
-            '*on' => $inspector($this->_joinClauseList)
-        ]);
+        yield 'properties' => [
+            '*fieldAlias' => $this->_fieldAlias,
+            '*fields' => $this->_source,
+            '*on' => $this->_joinClauseList
+        ];
 
         if (!empty($this->_joins)) {
-            $entity->setProperty('*joins', $inspector($this->_joins));
+            yield 'property:*joins' => $this->_joins;
         }
 
         if ($this->_whereClauseList && !$this->_whereClauseList->isEmpty()) {
-            $entity->setProperty('*where', $inspector($this->_whereClauseList));
+            yield 'property:*where' => $this->_whereClauseList;
         }
 
         if (!empty($this->_group)) {
-            $entity->setProperty('*group', $inspector($this->_groups));
+            yield 'property:*group' => $this->_groups;
         }
 
         if ($this->_limit) {
-            $entity->setProperty('*limit', $inspector($this->_limit));
+            yield 'property:*limit' => $this->_limit;
         }
 
         if ($this->_offset) {
-            $entity->setProperty('*offset', $inspector($this->_offset));
+            yield 'property:*offset' => $this->_offset;
         }
     }
 }

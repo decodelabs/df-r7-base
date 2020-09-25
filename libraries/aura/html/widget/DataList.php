@@ -10,11 +10,11 @@ use df\core;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class DataList extends Base implements IUngroupedOptionWidget, Inspectable
+class DataList extends Base implements IUngroupedOptionWidget, Dumpable
 {
     use TWidget_UngroupedSelectionInput;
 
@@ -72,13 +72,13 @@ class DataList extends Base implements IUngroupedOptionWidget, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*id' => $inspector($this->getId()),
-                '%tag' => $inspector($this->getTag())
-            ])
-            ->setValues($inspector->inspectList($this->_options));
+        yield 'properties' => [
+            '*id' => $this->getId(),
+            '%tag' => $this->getTag()
+        ];
+
+        yield 'values' => $this->_options;
     }
 }

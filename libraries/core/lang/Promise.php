@@ -9,11 +9,9 @@ use df;
 use df\core;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Promise implements IPromise, Inspectable
+class Promise implements IPromise, Dumpable
 {
     protected $_action;
     protected $_errorHandlers = [];
@@ -815,18 +813,18 @@ class Promise implements IPromise, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         if ($this->_error) {
-            $entity->setText((string)$this->_error);
+            yield 'text' => (string)$this->_error;
             return;
         } elseif ($this->_result) {
-            $entity->setSingleValue($inspector($this->_result));
+            yield 'value' => $this->_result;
             return;
         }
 
         if ($this->_isCancelled) {
-            $entity->setText('** CANCELLED **');
+            yield 'text' => '** CANCELLED **';
             return;
         }
 
@@ -841,7 +839,6 @@ class Promise implements IPromise, Inspectable
             }
         }
 
-        $output = implode(', ', $output);
-        $entity->setDefinition($output);
+        yield 'definition' => implode(', ', $output);
     }
 }

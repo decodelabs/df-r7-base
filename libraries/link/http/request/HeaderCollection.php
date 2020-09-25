@@ -9,10 +9,6 @@ use df;
 use df\core;
 use df\link;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
-
 class HeaderCollection extends core\collection\HeaderMap implements link\http\IRequestHeaderCollection
 {
     use link\http\THeaderCollection;
@@ -114,10 +110,10 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        parent::glitchInspect($entity, $inspector);
+        yield from parent::glitchDump();
 
-        $entity->setProperty('*httpVersion', $inspector($this->_httpVersion));
+        yield 'property:*httpVersion' => $this->_httpVersion;
     }
 }

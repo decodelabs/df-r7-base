@@ -8,11 +8,11 @@ namespace df\core\collection;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class PageableQueue implements IIndexedQueue, \IteratorAggregate, IPaginator, Inspectable
+class PageableQueue implements IIndexedQueue, \IteratorAggregate, IPaginator, Dumpable
 {
     use TArrayCollection_Queue;
     use TPaginator;
@@ -70,12 +70,14 @@ class PageableQueue implements IIndexedQueue, \IteratorAggregate, IPaginator, In
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperty('*limit', $inspector($this->_limit))
-            ->setProperty('*offset', $inspector($this->_offset))
-            ->setProperty('*total', $inspector($this->_total))
-            ->setValues($inspector->inspectList($this->_collection));
+        yield 'properties' => [
+            '*limit' => $this->_limit,
+            '*offset' => $this->_offset,
+            '*total' => $this->_total
+        ];
+
+        yield 'values' => $this->_collection;
     }
 }

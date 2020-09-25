@@ -9,11 +9,9 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class RelationManifest implements IRelationManifest, Inspectable
+class RelationManifest implements IRelationManifest, Dumpable
 {
     protected $_fields = [];
     protected $_primitives = [];
@@ -173,8 +171,8 @@ class RelationManifest implements IRelationManifest, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setValues($inspector->inspectList($this->_fields));
+        yield 'values' => $this->_fields;
     }
 }

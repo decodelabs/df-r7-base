@@ -12,11 +12,15 @@ use df\aura;
 use df\link as linkLib;
 use df\user;
 
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIconProviderWidget, Inspectable
+class Link extends Base implements
+    ILinkWidget,
+    IDescriptionAwareLinkWidget,
+    IIconProviderWidget,
+    Dumpable
 {
     use TWidget_BodyContentAware;
     use core\constraint\TDisableable;
@@ -447,7 +451,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         $lockCount = count($this->_accessLocks).' (';
 
@@ -457,16 +461,16 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
 
         $lockCount .= 'checked)';
 
-        $entity
-            ->setProperties([
-                '*uri' => $inspector($this->_uri),
-                '*matchRequest' => $inspector($this->_matchRequest),
-                '*rel' => $inspector($this->getRelationship()),
-                '*isActive' => $inspector($this->_isActive),
-                '*description' => $inspector($this->_description),
-                '%accessLocks' => $inspector($lockCount),
-                '%tag' => $inspector($this->getTag())
-            ])
-            ->setValues($inspector->inspectList($this->_body->toArray()));
+        yield 'properties' => [
+            '*uri' => $this->_uri,
+            '*matchRequest' => $this->_matchRequest,
+            '*rel' => $this->getRelationship(),
+            '*isActive' => $this->_isActive,
+            '*description' => $this->_description,
+            '%accessLocks' => $lockCount,
+            '%tag' => $this->getTag()
+        ];
+
+        yield 'values' => $this->_body->toArray();
     }
 }

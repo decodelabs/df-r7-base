@@ -10,11 +10,9 @@ use df\core;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWidget, Inspectable
+class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWidget, Dumpable
 {
     const PRIMARY_TAG = 'div.list.attributes';
 
@@ -134,13 +132,13 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '%data' => $inspector(count($this->_data).' rows'),
-                '%tag' => $inspector($this->getTag())
-            ])
-            ->setValues($inspector->inspectList($this->_fields));
+        yield 'properties' => [
+            '%data' => count($this->_data).' rows',
+            '%tag' => $this->getTag()
+        ];
+
+        yield 'values' => $this->_fields;
     }
 }

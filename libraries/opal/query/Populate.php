@@ -10,11 +10,9 @@ use df\core;
 use df\opal;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Populate implements IPopulateQuery, Inspectable
+class Populate implements IPopulateQuery, Dumpable
 {
     use TQuery;
     use TQuery_LocalSource;
@@ -98,20 +96,20 @@ class Populate implements IPopulateQuery, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setProperties([
-            '*parent' => $inspector($this->_parent->getSource()->getId()),
-            '*field' => $inspector($this->_field),
-            '*type' => $inspector(self::typeIdToName($this->_type))
-        ]);
+        yield 'properties' => [
+            '*parent' => $this->_parent->getSource()->getId(),
+            '*field' => $this->_field,
+            '*type' => self::typeIdToName($this->_type)
+        ];
 
         if (!empty($this->_populates)) {
-            $entity->setProperty('*populates', $inspector($this->_populates));
+            yield 'property:*populates' => $this->_populates;
         }
 
         if ($this->_whereClauseList && !$this->_whereClauseList->isEmpty()) {
-            $entity->setProperty('*where', $inspector($this->_whereClauseList));
+            yield 'property:*where' => $this->_whereClauseList;
         }
 
         if (!empty($this->_order)) {
@@ -121,15 +119,15 @@ class Populate implements IPopulateQuery, Inspectable
                 $order[] = $directive->toString();
             }
 
-            $entity->setProperty('*order', $inspector(implode(', ', $order)));
+            yield 'property:*order' => implode(', ', $order);
         }
 
         if ($this->_limit) {
-            $entity->setProperty('*limit', $inspector($this->_limit));
+            yield 'property:*limit' => $this->_limit;
         }
 
         if ($this->_offset) {
-            $entity->setProperty('*offset', $inspector($this->_offset));
+            yield 'property:*offset' => $this->_offset;
         }
     }
 }

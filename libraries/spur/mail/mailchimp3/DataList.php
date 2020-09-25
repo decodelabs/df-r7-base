@@ -11,9 +11,6 @@ use df\spur;
 use df\mint;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
 
 class DataList extends core\collection\Tree implements IDataList
 {
@@ -86,30 +83,26 @@ class DataList extends core\collection\Tree implements IDataList
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         if ($this->_value !== null) {
-            $entity->setProperty('*value', $inspector($this->_value));
+            yield 'property:*value' => $this->_value;
         }
 
         if ($this->_total > 0) {
-            $entity->setProperty('*total', $inspector($this->_total));
+            yield 'property:*total' => $this->_total;
         }
 
         if ($this->_filter !== null) {
-            $entity->setProperty('*filter', $inspector($this->_filter));
+            yield 'property:*filter' => $this->_filter;
         }
-
-        $children = [];
 
         foreach ($this->_collection as $key => $child) {
             if ($child instanceof self && empty($child->_collection) && !isset($child->_total) && !isset($child->_filter)) {
-                $children[$key] = $child->_value;
+                yield 'value:'.$key => $child->_value;
             } else {
-                $children[$key] = $child;
+                yield 'value:'.$key => $child;
             }
         }
-
-        $entity->setValues($inspector->inspectList($children));
     }
 }

@@ -12,11 +12,9 @@ use df\mesh;
 use df\flex;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-abstract class Base implements opal\rdbms\IAdapter, Inspectable
+abstract class Base implements opal\rdbms\IAdapter, Dumpable
 {
     const AUTO_INCREMENT = 1;
     const SEQUENCES = 2;
@@ -375,9 +373,9 @@ abstract class Base implements opal\rdbms\IAdapter, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText($this->_dsn->getDisplayString());
+        yield 'text' => $this->_dsn->getDisplayString();
     }
 }
 

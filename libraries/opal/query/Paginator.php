@@ -9,11 +9,9 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Paginator implements IPaginator, Inspectable
+class Paginator implements IPaginator, Dumpable
 {
     use core\collection\TPaginator;
 
@@ -320,22 +318,22 @@ class Paginator implements IPaginator, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         if (!empty($this->_orderableFields)) {
-            $entity->setProperty('*orderableFields', $inspector(implode(', ', $this->_orderableFields)));
+            yield 'property:*orderableFields' => implode(', ', $this->_orderableFields);
         }
 
         if (!empty($this->_order)) {
-            $entity->setProperty('*defaultOrder', $inspector(implode(', ', $this->_order)));
+            yield 'property:*defaultOrder' => implode(', ', $this->_order);
         }
 
         if ($this->_limit) {
-            $entity->setProperty('*defaultLimit', $inspector($this->_limit));
+            yield 'property:*defaultLimit' => $this->_limit;
         }
 
         if ($this->_offset) {
-            $entity->setProperty('*defaultOffset', $inspector($this->_offset));
+            yield 'property:*defaultOffset' => $this->_offset;
         }
     }
 }

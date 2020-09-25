@@ -10,11 +10,9 @@ use df\core;
 use df\opal;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Insert implements IInsertQuery, Inspectable
+class Insert implements IInsertQuery, Dumpable
 {
     use TQuery;
     use TQuery_LocalSource;
@@ -180,12 +178,11 @@ class Insert implements IInsertQuery, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*source' => $inspector($this->_source->getAdapter()),
-                '*row' => $inspector($this->_row)
-            ]);
+        yield 'properties' => [
+            '*source' => $this->_source->getAdapter(),
+            '*row' => $this->_row
+        ];
     }
 }

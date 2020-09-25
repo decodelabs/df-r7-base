@@ -11,11 +11,9 @@ use df\aura;
 use df\arch;
 use df\fire;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Definition implements fire\ILayoutDefinition, Inspectable
+class Definition implements fire\ILayoutDefinition, Dumpable
 {
     protected $_id;
     protected $_name;
@@ -174,21 +172,21 @@ class Definition implements fire\ILayoutDefinition, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*id' => $inspector($this->_id),
-                '*name' => $inspector($this->_name)
-            ])
-            ->setValues($inspector->inspectList($this->_slots));
+        yield 'properties' => [
+            '*id' => $this->_id,
+            '*name' => $this->_name
+        ];
+
+        yield 'values' => $this->_slots;
 
         if ($this->_isStatic) {
-            $entity->setProperty('*static', $inspector($this->_isStatic));
+            yield 'property:*static' => $this->_isStatic;
         }
 
         if (!empty($this->_areas)) {
-            $entity->setProperty('*areas', $inspector($this->_areas));
+            yield 'property:*areas' => $this->_areas;
         }
     }
 }

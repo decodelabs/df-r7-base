@@ -10,11 +10,9 @@ use df\core;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class FileUpload extends Base implements IFileUploadWidget, Inspectable
+class FileUpload extends Base implements IFileUploadWidget, Dumpable
 {
     use TWidget_FormData;
     use TWidget_Input;
@@ -54,12 +52,11 @@ class FileUpload extends Base implements IFileUploadWidget, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*name' => $inspector($this->_name),
-                '%tag' => $inspector($this->getTag())
-            ]);
+        yield 'properties' => [
+            '*name' => $this->_name,
+            '%tag' => $this->getTag()
+        ];
     }
 }

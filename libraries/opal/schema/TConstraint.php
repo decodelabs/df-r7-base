@@ -10,9 +10,6 @@ use df\core;
 use df\opal;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
 
 trait TConstraint_CharacterSetAware
 {
@@ -327,7 +324,7 @@ trait TConstraint_Index
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         $output = $this->_name;
 
@@ -359,7 +356,7 @@ trait TConstraint_Index
             $output .= ' **VOID**';
         }
 
-        $entity->setDefinition($output);
+        yield 'definition' => $output;
     }
 }
 
@@ -535,7 +532,7 @@ trait TConstraint_ForeignKey
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         $output = $this->_name;
         $refs = [];
@@ -558,7 +555,7 @@ trait TConstraint_ForeignKey
             $output .= ' **VOID**';
         }
 
-        $entity->setDefinition($output);
+        yield 'definition' => $output;
     }
 }
 
@@ -751,12 +748,12 @@ trait TConstraint_Trigger
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         $output = $this->_name;
         $output .= ' '.$this->getTimingName();
         $output .= ' '.$this->getEventName().' '.implode('; ', $this->_statements);
 
-        $entity->setDefinition($output);
+        yield 'definition' => $output;
     }
 }

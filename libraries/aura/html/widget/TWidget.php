@@ -13,9 +13,6 @@ use df\user;
 use df\flex;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
 
 trait TWidget
 {
@@ -271,14 +268,13 @@ trait TWidget_FormData
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*name' => $inspector($this->_name),
-                '*value' => $inspector($this->_value),
-                '%tag' => $inspector($this->getTag())
-            ]);
+        yield 'properties' => [
+            '*name' => $this->_name,
+            '*value' => $this->_value,
+            '%tag' => $this->getTag()
+        ];
     }
 }
 

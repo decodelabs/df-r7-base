@@ -10,11 +10,9 @@ use df\core;
 use df\neon;
 use df\aura;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class ColorStop implements IColorStop, Inspectable
+class ColorStop implements IColorStop, Dumpable
 {
     use core\TStringProvider;
 
@@ -87,8 +85,8 @@ class ColorStop implements IColorStop, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setDefinition($this->toString());
+        yield 'definition' => $this->toString();
     }
 }

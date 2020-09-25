@@ -11,11 +11,11 @@ use df\core\TStringProvider;
 use df\flex\Text;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class IpRange implements IStringProvider, Inspectable
+class IpRange implements IStringProvider, Dumpable
 {
     use TStringProvider;
 
@@ -223,17 +223,17 @@ class IpRange implements IStringProvider, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         if ($this->isV4) {
-            $entity->setText($this->_toV4String());
+            yield 'text' => $this->_toV4String();
         } else {
-            $entity->setProperties([
-                '*v6' => $inspector(true),
-                '*start' => $inspector($this->start),
-                '*end' => $inspector($this->end),
-                '*netmask' => $inspector($this->netmask),
-            ]);
+            yield 'properties' => [
+                '*v6' => true,
+                '*start' => $this->start,
+                '*end' => $this->end,
+                '*netmask' => $this->netmask
+            ];
         }
     }
 }

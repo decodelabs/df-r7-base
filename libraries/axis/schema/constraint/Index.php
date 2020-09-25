@@ -9,11 +9,9 @@ use df\core;
 use df\opal;
 use df\axis;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Index implements opal\schema\IIndex, Inspectable
+class Index implements opal\schema\IIndex, Dumpable
 {
     use opal\schema\TConstraint_Index;
 

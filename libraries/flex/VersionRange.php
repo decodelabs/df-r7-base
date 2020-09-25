@@ -9,11 +9,9 @@ use df;
 use df\core;
 use df\flex;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class VersionRange implements core\IStringProvider, Inspectable
+class VersionRange implements core\IStringProvider, Dumpable
 {
     use core\TStringProvider;
 
@@ -248,7 +246,7 @@ class VersionRange implements core\IStringProvider, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         $output = [];
 
@@ -256,7 +254,7 @@ class VersionRange implements core\IStringProvider, Inspectable
             $output[] = implode(' && ', $group);
         }
 
-        $entity->setValues($output)
-            ->setShowKeys(false);
+        yield 'values' => $output;
+        yield 'showKeys' => false;
     }
 }

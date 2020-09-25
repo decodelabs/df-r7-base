@@ -10,11 +10,9 @@ use df\core;
 use df\opal;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Join implements IJoinQuery, Inspectable
+class Join implements IJoinQuery, Dumpable
 {
     use TQuery;
     use TQuery_ParentAware;
@@ -169,16 +167,16 @@ class Join implements IJoinQuery, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setProperties([
-            '*type' => $inspector(self::typeIdToName($this->_type).($this->_isConstraint ? ' constraint' : null)),
-            '*fields' => $inspector($this->_source),
-            '*on' => $inspector($this->_joinClauseList),
-        ]);
+        yield 'properties' => [
+            '*type' => self::typeIdToName($this->_type).($this->_isConstraint ? ' constraint' : null),
+            '*fields' => $this->_source,
+            '*on' => $this->_joinClauseList
+        ];
 
         if ($this->hasWhereClauses()) {
-            $entity->setProperty('*where', $inspector($this->getWhereClauseList()));
+            yield 'property:*where' => $this->getWhereClauseList();
         }
     }
 }

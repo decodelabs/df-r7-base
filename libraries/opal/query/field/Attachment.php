@@ -10,11 +10,9 @@ use df\core;
 use df\opal;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Attachment implements opal\query\IAttachmentField, Inspectable
+class Attachment implements opal\query\IAttachmentField, Dumpable
 {
     use opal\query\TField;
 

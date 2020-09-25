@@ -14,11 +14,9 @@ use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class ContentPart implements IContentPart, Inspectable
+class ContentPart implements IContentPart, Dumpable
 {
     use core\TStringProvider;
     use core\collection\THeaderMapProvider;
@@ -292,11 +290,10 @@ class ContentPart implements IContentPart, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setSectionVisible('meta', true)
-            ->setMetaList($inspector->inspectList($this->_headers));
+        yield 'metaList' => $this->_headers;
+        yield 'section:meta' => true;
 
         if ($type = $this->_headers->getBase('content-type')) {
             $parts = explode('/', $type);
@@ -307,7 +304,7 @@ class ContentPart implements IContentPart, Inspectable
                 $content = strlen($this->_content).' bytes';
             }
 
-            $entity->setSingleValue($content);
+            yield 'value' => $content;
         }
     }
 }

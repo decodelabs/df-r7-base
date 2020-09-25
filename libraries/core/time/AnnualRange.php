@@ -8,11 +8,9 @@ namespace df\core\time;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class AnnualRange implements IAnnualRange, Inspectable
+class AnnualRange implements IAnnualRange, Dumpable
 {
     protected $_start = null;
     protected $_end = null;
@@ -198,15 +196,14 @@ class AnnualRange implements IAnnualRange, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*start' => $inspector($this->_start),
-                '*end' => $inspector($this->_end),
-                '*next' => $inspector($this->getNextStartDate()),
-                '*year' => $inspector($this->getActiveYear()),
-                '*open' => $inspector($this->isOpen())
-            ]);
+        yield 'properties' => [
+            '*start' => $this->_start,
+            '*end' => $this->_end,
+            '*next' => $this->getNextStartDate(),
+            '*year' => $this->getActiveYear(),
+            '*open' => $this->isOpen()
+        ];
     }
 }

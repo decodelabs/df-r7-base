@@ -9,11 +9,9 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class ListBase implements opal\query\IClauseList, Inspectable
+class ListBase implements opal\query\IClauseList, Dumpable
 {
     use opal\query\TQuery_NestedComponent;
     use core\lang\TChainable;
@@ -270,7 +268,7 @@ class ListBase implements opal\query\IClauseList, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         if ($this->_parent instanceof opal\query\IClauseList) {
             if ($this->_isOr) {
@@ -279,11 +277,10 @@ class ListBase implements opal\query\IClauseList, Inspectable
                 $type = 'AND';
             }
 
-            $entity->setProperty('*type', $inspector($type));
+            yield 'property:*type' => $type;
         }
 
-        $entity
-            ->setValues($inspector->inspectList($this->_clauses))
-            ->setShowKeys(false);
+        yield 'values' => $this->_clauses;
+        yield 'showKeys' => false;
     }
 }

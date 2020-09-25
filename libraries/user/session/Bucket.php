@@ -10,11 +10,9 @@ use df\core;
 use df\user;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Bucket implements user\session\IBucket, Inspectable
+class Bucket implements user\session\IBucket, Dumpable
 {
     use core\TValueMap;
 
@@ -306,16 +304,12 @@ class Bucket implements user\session\IBucket, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $output = [];
-
         if ($this->_controller->isOpen()) {
             foreach ($this->_nodes as $key => $node) {
-                $output[$key] = $node->value;
+                yield 'value:'.$key => $node->value;
             }
         }
-
-        $entity->setValues($inspector->inspectList($output));
     }
 }

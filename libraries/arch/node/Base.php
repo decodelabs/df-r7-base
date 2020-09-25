@@ -12,11 +12,9 @@ use df\aura;
 use df\link;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Base implements INode, Inspectable
+class Base implements INode, Dumpable
 {
     use core\TContextProxy;
     use arch\TDirectoryAccessLock;
@@ -383,10 +381,11 @@ class Base implements INode, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperty('*type', $inspector($this->context->getRunMode()))
-            ->setProperty('*context', $inspector($this->context));
+        yield 'properties' => [
+            '*type' => $this->context->getRunMode(),
+            '*context' => $this->context
+        ];
     }
 }

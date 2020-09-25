@@ -9,11 +9,9 @@ use df;
 use df\core;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class TypeRef implements ITypeRef, \Serializable, Inspectable
+class TypeRef implements ITypeRef, \Serializable, Dumpable
 {
     protected $_class;
     protected $_reflection;
@@ -147,8 +145,8 @@ class TypeRef implements ITypeRef, \Serializable, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText($this->getClassPath());
+        yield 'text' => $this->getClassPath();
     }
 }

@@ -8,10 +8,6 @@ namespace df\core\collection;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
-
 class InputTree extends Tree implements IInputTree
 {
     use TErrorContainer;
@@ -115,26 +111,22 @@ class InputTree extends Tree implements IInputTree
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         if ($this->_value !== null) {
-            $entity->setProperty('*value', $inspector($this->_value));
+            yield 'property:*value' => $this->_value;
         }
 
         if (!empty($this->_errors)) {
-            $entity->setProperty('*errors', $inspector($this->_errors));
+            yield 'property:*errors' => $this->_errors;
         }
-
-        $children = [];
 
         foreach ($this->_collection as $key => $child) {
             if ($child instanceof self && empty($child->_collection) && empty($child->_errors)) {
-                $children[$key] = $child->_value;
+                yield 'value:'.$key => $child->_value;
             } else {
-                $children[$key] = $child;
+                yield 'value:'.$key => $child;
             }
         }
-
-        $entity->setValues($inspector->inspectList($children));
     }
 }

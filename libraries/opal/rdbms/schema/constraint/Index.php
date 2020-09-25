@@ -8,11 +8,9 @@ namespace df\opal\rdbms\schema\constraint;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Index implements opal\rdbms\schema\IIndex, Inspectable
+class Index implements opal\rdbms\schema\IIndex, Dumpable
 {
     use opal\schema\TConstraint_Index;
     use opal\rdbms\schema\TSqlVariantAware;
@@ -165,7 +163,7 @@ class Index implements opal\rdbms\schema\IIndex, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         $output = $this->_name;
 
@@ -207,6 +205,6 @@ class Index implements opal\rdbms\schema\IIndex, Inspectable
             $output .= ' **VOID**';
         }
 
-        $entity->setDefinition($output);
+        yield 'definition' => $output;
     }
 }

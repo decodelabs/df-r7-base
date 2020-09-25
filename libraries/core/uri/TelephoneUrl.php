@@ -8,11 +8,11 @@ namespace df\core\uri;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class TelephoneUrl implements ITelephoneUrl, Inspectable
+class TelephoneUrl implements ITelephoneUrl, Dumpable
 {
     use core\TStringProvider;
 
@@ -103,8 +103,8 @@ class TelephoneUrl implements ITelephoneUrl, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText($this->toReadableString());
+        yield 'text' => $this->toReadableString();
     }
 }

@@ -8,11 +8,9 @@ namespace df\opal\rdbms\schema\constraint;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Trigger implements opal\rdbms\schema\ITrigger, Inspectable
+class Trigger implements opal\rdbms\schema\ITrigger, Dumpable
 {
     use opal\schema\TConstraint_Trigger;
     use opal\schema\TConstraint_CharacterSetAware;
@@ -44,13 +42,13 @@ class Trigger implements opal\rdbms\schema\ITrigger, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         $output = $this->_name;
         $output .= ' '.$this->getTimingName();
         $output .= ' '.$this->getEventName().' '.implode('; ', $this->_statements);
         $output .= ' ['.$this->_sqlVariant.']';
 
-        $entity->setDefinition($output);
+        yield 'definition' => $output;
     }
 }

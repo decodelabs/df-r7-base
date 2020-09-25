@@ -11,11 +11,9 @@ use df\aura;
 use df\arch;
 use df\flex;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Label extends Base implements ILabelWidget, Inspectable
+class Label extends Base implements ILabelWidget, Dumpable
 {
     use TWidget_BodyContentAware;
 
@@ -71,13 +69,13 @@ class Label extends Base implements ILabelWidget, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*for' => $inspector($this->_inputId),
-                '%tag' => $inspector($this->getTag())
-            ])
-            ->setValues($inspector->inspectList($this->_body->toArray()));
+        yield 'properties' => [
+            '*for' => $this->_inputId,
+            '%tag' => $this->getTag()
+        ];
+
+        yield 'values' => $this->_body->toArray();
     }
 }

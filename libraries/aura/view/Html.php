@@ -14,11 +14,9 @@ use df\flow;
 use DecodeLabs\Tagged\Html as Tagged;
 use DecodeLabs\Tagged\Builder\StyleBlock;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Html extends Base implements IHtmlView, Inspectable
+class Html extends Base implements IHtmlView, Dumpable
 {
     use TView_Response;
     use TView_Layout;
@@ -1029,66 +1027,62 @@ class Html extends Base implements IHtmlView, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $output = [
-            '*title' => $this->getFullTitle()
-        ];
+        yield 'property:*title' => $this->getFullTitle();
 
         if ($this->_baseHref) {
-            $output['*baseHref'] = $this->_baseHref;
+            yield 'property:*baseHref' => $this->_baseHref;
         }
 
         if ($this->_headers) {
-            $output['*headers'] = $this->_headers;
+            yield 'property:*headers' => $this->_headers;
         }
 
         if ($this->_cookies) {
-            $output['*cookies'] = $this->_cookies;
+            yield 'property:*cookies' => $this->_cookies;
         }
 
         if ($this->_useLayout) {
-            $output['*layout'] = $this->_layout;
+            yield 'property:*layout' => $this->_layout;
         } else {
-            $output['*layout'] = false;
+            yield 'property:*layout' => false;
         }
 
-        $output['*theme'] = $this->_theme;
+        yield 'property:*theme' => $this->_theme;
 
-        $output['*meta'] = $this->_meta;
-        $output['*data'] = $this->_data;
+        yield 'property:*meta' => $this->_meta;
+        yield 'property:*data' => $this->_data;
 
         if (!empty($this->_css)) {
-            $output['*css'] = $this->_css;
+            yield 'property:*css' => $this->_css;
         }
 
         if ($this->_styles) {
-            $output['*styles'] = $this->_styles;
+            yield 'property:*styles' => $this->_styles;
         }
 
         if (!empty($this->_js)) {
-            $output['*js'] = $this->_js;
+            yield 'property:*js' => $this->_js;
         }
 
         if ($this->_headScripts) {
-            $output['*headScripts'] = $this->_headScripts;
+            yield 'property:*headScripts' => $this->_headScripts;
         }
 
         if ($this->_footScripts) {
-            $output['*footScripts'] = $this->_footScripts;
+            yield 'property:*footScripts' => $this->_footScripts;
         }
 
         if ($this->_links) {
-            $output['*links'] = $this->_links;
+            yield 'property:*links' => $this->_links;
         }
 
-        $output['htmlTag'] = $this->htmlTag;
-        $output['bodyTag'] = $this->bodyTag;
-        $output['*renderBase'] = $this->_shouldRenderBase;
-        $output['content'] = $this->content;
-        $output['slots'] = $this->slots;
-        $output['*ajax'] = $this->_ajax;
-
-        $entity->setProperties($inspector->inspectList($output));
+        yield 'property:htmlTag' => $this->htmlTag;
+        yield 'property:bodyTag' => $this->bodyTag;
+        yield 'property:*renderBase' => $this->_shouldRenderBase;
+        yield 'property:content' => $this->content;
+        yield 'property:slots' => $this->slots;
+        yield 'property:*ajax' => $this->_ajax;
     }
 }

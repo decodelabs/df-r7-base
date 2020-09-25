@@ -10,10 +10,6 @@ use df\core;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
-
 class Overlay extends Container implements IWidgetShortcutProvider
 {
     const PRIMARY_TAG = 'div.overlay';
@@ -113,13 +109,13 @@ class Overlay extends Container implements IWidgetShortcutProvider
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*title' => $inspector($this->_titleBody),
-                '%tag' => $inspector($this->getTag())
-            ])
-            ->setValues($inspector->inspectList($this->_children->toArray()));
+        yield 'properties' => [
+            '*title' => $this->_titleBody,
+            '%tag' => $this->getTag()
+        ];
+
+        yield 'values' => $this->_children->toArray();
     }
 }

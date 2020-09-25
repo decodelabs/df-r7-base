@@ -12,11 +12,9 @@ use df\mesh;
 use df\flex;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class SourceManager implements ISourceManager, Inspectable
+class SourceManager implements ISourceManager, Dumpable
 {
     protected $_parent;
     protected $_aliases = [];
@@ -584,18 +582,14 @@ class SourceManager implements ISourceManager, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         if ($this->_parent) {
-            $entity->setProperty('*parent', $inspector($this->_parent));
+            yield 'property:*parent' => $this->_parent;
         }
-
-        $values = [];
 
         foreach ($this->_sources as $alias => $source) {
-            $values[$alias] = $inspector($source->getAdapter());
+            yield 'value:'.$alias => $source->getAdapter();
         }
-
-        $entity->setValues($values);
     }
 }

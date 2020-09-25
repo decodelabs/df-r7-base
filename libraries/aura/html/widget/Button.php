@@ -10,11 +10,9 @@ use df\core;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Button extends Base implements IButtonWidget, IIconProviderWidget, Inspectable
+class Button extends Base implements IButtonWidget, IIconProviderWidget, Dumpable
 {
     use TWidget_FormData;
     use TWidget_Input;
@@ -78,16 +76,16 @@ class Button extends Base implements IButtonWidget, IIconProviderWidget, Inspect
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*name' => $inspector($this->_name),
-                '*value' => $inspector($this->_value),
-                '*icon' => $inspector($this->_icon),
-                '%tag' => $inspector($this->getTag()),
-                '*disposition' => $inspector($this->getDisposition())
-            ])
-            ->setSingleValue($inspector($this->_body));
+        yield 'properties' => [
+            '*name' => $this->_name,
+            '*value' => $this->_value,
+            '*icon' => $this->_icon,
+            '%tag' => $this->getTag(),
+            '*disposition' => $this->getDisposition()
+        ];
+
+        yield 'value' => $this->_body;
     }
 }

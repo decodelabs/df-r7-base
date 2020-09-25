@@ -3,12 +3,10 @@
     "description": "DF r7 base",
     "type": "library",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Tom Wright",
-            "email": "tom@inflatablecookie.com"
-        }
-    ],
+    "authors": [{
+        "name": "Tom Wright",
+        "email": "tom@inflatablecookie.com"
+    }],
     "require": {
         "php": "^7.2",
         "symfony/polyfill-mbstring": "~1.7",

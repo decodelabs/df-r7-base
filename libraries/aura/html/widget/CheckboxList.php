@@ -10,11 +10,9 @@ use df\core;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class CheckboxList extends Base implements Inspectable
+class CheckboxList extends Base implements Dumpable
 {
     const PRIMARY_TAG = 'div.list.check.checkbox';
 
@@ -110,13 +108,13 @@ class CheckboxList extends Base implements Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*values' => $inspector($this->_values),
-                '%tag' => $inspector($this->getTag())
-            ])
-            ->setValues($inspector->inspectList($this->_options));
+        yield 'properties' => [
+            '*values' => $this->_values,
+            '%tag' => $this->getTag()
+        ];
+
+        yield 'values' => $this->_options;
     }
 }

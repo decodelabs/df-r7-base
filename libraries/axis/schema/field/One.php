@@ -10,10 +10,6 @@ use df\core;
 use df\axis;
 use df\opal;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
-
 /*
  * This type does not care about inverse at all.
  * Just return primary primitive
@@ -199,13 +195,11 @@ class One extends Base implements axis\schema\IOneField
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        parent::glitchInspect($entity, $inspector);
-
-        $def = $entity->getDefinition();
+        $def = $this->getFieldSchemaString();
         $def .= '('.$this->_targetUnitId.')';
 
-        $entity->setDefinition($def);
+        yield 'definition' => $def;
     }
 }

@@ -16,9 +16,7 @@ use DecodeLabs\Tagged\Html;
 use DecodeLabs\Tagged\Html\Tag;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
 interface IRenderable
 {
@@ -374,7 +372,7 @@ trait TElementContent
 }
 
 
-class ElementContent implements IElementContentCollection, Inspectable
+class ElementContent implements IElementContentCollection, Dumpable
 {
     use TElementContent;
 
@@ -396,7 +394,7 @@ class ElementContent implements IElementContentCollection, Inspectable
 }
 
 
-class ElementString implements IElementRepresentation, Inspectable
+class ElementString implements IElementRepresentation, Dumpable
 {
     protected $_content;
 
@@ -440,9 +438,9 @@ class ElementString implements IElementRepresentation, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText((string)$this->_content);
+        yield 'text' => (string)$this->_content;
     }
 }
 

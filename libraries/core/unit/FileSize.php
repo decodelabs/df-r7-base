@@ -9,11 +9,11 @@ use df;
 use df\core;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class FileSize implements IFileSize, Inspectable
+class FileSize implements IFileSize, Dumpable
 {
     use TSingleValueUnit;
 
@@ -230,8 +230,8 @@ class FileSize implements IFileSize, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText($this->toString());
+        yield 'text' => $this->toString();
     }
 }

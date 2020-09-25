@@ -10,11 +10,9 @@ use df\core;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class BreadcrumbList extends Base implements IListWidget, Inspectable
+class BreadcrumbList extends Base implements IListWidget, Dumpable
 {
     use TWidget_NavigationEntryController;
 
@@ -117,12 +115,9 @@ class BreadcrumbList extends Base implements IListWidget, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '%tag' => $this->getTag()
-            ])
-            ->setValues($inspector->inspectList($this->_entries));
+        yield 'property:%tag' => $this->getTag();
+        yield 'values' => $this->_entries->toArray();
     }
 }

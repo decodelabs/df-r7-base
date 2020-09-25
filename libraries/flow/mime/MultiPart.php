@@ -10,11 +10,9 @@ use df\core;
 use df\flow;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class MultiPart implements IMultiPart, Inspectable
+class MultiPart implements IMultiPart, Dumpable
 {
     use core\TStringProvider;
     use core\collection\THeaderMapProvider;
@@ -304,11 +302,10 @@ class MultiPart implements IMultiPart, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setSectionVisible('meta', true)
-            ->setMetaList($inspector->inspectList($this->_headers))
-            ->setValues($inspector->inspectList($this->_parts));
+        yield 'metaList' => $this->_headers;
+        yield 'section:meta' => true;
+        yield 'values' => $this->_parts;
     }
 }

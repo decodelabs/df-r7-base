@@ -13,11 +13,9 @@ use df\mesh;
 use df\opal;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-abstract class Model implements IModel, Inspectable
+abstract class Model implements IModel, Dumpable
 {
     const REGISTRY_PREFIX = 'model://';
 
@@ -233,10 +231,9 @@ abstract class Model implements IModel, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setDefinition($inspector($this->_modelName))
-            ->setValues($inspector->inspectList($this->_units));
+        yield 'definition' => $this->_modelName;
+        yield 'values' => $this->_units;
     }
 }

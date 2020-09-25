@@ -10,11 +10,9 @@ use df\core;
 use df\aura;
 use df\flex;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Element extends Tag implements IElement, Inspectable
+class Element extends Tag implements IElement, Dumpable
 {
     use TElementContent;
 
@@ -47,8 +45,8 @@ class Element extends Tag implements IElement, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setDefinition($this->toString());
+        yield 'definition' => $this->toString();
     }
 }

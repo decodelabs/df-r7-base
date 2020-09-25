@@ -11,11 +11,9 @@ use df\aura;
 use df\user;
 use df\arch;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Address extends Base implements Inspectable
+class Address extends Base implements Dumpable
 {
     const PRIMARY_TAG = 'div.address';
 
@@ -181,13 +179,13 @@ class Address extends Base implements Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*mode' => $inspector($this->_mode),
-                '%tag' => $inspector($this->getTag())
-            ])
-            ->setSingleValue($inspector($this->_address));
+        yield 'properties' => [
+            '*mode' => $this->_mode,
+            '%tag' => $this->getTag()
+        ];
+
+        yield 'value' => $this->_address;
     }
 }

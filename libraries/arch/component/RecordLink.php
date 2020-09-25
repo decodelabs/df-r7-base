@@ -12,11 +12,9 @@ use df\aura;
 use df\user;
 use df\opal;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy, Inspectable
+abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy, Dumpable
 {
     use user\TAccessControlled;
     use core\constraint\TDisableable;
@@ -366,8 +364,8 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText($this->render());
+        yield 'text' => $this->render();
     }
 }

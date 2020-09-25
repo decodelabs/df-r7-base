@@ -8,11 +8,9 @@ namespace df\core\collection;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Queue implements IIndexedQueue, \IteratorAggregate, Inspectable
+class Queue implements IIndexedQueue, \IteratorAggregate, Dumpable
 {
     use TArrayCollection_Queue;
     use TArrayCollection_Constructor;

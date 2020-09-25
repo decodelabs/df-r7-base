@@ -10,11 +10,9 @@ use df\core;
 use df\flex;
 use df\spur;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Tag implements ITag, Inspectable
+class Tag implements ITag, Dumpable
 {
     protected $_name;
     protected $_version;
@@ -70,11 +68,11 @@ class Tag implements ITag, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setProperties([
-            '*name' => $inspector($this->_name),
-            '*commit' => $inspector($this->_commitId)
-        ]);
+        yield 'properties' => [
+            '*name' => $this->_name,
+            '*commit' => $this->_commitId
+        ];
     }
 }

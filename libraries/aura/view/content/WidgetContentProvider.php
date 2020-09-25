@@ -10,14 +10,14 @@ use df\core;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
 class WidgetContentProvider extends aura\html\Element implements
     aura\view\ICollapsibleContentProvider,
     aura\html\widget\IWidgetShortcutProvider,
-    Inspectable
+    Dumpable
 {
     use core\TContextAware;
     use aura\view\TView_DeferredRenderable;
@@ -99,9 +99,8 @@ class WidgetContentProvider extends aura\html\Element implements
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setValues($inspector->inspectList($this->_collection));
+        yield 'values' => $this->_collection;
     }
 }

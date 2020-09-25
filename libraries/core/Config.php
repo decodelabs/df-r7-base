@@ -11,11 +11,11 @@ use df\core;
 use DecodeLabs\Atlas;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-abstract class Config implements IConfig, Inspectable
+abstract class Config implements IConfig, Dumpable
 {
     use core\TValueMap;
 
@@ -320,10 +320,9 @@ abstract class Config implements IConfig, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperty('*id', $this->_id)
-            ->setValues($inspector->inspectList($this->getConfigValues()));
+        yield 'property:*id' => $this->_id;
+        yield 'values' => $this->getConfigValues();
     }
 }

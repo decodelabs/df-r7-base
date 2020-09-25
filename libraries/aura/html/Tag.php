@@ -14,11 +14,9 @@ use DecodeLabs\Tagged\Html;
 use DecodeLabs\Tagged\Builder\StyleList;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Tag implements ITag, Inspectable
+class Tag implements ITag, Dumpable
 {
     use core\lang\TChainable;
     use core\collection\TArrayAccessedAttributeContainer;
@@ -594,8 +592,8 @@ class Tag implements ITag, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setDefinition($this->render());
+        yield 'definition' => (string)$this->render();
     }
 }

@@ -10,6 +10,8 @@ use df\core;
 use df\arch;
 use df\flex;
 
+use DecodeLabs\Glitch;
+
 class Directory extends Base implements arch\navigation\menu\IListableSource
 {
     public function loadMenu(core\uri\IUrl $id)

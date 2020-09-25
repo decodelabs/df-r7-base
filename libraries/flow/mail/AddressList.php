@@ -9,11 +9,11 @@ use df;
 use df\core;
 use df\flow;
 
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class AddressList implements IAddressList, Inspectable
+class AddressList implements IAddressList, Dumpable
 {
     use core\TValueMap;
     use core\collection\TExtractList;
@@ -206,7 +206,7 @@ class AddressList implements IAddressList, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         $values = [];
 
@@ -214,7 +214,7 @@ class AddressList implements IAddressList, Inspectable
             $values[] = (string)$address;
         }
 
-        $entity->setValues($inspector->inspectList($values))
-            ->setShowKeys(false);
+        yield 'values' => $values;
+        yield 'showKeys' => false;
     }
 }

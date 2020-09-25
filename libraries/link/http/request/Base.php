@@ -15,11 +15,9 @@ use DecodeLabs\Atlas\File;
 use DecodeLabs\Atlas\Channel;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Base implements link\http\IRequest, Inspectable
+class Base implements link\http\IRequest, Dumpable
 {
     use core\TStringProvider;
     use core\lang\TChainable;
@@ -698,31 +696,31 @@ class Base implements link\http\IRequest, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setProperties([
-            'method' => $inspector($this->method),
-            'url' => $inspector($this->url)
-        ]);
+        yield 'properties' => [
+            'method' => $this->method,
+            'url' => $this->url
+        ];
 
         if ($ip = $this->getIp()) {
-            $entity->setProperty('ip', $inspector($ip));
+            yield 'property:ip' => $ip;
         }
 
-        $entity->setProperty('headers', $inspector($this->getHeaders()));
+        yield 'property:headers' => $this->getHeaders();
 
         if ($this->method === 'post') {
-            $entity->setProperty('post', $inspector($this->getPostData()));
+            yield 'property:post' => $this->getPostData();
         }
 
         if ($this->_bodyData !== null) {
-            $entity->setProperty('body', $inspector($this->_bodyData));
+            yield 'property:body' => $this->_bodyData;
         }
 
         if (!$this->cookies->isEmpty()) {
-            $entity->setProperty('cookies', $inspector($this->cookies));
+            yield 'property:cookies' => $this->cookies;
         }
 
-        $entity->setProperty('options', $inspector($this->options));
+        yield 'property:options' => $this->options;
     }
 }

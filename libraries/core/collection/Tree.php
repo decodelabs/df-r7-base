@@ -9,11 +9,9 @@ use df;
 use df\core;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Tree implements ITree, ISeekable, ISortable, \Serializable, Inspectable
+class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
 {
     protected const PROPAGATE_TYPE = true;
 
@@ -594,22 +592,18 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         if ($this->_value !== null) {
-            $entity->setProperty('*value', $inspector($this->_value));
+            yield 'property:*value' => $this->_value;
         }
-
-        $children = [];
 
         foreach ($this->_collection as $key => $child) {
             if ($child instanceof self && empty($child->_collection)) {
-                $children[$key] = $child->_value;
+                yield 'value:'.$key => $child->_value;
             } else {
-                $children[$key] = $child;
+                yield 'value:'.$key => $child;
             }
         }
-
-        $entity->setValues($inspector->inspectList($children));
     }
 }

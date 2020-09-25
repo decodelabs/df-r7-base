@@ -12,9 +12,6 @@ use df\opal;
 use df\mesh;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
 
 // Constants
 interface IState
@@ -246,10 +243,10 @@ trait TSessionBackedHelper
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         $this->_ensureSessionData();
-        $entity->setValues($inspector->inspectList($this->_sessionData));
+        yield 'values' => $this->_sessionData;
     }
 }
 

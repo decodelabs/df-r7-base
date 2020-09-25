@@ -8,11 +8,9 @@ namespace df\core\uri;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Url implements IGenericUrl, Inspectable
+class Url implements IGenericUrl, Dumpable
 {
     use core\TStringProvider;
     use TUrl_TransientScheme;
@@ -162,10 +160,10 @@ class Url implements IGenericUrl, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText($this->toString());
-        $inspector->inspectClassMembers($this, new \ReflectionClass($this), $entity);
-        $entity->setSectionVisible('properties', false);
+        yield 'text' => $this->toString();
+        yield 'classMembers' => [];
+        yield 'section:properties' => false;
     }
 }

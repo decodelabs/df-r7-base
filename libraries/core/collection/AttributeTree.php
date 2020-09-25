@@ -8,10 +8,6 @@ namespace df\core\collection;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
-
 class AttributeTree extends Tree implements IAttributeContainer
 {
     use core\collection\TAttributeContainer;
@@ -65,26 +61,22 @@ class AttributeTree extends Tree implements IAttributeContainer
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         if ($this->_value !== null) {
-            $entity->setProperty('*value', $inspector($this->_value));
+            yield 'property:*value' => $this->_value;
         }
 
         if (!empty($this->_attributes)) {
-            $entity->setProperty('*attributes', $inspector($this->_attributes));
+            yield 'property:*attributes' => $this->_attributes;
         }
-
-        $children = [];
 
         foreach ($this->_collection as $key => $child) {
             if ($child instanceof self && empty($child->_collection) && empty($child->_attributes)) {
-                $children[$key] = $child->_value;
+                yield 'value:'.$key => $child->_value;
             } else {
-                $children[$key] = $child;
+                yield 'value:'.$key => $child;
             }
         }
-
-        $entity->setValues($inspector->inspectList($children));
     }
 }

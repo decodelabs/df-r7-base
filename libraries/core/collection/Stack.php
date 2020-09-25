@@ -8,11 +8,9 @@ namespace df\core\collection;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Stack implements IStack, \IteratorAggregate, Inspectable
+class Stack implements IStack, \IteratorAggregate, Dumpable
 {
     use TArrayCollection_Stack;
     use TArrayCollection_Constructor;

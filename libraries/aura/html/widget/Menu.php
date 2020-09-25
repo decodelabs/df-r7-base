@@ -10,11 +10,9 @@ use df\core;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Menu extends Base implements Inspectable
+class Menu extends Base implements Dumpable
 {
     use TWidget_NavigationEntryController;
 
@@ -79,12 +77,9 @@ class Menu extends Base implements Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '%tag' => $inspector($this->getTag())
-            ])
-            ->setValues($inspector->inspectList($this->_entries->toArray()));
+        yield 'property:%tag' => $this->getTag();
+        yield 'values' => $this->_entries->toArray();
     }
 }

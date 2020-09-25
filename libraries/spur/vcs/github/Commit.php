@@ -9,10 +9,6 @@ use df;
 use df\core;
 use df\spur;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
-
 class Commit extends CommitReference implements ICommit
 {
     protected $_message;
@@ -64,16 +60,15 @@ class Commit extends CommitReference implements ICommit
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*sha' => $inspector($this->_id),
-                '*tree' => $inspector($this->_tree),
-                '*parents' => $inspector($this->_parents),
-                '*author' => $inspector($this->_author),
-                '*committer' => $inspector($this->_committer),
-                '*urls' => $inspector($this->_urls)
-            ]);
+        yield 'properties' => [
+            '*sha' => $this->_id,
+            '*tree' => $this->_tree,
+            '*parents' => $this->_parents,
+            '*author' => $this->_author,
+            '*committer' => $this->_committer,
+            '*urls' => $this->_urls
+        ];
     }
 }

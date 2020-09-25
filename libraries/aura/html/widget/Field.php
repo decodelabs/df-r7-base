@@ -10,10 +10,6 @@ use df\core;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
-
 class Field extends Container implements IFormOrientedWidget
 {
     use core\constraint\TRequirable;
@@ -218,14 +214,14 @@ class Field extends Container implements IFormOrientedWidget
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*label' => $inspector($this->_label),
-                '*description' => $inspector($this->_description),
-                '%tag' => $inspector($this->getTag())
-            ])
-            ->setValues($inspector->inspectList($this->_children->toArray()));
+        yield 'properties' => [
+            '*label' => $this->_label,
+            '*description' => $this->_description,
+            '%tag' => $this->getTag()
+        ];
+
+        yield 'values' => $this->_children->toArray();
     }
 }

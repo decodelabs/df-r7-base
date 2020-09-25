@@ -12,11 +12,11 @@ use df\aura;
 
 use DecodeLabs\Tagged\Html;
 
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-abstract class HeaderBar extends Base implements Inspectable
+abstract class HeaderBar extends Base implements Dumpable
 {
     protected $_record;
     protected $_title;
@@ -189,8 +189,8 @@ abstract class HeaderBar extends Base implements Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText($this->render());
+        yield 'text' => $this->render();
     }
 }

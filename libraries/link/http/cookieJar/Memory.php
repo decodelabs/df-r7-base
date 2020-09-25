@@ -10,11 +10,9 @@ use df\core;
 use df\link;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Memory implements link\http\ICookieJar, Inspectable
+class Memory implements link\http\ICookieJar, Dumpable
 {
     protected $_cookies = [];
 
@@ -153,15 +151,10 @@ class Memory implements link\http\ICookieJar, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $output = [];
-
         foreach ($this->_cookies as $cookie) {
-            $output[$cookie->getName()] = $cookie->toString();
+            yield 'value:'.$cookie->getName() => $cookie->toString();
         }
-
-        $entity
-            ->setValues($inspector->inspectList($output));
     }
 }

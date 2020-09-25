@@ -10,11 +10,9 @@ use df\core;
 use df\aura;
 use df\flex;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Field implements aura\html\widget\IField, Inspectable
+class Field implements aura\html\widget\IField, Dumpable
 {
     public $key;
     public $name;
@@ -99,16 +97,16 @@ class Field implements aura\html\widget\IField, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setProperty('key', $inspector($this->key));
+        yield 'property:key' => $this->key;
 
         if ($this->name != $this->key) {
-            $entity->setProperty('name', $inspector($this->name));
+            yield 'property:name' => $this->name;
         }
 
         if (!$this->renderer instanceof \Closure) {
-            $entity->setProperty('renderer', $inspector($this->renderer));
+            yield 'property:renderer' => $this->renderer;
         }
     }
 }

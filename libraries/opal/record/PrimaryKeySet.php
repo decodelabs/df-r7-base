@@ -10,11 +10,9 @@ use df\core;
 use df\opal;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class PrimaryKeySet implements IPrimaryKeySet, Inspectable
+class PrimaryKeySet implements IPrimaryKeySet, Dumpable
 {
     const COMBINE_SEPARATOR = '+';
 
@@ -368,8 +366,8 @@ class PrimaryKeySet implements IPrimaryKeySet, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setValues($inspector->inspectList($this->_keys));
+        yield 'values' => $this->_keys;
     }
 }

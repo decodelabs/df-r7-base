@@ -12,9 +12,6 @@ use df\link;
 use df\flex;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
 
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Psr7\Request as HttpRequest;
@@ -91,11 +88,11 @@ class DataObject extends core\collection\Tree implements IDataObject
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        parent::glitchInspect($entity, $inspector);
+        yield from parent::glitchDump();
 
-        $entity->setProperty('*type', $this->_type);
+        yield 'property:*type' => $this->_type;
     }
 }
 

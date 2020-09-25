@@ -11,11 +11,9 @@ use df\mint;
 use df\user;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class CreditCard implements ICreditCard, Inspectable
+class CreditCard implements ICreditCard, Dumpable
 {
     const BRANDS = [
         'visa' => '/^4\d{12}(\d{3})?$/',
@@ -418,42 +416,42 @@ class CreditCard implements ICreditCard, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setProperty('*name', $inspector($this->_name));
+        yield 'property:*name' => $this->_name;
 
         if ($this->_last4) {
-            $entity->setProperty('*number', $inspector(str_pad($this->_last4, 16, 'x', STR_PAD_LEFT)));
+            yield 'property:*number' => str_pad($this->_last4, 16, 'x', STR_PAD_LEFT);
         } else {
-            $entity->setProperty('*number', $inspector($this->_number));
+            yield 'property:*number' => $this->_number;
         }
 
         if ($this->_number) {
-            $entity->setProperty('*brand', $inspector($this->getBrand()));
+            yield 'property:*brand' => $this->getBrand();
         }
 
         if ($this->_startMonth && $this->_startYear) {
-            $entity->setProperty('*start', $inspector($this->getStartString()));
+            yield 'property:*start' => $this->getStartString();
         } else {
-            $entity->setProperty('*start', $inspector(null));
+            yield 'property:*start' => null;
         }
 
         if ($this->_expiryMonth && $this->_expiryYear) {
-            $entity->setProperty('*expiry', $inspector($this->getExpiryString()));
+            yield 'property:*expiry' => $this->getExpiryString();
         } else {
-            $entity->setProperty('*expiry', $inspector(null));
+            yield 'property:*expiry' => null;
         }
 
-        $entity->setProperty('*cvc', $inspector($this->_cvc));
+        yield 'property:*cvc' => $this->_cvc;
 
         if ($this->_issueNumber) {
-            $entity->setProperty('*issueNumber', $inspector($this->_issueNumber));
+            yield 'property:*issueNumber' => $this->_issueNumber;
         }
 
         if ($this->_billingAddress) {
-            $entity->setProperty('*billingAddress', $inspector($this->_billingAddress));
+            yield 'property:*billingAddress' => $this->_billingAddress;
         }
 
-        $entity->setProperty('*valid', $inspector($this->isValid()));
+        yield 'property:*valid' => $this->isValid();
     }
 }

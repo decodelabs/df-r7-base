@@ -10,11 +10,9 @@ use df\core;
 use df\axis;
 use df\opal;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class UnitInspector implements IUnitInspector, Inspectable
+class UnitInspector implements IUnitInspector, Dumpable
 {
     protected $_unit;
 
@@ -205,13 +203,12 @@ class UnitInspector implements IUnitInspector, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*id' => $inspector($this->getId()),
-                '*canonicalId' => $inspector($this->getCanonicalId()),
-                '*type' => $inspector($this->getType())
-            ]);
+        yield 'properties' => [
+            '*id' => $this->getId(),
+            '*canonicalId' => $this->getCanonicalId(),
+            '*type' => $this->getType()
+        ];
     }
 }

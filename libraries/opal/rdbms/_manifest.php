@@ -10,10 +10,6 @@ use df\core;
 use df\opal;
 use df\mesh;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
-
 // Interfaces
 interface IDsn extends core\IStringProvider
 {

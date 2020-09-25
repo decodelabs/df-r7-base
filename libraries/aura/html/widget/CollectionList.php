@@ -12,11 +12,9 @@ use df\arch;
 use df\opal;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class CollectionList extends Base implements IDataDrivenListWidget, IMappedListWidget, Inspectable
+class CollectionList extends Base implements IDataDrivenListWidget, IMappedListWidget, Dumpable
 {
     use TWidget_DataDrivenList;
     use TWidget_MappedList;
@@ -390,14 +388,14 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '%data' => $inspector(count($this->_data).' rows'),
-                '*errorMessage' => $inspector($this->_errorMessage),
-                '%tag' => $inspector($this->getTag())
-            ])
-            ->setValues($inspector->inspectList($this->_fields));
+        yield 'properties' => [
+            '%data' => count($this->_data).' rows',
+            '*errorMessage' => $this->_errorMessage,
+            '%tag' => $this->getTag()
+        ];
+
+        yield '^values' => $this->_fields;
     }
 }

@@ -9,11 +9,9 @@ use df;
 use df\core;
 use df\flow;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class MailtoUrl implements IMailtoUrl, Inspectable
+class MailtoUrl implements IMailtoUrl, Dumpable
 {
     use core\TStringProvider;
     use TUrl_UsernameContainer;
@@ -174,8 +172,8 @@ class MailtoUrl implements IMailtoUrl, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText($this->toString());
+        yield 'text' => $this->toString();
     }
 }

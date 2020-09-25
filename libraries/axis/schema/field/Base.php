@@ -11,11 +11,9 @@ use df\axis;
 use df\opal;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-abstract class Base implements axis\schema\IField, \Serializable, Inspectable
+abstract class Base implements axis\schema\IField, \Serializable, Dumpable
 {
     use opal\schema\TField;
 
@@ -297,8 +295,8 @@ abstract class Base implements axis\schema\IField, \Serializable, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setDefinition($this->getFieldSchemaString());
+        yield 'definition' => $this->getFieldSchemaString();
     }
 }

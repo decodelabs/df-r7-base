@@ -9,11 +9,11 @@ use df;
 use df\core;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class Frequency implements IFrequency, Inspectable
+class Frequency implements IFrequency, Dumpable
 {
     use TSingleValueUnit;
 
@@ -165,8 +165,8 @@ class Frequency implements IFrequency, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText($this->toString());
+        yield 'text' => $this->toString();
     }
 }

@@ -13,11 +13,9 @@ use df\link;
 use df\aura;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Context implements IContext, \Serializable, Inspectable
+class Context implements IContext, \Serializable, Dumpable
 {
     use core\TContext;
     use TResponseForcer;
@@ -272,10 +270,11 @@ class Context implements IContext, \Serializable, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperty('request', $inspector($this->request))
-            ->setProperty('location', $inspector($this->location));
+        yield 'properties' => [
+            'request' => $this->request,
+            'location' => $this->location
+        ];
     }
 }

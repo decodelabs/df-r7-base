@@ -9,11 +9,11 @@ use df;
 use df\core;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class Callback implements ICallback, Inspectable
+class Callback implements ICallback, Dumpable
 {
     protected $_callback;
     protected $_reflectionInstance;
@@ -174,15 +174,13 @@ class Callback implements ICallback, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         if (is_array($this->_callback) && is_object($this->_callback[0])) {
-            $entity->setDefinition(get_class($this->_callback[0]).'->'.$this->_callback[1].'()');
+            yield 'definition' => get_class($this->_callback[0]).'->'.$this->_callback[1].'()';
             return;
         }
 
-        if ($inner = $inspector($this->_callback)) {
-            $entity->setDefinition($inner->getDefinition());
-        }
+        yield 'value' => $this->_callback;
     }
 }

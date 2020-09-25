@@ -9,11 +9,9 @@ use df;
 use df\core;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Path implements IPath, \IteratorAggregate, \Serializable, Inspectable
+class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
 {
     use core\TStringProvider;
     use core\collection\TArrayCollection;
@@ -528,10 +526,10 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText($this->toString());
-        $inspector->inspectClassMembers($this, new \ReflectionClass($this), $entity);
-        $entity->setSectionVisible('properties', false);
+        yield 'text' => $this->toString();
+        yield 'classMembers' => [];
+        yield 'section:properties' => false;
     }
 }

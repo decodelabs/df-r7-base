@@ -9,11 +9,9 @@ use df;
 use df\core;
 use df\spur;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Status implements IStatus, Inspectable
+class Status implements IStatus, Dumpable
 {
     protected $_tracked = [];
     protected $_untracked = [];
@@ -145,8 +143,8 @@ class Status implements IStatus, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setValues($inspector->inspectList(array_merge($this->_tracked, $this->_untracked)));
+        yield 'values' => array_merge($this->_tracked, $this->_untracked);
     }
 }

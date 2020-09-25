@@ -10,11 +10,9 @@ use df\core;
 use df\aura;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class DisplaySize implements IDisplaySize, Inspectable
+class DisplaySize implements IDisplaySize, Dumpable
 {
     use TSingleValueUnit;
 
@@ -379,8 +377,8 @@ class DisplaySize implements IDisplaySize, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText($this->toString());
+        yield 'text' => $this->toString();
     }
 }

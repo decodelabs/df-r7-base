@@ -9,11 +9,9 @@ use df;
 use df\core;
 use df\spur;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Branch implements IBranch, Inspectable
+class Branch implements IBranch, Dumpable
 {
     use TApiObject;
 
@@ -45,13 +43,12 @@ class Branch implements IBranch, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*name' => $inspector($this->_id),
-                '*commit' => $inspector($this->_commit),
-                '*urls' => $inspector($this->_urls)
-            ]);
+        yield 'properties' => [
+            '*name' => $this->_id,
+            '*commit' => $this->_commit,
+            '*urls' => $this->_urls
+        ];
     }
 }

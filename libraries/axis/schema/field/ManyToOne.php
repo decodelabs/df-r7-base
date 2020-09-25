@@ -10,10 +10,6 @@ use df\core;
 use df\axis;
 use df\opal;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
-
 /*
  * This type requires an inverse field and must lookup and match target table.
  * Key resides here - inverse primary primitive
@@ -69,15 +65,17 @@ class ManyToOne extends One implements axis\schema\IManyToOneField, opal\schema\
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        parent::glitchInspect($entity, $inspector);
-        $def = $entity->getDefinition();
+        $def = $this->getFieldSchemaString();
+        $def .= '('.$this->_targetUnitId;
 
         if ($this->_targetField) {
-            $def = substr((string)$def, 0, -1).' -> '.$this->_targetField.')';
+            $def .= ' -> '.$this->_targetField;
         }
 
-        $entity->setDefinition($def);
+        $def .= ')';
+
+        yield 'definition' => $def;
     }
 }

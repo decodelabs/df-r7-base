@@ -9,11 +9,9 @@ use df;
 use df\core;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-abstract class Enum implements IStaticEnum, Inspectable
+abstract class Enum implements IStaticEnum, Dumpable
 {
     use core\TStringProvider;
     use core\TStringValueProvider;
@@ -221,8 +219,8 @@ abstract class Enum implements IStaticEnum, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setDefinition(self::$_options[get_class($this)][$this->_index].' ('.$this->_index.')');
+        yield 'definition' => self::$_options[get_class($this)][$this->_index].' ('.$this->_index.')';
     }
 }

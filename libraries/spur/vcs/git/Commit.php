@@ -10,11 +10,11 @@ use df\core;
 use df\spur;
 
 use DecodeLabs\Glitch\Glitch;
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class Commit implements ICommit, Inspectable
+class Commit implements ICommit, Dumpable
 {
     protected $_id;
     protected $_treeId;
@@ -241,23 +241,23 @@ class Commit implements ICommit, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         if (!$this->_isFetched) {
-            $entity->setDefinition($this->_id);
+            yield 'definition' => $this->_id;
             return;
         }
 
-        $entity
-            ->setText($this->_message)
-            ->setDefinition($this->_id)
-            ->setProperties([
-                '*tree' => $inspector($this->_treeId),
-                '*parents' => $inspector($this->_parentIds),
-                '*author' => $inspector($this->_author),
-                '*created' => $inspector($this->getCreationDate()),
-                '*committer' => $inspector($this->_committer),
-                '*committed' => $inspector($this->getCommitDate())
-            ]);
+        yield 'text' => $this->_message;
+        yield 'definition' => $this->_id;
+
+        yield 'properties' => [
+            '*tree' => $this->_treeId,
+            '*parents' => $this->_parentIds,
+            '*author' => $this->_author,
+            '*created' => $this->getCreationDate(),
+            '*committer' => $this->_committer,
+            '*committed' => $this->getCommitDate()
+        ];
     }
 }

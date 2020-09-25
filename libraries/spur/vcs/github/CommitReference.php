@@ -9,11 +9,9 @@ use df;
 use df\core;
 use df\spur;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class CommitReference implements ICommitReference, Inspectable
+class CommitReference implements ICommitReference, Dumpable
 {
     use TApiObject;
 
@@ -38,12 +36,9 @@ class CommitReference implements ICommitReference, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*sha' => $inspector($this->_id)
-            ])
-            ->setValues($inspector->inspectList($this->_urls));
+        yield 'property:*sha' => $this->_id;
+        yield 'values' => $this->_urls;
     }
 }

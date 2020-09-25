@@ -10,11 +10,11 @@ use df\core;
 use df\user;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class Date implements IDate, Inspectable
+class Date implements IDate, Dumpable
 {
     const MONTHS = [
         'jan' => 1, 'january' => 1,
@@ -796,12 +796,12 @@ class Date implements IDate, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         if ($this->_timeEnabled) {
-            $entity->setDefinition($this->format('Y-m-d H:i:s T'));
+            yield 'definition' => $this->format('Y-m-d H:i:s T');
         } else {
-            $entity->setDefinition($this->format('Y-m-d'));
+            yield 'definition' => $this->format('Y-m-d');
         }
     }
 }

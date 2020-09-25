@@ -10,11 +10,9 @@ use df\core;
 use df\mesh;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Manager implements IManager, Inspectable
+class Manager implements IManager, Dumpable
 {
     use core\TManager;
     use mesh\event\TEmitter;
@@ -145,11 +143,8 @@ class Manager implements IManager, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '%handlers' => $inspector(implode(', ', array_keys($this->_handlers)))
-            ]);
+        yield 'property:%handlers' => implode(', ', array_keys($this->_handlers));
     }
 }

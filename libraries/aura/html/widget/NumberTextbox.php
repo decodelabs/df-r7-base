@@ -10,11 +10,9 @@ use df\core;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class NumberTextbox extends Base implements IRangeEntryWidget, Inspectable
+class NumberTextbox extends Base implements IRangeEntryWidget, Dumpable
 {
     use TWidget_FormData;
     use TWidget_Input;
@@ -61,16 +59,15 @@ class NumberTextbox extends Base implements IRangeEntryWidget, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*name' => $inspector($this->_name),
-                '*value' => $inspector($this->_value),
-                '*min' => $inspector($this->_min),
-                '*max' => $inspector($this->_max),
-                '*step' => $inspector($this->_step),
-                '%tag' => $inspector($this->getTag())
-            ]);
+        yield 'properties' => [
+            '*name' => $this->_name,
+            '*value' => $this->_value,
+            '*min' => $this->_min,
+            '*max' => $this->_max,
+            '*step' => $this->_step,
+            '%tag' => $this->getTag()
+        ];
     }
 }

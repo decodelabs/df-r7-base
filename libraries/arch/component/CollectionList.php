@@ -11,11 +11,9 @@ use df\arch;
 use df\aura;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Inspectable
+class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dumpable
 {
     const DEFAULT_ERROR_MESSAGE = null;
 
@@ -262,8 +260,8 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Insp
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText($this->render());
+        yield 'text' => $this->render();
     }
 }

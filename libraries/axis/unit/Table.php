@@ -12,7 +12,7 @@ use df\opal;
 use df\mesh;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
@@ -22,7 +22,7 @@ abstract class Table implements
     opal\query\IEntryPoint,
     opal\query\IIntegralAdapter,
     opal\query\IPaginatingAdapter,
-    Inspectable
+    Dumpable
 {
     use axis\TUnit;
     use axis\TAdapterBasedStorageUnit;
@@ -801,13 +801,12 @@ abstract class Table implements
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*type' => $inspector($this->getUnitType()),
-                '*unitId' => $inspector($this->getUnitId()),
-                '*adapter' => $inspector($this->_adapter)
-            ]);
+        yield 'properties' => [
+            '*type' => $this->getUnitType(),
+            '*unitId' => $this->getUnitId(),
+            '*adapter' => $this->_adapter
+        ];
     }
 }

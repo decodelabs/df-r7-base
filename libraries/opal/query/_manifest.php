@@ -11,10 +11,6 @@ use df\opal;
 use df\user;
 use df\mesh;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
-
 interface IDataRowProvider
 {
     public function toDataRowArray();
@@ -951,9 +947,9 @@ trait TField
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText($this->toString());
+        yield 'text' => $this->toString();
     }
 }
 

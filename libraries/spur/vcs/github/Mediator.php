@@ -11,11 +11,9 @@ use df\spur;
 use df\link;
 use df\flex;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Mediator implements IMediator, Inspectable
+class Mediator implements IMediator, Dumpable
 {
     use spur\TGuzzleMediator;
 
@@ -323,7 +321,8 @@ class Mediator implements IMediator, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
+        return [];
     }
 }

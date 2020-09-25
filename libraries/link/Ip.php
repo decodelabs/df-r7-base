@@ -10,11 +10,9 @@ use df\link\IpRange;
 use df\flex\Text;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Ip implements IStringProvider, Inspectable
+class Ip implements IStringProvider, Dumpable
 {
     protected $ip;
     protected $isV4 = false;
@@ -261,8 +259,8 @@ class Ip implements IStringProvider, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText($this->__toString());
+        yield 'text' => $this->__toString();
     }
 }

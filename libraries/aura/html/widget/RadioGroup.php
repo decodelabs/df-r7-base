@@ -10,11 +10,9 @@ use df\core;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class RadioGroup extends Base implements IUngroupedSelectionInputWidget, Inspectable
+class RadioGroup extends Base implements IUngroupedSelectionInputWidget, Dumpable
 {
     use TWidget_FormData;
     use TWidget_Input;
@@ -174,14 +172,14 @@ class RadioGroup extends Base implements IUngroupedSelectionInputWidget, Inspect
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*name' => $inspector($this->_name),
-                '*value' => $inspector($this->_value),
-                '%tag' => $inspector($this->getTag())
-            ])
-            ->setValues($inspector->inspectList($this->_options));
+        yield 'properties' => [
+            '*name' => $this->_name,
+            '*value' => $this->_value,
+            '%tag' => $this->getTag()
+        ];
+
+        yield 'values' => $this->_options;
     }
 }

@@ -9,11 +9,9 @@ use df;
 use df\core;
 use df\link;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class CookieCollection implements ICookieCollection, Inspectable
+class CookieCollection implements ICookieCollection, Dumpable
 {
     use core\TStringProvider;
     use core\TValueMap;
@@ -245,19 +243,14 @@ class CookieCollection implements ICookieCollection, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $output = [];
-
         foreach ($this->_set as $cookie) {
-            $output['+ '.$cookie->getName()] = $cookie->toString();
+            yield 'value:+ '.$cookie->getName() => $cookie->toString();
         }
 
         foreach ($this->_remove as $cookie) {
-            $output['- '.$cookie->getName()] = $cookie->toInvalidateString();
+            yield 'value:- '.$cookie->getName() => $cookie->toInvalidateString();
         }
-
-        $entity
-            ->setValues($inspector->inspectList($output));
     }
 }

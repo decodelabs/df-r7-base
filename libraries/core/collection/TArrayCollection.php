@@ -9,9 +9,6 @@ use df;
 use df\core;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
 
 trait TArrayCollection
 {
@@ -58,10 +55,9 @@ trait TArrayCollection
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setValues($inspector->inspectList($this->_collection));
+        yield 'values' => $this->_collection;
     }
 }
 

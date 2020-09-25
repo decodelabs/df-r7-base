@@ -9,11 +9,9 @@ use df;
 use df\core;
 use df\spur;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class File implements IFile, Inspectable
+class File implements IFile, Dumpable
 {
     protected $_id;
     protected $_name = null;
@@ -115,20 +113,20 @@ class File implements IFile, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setProperty('*id', $inspector($this->_id));
+        yield 'property:*id' => $this->_id;
 
         if ($this->_name !== null) {
-            $entity->setProperty('*name', $inspector($this->_name));
+            yield 'property:*name' => $this->_name;
         }
 
         if ($this->_mode !== null) {
-            $entity->setProperty('*mode', $inspector($this->_mode));
+            yield 'property:*mode' => $this->_mode;
         }
 
         if ($this->_size !== null) {
-            $entity->setProperty('*size', $inspector($this->_size));
+            yield 'property:*size' => $this->_size;
         }
     }
 }

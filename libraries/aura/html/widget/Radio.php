@@ -10,11 +10,9 @@ use df\core;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Radio extends Base implements ICheckInputWidget, Inspectable
+class Radio extends Base implements ICheckInputWidget, Dumpable
 {
     use TWidget_BodyContentAware;
     use TWidget_FormData;

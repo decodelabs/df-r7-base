@@ -10,10 +10,6 @@ use df\core;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
-
 class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProvider
 {
     use core\constraint\TDisableable;
@@ -136,15 +132,15 @@ class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProv
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*name' => $inspector($this->_name),
-                '*form' => $inspector($this->_targetFormId),
-                '*legend' => $inspector($this->_legendBody),
-                '%tag' => $inspector($this->getTag())
-            ])
-            ->setValues($inspector->inspectList($this->_children->toArray()));
+        yield 'properties' => [
+            '*name' => $this->_name,
+            '*form' => $this->_targetFormId,
+            '*legend' => $this->_legendBody,
+            '%tag' => $this->getTag()
+        ];
+
+        yield 'values' => $this->_children->toArray();
     }
 }

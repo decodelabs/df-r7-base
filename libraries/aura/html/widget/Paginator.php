@@ -12,11 +12,9 @@ use df\opal;
 use df\arch;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Paginator extends Base implements Inspectable
+class Paginator extends Base implements Dumpable
 {
     const PRIMARY_TAG = 'div.paginator';
 
@@ -314,15 +312,14 @@ class Paginator extends Base implements Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*prevText' => $inspector($this->_prevText),
-                '*nextText' => $inspector($this->_nextText),
-                '*renderDetails' => $inspector($this->_renderDetails),
-                '*pageData' => $inspector($this->_pageData),
-                '%tag' => $inspector($this->getTag())
-            ]);
+        yield 'properties' => [
+            '*prevText' => $this->_prevText,
+            '*nextText' => $this->_nextText,
+            '*renderDetails' => $this->_renderDetails,
+            '*pageData' => $this->_pageData,
+            '%tag' => $this->getTag()
+        ];
     }
 }

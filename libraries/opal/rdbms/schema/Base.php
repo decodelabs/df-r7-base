@@ -11,11 +11,9 @@ use df\opal;
 use df\mesh;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-abstract class Base implements ISchema, Inspectable
+abstract class Base implements ISchema, Dumpable
 {
     use opal\schema\TSchema;
     use opal\schema\TSchema_FieldProvider;

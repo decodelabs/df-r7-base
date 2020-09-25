@@ -9,11 +9,11 @@ use df;
 use df\core;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class Duration implements IDuration, Inspectable
+class Duration implements IDuration, Dumpable
 {
     const MICROSECONDS = -2;
     const MILLISECONDS = -1;
@@ -977,8 +977,8 @@ class Duration implements IDuration, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setDefinition($this->toString(7, true));
+        yield 'definition' => $this->toString(7, true);
     }
 }

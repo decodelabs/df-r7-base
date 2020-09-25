@@ -9,11 +9,9 @@ use df;
 use df\core;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class TimeOfDay implements ITimeOfDay, Inspectable
+class TimeOfDay implements ITimeOfDay, Dumpable
 {
     use core\TStringProvider;
 
@@ -224,8 +222,8 @@ class TimeOfDay implements ITimeOfDay, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setDefinition($this->toString());
+        yield 'definition' => $this->toString();
     }
 }

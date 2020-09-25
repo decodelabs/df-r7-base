@@ -12,7 +12,7 @@ use df\opal;
 use df\user;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
@@ -21,7 +21,7 @@ class Rdbms implements
     axis\IConnectionProxyAdapter,
     axis\IIntrospectableAdapter,
     opal\query\IAdapter,
-    Inspectable
+    Dumpable
 {
     use user\TAccessLock;
 
@@ -407,12 +407,11 @@ class Rdbms implements
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '%name' => $inspector($this->getDisplayName()),
-                '*unit' => $inspector($this->_unit->getUnitId())
-            ]);
+        yield 'properties' => [
+            '%name' => $this->getDisplayName(),
+            '*unit' => $this->_unit->getUnitId()
+        ];
     }
 }

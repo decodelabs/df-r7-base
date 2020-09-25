@@ -11,11 +11,9 @@ use df\opal;
 use df\flex;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class SearchController implements ISearchController, Inspectable
+class SearchController implements ISearchController, Dumpable
 {
     const MAX_THRESHOLD_RATIO = 0.95;
 
@@ -350,19 +348,15 @@ class SearchController implements ISearchController, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText($this->_phrase);
-        $fields = [];
+        yield 'text' => $this->_phrase;
+        yield 'property:*type' => $this->_type;
 
         if (!empty($this->_fields)) {
             foreach ($this->_fields as $name => $set) {
-                $fields[$name] = 'x'.$set['weight'].', '.$set['operator'];
+                yield 'value:'.$name => 'x'.$set['weight'].', '.$set['operator'];
             }
         }
-
-        $entity
-            ->setProperty('*type', $inspector($this->_type))
-            ->setValues($inspector->inspectList($fields));
     }
 }

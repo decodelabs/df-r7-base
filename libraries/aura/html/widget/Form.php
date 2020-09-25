@@ -12,9 +12,6 @@ use df\halo;
 use df\arch;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
 
 class Form extends Container implements IFormWidget, IWidgetShortcutProvider
 {
@@ -164,16 +161,16 @@ class Form extends Container implements IFormWidget, IWidgetShortcutProvider
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*action' => $inspector($this->_action),
-                '*method' => $inspector($this->_method),
-                '*encoding' => $inspector($this->_encoding),
-                '*name' => $inspector($this->_name),
-                '%tag' => $inspector($this->getTag())
-            ])
-            ->setValues($inspector->inspectList($this->_children->toArray()));
+        yield 'properties' => [
+                '*action' => $this->_action,
+                '*method' => $this->_method,
+                '*encoding' => $this->_encoding,
+                '*name' => $this->_name,
+                '%tag' => $this->getTag()
+        ];
+
+        yield 'values' => $this->_children->toArray();
     }
 }

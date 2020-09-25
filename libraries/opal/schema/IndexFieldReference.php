@@ -10,11 +10,9 @@ use df\core;
 use df\opal;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class IndexFieldReference implements IIndexFieldReference, Inspectable
+class IndexFieldReference implements IIndexFieldReference, Dumpable
 {
     protected $_field;
     protected $_size;
@@ -101,7 +99,7 @@ class IndexFieldReference implements IIndexFieldReference, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         $output = $this->_field->getName();
 
@@ -115,6 +113,6 @@ class IndexFieldReference implements IIndexFieldReference, Inspectable
             $output .= ' ASC';
         }
 
-        $entity->setDefinition($output);
+        yield 'definition' => $output;
     }
 }

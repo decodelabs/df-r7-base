@@ -13,11 +13,9 @@ use df\arch;
 use DecodeLabs\Tagged\Html;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Template implements aura\view\ITemplate, Inspectable
+class Template implements aura\view\ITemplate, Dumpable
 {
     use core\TContextAware;
     use core\TStringProvider;
@@ -399,14 +397,14 @@ class Template implements aura\view\ITemplate, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*path' => $inspector($this->_path),
-                'context' => $inspector($this->context),
-                'view' => $inspector($this->view)
-            ])
-            ->setValues($inspector->inspectList($this->slots));
+        yield 'properties' => [
+            '*path' => $this->_path,
+            'context' => $this->context,
+            'view' => $this->view
+        ];
+
+        yield 'values' => $this->slots;
     }
 }

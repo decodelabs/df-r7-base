@@ -10,11 +10,9 @@ use df\core;
 use df\opal;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class BatchInsert implements IBatchInsertQuery, Inspectable
+class BatchInsert implements IBatchInsertQuery, Dumpable
 {
     use TQuery;
     use TQuery_LocalSource;
@@ -246,15 +244,14 @@ class BatchInsert implements IBatchInsertQuery, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '*source' => $inspector($this->_source->getAdapter()),
-                '*fields' => $inspector(implode(', ', array_keys($this->_fields))),
-                '*pending' => $inspector(count($this->_rows)),
-                '*inserted' => $inspector($this->_inserted),
-                '*flushThreshold' => $inspector($this->_flushThreshold)
-            ]);
+        yield 'properties' => [
+            '*source' => $this->_source->getAdapter(),
+            '*fields' => implode(', ', array_keys($this->_fields)),
+            '*pending' => count($this->_rows),
+            '*inserted' => $this->_inserted,
+            '*flushThreshold' => $this->_flushThreshold
+        ];
     }
 }

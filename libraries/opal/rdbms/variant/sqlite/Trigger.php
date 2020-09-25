@@ -9,10 +9,6 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
-
 class Trigger extends opal\rdbms\schema\constraint\Trigger
 {
     protected $_isTemporary = false;
@@ -82,7 +78,7 @@ class Trigger extends opal\rdbms\schema\constraint\Trigger
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
         $output = '';
 
@@ -105,6 +101,6 @@ class Trigger extends opal\rdbms\schema\constraint\Trigger
         $output .= ' '.implode('; ', $this->_statements);
         $output .= ' ['.$this->_sqlVariant.']';
 
-        $entity->setDefinition($output);
+        yield 'definition' => $output;
     }
 }

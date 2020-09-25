@@ -11,9 +11,6 @@ use df\axis;
 use df\opal;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
 
 /*
  * This type requires an inverse field and must lookup and match target table.
@@ -206,11 +203,9 @@ class OneToMany extends Base implements axis\schema\IOneToManyField
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        parent::glitchInspect($entity, $inspector);
-
-        $def = $entity->getDefinition();
+        $def = $this->getFieldSchemaString();
         $arg = $this->_targetUnitId;
 
         if ($this->_targetField) {
@@ -219,6 +214,6 @@ class OneToMany extends Base implements axis\schema\IOneToManyField
 
         $def .= '('.$arg.')';
 
-        $entity->setDefinition($def);
+        yield 'definition' => $def;
     }
 }

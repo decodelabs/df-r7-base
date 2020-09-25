@@ -10,11 +10,9 @@ use df\core;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Hidden extends Base implements IFormDataWidget, Inspectable
+class Hidden extends Base implements IFormDataWidget, Dumpable
 {
     use TWidget_FormData;
 

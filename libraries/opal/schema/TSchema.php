@@ -10,9 +10,6 @@ use df\core;
 use df\opal;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
 
 trait TSchema
 {
@@ -137,19 +134,19 @@ trait TSchema
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setProperties($inspector->inspectList($this->_getOptionDumpList()));
+        yield 'properties' => $this->_getOptionDumpList();
 
         if (method_exists($this, '_getFieldDumpList')) {
-            $entity->setProperty('*fields', $inspector($this->_getFieldDumpList()));
+            yield 'property:*fields' => $this->_getFieldDumpList();
         }
 
         if (method_exists($this, '_getIndexDumpList')) {
             $indexes = $this->_getIndexDumpList();
 
             if (!empty($indexes)) {
-                $entity->setProperty('*indexes', $inspector($indexes));
+                yield 'property:*indexes' => $indexes;
             }
         }
 
@@ -157,7 +154,7 @@ trait TSchema
             $foreignKeys = $this->_getForeignKeyDumpList();
 
             if (!empty($foreignKeys)) {
-                $entity->setProperty('*foreignKeys', $inspector($foreignKeys));
+                yield 'property:*foreignKeys' => $foreignKeys;
             }
         }
 
@@ -165,7 +162,7 @@ trait TSchema
             $triggers = $this->_getTriggerDumpList();
 
             if (!empty($triggers)) {
-                $entity->setProperty('*triggers', $inspector($triggers));
+                yield 'property:*triggers' => $triggers;
             }
         }
     }

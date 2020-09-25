@@ -10,11 +10,9 @@ use df\core;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Container extends Base implements IContainerWidget, IWidgetShortcutProvider, Inspectable
+class Container extends Base implements IContainerWidget, IWidgetShortcutProvider, Dumpable
 {
     use core\TValueMap;
 
@@ -325,12 +323,9 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                '%tag' => $inspector($this->getTag())
-            ])
-            ->setValues($inspector->inspectList($this->_children->toArray()));
+        yield 'property:%tag' => $this->getTag();
+        yield 'values' => $this->_children->toArray();
     }
 }

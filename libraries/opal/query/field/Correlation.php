@@ -10,11 +10,9 @@ use df\core;
 use df\opal;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Correlation implements opal\query\ICorrelationField, Inspectable
+class Correlation implements opal\query\ICorrelationField, Dumpable
 {
     use opal\query\TField;
 
@@ -99,11 +97,8 @@ class Correlation implements opal\query\ICorrelationField, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity
-            ->setProperties([
-                $this->getAlias() => $inspector($this->_query)
-            ]);
+        yield 'property:'.$this->getAlias() => $this->_query;
     }
 }

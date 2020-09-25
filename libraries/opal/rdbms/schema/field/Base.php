@@ -9,11 +9,9 @@ use df\core;
 use df\opal;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-abstract class Base implements opal\rdbms\schema\IField, Inspectable
+abstract class Base implements opal\rdbms\schema\IField, Dumpable
 {
     const DEFAULT_VALUE = '';
 
@@ -256,8 +254,8 @@ abstract class Base implements opal\rdbms\schema\IField, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setDefinition($this->toString());
+        yield 'definition' => $this->toString();
     }
 }

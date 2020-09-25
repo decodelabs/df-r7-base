@@ -9,11 +9,9 @@ use df;
 use df\core;
 use df\user;
 
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class PostalAddress implements IPostalAddress, Inspectable
+class PostalAddress implements IPostalAddress, Dumpable
 {
     use TPostalAddress;
     use core\TStringProvider;
@@ -82,8 +80,8 @@ class PostalAddress implements IPostalAddress, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setText($this->toString());
+        yield 'text' => $this->toString();
     }
 }

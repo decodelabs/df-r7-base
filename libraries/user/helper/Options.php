@@ -10,11 +10,15 @@ use df\core;
 use df\user;
 use df\mesh;
 
-use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class Options extends Base implements user\ISessionBackedHelper, core\IValueMap, mesh\event\IListener, Inspectable
+class Options extends Base implements
+    user\ISessionBackedHelper,
+    core\IValueMap,
+    mesh\event\IListener,
+    Dumpable
 {
     use core\TValueMap;
     use user\TSessionBackedHelper;

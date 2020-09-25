@@ -11,11 +11,9 @@ use df\opal;
 use df\axis;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Source implements ISource, Inspectable
+class Source implements ISource, Dumpable
 {
     use TQuery_AdapterAware;
 
@@ -485,16 +483,16 @@ class Source implements ISource, Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setDefinition($this->getId());
+        yield 'definition' => $this->getId();
 
         foreach ($this->_outputFields as $alias => $field) {
-            $entity->setProperty($alias, $inspector($field->getQualifiedName()));
+            yield 'property:'.$alias => $field->getQualifiedName();
         }
 
         foreach ($this->_privateFields as $alias => $field) {
-            $entity->setProperty('!'.$alias, $inspector($field->getQualifiedName()));
+            yield 'property:!'.$alias => $field->getQualifiedName();
         }
     }
 }
