@@ -162,7 +162,7 @@ class OneRelationValueContainer implements
         } elseif ($this->_value) {
             return !$this->_value->isNull();
         } else {
-            false;
+            return false;
         }
     }
 

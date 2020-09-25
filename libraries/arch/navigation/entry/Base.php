@@ -44,6 +44,11 @@ abstract class Base implements arch\navigation\IEntry
     protected static function _fromArray(array $entry): arch\navigation\IEntry
     {
         $class = get_called_class();
+
+        if ($class === self::class) {
+            throw Glitch::ERuntime('Cannot create Base type menu');
+        }
+
         return (new $class())->setId($entry['id'])->setWeight($entry['weight']);
     }
 

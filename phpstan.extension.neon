@@ -1,41 +1,6 @@
+includes:
+    - ./phpstan.base.neon
+
 parameters:
-    level: max
-    bootstrap: %currentWorkingDirectory%/vendor/df-r7/base/tests/bootstrap.php
-    inferPrivatePropertyTypeFromConstructor: true
-
-    excludes_analyse:
-        - */_templates/*.html.php
-        - */_templates/*.xml.php
-        - */_templates/*.mail.php
-
-    universalObjectCratesClasses:
-        - df\arch\scaffold\IScaffold
-        - df\axis\IModel
-        - df\axis\IUnit
-        - df\core\IContext
-        - df\core\IContextAware
-        - df\core\IHelperProvider
-        - df\core\collection\ITree
-        - df\core\i18n\Manager
-        - df\core\uri\IUrl
-        - df\flex\xml\ITree
-        - df\opal\record\IRecord
-        - df\user\Manager
-
-    ignoreErrors:
-        - '#^Call to an undefined method (.+)\:\:(date|html|uri|findFile|forceResponse)#'
-        - '#^Call to an undefined method df\\aura\\html\\widget\\[A-Z][a-zA-Z0-9_]+\:\:#'
-        - '#^Call to an undefined method df\\(aura\\view\\content\\WidgetContentProvider|arch\\node\\IDelegate|mesh\\job\\IQueue|plug\\Html)\:\:#'
-        - '#^Instantiated class (df\\apex\\App|df\\apex\\directory\\front\\HttpRootNodeRouter) not found\.$#'
-        - '#^Cannot access offset .+ on object\.$#'
-        - '#^Strict comparison using === between false and (resource|RarArchive) will always evaluate to false\.#'
-
-        # Extensions
-        - '#^Function snappy_[a-zA-Z0-9_]+ not found\.$#'
-        - '#Iterating over an object of an unknown class RarArchive\.#'
-        - '#^Call to method [a-zA-Z0-9_]+\(\) on an unknown class (Memcache|COM)\.$#'
-        - '#^Instantiated class (COM|Memcache) not found.$#'
-        - '#expects rararchive, RarArchive given#'
-
-        # Exceptions
-        - '#^Class df\\opal\\rdbms\\ETableNotFound not found\.#'
+    bootstrapFiles:
+        - %currentWorkingDirectory%/vendor/df-r7/base/tests/bootstrap.php

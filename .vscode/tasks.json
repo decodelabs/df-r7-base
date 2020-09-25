@@ -2,12 +2,10 @@
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
     "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "nucleus.phpstan",
-            "type": "shell",
-            "command": "ssh -t $USERNAME@172.16.230.20 \"cd $PWD; ./vendor/bin/phpstan --memory-limit=2G analyze\"",
-            "problemMatcher": []
-        }
-    ]
+    "tasks": [{
+        "label": "nucleus.phpstan",
+        "type": "shell",
+        "command": "ssh -t $USERNAME@172.16.230.20 \"cd $PWD; ./vendor/bin/phpstan --memory-limit=2G --debug analyze\"",
+        "problemMatcher": []
+    }]
 }

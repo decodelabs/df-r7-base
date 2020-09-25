@@ -9,25 +9,29 @@ use df;
 use df\core;
 use df\user;
 
-class Store extends Base implements user\ISessionBackedHelper {
-
+class Store extends Base implements user\ISessionBackedHelper
+{
     use user\TSessionBackedHelper;
 
-    public function set($key, $value) {
-        return $this->offsetSet($key, $value);
+    public function set($key, $value)
+    {
+        $this->offsetSet($key, $value);
+        return $this;
     }
 
-    public function get($key, $default=null) {
-        if(null === ($output = $this->offsetGet($key))) {
+    public function get($key, $default=null)
+    {
+        if (null === ($output = $this->offsetGet($key))) {
             $output = $default;
         }
 
         return $output;
     }
 
-    public function has(...$keys) {
-        foreach($keys as $key) {
-            if($this->offsetExists($key)) {
+    public function has(...$keys)
+    {
+        foreach ($keys as $key) {
+            if ($this->offsetExists($key)) {
                 return true;
             }
         }
@@ -35,8 +39,9 @@ class Store extends Base implements user\ISessionBackedHelper {
         return false;
     }
 
-    public function remove(...$keys) {
-        foreach($keys as $key) {
+    public function remove(...$keys)
+    {
+        foreach ($keys as $key) {
             $this->offsetUnset($key);
         }
 

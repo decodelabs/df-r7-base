@@ -8,6 +8,8 @@ namespace df\core\cache;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
+
 trait TCache
 {
     use core\TValueMap;
@@ -20,6 +22,11 @@ trait TCache
     public static function getInstance()
     {
         $class = get_called_class();
+
+        if ($class === Base::class) {
+            throw Glitch::ERuntime('Unable to instantiate abstract Base class: '.$class);
+        }
+
         $id = self::REGISTRY_PREFIX.$class::getCacheId();
 
         if (!$cache = df\Launchpad::$app->getRegistryObject($id)) {

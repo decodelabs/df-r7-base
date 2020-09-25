@@ -1,7 +1,8 @@
 includes:
-    - ./phpstan.extension.neon
+    - ./phpstan.base.neon
 parameters:
-    bootstrap: %currentWorkingDirectory%/tests/bootstrap.php
+    bootstrapFiles:
+        - %currentWorkingDirectory%/tests/bootstrap.php
     paths:
         - daemons
         - directory
@@ -12,3 +13,6 @@ parameters:
         -
             message: '#^Offset [^ ]+ does not exist on string\.#'
             path: libraries/link/http/upload/File.php
+
+    excludes_analyse:
+        - libraries/core/archive/Rar.php
