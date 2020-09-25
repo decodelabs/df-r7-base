@@ -268,19 +268,15 @@ abstract class SelectorDelegate extends Delegate implements
             static::MANY_LIST_THRESHOLD :
             static::ONE_LIST_THRESHOLD;
 
-        if ($count === 0) {
-            $fa->push(
-                Html::{'div.w.list.selection > div.body > em'}('nothing available')
-            );
-        } elseif ($count > 0 && ($count <= $threshold || (!$this->hasSelection() && !$this->_isForMany))) {
-            $this->_renderInlineListDetails($fa);
+        if ($count > 0 && ($count <= $threshold || (!$this->hasSelection() && !$this->_isForMany))) {
+            $this->_renderInlineListDetails($fa, $count);
         } else {
-            $this->_renderInlineTextDetails($fa);
+            $this->_renderInlineTextDetails($fa, $count);
         }
     }
 
 
-    protected function _renderInlineListDetails(aura\html\widget\Field $fa)
+    protected function _renderInlineListDetails(aura\html\widget\Field $fa, int $count=0)
     {
         $options = $this->_getOptionsList();
         $selected = $this->_fetchSelectionList();
@@ -325,7 +321,7 @@ abstract class SelectorDelegate extends Delegate implements
         $this->_renderDetailsButtonGroup($ba, $selected, true);
     }
 
-    protected function _renderInlineTextDetails(aura\html\widget\Field $fa)
+    protected function _renderInlineTextDetails(aura\html\widget\Field $fa, int $count=0)
     {
         $fa->push(Html::raw('<div class="w list selection"><div class="body">'));
         $selected = $this->_fetchSelectionList();
@@ -334,7 +330,7 @@ abstract class SelectorDelegate extends Delegate implements
             // Multiple entry
             if (empty($selected)) {
                 $fa->push(
-                    Html::{'em'}($this->_('nothing selected')),
+                    Html::{'em'}($count ? $this->_('nothing selected') : $this->_('nothing available')),
                     Html::raw('</div>')
                 );
             } else {
