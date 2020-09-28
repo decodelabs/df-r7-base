@@ -60,7 +60,11 @@ class Json extends Base implements opal\schema\ILargeByteSizeRestrictedField
             }
 
             if (!($value === null && $this->isNullable())) {
-                $value = new core\collection\Tree($value);
+                if (is_string($value)) {
+                    $value = flex\Json::fromString($value);
+                } else {
+                    $value = new core\collection\Tree($value);
+                }
             }
         }
 
