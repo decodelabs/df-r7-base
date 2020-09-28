@@ -135,7 +135,8 @@ interface IRecord extends IDataProvider, mesh\job\IJobProvider, core\IExporterVa
     public function getOriginalValuesForStorage();
     public function forceSet($key, $value);
     public function acceptChanges($insertId=null, array $insertData=null);
-    public function markAsChanged($field);
+    public function markAsChanged(string $field);
+    public function markAsUnchanged(string $field);
     public function shouldBypassHooks(bool $flag=null);
 
     public function save(mesh\job\IQueue $queue=null);

@@ -454,7 +454,7 @@ class Base implements IRecord, \Serializable, Dumpable
     }
 
 
-    public function markAsChanged($field)
+    public function markAsChanged(string $field)
     {
         if (!array_key_exists($field, $this->_changes)) {
             $oldVal = null;
@@ -471,6 +471,12 @@ class Base implements IRecord, \Serializable, Dumpable
             //$this->onValueChange($field, $oldVal, $oldVal);
         }
 
+        return $this;
+    }
+
+    public function markAsUnchanged(string $field)
+    {
+        unset($this->_changes[$field]);
         return $this;
     }
 
