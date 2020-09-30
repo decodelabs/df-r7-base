@@ -75,7 +75,14 @@ class Unit extends axis\unit\Table
                 $parts = explode('\\', $name);
                 $topName = array_pop($parts);
 
-                if ($topName === null || !preg_match('/^E[A-Z][a-zA-Z0-9_]+$/', $topName)) {
+                if (
+                    $topName === null ||
+                    (
+                        !preg_match('/^E[A-Z][a-zA-Z0-9_]+$/', $topName) &&
+                        !preg_match('/^([A-Z][a-zA-Z0-9_]+)Exception$/', $topName)
+                    ) ||
+                    preg_match('/^DecodeLabs\\\\Exceptional\\\\/', $name)
+                ) {
                     continue;
                 }
 
