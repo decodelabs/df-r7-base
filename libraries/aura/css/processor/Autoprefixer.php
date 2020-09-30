@@ -11,7 +11,7 @@ use df\aura;
 use df\spur;
 use df\flex;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 use DecodeLabs\Atlas;
 use DecodeLabs\Terminus\Session;
 
@@ -48,7 +48,9 @@ class Autoprefixer extends Base
         }
 
         if (false === ($content = file_get_contents($cssPath))) {
-            throw Glitch::ERuntime('Unable to read css file contents', null, $cssPath);
+            throw Exceptional::Runtime(
+                'Unable to read css file contents', null, $cssPath
+            );
         }
 
         $map = null;

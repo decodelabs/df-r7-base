@@ -12,7 +12,7 @@ use df\aura;
 use df\flex;
 use df\link;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Form extends Base implements IFormNode
 {
@@ -39,7 +39,7 @@ abstract class Form extends Base implements IFormNode
         parent::__construct($context);
 
         if ($this->context->getRunMode() !== 'Http') {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'Form nodes can only be used in Http run mode'
             );
         }
@@ -229,7 +229,7 @@ abstract class Form extends Base implements IFormNode
     public function getState(): IFormState
     {
         if (!$this->_state) {
-            throw Glitch::{'ENoState,ENoContext'}(
+            throw Exceptional::{'NoState,NoContext'}(
                 'State controller is not available until the form has been dispatched'
             );
         }
@@ -485,7 +485,7 @@ abstract class Form extends Base implements IFormNode
             foreach ($postData->_delegates as $id => $delegateValues) {
                 try {
                     $this->getDelegate($id)->values->clear()->import($delegateValues);
-                } catch (EDelegate $e) {
+                } catch (DelegateException $e) {
                 }
             }
 
@@ -526,7 +526,7 @@ abstract class Form extends Base implements IFormNode
 
                 try {
                     $target = $target->getDelegate($currentId);
-                } catch (EDelegate $e) {
+                } catch (DelegateException $e) {
                     if ($target->handleMissingDelegate($currentId, $event, $args)) {
                         $isTargetComplete = $target->isComplete();
                         $target = null;
@@ -642,7 +642,7 @@ abstract class Form extends Base implements IFormNode
                 ->isPermanent(true);
         }
 
-        throw Glitch::EBadRequest([
+        throw Exceptional::BadRequest([
             'message' => 'Form node '.$this->context->location->getLiteralPath().' does not support '.
                 $this->context->runner->getHttpRequest()->getMethod().' http method',
             'http' => 405

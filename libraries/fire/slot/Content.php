@@ -17,7 +17,7 @@ use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
 use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
 use DecodeLabs\Tagged\Xml\SerializableTrait as XmlSerializableTrait;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Content implements fire\ISlotContent
 {
@@ -188,7 +188,7 @@ class Content implements fire\ISlotContent
         $this->blocks = new core\collection\Queue();
 
         if ($element->getTagName() != 'slot') {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Slot content object expected slot xml element - found '.$element->getTagName()
             );
         }
@@ -198,7 +198,7 @@ class Content implements fire\ISlotContent
         foreach ($element->block as $blockNode) {
             try {
                 $block = fire\block\Base::fromXml($blockNode);
-            } catch (fire\block\ENotFound $e) {
+            } catch (fire\block\NotFoundException $e) {
                 $block = new fire\block\Error();
                 $block->setError($e);
                 $block->setType($blockNode['type']);

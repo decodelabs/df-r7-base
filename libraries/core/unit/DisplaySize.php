@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\aura;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class DisplaySize implements IDisplaySize, Dumpable
 {
@@ -177,7 +177,7 @@ class DisplaySize implements IDisplaySize, Dumpable
         switch ($this->_unit) {
             case '%':
                 if ($length === null) {
-                    throw Glitch::ERuntime(
+                    throw Exceptional::Runtime(
                         'No absolute length data has been given to convert to an absolute value from percentage'
                     );
                 }
@@ -199,7 +199,7 @@ class DisplaySize implements IDisplaySize, Dumpable
             case 'vmin':
             case 'vmax':
                 if ($viewportWidth === null && $viewportHeight === null) {
-                    throw Glitch::ERuntime(
+                    throw Exceptional::Runtime(
                         'No absolute viewport size data has been given to convert to an absolute value'
                     );
                 }
@@ -213,7 +213,7 @@ class DisplaySize implements IDisplaySize, Dumpable
         $length = clone self::factory($length);
 
         if (!$length->isAbsolute()) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Extraction length must be absolute'
             );
         }
@@ -227,7 +227,7 @@ class DisplaySize implements IDisplaySize, Dumpable
         $size = clone self::factory($size);
 
         if (!$size->isAbsolute()) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Extraction font size must be absolute'
             );
         }
@@ -263,7 +263,7 @@ class DisplaySize implements IDisplaySize, Dumpable
         $height = clone self::factory($height);
 
         if (!$width->isAbsolute() || !$height->isAbsolute()) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Extraction viewport size must be absolute'
             );
         }
@@ -293,13 +293,13 @@ class DisplaySize implements IDisplaySize, Dumpable
     protected function _convert($value, $inUnit, $outUnit)
     {
         if (!$this->_isAbsolute($inUnit)) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'Only absolute size values can be converted'
             );
         }
 
         if (!$this->_isAbsolute($outUnit)) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'Size values cannot be converted to relative units'
             );
         }
@@ -342,7 +342,9 @@ class DisplaySize implements IDisplaySize, Dumpable
                 break;
 
             default:
-                throw Glitch::EInvalidArgument('Unsupported display size unit: '.$inUnit);
+                throw Exceptional::InvalidArgument(
+                    'Unsupported display size unit: '.$inUnit
+                );
         }
 
         switch ($outUnit) {

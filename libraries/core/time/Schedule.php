@@ -8,10 +8,8 @@ namespace df\core\time;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Exceptional;
 
 class Schedule implements ISchedule, Dumpable
 {
@@ -67,7 +65,7 @@ class Schedule implements ISchedule, Dumpable
         }
 
         if (!is_array($schedule)) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Invalid schedule'
             );
         }
@@ -171,7 +169,7 @@ class Schedule implements ISchedule, Dumpable
                 $string, $min, $max, $options
             );
         } else {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Invalid schedule value'
             );
         }

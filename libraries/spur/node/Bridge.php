@@ -13,8 +13,10 @@ use df\halo;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Systemic;
-use DecodeLabs\Glitch;
 use DecodeLabs\Terminus\Session;
+
+use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Bridge implements IBridge
 {
@@ -47,7 +49,9 @@ class Bridge implements IBridge
             ->launch();
 
         if ($result->hasError()) {
-            throw Glitch::ERuntime($result->getError());
+            throw Exceptional::Runtime(
+                $result->getError()
+            );
         }
 
         return $this;
@@ -88,12 +92,12 @@ class Bridge implements IBridge
 
         if ($result->hasError() && empty($output)) {
             $error = $result->getError();
-            $e = Glitch::ERuntime($error);
+            $e = Exceptional::Runtime($error);
 
             if (!preg_match('/deprecat/i', $error)) {
                 throw $e;
             } else {
-                core\logException($e);
+                Glitch::logException($e);
             }
         }
 

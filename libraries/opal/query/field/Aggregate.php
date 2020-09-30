@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Aggregate implements opal\query\IAggregateField, Dumpable
 {
@@ -91,7 +91,7 @@ class Aggregate implements opal\query\IAggregateField, Dumpable
                 break;
 
             default:
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     'Aggregate function '.$type.' is not recognised'
                 );
         }

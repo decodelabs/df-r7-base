@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\neon;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, neon\raster\IImageFilterDriver
 {
@@ -48,7 +48,9 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
             $this->_pointer = new \Imagick();
             $this->_pointer->readImage($file);
         } catch (\ImagickException $e) {
-            throw Glitch::{'../EFormat'}($e->getMessage());
+            throw Exceptional::{'../Format'}(
+                $e->getMessage()
+            );
         }
 
         $this->_width = $this->_pointer->getImageWidth();
@@ -64,7 +66,9 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
             $this->_pointer = new \Imagick();
             $this->_pointer->readImageBlob($string);
         } catch (\ImagickException $e) {
-            throw Glitch::{'../EFormat'}($e->getMessage());
+            throw Exceptional::{'../Format'}(
+                $e->getMessage()
+            );
         }
 
         $this->_width = $this->_pointer->getImageWidth();
@@ -99,7 +103,9 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
         try {
             $this->_pointer->writeImage($savePath);
         } catch (\Throwable $e) {
-            throw Glitch::{'../EFormat,../EUnwritable'}($e->getMessage());
+            throw Exceptional::{'../Format,../Unwritable'}(
+                $e->getMessage()
+            );
         }
 
         return $this;

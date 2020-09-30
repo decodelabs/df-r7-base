@@ -9,8 +9,10 @@ use df;
 use df\core;
 use df\link;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
+
+use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 use Socket\Raw\Factory as SocketFactory;
 use Xenolope\Quahog\Client as Quahog;
@@ -135,7 +137,7 @@ class File implements link\http\IUploadFile
     public function getPointer()
     {
         if (!$this->_isSuccess) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'No valid file path has been determined yet'
             );
         }
@@ -305,7 +307,9 @@ class File implements link\http\IUploadFile
 
                     unlink($this->_tempPath);
                 } elseif ($result['status'] === Quahog::RESULT_ERROR) {
-                    Glitch::logException(Glitch::EScan($result['reason']));
+                    Glitch::logException(
+                        Exceptional::Scan($result['reason'])
+                    );
                 }
             } catch (\Throwable $e) {
                 Glitch::logException($e);

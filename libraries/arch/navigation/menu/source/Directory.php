@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\flex;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Directory extends Base implements arch\navigation\menu\IListableSource
 {
@@ -74,7 +74,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource
             $scaffold = arch\scaffold\Base::factory($context);
             $scaffoldId = $baseId.'__scaffold';
             $menus[$scaffoldId] = $scaffold->loadMenu($name, $scaffoldId);
-        } catch (arch\scaffold\EGlitch $e) {
+        } catch (arch\scaffold\Exception $e) {
         }
 
 
@@ -83,7 +83,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource
         } elseif (class_exists($sharedClassBase)) {
             $output = new $sharedClassBase($this->context, $baseId);
         } elseif (empty($menus)) {
-            throw Glitch::{'ENotFound'}(
+            throw Exceptional::NotFound(
                 'Directory menu '.$baseId.' could not be found'
             );
         } else {

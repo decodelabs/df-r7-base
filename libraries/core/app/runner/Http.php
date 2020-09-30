@@ -14,6 +14,7 @@ use df\halo;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Http extends Base implements core\IContextAware, link\http\IResponseAugmentorProvider, arch\IRequestOrientedRunner
 {
@@ -90,7 +91,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     public function getHttpRequest()
     {
         if (!$this->_httpRequest) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'The http request is not available until the application has been dispatched'
             );
         }
@@ -117,7 +118,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     public function getContext()
     {
         if (!$this->_context) {
-            throw Glitch::ENoContext(
+            throw Exceptional::NoContext(
                 'A context is not available until the application has been dispatched'
             );
         }
@@ -514,7 +515,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
         try {
             $node = arch\node\Base::factory($this->_context);
-        } catch (arch\node\ENotFound $e) {
+        } catch (arch\node\NotFoundException $e) {
             // See if the url just needs a /
             $url = $this->_httpRequest->getUrl();
             $testUrl = null;
@@ -581,7 +582,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
         // Empty response
         if ($response === null && df\Launchpad::$app->isDevelopment()) {
-            throw Glitch::ENotImplemented([
+            throw Exceptional::NotImplemented([
                 'message' => 'No response was returned by node: '.$this->_context->request,
                 'http' => 501
             ]);

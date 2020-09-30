@@ -8,10 +8,8 @@ namespace df\core\lang;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Exceptional;
 
 class Callback implements ICallback, Dumpable
 {
@@ -95,7 +93,7 @@ class Callback implements ICallback, Dumpable
                 try {
                     $reflection = new \ReflectionMethod($class, $method);
                 } catch (\Throwable $e) {
-                    throw Glitch::EInvalidArgument(
+                    throw Exceptional::InvalidArgument(
                         'Callback is not callable'
                     );
                 }
@@ -106,7 +104,7 @@ class Callback implements ICallback, Dumpable
                     $this->_reflectionInstance = null;
                 } else {
                     if (!is_object($class)) {
-                        throw Glitch::EInvalidArgument(
+                        throw Exceptional::InvalidArgument(
                             'Callback is not callable'
                         );
                     }
@@ -120,7 +118,7 @@ class Callback implements ICallback, Dumpable
             }
         }
 
-        throw Glitch::EInvalidArgument(
+        throw Exceptional::InvalidArgument(
             'Callback is not callable'
         );
     }

@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 
 use DecodeLabs\Terminus\Cli;
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 trait TApcuClear
 {
@@ -38,7 +38,7 @@ trait TApcuClear
             $prefix = null;
         } else {
             if (!$cacheId) {
-                throw Glitch::EUnexpectedValue(
+                throw Exceptional::UnexpectedValue(
                     'Cache id not specified'
                 );
             }

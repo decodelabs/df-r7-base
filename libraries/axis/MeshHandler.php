@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 use df\mesh;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class MeshHandler implements mesh\IEntityHandler
 {
@@ -30,7 +30,7 @@ class MeshHandler implements mesh\IEntityHandler
                     $unit = axis\Model::loadUnitFromId($node['id']);
 
                     if (!$unit instanceof axis\ISchemaBasedStorageUnit) {
-                        throw Glitch::ELogic(
+                        throw Exceptional::Logic(
                             'Model unit '.$unit->getUnitName().' does not provide a schema'
                         );
                     }

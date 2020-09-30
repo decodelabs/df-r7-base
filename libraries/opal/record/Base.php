@@ -13,6 +13,7 @@ use df\mesh;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Base implements IRecord, \Serializable, Dumpable
 {
@@ -186,7 +187,7 @@ class Base implements IRecord, \Serializable, Dumpable
                 return new opal\record\job\Delete($this);
         }
 
-        throw Glitch::ERuntime(
+        throw Exceptional::Runtime(
             'Records don\'t directly support "'.$name.'" jobs'
         );
     }
@@ -485,7 +486,7 @@ class Base implements IRecord, \Serializable, Dumpable
     {
         /*
         if($this->_isPopulated) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Record has already been populated'
             );
         }
@@ -502,7 +503,7 @@ class Base implements IRecord, \Serializable, Dumpable
     public function populateWithRawData($row)
     {
         if ($this->_isPopulated) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Record has already been populated'
             );
         }
@@ -514,7 +515,7 @@ class Base implements IRecord, \Serializable, Dumpable
         }
 
         if (!is_array($row)) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Could not populate record - input data cannot be converted to an array'
             );
         }
@@ -1156,7 +1157,7 @@ class Base implements IRecord, \Serializable, Dumpable
     public function getEntityLocator()
     {
         if (!$this->_adapter instanceof mesh\entity\IParentEntity) {
-            throw Glitch::{'df/mesh/entity/ENotFound'}(
+            throw Exceptional::{'df/mesh/entity/NotFound'}(
                 'Record adapter is not an entity handler'
             );
         }

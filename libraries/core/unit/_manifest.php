@@ -8,7 +8,7 @@ namespace df\core\unit;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 interface IUnit
 {
@@ -98,7 +98,7 @@ trait TSingleValueUnit
             }
 
             if (!$found) {
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     $unit.' is not a valid unit option'
                 );
             }

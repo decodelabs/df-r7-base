@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Populate implements IPopulateQuery, Dumpable
 {
@@ -49,7 +49,7 @@ class Populate implements IPopulateQuery, Dumpable
         $adapter = $this->_field->getSource()->getAdapter();
 
         if (!$adapter instanceof opal\query\IIntegralAdapter) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'Cannot populate field '.$fieldName.' - adapter is not integral'
             );
         }
@@ -61,7 +61,7 @@ class Populate implements IPopulateQuery, Dumpable
         $field = $schema->getField($intrinsicFieldName);
 
         if (!$field instanceof opal\schema\IRelationField) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Cannot populate '.$intrinsicFieldName.' - field is not a relation'
             );
         }

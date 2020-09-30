@@ -17,7 +17,7 @@ use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
 use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
 use DecodeLabs\Tagged\Xml\SerializableTrait as XmlSerializableTrait;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Content implements fire\ILayoutContent
 {
@@ -59,7 +59,7 @@ class Content implements fire\ILayoutContent
             }
 
             if (!$slot instanceof fire\ISlotContent) {
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     'Invalid slot content detected'
                 );
             }
@@ -121,7 +121,7 @@ class Content implements fire\ILayoutContent
     public function xmlUnserialize(XmlElement $element): void
     {
         if ($element->getTagName() != 'layout') {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Layout content object expected layout xml element'
             );
         }

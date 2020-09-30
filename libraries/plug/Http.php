@@ -12,7 +12,7 @@ use df\link;
 use df\aura;
 use df\flex;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Http implements arch\IDirectoryHelper
 {
@@ -23,7 +23,7 @@ class Http implements arch\IDirectoryHelper
     protected function _init()
     {
         if (!$this->context->runner instanceof core\app\runner\Http) {
-            throw Glitch::EDomain(
+            throw Exceptional::Domain(
                 'Http helper can only be used from http run mode'
             );
         }

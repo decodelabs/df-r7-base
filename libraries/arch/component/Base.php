@@ -14,7 +14,7 @@ use df\link;
 
 use DecodeLabs\Tagged\Html;
 use DecodeLabs\Tagged\Markup;
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements arch\IComponent
 {
@@ -59,13 +59,13 @@ abstract class Base implements arch\IComponent
             try {
                 $scaffold = arch\scaffold\Base::factory($context);
                 return $scaffold->loadComponent($name, $args);
-            } catch (arch\scaffold\EGlitch $e) {
+            } catch (arch\scaffold\Exception $e) {
             }
 
             $class = 'df\\apex\\directory\\shared\\'.implode('\\', $parts);
 
             if (!class_exists($class)) {
-                throw Glitch::ENotFound(
+                throw Exceptional::NotFound(
                     'Component ~'.$area.'/'.$path.'/#/'.$name.' could not be found'
                 );
             }
@@ -82,7 +82,7 @@ abstract class Base implements arch\IComponent
             $class = 'df\\apex\\themes\\shared\\components\\'.ucfirst($name);
 
             if (!class_exists($class)) {
-                throw Glitch::ENotFound(
+                throw Exceptional::NotFound(
                     'Theme component '.ucfirst($name).' could not be found'
                 );
             }
@@ -125,7 +125,7 @@ abstract class Base implements arch\IComponent
         $this->view = $this->getRenderTarget()->getView();
 
         if (!method_exists($this, '_execute')) {
-            throw Glitch::EDefinition([
+            throw Exceptional::Definition([
                 'message' => 'Component requires an _execute method',
                 'dataType' => $this
             ]);
@@ -160,7 +160,7 @@ abstract class Base implements arch\IComponent
         }
 
         if (!method_exists($this, '_execute')) {
-            throw Glitch::EDefinition([
+            throw Exceptional::Definition([
                 'message' => 'Component requires an _execute method',
                 'dataType' => $this
             ]);

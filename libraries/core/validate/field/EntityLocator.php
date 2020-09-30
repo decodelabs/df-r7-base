@@ -26,7 +26,7 @@ class EntityLocator extends Base implements core\validate\IEntityLocatorField
         try {
             $locator = mesh\entity\Locator::factory($value);
             $value = (string)$locator;
-        } catch (mesh\entity\EGlitch $e) {
+        } catch (mesh\entity\Exception $e) {
             $this->addError('invalid', $this->validator->_(
                 'Please enter a valid entity locator'
             ));

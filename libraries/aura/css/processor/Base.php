@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\aura;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 use DecodeLabs\Terminus\Session;
 
 abstract class Base implements aura\css\IProcessor
@@ -29,7 +29,7 @@ abstract class Base implements aura\css\IProcessor
         $class = 'df\\aura\\css\\processor\\'.ucfirst($name);
 
         if (!class_exists($class)) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'Css processor '.$name.' could not be found'
             );
         }

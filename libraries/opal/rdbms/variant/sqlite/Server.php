@@ -10,6 +10,7 @@ use df\core;
 use df\opal;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Server implements opal\rdbms\IServer
 {
@@ -55,7 +56,7 @@ class Server implements opal\rdbms\IServer
             return $e;
         }
 
-        return Glitch::{'df/opal/rdbms/EConnection'}($message, [
+        return Exceptional::{'df/opal/rdbms/Connection'}($message, [
             'code' => $number
         ]);
     }
@@ -66,7 +67,7 @@ class Server implements opal\rdbms\IServer
             return $e;
         }
 
-        return Glitch::{'df/opal/rdbms/ETransaction'}($message, [
+        return Exceptional::{'df/opal/rdbms/Transaction'}($message, [
             'code' => $number,
             'data' => [
                 'sql' => $sql
@@ -80,7 +81,7 @@ class Server implements opal\rdbms\IServer
         // Query error
             case 1:
                 if (preg_match('/no such table\: ([a-zA-Z0-9_]+)/i', $message, $matches)) {
-                    return Glitch::{'df/opal/rdbms/ETableNotFound,ENotFound'}($message, [
+                    return Exceptional::{'df/opal/rdbms/TableNotFound,NotFound'}($message, [
                         'code' => $number,
                         'data' => [
                             'sql' => $sql,
@@ -95,7 +96,7 @@ class Server implements opal\rdbms\IServer
             case 18:
             case 20:
             case 25:
-                return Glitch::{'df/opal/rdbms/ETransaction'}($message, [
+                return Exceptional::{'df/opal/rdbms/Transaction'}($message, [
                     'code' => $number,
                     'data' => [
                         'sql' => $sql
@@ -119,7 +120,7 @@ class Server implements opal\rdbms\IServer
         // Server unavailable
             case 5:
             case 6:
-                return Glitch::{'df/opal/rdbms/EConnection'}($message, [
+                return Exceptional::{'df/opal/rdbms/Connection'}($message, [
                     'code' => $number,
                     'data' => [
                         'sql' => $sql
@@ -130,7 +131,7 @@ class Server implements opal\rdbms\IServer
             case 3:
             case 8:
             case 23:
-                return Glitch::{'df/opal/rdbms/EAccess,EForbidden'}($message, [
+                return Exceptional::{'df/opal/rdbms/Access,Forbidden'}($message, [
                     'code' => $number,
                     'data' => [
                         'sql' => $sql
@@ -140,7 +141,7 @@ class Server implements opal\rdbms\IServer
         // DB not found
             case 14:
             case 16:
-                return Glitch::{'df/opal/rdbms/EDatabaseNotFound,ENotFound'}($message, [
+                return Exceptional::{'df/opal/rdbms/DatabaseNotFound,NotFound'}($message, [
                     'code' => $number,
                     'data' => [
                         'sql' => $sql
@@ -149,7 +150,7 @@ class Server implements opal\rdbms\IServer
 
         // Constraint conflict
             case 19:
-                return Glitch::{'df/opal/rdbms/EConstraint'}($message, [
+                return Exceptional::{'df/opal/rdbms/Constraint'}($message, [
                     'code' => $number,
                     'data' => [
                         'sql' => $sql
@@ -158,7 +159,7 @@ class Server implements opal\rdbms\IServer
 
         // Feature support
             case 22:
-                return Glitch::{'df/opal/rdbms/EFeatureSupport'}($message, [
+                return Exceptional::{'df/opal/rdbms/FeatureSupport'}($message, [
                     'code' => $number,
                     'data' => [
                         'sql' => $sql

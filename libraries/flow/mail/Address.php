@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\flow;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Address implements IAddress, Dumpable
 {
@@ -31,7 +31,7 @@ class Address implements IAddress, Dumpable
         } elseif (is_string($address)) {
             return self::fromString($address);
         } else {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Invalid email address'
             );
         }

@@ -10,11 +10,11 @@ use df\core;
 use df\link;
 use df\arch;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Atlas\DataReceiver;
 use DecodeLabs\Atlas\Channel;
+use DecodeLabs\Exceptional;
 
 interface IUrl extends
     core\uri\IGenericUrl,
@@ -162,7 +162,7 @@ trait THeaderCollection
     public function setHttpVersion($version)
     {
         if (!preg_match('|^\d\.\d$|', $version)) {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 $version.' is not a valid http version'
             );
         }

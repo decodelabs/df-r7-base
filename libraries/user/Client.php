@@ -12,7 +12,7 @@ use df\link;
 use df\mesh;
 use df\flex;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Client implements IClient, \Serializable, mesh\entity\IEntity
 {
@@ -470,7 +470,9 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
     // Array access
     public function offsetSet($key, $value)
     {
-        throw Glitch::ERuntime('Client objects are read only');
+        throw Exceptional::Runtime(
+            'Client objects are read only'
+        );
     }
 
     public function offsetGet($key)
@@ -501,6 +503,8 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
 
     public function offsetUnset($key)
     {
-        throw Glitch::ERuntime('Client objects are read only');
+        throw Exceptional::Runtime(
+            'Client objects are read only'
+        );
     }
 }

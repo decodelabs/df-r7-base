@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\flow;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class MultiPart implements IMultiPart, Dumpable
 {
@@ -45,7 +45,9 @@ class MultiPart implements IMultiPart, Dumpable
             $parts = explode("\n".'--'.$boundary, "\n".trim($body));
 
             if ($parts === false) {
-                throw Glitch::EUnexpectedValue('Unable to parse mime string', null, $body);
+                throw Exceptional::UnexpectedValue(
+                    'Unable to parse mime string', null, $body
+                );
             }
 
             array_shift($parts);
@@ -98,7 +100,7 @@ class MultiPart implements IMultiPart, Dumpable
                 break;
 
             default:
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     'Invalid multi part type '.$type
                 );
         }

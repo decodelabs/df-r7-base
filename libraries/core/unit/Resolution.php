@@ -8,7 +8,7 @@ namespace df\core\unit;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Resolution implements IResolution
 {
@@ -87,7 +87,9 @@ class Resolution implements IResolution
                 break;
 
             default:
-                throw Glitch::EInvalidArgument('Unsupported dpi unit: '.$inUnit);
+                throw Exceptional::InvalidArgument(
+                    'Unsupported dpi unit: '.$inUnit
+                );
         }
 
         switch ($outUnit) {

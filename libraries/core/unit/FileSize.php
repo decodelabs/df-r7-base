@@ -8,10 +8,8 @@ namespace df\core\unit;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Exceptional;
 
 class FileSize implements IFileSize, Dumpable
 {
@@ -158,7 +156,9 @@ class FileSize implements IFileSize, Dumpable
                 break;
 
             default:
-                throw Glitch::EInvalidArgument('Unsupported file size unit: '.$inUnit);
+                throw Exceptional::InvalidArgument(
+                    'Unsupported file size unit: '.$inUnit
+                );
         }
 
         $bit = false;

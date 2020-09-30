@@ -12,7 +12,7 @@ use df\user;
 use df\flex;
 use df\axis;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Manager implements IManager, core\IShutdownAware
 {
@@ -106,7 +106,9 @@ class Manager implements IManager, core\IShutdownAware
             // From
             if (!$from = $message->getFromAddress()) {
                 if (!$from = flow\mail\Address::factory($config->getDefaultAddress())) {
-                    throw Glitch::EUnexpectedValue('Unable to provide valid default address');
+                    throw Exceptional::UnexpectedValue(
+                        'Unable to provide valid default address'
+                    );
                 }
 
                 if (!$from->getName()) {
@@ -117,9 +119,11 @@ class Manager implements IManager, core\IShutdownAware
             }
 
             if (!$from->isValid()) {
-                $context->logs->logException(Glitch::EUnexpectedValue(
-                    'Invalid from address: '.$from
-                ));
+                $context->logs->logException(
+                    Exceptional::UnexpectedValue(
+                        'Invalid from address: '.$from
+                    )
+                );
 
                 return $this;
             }
@@ -293,7 +297,7 @@ class Manager implements IManager, core\IShutdownAware
         $model = axis\Model::factory('mail');
 
         if (!$model instanceof flow\mail\IMailModel) {
-            throw Glitch::{'df/flow/mail/EDefinition'}(
+            throw Exceptional::{'df/flow/mail/Definition'}(
                 'Mail model does not implement flow\\mail\\IMailModel'
             );
         }
@@ -532,13 +536,13 @@ class Manager implements IManager, core\IShutdownAware
     public function subscribeUserToPrimaryList(user\IClientDataObject $client, $source, array $groups=null, bool $replace=false): flow\mailingList\ISubscribeResult
     {
         if (!$source = $this->getListSource($sourceId = $source)) {
-            throw Glitch::{'df/flow/mailingList/EApi,flow/mailingList/ENotFound'}(
+            throw Exceptional::{'df/flow/mailingList/Api,flow/mailingList/NotFound'}(
                 'List source '.$sourceId.' does not exist'
             );
         }
 
         if (!$listId = $source->getPrimaryListId()) {
-            throw Glitch::{'df/flow/mailingList/EApi,flow/mailingList/ENotFound'}(
+            throw Exceptional::{'df/flow/mailingList/Api,flow/mailingList/NotFound'}(
                 'No primary list has been set for mailing list source '.$source->getId()
             );
         }
@@ -549,7 +553,7 @@ class Manager implements IManager, core\IShutdownAware
     public function subscribeUserToList(user\IClientDataObject $client, $source, $listId, array $groups=null, bool $replace=false): flow\mailingList\ISubscribeResult
     {
         if (!$source = $this->getListSource($sourceId = $source)) {
-            throw Glitch::{'df/flow/mailingList/EApi,flow/mailingList/ENotFound'}(
+            throw Exceptional::{'df/flow/mailingList/Api,flow/mailingList/NotFound'}(
                 'List source '.$sourceId.' does not exist'
             );
         }

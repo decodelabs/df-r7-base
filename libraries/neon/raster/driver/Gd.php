@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\neon;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\raster\IImageFilterDriver
 {
@@ -72,7 +72,9 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
 
                 default:
                     if (false === ($data = file_get_contents($file))) {
-                        throw Glitch::ERuntime('Unable to load file contents', null, $file);
+                        throw Exceptional::Runtime(
+                            'Unable to load file contents', null, $file
+                        );
                     }
 
                     $this->_pointer = imageCreateFromString($data);
@@ -80,13 +82,13 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
                     break;
             }
         } catch (\Throwable $e) {
-            throw Glitch::{'../EFormat'}(
+            throw Exceptional::{'../Format'}(
                 $e->getMessage()
             );
         }
 
         if (!$this->_pointer) {
-            throw Glitch::{'../EIo,../EUnreadable'}(
+            throw Exceptional::{'../Io,../Unreadable'}(
                 'Unable to load raster image '.$file
             );
         }
@@ -104,7 +106,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         $this->_pointer = imageCreateFromString($string);
 
         if (!$this->_pointer) {
-            throw Glitch::{'../EIo,../EUnreadable'}(
+            throw Exceptional::{'../Io,../Unreadable'}(
                 'Unable to load raster image from string'
             );
         }
@@ -119,7 +121,9 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         }
 
         if (false === ($pointer = imageCreateTrueColor($width, $height))) {
-            throw Glitch::ERuntime('Unable to create true color image');
+            throw Exceptional::Runtime(
+                'Unable to create true color image'
+            );
         }
 
         $this->_pointer = $pointer;
@@ -194,7 +198,9 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
     public function resize(int $width, int $height)
     {
         if (false === ($img = imageCreateTrueColor($width, $height))) {
-            throw Glitch::ERuntime('Unable to create true color image');
+            throw Exceptional::Runtime(
+                'Unable to create true color image'
+            );
         }
 
         $background = imageColorAllocateAlpha($img, 255, 255, 255, 127);
@@ -217,7 +223,9 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
     public function crop(int $x, int $y, int $width, int $height)
     {
         if (false === ($img = imageCreateTrueColor($width, $height))) {
-            throw Glitch::ERuntime('Unable to create true color image');
+            throw Exceptional::Runtime(
+                'Unable to create true color image'
+            );
         }
 
         $background = imageColorAllocateAlpha($img, 255, 255, 255, 127);
@@ -268,7 +276,9 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         }
 
         if (false === ($pointer = imageRotate($this->_pointer, $angle->getDegrees() * -1, $background))) {
-            throw Glitch::ERuntime('Unable to rotate image');
+            throw Exceptional::Runtime(
+                'Unable to rotate image'
+            );
         }
 
         imageDestroy($this->_pointer);
@@ -282,7 +292,9 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
     public function mirror()
     {
         if (false === ($tmp = imageCreateTrueColor($this->_width, $this->_height))) {
-            throw Glitch::ERuntime('Unable to create true color image');
+            throw Exceptional::Runtime(
+                'Unable to create true color image'
+            );
         }
 
         imageAlphaBlending($tmp, true);
@@ -305,7 +317,9 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
     public function flip()
     {
         if (false === ($tmp = imageCreateTrueColor($this->_width, $this->_height))) {
-            throw Glitch::ERuntime('Unable to create true color image');
+            throw Exceptional::Runtime(
+                'Unable to create true color image'
+            );
         }
 
         imageAlphaBlending($tmp, true);

@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements arch\navigation\IEntry
 {
@@ -25,7 +25,7 @@ abstract class Base implements arch\navigation\IEntry
         }
 
         if (!$class = self::_getEntryClass($type)) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'Entry type '.$type.' could not be found'
             );
         }
@@ -46,7 +46,9 @@ abstract class Base implements arch\navigation\IEntry
         $class = get_called_class();
 
         if ($class === self::class) {
-            throw Glitch::ERuntime('Cannot create Base type menu');
+            throw Exceptional::Runtime(
+                'Cannot create Base type menu'
+            );
         }
 
         return (new $class())->setId($entry['id'])->setWeight($entry['weight']);
@@ -56,7 +58,7 @@ abstract class Base implements arch\navigation\IEntry
     public static function factory($type, ...$args): arch\navigation\IEntry
     {
         if (!$class = self::_getEntryClass($type)) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'Entry type '.$type.' could not be found'
             );
         }
@@ -64,7 +66,9 @@ abstract class Base implements arch\navigation\IEntry
         $output = (new \ReflectionClass($class))->newInstanceArgs($args);
 
         if (!$output instanceof arch\navigation\IEntry) {
-            throw Glitch::ELogic('Entry class does not implement IEntry', null, $output);
+            throw Exceptional::Logic(
+                'Entry class does not implement IEntry', null, $output
+            );
         }
 
         return $output;

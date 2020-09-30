@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\spur;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements spur\analytics\IAdapter
 {
@@ -32,7 +32,7 @@ abstract class Base implements spur\analytics\IAdapter
                     $info->options->toArray(),
                     $info->userAttributes->toArray()
                 );
-            } catch (ENotFound $e) {
+            } catch (NotFoundException $e) {
                 continue;
             }
 
@@ -47,7 +47,9 @@ abstract class Base implements spur\analytics\IAdapter
         $config = spur\analytics\Config::getInstance();
 
         if (null === ($info = $config->getAdapter($name))) {
-            throw Glitch::ENotFound('Adapter '.$name.' could not be found');
+            throw Exceptional::NotFound(
+                'Adapter '.$name.' could not be found'
+            );
         }
 
         $output = self::factory(
@@ -66,7 +68,7 @@ abstract class Base implements spur\analytics\IAdapter
         foreach (df\Launchpad::$loader->lookupClassList('spur/analytics/adapter') as $name => $class) {
             try {
                 $adapter = self::factory($name);
-            } catch (ENotFound $e) {
+            } catch (NotFoundException $e) {
                 continue;
             }
 
@@ -82,7 +84,9 @@ abstract class Base implements spur\analytics\IAdapter
         $class = 'df\\spur\\analytics\\adapter\\'.ucfirst($name);
 
         if (!class_exists($class)) {
-            throw Glitch::ENotFound('Adapter '.$name.' could not be found');
+            throw Exceptional::NotFound(
+                'Adapter '.$name.' could not be found'
+            );
         }
 
         return new $class($options, $defaultUserAttributes);

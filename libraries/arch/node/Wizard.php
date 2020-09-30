@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\aura;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Wizard extends Form
 {
@@ -23,7 +23,7 @@ abstract class Wizard extends Form
         $func = 'create'.ucfirst($section).'Ui';
 
         if (!method_exists($this, $func)) {
-            throw Glitch::EDefinition(
+            throw Exceptional::Definition(
                 'Wizard ui missing for '.$section.' section'
             );
         }
@@ -34,7 +34,7 @@ abstract class Wizard extends Form
     public function getCurrentSection(): string
     {
         if (empty(static::SECTIONS)) {
-            throw Glitch::EDefinition(
+            throw Exceptional::Definition(
                 'No wizard sections have been defined'
             );
         }

@@ -12,7 +12,7 @@ use df\aura;
 use df\user;
 use df\mint;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Handler implements IHandler
 {
@@ -267,7 +267,9 @@ class Handler implements IHandler
     {
         if (!$transaction instanceof IECommerceTransaction) {
             if (!$amount) {
-                throw Glitch::EInvalidArgument('ECommerce transaction amount cannot be empty');
+                throw Exceptional::InvalidArgument(
+                    'ECommerce transaction amount cannot be empty'
+                );
             }
 
             $transaction = new ECommerceTransaction(

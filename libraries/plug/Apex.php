@@ -12,7 +12,7 @@ use df\arch;
 use df\aura;
 use df\flex;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
 {
@@ -253,7 +253,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
     public function form($request)
     {
         if (!$this->view) {
-            throw Glitch::{'df/aura/view/ENoView,ENoContext'}(
+            throw Exceptional::{'df/aura/view/NoView,NoContext'}(
                 'Cannot prepare form for rendering, context has no view'
             );
         }
@@ -263,7 +263,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
         $node = arch\node\Form::factory($context);
 
         if (!$node instanceof arch\node\IFormNode) {
-            throw Glitch::{'df/arch/ENotFound,EInvalidArgument'}(
+            throw Exceptional::{'df/arch/NotFound,InvalidArgument'}(
                 'Node '.$request.' is not a form!'
             );
         }

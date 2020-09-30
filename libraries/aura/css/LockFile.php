@@ -9,7 +9,7 @@ use df;
 use df\core;
 
 use DecodeLabs\Atlas;
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class LockFile
 {
@@ -78,7 +78,7 @@ class LockFile
     public function canLock()
     {
         if (!$this->_path || !$this->_fileName) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Cannot check lock - path not set'
             );
         }
@@ -130,7 +130,7 @@ class LockFile
     public function lock()
     {
         if (!$this->_isLocked && !$this->canLock()) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Unable to create lock file - already locked in another process'
             );
         }

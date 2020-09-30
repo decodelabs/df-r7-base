@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 use df\opal;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Record extends Base implements IRecordProcedure
 {
@@ -56,7 +56,7 @@ abstract class Record extends Base implements IRecordProcedure
         }
 
         if (!$this->record) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Record procedure has no record to operate on'
             );
         }

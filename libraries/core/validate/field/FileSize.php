@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\neon;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class FileSize extends Base implements core\validate\IFileSizeField
 {
@@ -22,7 +22,9 @@ class FileSize extends Base implements core\validate\IFileSizeField
         $this->_min = core\unit\FileSize::normalize($date);
 
         if ($this->_min && !$this->_min->getBytes() && !$this->_allowZero) {
-            throw Glitch::EInvalidArgument('Byte value must be greater than one');
+            throw Exceptional::InvalidArgument(
+                'Byte value must be greater than one'
+            );
         }
 
         return $this;
@@ -33,7 +35,9 @@ class FileSize extends Base implements core\validate\IFileSizeField
         $this->_max = core\unit\FileSize::normalize($date);
 
         if ($this->_max && !$this->_max->getBytes() && !$this->_allowZero) {
-            throw Glitch::EInvalidArgument('Byte value must be greater than one');
+            throw Exceptional::InvalidArgument(
+                'Byte value must be greater than one'
+            );
         }
 
         return $this;

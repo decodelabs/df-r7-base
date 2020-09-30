@@ -12,8 +12,8 @@ use df\arch;
 
 use DecodeLabs\Tagged\Html;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Template implements aura\view\ITemplate, Dumpable
 {
@@ -52,7 +52,7 @@ class Template implements aura\view\ITemplate, Dumpable
                 $path = '#/'.$path;
             }
 
-            throw Glitch::{'df/aura/view/ENotFound'}(
+            throw Exceptional::{'df/aura/view/NotFound'}(
                 'Template ~'.rtrim($request->getDirectoryLocation(), '/').'/'.$path.' could not be found'
             );
         }
@@ -88,7 +88,7 @@ class Template implements aura\view\ITemplate, Dumpable
         }
 
         if (!$templatePath) {
-            throw Glitch::{'df/aura/view/ENotFound'}(
+            throw Exceptional::{'df/aura/view/NotFound'}(
                 'Theme template '.$path.' could not be found'
             );
         }
@@ -128,7 +128,7 @@ class Template implements aura\view\ITemplate, Dumpable
         }
 
         if (!$layoutPath) {
-            throw Glitch::{'df/aura/view/ENotFound'}(
+            throw Exceptional::{'df/aura/view/NotFound'}(
                 'Layout '.$pathName.'.'.$type.' could not be found'
             );
         }
@@ -142,7 +142,7 @@ class Template implements aura\view\ITemplate, Dumpable
     public function __construct(arch\IContext $context, $absolutePath, $isLayout=false)
     {
         if (!is_file($absolutePath)) {
-            throw Glitch::{'df/aura/view/ENotFound'}(
+            throw Exceptional::{'df/aura/view/NotFound'}(
                 'Template '.$absolutePath.' could not be found'
             );
         }
@@ -157,7 +157,7 @@ class Template implements aura\view\ITemplate, Dumpable
     public function getView()
     {
         if (!$this->view) {
-            throw Glitch::{'df/aura/view/ENoView,ENoContext'}(
+            throw Exceptional::{'df/aura/view/NoView,NoContext'}(
                 'This template is not currently rendering'
             );
         }
@@ -168,7 +168,9 @@ class Template implements aura\view\ITemplate, Dumpable
     public function render()
     {
         if ($this->_isRendering) {
-            throw Glitch::ELogic('Rendering is already in progress');
+            throw Exceptional::Logic(
+                'Rendering is already in progress'
+            );
         }
 
         $____target = $this->getRenderTarget();
@@ -239,7 +241,7 @@ class Template implements aura\view\ITemplate, Dumpable
     public function toString(): string
     {
         if (!$this->_renderTarget) {
-            throw Glitch::{'df/aura/view/ENoView,ENoContext'}(
+            throw Exceptional::{'df/aura/view/NoView,NoContext'}(
                 'No render target has been set'
             );
         }
@@ -387,7 +389,7 @@ class Template implements aura\view\ITemplate, Dumpable
     protected function _checkView()
     {
         if (!$this->view) {
-            throw Glitch::{'df/aura/view/ENoView,ENoContext'}(
+            throw Exceptional::{'df/aura/view/NoView,NoContext'}(
                 'No view available for content provider to interact with'
             );
         }

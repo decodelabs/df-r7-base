@@ -10,7 +10,7 @@ use df\core;
 use df\fire;
 use df\aura;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements fire\ICategory
 {
@@ -36,7 +36,7 @@ abstract class Base implements fire\ICategory
         $class = 'df\\fire\\category\\'.$name;
 
         if (!class_exists($class)) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'Content category '.$name.' could not be found'
             );
         }

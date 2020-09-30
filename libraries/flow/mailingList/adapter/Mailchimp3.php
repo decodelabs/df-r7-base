@@ -13,7 +13,7 @@ use df\user;
 use df\link;
 use df\axis;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Mailchimp3 extends Base
 {
@@ -25,7 +25,7 @@ class Mailchimp3 extends Base
     protected function __construct(core\collection\ITree $options)
     {
         if (!$apiKey = $options['apiKey']) {
-            throw Glitch::{'df/flow/mailingList/ESetup'}(
+            throw Exceptional::{'df/flow/mailingList/Setup'}(
                 'Mailchimp apiKey has not been set'
             );
         }
@@ -142,7 +142,7 @@ class Mailchimp3 extends Base
             $result
                 ->isSuccessful(true)
                 ->isSubscribed(true);
-        } catch (spur\mail\mailchimp3\EApi $e) {
+        } catch (spur\mail\mailchimp3\ApiException $e) {
             $result->isSuccessful(false);
             $handled = false;
 

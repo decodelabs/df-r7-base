@@ -13,10 +13,8 @@ use df\spur;
 use df\neon;
 use df\fuse;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Exceptional;
 
 class Base implements ITheme, Dumpable
 {
@@ -61,7 +59,9 @@ class Base implements ITheme, Dumpable
     protected function __construct(string $id)
     {
         if (preg_match('/[^a-zA-Z0-9_]/', $id)) {
-            throw Glitch::EInvalidArgument('Invalid theme id');
+            throw Exceptional::InvalidArgument(
+                'Invalid theme id'
+            );
         }
 
         $this->_id = $id;

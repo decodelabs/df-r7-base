@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 use df\aura;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class GoogleClassic extends Base implements spur\analytics\ILegacyAdapter
 {
@@ -72,7 +72,9 @@ class GoogleClassic extends Base implements spur\analytics\ILegacyAdapter
         array_unshift($args, $method);
 
         if (false === ($json = json_encode($args))) {
-            throw Glitch::ERuntime('Unable to encode json', null, $args);
+            throw Exceptional::Runtime(
+                'Unable to encode json', null, $args
+            );
         }
 
         return '_gaq.push('.str_replace('"', '\'', $json).');';

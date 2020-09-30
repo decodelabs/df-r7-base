@@ -10,8 +10,8 @@ use df\core;
 use df\halo;
 use df\arch;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
+use DecodeLabs\Exceptional;
 
 class Manager implements IManager
 {
@@ -78,7 +78,7 @@ class Manager implements IManager
     public function launch($name)
     {
         if (!$this->isEnabled()) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Daemons are currently disabled in config'
             );
         }
@@ -91,7 +91,7 @@ class Manager implements IManager
     public function nudge($name)
     {
         if (!$this->isEnabled()) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Daemons are currently disabled in config'
             );
         }
@@ -104,7 +104,7 @@ class Manager implements IManager
     public function getRemote($name)
     {
         if (!$this->isEnabled()) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Daemons are currently disabled in config'
             );
         }
@@ -115,7 +115,7 @@ class Manager implements IManager
     public function isRunning($name)
     {
         if (!$this->isEnabled()) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Daemons are currently disabled in config'
             );
         }

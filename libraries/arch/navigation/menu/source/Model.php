@@ -10,6 +10,8 @@ use df\core;
 use df\arch;
 use df\axis;
 
+use DecodeLabs\Exceptional;
+
 class Model extends Base
 {
     public function loadMenu(core\uri\IUrl $id)
@@ -19,7 +21,7 @@ class Model extends Base
         $menuId = $id->path->getLast();
 
         if (!$model instanceof arch\navigation\menu\ISourceAdapter) {
-            throw Glitch::{'ENotFound'}(
+            throw Exceptional::NotFound(
                 'Model '.$modelName.' is not a menu source adapter'
             );
         }

@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 use df\opal;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Rdbms extends Base
 {
@@ -74,7 +74,9 @@ class Rdbms extends Base
             case 24: $type = 'mediumblob'; break;
             case 32: $type = 'longblob'; break;
             default:
-                throw Glitch::EUnexpectedValue('Unsupported blob size: '.$size);
+                throw Exceptional::UnexpectedValue(
+                    'Unsupported blob size: '.$size
+                );
         }
 
         $field = $this->_targetSchema->createField($primitive->getName(), $type);
@@ -174,7 +176,9 @@ class Rdbms extends Base
             case 4: $type = 'int'; break;
             case 8: $type = 'bigint'; break;
             default:
-                throw Glitch::EUnexpectedValue('Unsupported byte size: '.$size);
+                throw Exceptional::UnexpectedValue(
+                    'Unsupported byte size: '.$size
+                );
         }
 
         $field = $this->_targetSchema->createField($primitive->getName(), $type)
@@ -207,7 +211,9 @@ class Rdbms extends Base
             case 24: $type = 'mediumtext'; break;
             case 32: $type = 'longtext'; break;
             default:
-                throw Glitch::EUnexpectedValue('Unsupported text size: '.$size);
+                throw Exceptional::UnexpectedValue(
+                    'Unsupported text size: '.$size
+                );
         }
 
         $field = $this->_targetSchema->createField($primitive->getName(), $type)

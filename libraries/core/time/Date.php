@@ -9,10 +9,8 @@ use df;
 use df\core;
 use df\user;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Exceptional;
 
 class Date implements IDate, Dumpable
 {
@@ -137,7 +135,9 @@ class Date implements IDate, Dumpable
             try {
                 $timezone = new \DateTimeZone((string)$timezone);
             } catch (\Throwable $e) {
-                throw Glitch::EInvalidArgument($e->getMessage());
+                throw Exceptional::InvalidArgument(
+                    $e->getMessage()
+                );
             }
         }
 
@@ -174,7 +174,9 @@ class Date implements IDate, Dumpable
         try {
             $this->_setDate(new \DateTime($date, $timezone), $timeEnabled);
         } catch (\Throwable $e) {
-            throw Glitch::EInvalidArgument($e->getMessage());
+            throw Exceptional::InvalidArgument(
+                $e->getMessage()
+            );
         }
 
         if ($timestamp !== null) {
@@ -289,7 +291,9 @@ class Date implements IDate, Dumpable
             try {
                 $timezone = new \DateTimeZone((string)$timezone);
             } catch (\Throwable $e) {
-                throw Glitch::EInvalidArgument($e->getMessage());
+                throw Exceptional::InvalidArgument(
+                    $e->getMessage()
+                );
             }
         }
 
@@ -359,7 +363,9 @@ class Date implements IDate, Dumpable
         $formatter = \IntlDateFormatter::create($locale, $size, \IntlDateFormatter::NONE, $this->_date->getTimezone());
 
         if (!$formatter) {
-            throw Glitch::ERuntime('Unable to create IntlDateFormatter', null, $locale);
+            throw Exceptional::Runtime(
+                'Unable to create IntlDateFormatter', null, $locale
+            );
         }
 
         return $formatter->format($this->toTimestamp());
@@ -373,7 +379,9 @@ class Date implements IDate, Dumpable
         $formatter = \IntlDateFormatter::create($locale, \IntlDateFormatter::NONE, $size, $this->_date->getTimezone());
 
         if (!$formatter) {
-            throw Glitch::ERuntime('Unable to create IntlDateFormatter', null, $locale);
+            throw Exceptional::Runtime(
+                'Unable to create IntlDateFormatter', null, $locale
+            );
         }
 
         return $formatter->format($this->toTimestamp());
@@ -560,7 +568,7 @@ class Date implements IDate, Dumpable
             $month = strtolower($month);
 
             if (!isset(self::MONTHS[$month])) {
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     $month.' is not a valid month string'
                 );
             }
@@ -627,7 +635,7 @@ class Date implements IDate, Dumpable
             $day = strtolower($day);
 
             if (!isset(self::DAYS[$day])) {
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     $day.' is not a valid day string'
                 );
             }

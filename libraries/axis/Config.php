@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\axis;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Config extends core\Config
 {
@@ -69,7 +69,7 @@ class Config extends core\Config
         $connectionId = $this->getConnectionIdFor($unit);
 
         if (!isset($this->values->connections->{$connectionId})) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'There are no connections for '.$unit->getUnitId().', with connection id '.$connectionId
             );
         }
@@ -105,7 +105,7 @@ class Config extends core\Config
                     $unitId = 'default';
 
                     if (!isset($this->values->units[$unitId])) {
-                        throw Glitch::ERuntime(
+                        throw Exceptional::Runtime(
                             'There are no connections matching '.$originalId
                         );
                     }

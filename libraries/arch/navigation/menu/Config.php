@@ -32,7 +32,7 @@ class Config extends core\Config implements IConfig
         foreach ($this->values->{$id}->delegates as $delegate) {
             try {
                 $menu->addDelegate(Base::factory($context, (string)$delegate));
-            } catch (EGlitch $e) {
+            } catch (Exception $e) {
                 continue;
             }
         }
@@ -70,7 +70,7 @@ class Config extends core\Config implements IConfig
                 }
 
                 $data[] = $entry->toArray();
-            } catch (EGlitch $e) {
+            } catch (arch\navigation\Exception $e) {
                 continue;
             }
         }

@@ -11,8 +11,8 @@ use df\spur;
 use df\link;
 use df\flex;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
+use DecodeLabs\Exceptional;
 
 class Registry implements IRegistry
 {
@@ -44,7 +44,7 @@ class Registry implements IRegistry
         try {
             $data = $this->requestJson('get', 'packages/'.rawurlencode($name));
         } catch (\Throwable $e) {
-            throw Glitch::EApi([
+            throw Exceptional::Api([
                 'message' => $e->getMessage(),
                 'previous' => $e,
                 'code' => $e->getCode()

@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Select implements ISelectQuery, Dumpable
 {
@@ -87,7 +87,7 @@ class Select implements ISelectQuery, Dumpable
         }
 
         if (!is_array($data)) {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Source did not return a result that could be converted to an array'
             );
         }

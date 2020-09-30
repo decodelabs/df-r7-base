@@ -12,8 +12,8 @@ use df\flex;
 use df\mesh;
 use df\opal;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 abstract class Model implements IModel, Dumpable
 {
@@ -34,7 +34,7 @@ abstract class Model implements IModel, Dumpable
         $class = 'df\\apex\\models\\'.$name.'\\Model';
 
         if (!class_exists($class)) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'Model '.$name.' could not be found'
             );
         }
@@ -96,7 +96,7 @@ abstract class Model implements IModel, Dumpable
                 $class = 'df\\axis\\unit\\'.$className;
 
                 if (!class_exists($class)) {
-                    throw Glitch::ENotFound(
+                    throw Exceptional::NotFound(
                         'Virtual model unit type '.$this->getModelName().'/'.$className.' could not be found'
                     );
                 }
@@ -104,7 +104,7 @@ abstract class Model implements IModel, Dumpable
                 $ref = new \ReflectionClass($class);
 
                 if (!$ref->implementsInterface('df\\axis\\IVirtualUnit')) {
-                    throw Glitch::ERuntime(
+                    throw Exceptional::Runtime(
                         'Unit type '.$this->getModelName().'/'.$className.' cannot load virtual units'
                     );
                 }
@@ -117,7 +117,7 @@ abstract class Model implements IModel, Dumpable
             }
 
 
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'Model unit '.$this->getModelName().'/'.$name.' could not be found'
             );
         }
@@ -190,7 +190,7 @@ abstract class Model implements IModel, Dumpable
                 $data['name'] = $unit->getUnitName();
                 $data['canonicalName'] = $unit->getCanonicalUnitName();
                 $data['type'] = $unit->getUnitType();
-            } catch (axis\EGlitch $e) {
+            } catch (axis\Exception $e) {
             }
 
             $output[$unitId] = $data;
@@ -218,7 +218,7 @@ abstract class Model implements IModel, Dumpable
                 $unit = $this->getUnit($node['id']);
 
                 if (!$unit instanceof ISchemaBasedStorageUnit) {
-                    throw Glitch::ELogic(
+                    throw Exceptional::Logic(
                         'Model unit '.$unit->getUnitName().' does not provide a schema'
                     );
                 }

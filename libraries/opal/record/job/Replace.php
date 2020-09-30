@@ -10,7 +10,7 @@ use df\core;
 use df\opal;
 use df\mesh;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Replace extends mesh\job\Base implements opal\record\IJob
 {
@@ -33,7 +33,9 @@ class Replace extends mesh\job\Base implements opal\record\IJob
         $adapter = $this->getAdapter();
 
         if (!$adapter instanceof opal\query\IEntryPoint) {
-            throw Glitch::ELogic('Adapter is not capable of creating queries', null, $adapter);
+            throw Exceptional::Logic(
+                'Adapter is not capable of creating queries', null, $adapter
+            );
         }
 
         $id = $adapter->replace($data)->execute();

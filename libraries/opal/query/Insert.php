@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Insert implements IInsertQuery, Dumpable
 {
@@ -52,13 +52,13 @@ class Insert implements IInsertQuery, Dumpable
         } elseif ($row instanceof core\IArrayProvider) {
             $row = $row->toArray();
         } elseif (!is_array($row)) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Insert data must be convertible to an array'
             );
         }
 
         if (empty($row)) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Insert data must contain at least one field'
             );
         }

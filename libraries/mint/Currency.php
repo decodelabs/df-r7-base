@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\mint;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Currency implements ICurrency, Dumpable
 {
@@ -313,7 +313,7 @@ class Currency implements ICurrency, Dumpable
     {
         if ($amount instanceof ICurrency) {
             if ($amount->getCode() != $this->_code) {
-                throw Glitch::{'ECurrency,EInvalidArgument'}(
+                throw Exceptional::{'Currency,InvalidArgument'}(
                     'Cannot combine different currency amounts'
                 );
             }
@@ -335,7 +335,7 @@ class Currency implements ICurrency, Dumpable
     {
         if ($amount instanceof ICurrency) {
             if ($amount->getCode() != $this->_code) {
-                throw Glitch::{'ECurrency,EInvalidArgument'}(
+                throw Exceptional::{'Currency,InvalidArgument'}(
                     'Cannot combine different currency amounts'
                 );
             }

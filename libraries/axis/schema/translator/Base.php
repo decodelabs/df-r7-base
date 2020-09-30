@@ -11,6 +11,7 @@ use df\axis;
 use df\opal;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements axis\schema\ITranslator
 {
@@ -348,7 +349,7 @@ abstract class Base implements axis\schema\ITranslator
         $func = '_create'.$type.'Field';
 
         if (!method_exists($this, $func)) {
-            throw Glitch::{'df/axis/schema/ERuntime'}(
+            throw Exceptional::{'df/axis/schema/Runtime'}(
                 'Primitive '.$type.' is currently not supported by RDBMS based tables, for field '.$primitive->getName()
             );
         }
@@ -439,12 +440,12 @@ abstract class Base implements axis\schema\ITranslator
                     );
                 }
             } elseif ($axisField instanceof opal\schema\INullPrimitiveField) {
-                throw Glitch::ELogic(
+                throw Exceptional::Logic(
                     'You cannot put indexes on NullPrimitive fields'
                 );
             } else {
                 if (!$indexField = $this->_targetSchema->getField($primitive->getName())) {
-                    throw Glitch::ELogic(
+                    throw Exceptional::Logic(
                         'Unable to find index field '.$primitive->getName()
                     );
                 }

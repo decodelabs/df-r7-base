@@ -11,8 +11,8 @@ use df\spur;
 use df\link;
 use df\flex;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
+use DecodeLabs\Exceptional;
 
 class Github implements spur\packaging\bower\IResolver
 {
@@ -75,7 +75,9 @@ class Github implements spur\packaging\bower\IResolver
     protected function _extractRepoName(spur\packaging\bower\Package $package)
     {
         if (!preg_match('/(?:@|:\/\/)github.com[:\/]([^\/\s]+?)\/([^\/\s]+?)(?:\.git)?\/?$/i', $package->url, $matches)) {
-            throw Glitch::ERuntime('Unable to extract repo name from url: '.$package->url);
+            throw Exceptional::Runtime(
+                'Unable to extract repo name from url: '.$package->url
+            );
         }
 
         return $matches[1].'/'.$matches[2];
@@ -85,7 +87,7 @@ class Github implements spur\packaging\bower\IResolver
     {
         try {
             $tags = $this->_fetchTags($package, $repoName, $cachePath);
-        } catch (EApi $e) {
+        } catch (ApiException $e) {
             return false;
         }
 

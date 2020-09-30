@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\spur;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Tree implements ITree, Dumpable
 {
@@ -84,7 +84,9 @@ class Tree implements ITree, Dumpable
                         break;
 
                     default:
-                        throw Glitch::EUnexpectedValue('Unknown object type: '.$type);
+                        throw Exceptional::UnexpectedValue(
+                            'Unknown object type: '.$type
+                        );
                 }
 
                 $output[] = $object->_setMode($mode);

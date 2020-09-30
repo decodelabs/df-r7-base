@@ -13,8 +13,8 @@ use df\flex;
 use DecodeLabs\Tagged\Html;
 use DecodeLabs\Tagged\Builder\StyleList;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Tag implements ITag, Dumpable
 {
@@ -396,7 +396,9 @@ class Tag implements ITag, Dumpable
         }
 
         if (preg_match('/[^a-zA-Z0-9\-_]/', $id)) {
-            throw Glitch::EInvalidArgument('Invalid tag id '.$id.'!');
+            throw Exceptional::InvalidArgument(
+                'Invalid tag id '.$id.'!'
+            );
         }
 
         $this->setAttribute('id', $id);

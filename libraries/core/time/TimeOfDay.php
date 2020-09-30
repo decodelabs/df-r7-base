@@ -8,8 +8,8 @@ namespace df\core\time;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class TimeOfDay implements ITimeOfDay, Dumpable
 {
@@ -44,7 +44,7 @@ class TimeOfDay implements ITimeOfDay, Dumpable
         }
 
         if (!is_array($input)) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Value does not appear to be a valid time of day'
             );
         }

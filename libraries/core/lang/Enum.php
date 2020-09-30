@@ -8,8 +8,8 @@ namespace df\core\lang;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 abstract class Enum implements IStaticEnum, Dumpable
 {
@@ -56,7 +56,7 @@ abstract class Enum implements IStaticEnum, Dumpable
             } elseif (in_array($value, self::$_labels[$class])) {
                 $value = array_search($value, self::$_labels[$class]);
             } else {
-                throw Glitch::{'EEnum,EInvalidArgument'}(
+                throw Exceptional::{'Enum,InvalidArgument'}(
                     $value.' is not a valid enum option'
                 );
             }
@@ -120,7 +120,9 @@ abstract class Enum implements IStaticEnum, Dumpable
         $options = self::getOptions();
 
         if (false === ($key = array_search($option, $options, true))) {
-            throw Glitch::EInvalidArgument('Invalid option: '.$option);
+            throw Exceptional::InvalidArgument(
+                'Invalid option: '.$option
+            );
         }
 
         return array_slice($options, 0, (int)$key);
@@ -132,7 +134,9 @@ abstract class Enum implements IStaticEnum, Dumpable
         $options = self::getOptions();
 
         if (false === ($key = array_search($option, $options, true))) {
-            throw Glitch::EInvalidArgument('Invalid option: '.$option);
+            throw Exceptional::InvalidArgument(
+                'Invalid option: '.$option
+            );
         }
 
         return array_slice($options, 0, (int)$key + 1);
@@ -144,7 +148,9 @@ abstract class Enum implements IStaticEnum, Dumpable
         $options = self::getOptions();
 
         if (false === ($key = array_search($option, $options, true))) {
-            throw Glitch::EInvalidArgument('Invalid option: '.$option);
+            throw Exceptional::InvalidArgument(
+                'Invalid option: '.$option
+            );
         }
 
         return array_slice($options, (int)$key + 1);
@@ -156,7 +162,9 @@ abstract class Enum implements IStaticEnum, Dumpable
         $options = self::getOptions();
 
         if (false === ($key = array_search($option, $options, true))) {
-            throw Glitch::EInvalidArgument('Invalid option: '.$option);
+            throw Exceptional::InvalidArgument(
+                'Invalid option: '.$option
+            );
         }
 
         return array_slice($options, (int)$key);
@@ -211,7 +219,7 @@ abstract class Enum implements IStaticEnum, Dumpable
             return new static(constant('static::'.$name));
         }
 
-        throw Glitch::ELogic(
+        throw Exceptional::Logic(
             'Enum value '.$name.' has not been defined'
         );
     }

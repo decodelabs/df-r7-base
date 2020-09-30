@@ -13,7 +13,7 @@ use df\axis;
 use df\opal;
 
 use DecodeLabs\Terminus\Cli;
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class TaskRebuildTable extends arch\node\Task
 {
@@ -38,19 +38,19 @@ class TaskRebuildTable extends arch\node\Task
         $unitId = $this->request['unit'];
 
         if (!$unit = axis\Model::loadUnitFromId($unitId)) {
-            throw Glitch::{'df/axis/unit/ENotFound'}(
+            throw Exceptional::{'df/axis/unit/NotFound'}(
                 'Unit '.$unitId.' not found'
             );
         }
 
         if ($unit->getUnitType() != 'table') {
-            throw Glitch::{'df/axis/unit/EDomain'}(
+            throw Exceptional::{'df/axis/unit/Domain'}(
                 'Unit '.$unitId.' is not a table'
             );
         }
 
         if (!$unit instanceof axis\ISchemaBasedStorageUnit) {
-            throw Glitch::{'df/axis/unit/EDomain'}(
+            throw Exceptional::{'df/axis/unit/Domain'}(
                 'Unit '.$unitId.' is not schemas based'
             );
         }
@@ -64,7 +64,7 @@ class TaskRebuildTable extends arch\node\Task
         $func = '_rebuild'.$adapterName.'Table';
 
         if (!method_exists($this, $func)) {
-            throw Glitch::{'df/axis/unit/EDomain'}(
+            throw Exceptional::{'df/axis/unit/Domain'}(
                 'Table unit '.$unitId.' is using an adapter that doesn\'t currently support rebuilding'
             );
         }
@@ -102,8 +102,8 @@ class TaskRebuildTable extends arch\node\Task
 
         try {
             $newTable = $newConnection->createTable($dbSchema);
-        } catch (opal\rdbms\ETableConflict $e) {
-            throw Glitch::{'df/axis/unit/ERuntime'}(
+        } catch (opal\rdbms\TableConflictException $e) {
+            throw Exceptional::{'df/axis/unit/Runtime'}(
                 'Table unit '.$unit->getUnitId().' is currently rebuilding in another process'
             );
         }

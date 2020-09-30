@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Mysql extends Base_Pdo
 {
@@ -22,7 +22,7 @@ class Mysql extends Base_Pdo
         if (version_compare($this->getServerVersion(), '5.0.0', '<')) {
             $this->_closeConnection();
 
-            throw Glitch::{'df/opal/rdbms/EAdapterNotFound,ENotFound'}(
+            throw Exceptional::{'df/opal/rdbms/AdapterNotFound,NotFound'}(
                 'Opal only supports Mysql version 5 and above'
             );
         }
@@ -134,7 +134,7 @@ class Mysql extends Base_Pdo
     {
         try {
             $this->executeSql('LOCK TABLE '.$table.' WRITE');
-        } catch (opal\rdbms\EGlitch $e) {
+        } catch (opal\rdbms\Exception $e) {
             return false;
         }
 
@@ -145,7 +145,7 @@ class Mysql extends Base_Pdo
     {
         try {
             $this->executeSql('UNLOCK TABLES');
-        } catch (opal\rdbms\EGlitch $e) {
+        } catch (opal\rdbms\Exception $e) {
             return false;
         }
 

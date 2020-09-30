@@ -11,8 +11,8 @@ use df\aura;
 use df\arch;
 use df\opal;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class CollectionList extends Base implements IDataDrivenListWidget, IMappedListWidget, Dumpable
 {
@@ -78,7 +78,9 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                 break;
 
             default:
-                throw Glitch::EInvalidArgument('Invalid paginator mode: '.$mode);
+                throw Exceptional::InvalidArgument(
+                    'Invalid paginator mode: '.$mode
+                );
         }
 
         return $this;
@@ -110,7 +112,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
     protected function _render()
     {
         if (empty($this->_fields)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Collection list widgets must have at least one field'
             );
         }

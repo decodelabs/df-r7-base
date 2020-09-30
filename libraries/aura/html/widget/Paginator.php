@@ -11,8 +11,8 @@ use df\aura;
 use df\opal;
 use df\arch;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Paginator extends Base implements Dumpable
 {
@@ -49,7 +49,9 @@ class Paginator extends Base implements Dumpable
                 break;
 
             default:
-                throw Glitch::EInvalidArgument('Invalid paginator mode: '.$mode);
+                throw Exceptional::InvalidArgument(
+                    'Invalid paginator mode: '.$mode
+                );
         }
 
         return $this;

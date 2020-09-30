@@ -12,10 +12,10 @@ use df\arch;
 use df\link;
 use df\fuse;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Atlas\File\Memory as MemoryFile;
+use DecodeLabs\Exceptional;
 
 use GuzzleHttp\Client as HttpClient;
 use Psr\Http\Message\ResponseInterface;
@@ -70,7 +70,7 @@ class Uri implements arch\IDirectoryHelper
         }
 
         if (!is_string($uri)) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Uri cannot be converted to a valid URL'
             );
         }
@@ -297,7 +297,7 @@ class Uri implements arch\IDirectoryHelper
                 $subPath = $dep->js[0];
             } else {
                 if (!df\Launchpad::$app->isProduction()) {
-                    throw Glitch::{'df/fuse/ERuntime'}(
+                    throw Exceptional::{'df/fuse/Runtime'}(
                         'Dependency '.$name.' does not have a main file'
                     );
                 }
@@ -426,7 +426,7 @@ class Uri implements arch\IDirectoryHelper
         try {
             return $httpClient->get((string)$url, $options);
         } catch (\Exception $e) {
-            throw Glitch::ENotFound([
+            throw Exceptional::NotFound([
                 'message' => 'File not loadable: '.$url,
             ]);
         }

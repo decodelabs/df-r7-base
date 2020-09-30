@@ -12,8 +12,6 @@ use df\flex\Text;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
 
 class IpRange implements IStringProvider, Dumpable
 {

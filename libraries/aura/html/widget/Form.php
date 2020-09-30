@@ -11,7 +11,7 @@ use df\aura;
 use df\halo;
 use df\arch;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Form extends Container implements IFormWidget, IWidgetShortcutProvider
 {
@@ -104,7 +104,7 @@ class Form extends Container implements IFormWidget, IWidgetShortcutProvider
         $method = strtolower($method);
 
         if (!in_array($method, ['get', 'post', 'put', 'delete'])) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Invalid form method: '.$method
             );
         }

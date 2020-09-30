@@ -11,11 +11,11 @@ use df\halo;
 use df\flex;
 
 use DecodeLabs\Terminus\Cli;
-use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\EventLoop;
 use DecodeLabs\Atlas\EventLoop\Select as SelectLoop;
 use DecodeLabs\Systemic;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements IDaemon
 {
@@ -64,7 +64,7 @@ abstract class Base implements IDaemon
         foreach (df\Launchpad::$loader->lookupClassList('apex/daemons') as $name => $class) {
             try {
                 $daemon = self::factory($name);
-            } catch (ENotFound $e) {
+            } catch (NotFoundException $e) {
                 continue;
             }
 
@@ -83,7 +83,7 @@ abstract class Base implements IDaemon
         $class = 'df\\apex\\daemons\\'.implode('\\', $parts);
 
         if (!class_exists($class)) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'Daemon '.$name.' could not be found'
             );
         }
@@ -142,7 +142,7 @@ abstract class Base implements IDaemon
     final public function run()
     {
         if ($this->_isRunning || $this->_isStopping || $this->_isStopped) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'Daemon '.$this->getName().' has already been run'
             );
         }
@@ -179,7 +179,7 @@ abstract class Base implements IDaemon
         $isPrivileged = $this->process->isPrivileged();
 
         if (!$isPrivileged && static::REQUIRES_PRIVILEGED_PROCESS) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Daemon '.$this->getName().' must be running from a privileged process'
             );
         }

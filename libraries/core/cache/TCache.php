@@ -8,7 +8,7 @@ namespace df\core\cache;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 trait TCache
 {
@@ -24,7 +24,9 @@ trait TCache
         $class = get_called_class();
 
         if ($class === Base::class) {
-            throw Glitch::ERuntime('Unable to instantiate abstract Base class: '.$class);
+            throw Exceptional::Runtime(
+                'Unable to instantiate abstract Base class: '.$class
+            );
         }
 
         $id = self::REGISTRY_PREFIX.$class::getCacheId();

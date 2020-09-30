@@ -9,10 +9,8 @@ use df;
 use df\core;
 use df\spur;
 
-use DecodeLabs\Glitch\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Exceptional;
 
 class Commit implements ICommit, Dumpable
 {
@@ -54,7 +52,7 @@ class Commit implements ICommit, Dumpable
         $parts = explode(' ', $line, 2);
 
         if ($key != array_shift($parts)) {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Commit description key \''.$key.'\' was not found on line: '.$line
             );
         }
@@ -206,7 +204,7 @@ class Commit implements ICommit, Dumpable
         $commitId = self::_extractLineValue('commit', array_shift($result));
 
         if (!$commitId) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Could not find commit '.$this->_id.' in repository'
             );
         }

@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 use df\opal;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class ManyToMany extends Many implements axis\schema\IManyToManyField
 {
@@ -51,7 +51,7 @@ class ManyToMany extends Many implements axis\schema\IManyToManyField
 
         // Local ids
         if (!$localPrimaryIndex = $localSchema->getPrimaryIndex()) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Relation table '.$localUnit->getUnitId().' does not have a primary index'
             );
         }
@@ -70,7 +70,7 @@ class ManyToMany extends Many implements axis\schema\IManyToManyField
 
         // Dominance
         if ($this->_isDominant == $targetField->isDominant()) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Paired ManyToManyFields must nominate one side to be dominant'
             );
         }

@@ -8,8 +8,8 @@ namespace df\core\collection;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
 {
@@ -32,7 +32,9 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
         $output = new self();
 
         if (false === ($parts = explode($setDelimiter, (string)$string))) {
-            throw Glitch::EUnexpectedValue('Unable to parse array delimited string', null, $string);
+            throw Exceptional::UnexpectedValue(
+                'Unable to parse array delimited string', null, $string
+            );
         }
 
         foreach ($parts as $part) {
@@ -179,7 +181,9 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
                 $child = $ref->newInstanceWithoutConstructor();
 
                 if (!$child instanceof self) {
-                    throw Glitch::ERuntime('Invalid tree child', null, $child);
+                    throw Exceptional::Runtime(
+                        'Invalid tree child', null, $child
+                    );
                 }
 
                 if (!empty($childData)) {
@@ -215,7 +219,9 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
     {
         if (!is_array($parts)) {
             if (false === ($parts = explode($separator, (string)$parts))) {
-                throw Glitch::EUnexpectedValue('Unable to parse nested child key', null, $parts);
+                throw Exceptional::UnexpectedValue(
+                    'Unable to parse nested child key', null, $parts
+                );
             }
         }
 

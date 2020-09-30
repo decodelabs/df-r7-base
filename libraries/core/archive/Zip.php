@@ -8,7 +8,7 @@ namespace df\core\archive;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Zip extends Base
 {
@@ -19,11 +19,15 @@ class Zip extends Base
         $zip = new \ZipArchive();
 
         if (($res = $zip->open($file)) !== true) {
-            throw Glitch::ENotFound($this->_getErrorString($res));
+            throw Exceptional::NotFound(
+                $this->_getErrorString($res)
+            );
         }
 
         if (($res = $zip->extractTo($destination)) !== true) {
-            throw Glitch::ERuntime($this->_getErrorString($res));
+            throw Exceptional::Runtime(
+                $this->_getErrorString($res)
+            );
         }
 
         $zip->close();

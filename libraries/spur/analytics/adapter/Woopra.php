@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 use df\aura;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Woopra extends Base
 {
@@ -71,7 +71,9 @@ class Woopra extends Base
     protected function _encodeString($string)
     {
         if (false === ($json = json_encode($string))) {
-            throw Glitch::ERuntime('Unable to encode json', null, $string);
+            throw Exceptional::Runtime(
+                'Unable to encode json', null, $string
+            );
         }
 
         return str_replace('\\/', '/', $json);

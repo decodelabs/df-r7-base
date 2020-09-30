@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\flex;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Version implements core\IStringProvider, Dumpable
 {
@@ -37,7 +37,7 @@ class Version implements core\IStringProvider, Dumpable
     public static function matchString($version)
     {
         if (!preg_match(self::REGEX, $version, $matches)) {
-            throw Glitch::ERuntime('Invalid version: '.$version);
+            throw Exceptional::Runtime('Invalid version: '.$version);
         }
 
         return $matches;

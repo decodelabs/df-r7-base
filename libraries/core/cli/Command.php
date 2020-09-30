@@ -9,6 +9,7 @@ use df;
 use df\core;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Command implements ICommand
 {
@@ -24,7 +25,7 @@ class Command implements ICommand
     public static function fromArgv(): ICommand
     {
         if (!isset($_SERVER['argv'])) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'No argv information is available'
             );
         }

@@ -8,8 +8,8 @@ namespace df\core\archive;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements IArchive
 {
@@ -26,7 +26,9 @@ abstract class Base implements IArchive
         } elseif (preg_match('/\.bz2$/i', $file)) {
             $type = 'Bz2';
         } else {
-            throw Glitch::ERuntime('Unable to detect type of archive: '.$file);
+            throw Exceptional::Runtime(
+                'Unable to detect type of archive: '.$file
+            );
         }
 
         return self::factory($type)->extractFile($file, $destination, $flattenRoot);
@@ -37,7 +39,9 @@ abstract class Base implements IArchive
         $class = 'df\\core\\archive\\'.ucfirst($type);
 
         if (!class_exists($class)) {
-            throw Glitch::EUnsupported('Archive type '.$type.' is not supported');
+            throw Exceptional::Unsupported(
+                'Archive type '.$type.' is not supported'
+            );
         }
 
         return new $class();
@@ -50,22 +54,30 @@ abstract class Base implements IArchive
 
     public function extractFile(string $file, string $destDir=null, bool $flattenRoot=false): string
     {
-        throw Glitch::EUnsupported($this->getType().' type archives cannot handle file and folder compression');
+        throw Exceptional::Unsupported(
+            $this->getType().' type archives cannot handle file and folder compression'
+        );
     }
 
     public function decompressFile(string $file, string $destFile=null): string
     {
-        throw Glitch::EUnsupported($this->getType().' type archives cannot handle file and folder compression');
+        throw Exceptional::Unsupported(
+            $this->getType().' type archives cannot handle file and folder compression'
+        );
     }
 
     public function compressString(string $string): string
     {
-        throw Glitch::EUnsupported($this->getType().' type archives cannot handle string compression');
+        throw Exceptional::Unsupported(
+            $this->getType().' type archives cannot handle string compression'
+        );
     }
 
     public function decompressString(string $string): string
     {
-        throw Glitch::EUnsupported($this->getType().' type archives cannot handle string compression');
+        throw Exceptional::Unsupported(
+            $this->getType().' type archives cannot handle string compression'
+        );
     }
 
     protected function _normalizeExtractDestination(string &$file, ?string $destination): string
@@ -73,7 +85,7 @@ abstract class Base implements IArchive
         $file = str_replace(['/', '\\'], \DIRECTORY_SEPARATOR, (string)realpath($file));
 
         if (!is_file($file)) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'Source archive could not be found: '.$file
             );
         }
@@ -99,7 +111,7 @@ abstract class Base implements IArchive
         }
 
         if (!is_file($file)) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'Source archive could not be found: '.$file
             );
         }

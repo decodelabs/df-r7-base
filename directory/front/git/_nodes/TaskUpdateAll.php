@@ -34,7 +34,7 @@ class TaskUpdateAll extends arch\node\Task
                 if (!$result = $package['repo']->pull()) {
                     Cli::error('repo could not be found');
                 }
-            } catch (spur\vcs\git\EGlitch $e) {
+            } catch (spur\vcs\git\Exception $e) {
                 Cli::writeError($e->getMessage());
                 Cli::newErrorLine();
                 return;

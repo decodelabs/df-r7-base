@@ -10,7 +10,7 @@ use df\axis;
 use df\mesh;
 use df\opal;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class BridgeTable extends Table implements axis\IVirtualUnit
 {
@@ -27,13 +27,13 @@ class BridgeTable extends Table implements axis\IVirtualUnit
         $class = 'df\\apex\\models\\'.$modelName.'\\'.$id.'\\Unit';
 
         if (!class_exists($class)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Could not find bridge unit '.$id
             );
         }
 
         if (!is_subclass_of($class, 'df\\axis\\unit\\BridgeTable')) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Unit '.$id.' is not a Bridge'
             );
         }
@@ -74,7 +74,7 @@ class BridgeTable extends Table implements axis\IVirtualUnit
     {
         if (!static::IS_SHARED && get_class($this) !== __CLASS__) {
             if (!static::DOMINANT_UNIT || !static::DOMINANT_FIELD) {
-                throw Glitch::{'df/axis/schema/ELogic'}(
+                throw Exceptional::{'df/axis/schema/Logic'}(
                     'Dominant field info has not been defined in class '.get_class($this)
                 );
             }
@@ -135,7 +135,7 @@ class BridgeTable extends Table implements axis\IVirtualUnit
     public function buildInitialSchema()
     {
         if (!$this->_dominantUnitName) {
-            throw Glitch::{'df/axis/schema/ELogic'}(
+            throw Exceptional::{'df/axis/schema/Logic'}(
                 'Bridge "'.$this->getUnitName().'" does not have a dominant unit defined - are you sure Bridge is the unit type you want to use?'
             );
         }
@@ -145,7 +145,7 @@ class BridgeTable extends Table implements axis\IVirtualUnit
         $dominantField = $dominantSchema->getField($this->_dominantFieldName);
 
         if (!$dominantField) {
-            throw Glitch::{'df/axis/schema/field/ENotFound'}(
+            throw Exceptional::{'df/axis/schema/field/NotFound'}(
                 'Target Many relation field '.$this->_dominantFieldName.' could not be found on unit '.$dominantUnit->getUnitId()
             );
         }
@@ -253,7 +253,7 @@ class BridgeTable extends Table implements axis\IVirtualUnit
             return $output;
         }
 
-        throw Glitch::{'df/mesh/entity/EUnexpectedValue'}(
+        throw Exceptional::{'df/mesh/entity/UnexpectedValue'}(
             'Unknown entity type', null, $entity
         );
     }

@@ -8,7 +8,7 @@ namespace df\core\loader;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Base implements core\ILoader
 {
@@ -349,7 +349,7 @@ class Base implements core\ILoader
     {
         /*
         if($this->_isInit) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'Cannot load packages after init'
             );
         }

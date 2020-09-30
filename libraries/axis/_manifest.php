@@ -13,6 +13,7 @@ use df\user;
 use df\mesh;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 interface IAccess extends user\IState
 {
@@ -298,7 +299,7 @@ trait TAdapterBasedStorageUnit
         $unitType = $this->getUnitType();
 
         if (empty($adapterId)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'No adapter has been configured for '.ucfirst($this->getUnitType()).' unit type'
             );
         }
@@ -306,7 +307,7 @@ trait TAdapterBasedStorageUnit
         $class = 'df\\axis\\unit\\'.lcfirst($unitType).'\\adapter\\'.$adapterId;
 
         if (!class_exists($class)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 ucfirst($this->getUnitType()).' unit adapter '.$adapterId.' could not be found'
             );
         }
@@ -375,7 +376,7 @@ trait TSchemaBasedStorageUnit
                 }
 
                 if (!$this->_recordNameField) {
-                    throw Glitch::ERuntime(
+                    throw Exceptional::Runtime(
                         'Unable to work out a suitable name field for '.$this->getUnitId()
                     );
                 }

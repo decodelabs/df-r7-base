@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\flex;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Guid implements IGuid, Dumpable
 {
@@ -58,7 +58,9 @@ class Guid implements IGuid, Dumpable
             return (string)flex\Guid::factory($hex);
         }
 
-        throw Glitch::EInvalidArgument('Unable to unshorten ID');
+        throw Exceptional::InvalidArgument(
+            'Unable to unshorten ID'
+        );
     }
 
 
@@ -211,7 +213,7 @@ class Guid implements IGuid, Dumpable
     public function __construct($bytes)
     {
         if (strlen($bytes) != 16) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Guid must be a 128 bit integer'
             );
         }

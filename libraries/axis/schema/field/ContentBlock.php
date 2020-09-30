@@ -12,7 +12,7 @@ use df\fire;
 use df\opal;
 use df\flex;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class ContentBlock extends Base
 {
@@ -60,7 +60,7 @@ class ContentBlock extends Base
             return null;
         }
 
-        throw Glitch::EUnexpectedValue(
+        throw Exceptional::UnexpectedValue(
             'Content block value appears to be invalid'
         );
     }
@@ -81,7 +81,7 @@ class ContentBlock extends Base
                 return null;
             }
 
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Content block value cannot be null'
             );
         }

@@ -10,8 +10,8 @@ use df\core;
 use df\mint;
 use df\user;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class CreditCard implements ICreditCard, Dumpable
 {
@@ -311,7 +311,9 @@ class CreditCard implements ICreditCard, Dumpable
         }
 
         if ($month === null || $year === null) {
-            throw Glitch::EInvalidArgument('Invalid expiry date string', null, $expiry);
+            throw Exceptional::InvalidArgument(
+                'Invalid expiry date string', null, $expiry
+            );
         }
 
         return $this

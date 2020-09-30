@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\flex;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements flex\IStemmer
 {
@@ -20,7 +20,7 @@ abstract class Base implements flex\IStemmer
         $class = 'df\\flex\\stemmer\\'.$language;
 
         if (!class_exists($class)) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'No stemmer available for '.$locale
             );
         }

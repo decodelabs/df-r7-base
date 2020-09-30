@@ -9,8 +9,8 @@ use df\core\IStringProvider;
 use df\link\IpRange;
 use df\flex\Text;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Ip implements IStringProvider, Dumpable
 {
@@ -47,7 +47,9 @@ class Ip implements IStringProvider, Dumpable
         $this->isV6 = $hasV6 = strpos($ip, ':') !== false;
 
         if (!$hasV4 && !$hasV6) {
-            throw Glitch::EInvalidArgument('Could not detect IPv4 or IPv6 signature - '.$ip);
+            throw Exceptional::InvalidArgument(
+                'Could not detect IPv4 or IPv6 signature - '.$ip
+            );
         }
 
         if ($hasV4 && $hasV6) {
@@ -60,12 +62,16 @@ class Ip implements IStringProvider, Dumpable
             $ip = array_pad(explode('.', $ip), 4, 0);
 
             if (count($ip) > 4) {
-                throw Glitch::EInvalidArgument($in.' is not a valid IPv4 address');
+                throw Exceptional::InvalidArgument(
+                    $in.' is not a valid IPv4 address'
+                );
             }
 
             for ($i = 0; $i < 4; $i++) {
                 if ($ip[$i] > 255) {
-                    throw Glitch::EInvalidArgument($in.' is not a valid IPv4 address');
+                    throw Exceptional::InvalidArgument(
+                        $in.' is not a valid IPv4 address'
+                    );
                 }
             }
 
@@ -171,7 +177,9 @@ class Ip implements IStringProvider, Dumpable
     public function getV4String(): string
     {
         if (!$this->isV4) {
-            throw Glitch::ERuntime('Ip is not in V4 range');
+            throw Exceptional::Runtime(
+                'Ip is not in V4 range'
+            );
         }
 
         $parts = explode(':', $this->ip);
@@ -215,7 +223,9 @@ class Ip implements IStringProvider, Dumpable
     public function getV4Hex(): string
     {
         if (!$this->isV4()) {
-            throw Glitch::ERuntime('Ip is not in V4 range');
+            throw Exceptional::Runtime(
+                'Ip is not in V4 range'
+            );
         }
 
         $parts = array_slice(explode(':', $this->ip), -2);

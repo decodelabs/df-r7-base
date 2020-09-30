@@ -49,7 +49,7 @@ class TaskUpdate extends arch\node\Task
                 }
 
                 Cli::newLine();
-            } catch (spur\vcs\git\EGlitch $e) {
+            } catch (spur\vcs\git\Exception $e) {
                 Cli::newErrorLine();
                 Cli::writeError($e->getMessage());
                 Cli::newErrorLine();

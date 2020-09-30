@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class WhereList extends ListBase implements opal\query\IWhereClauseList
 {
@@ -21,7 +21,7 @@ class WhereList extends ListBase implements opal\query\IWhereClauseList
             $isOr = false;
 
             if (!$parent instanceof opal\query\IPrerequisiteClauseFactory) {
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     'Parent query is not capable of handling prerequisites'
                 );
             }

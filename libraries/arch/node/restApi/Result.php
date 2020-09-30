@@ -12,6 +12,7 @@ use df\link;
 use df\flex;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Result implements arch\node\IRestApiResult
 {
@@ -64,9 +65,15 @@ class Result implements arch\node\IRestApiResult
             return $this->_statusCode;
         }
 
-        if ($this->_exception instanceof \EGlitch) {
-            $code = $this->_exception->getHttpCode();
+        $code = null;
 
+        if ($this->_exception instanceof Exceptional\Exception) {
+            $code = $this->_exception->getHttpStatus();
+        } elseif ($this->_exception instanceof \EGlitch) {
+            $code = $this->_exception->getHttpCode();
+        }
+
+        if ($code !== null) {
             if (!link\http\response\HeaderCollection::isValidStatusCode($code)) {
                 $code = 400;
             }

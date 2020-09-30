@@ -7,7 +7,7 @@ namespace df\core\i18n\module;
 
 use df\core;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements IModule
 {
@@ -22,7 +22,7 @@ abstract class Base implements IModule
         $class = 'df\\core\\i18n\\module\\'.ucfirst($name);
 
         if (!class_exists($class)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Module '.$name.' could not be found'
             );
         }

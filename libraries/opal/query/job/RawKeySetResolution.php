@@ -10,8 +10,6 @@ use df\core;
 use df\opal;
 use df\mesh;
 
-use DecodeLabs\Glitch;
-
 class RawKeySetResolution implements mesh\job\IResolution
 {
     protected $_targetField;

@@ -10,7 +10,7 @@ use df\core;
 use df\apex;
 use df\axis;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Update extends axis\procedure\Record
 {
@@ -19,7 +19,9 @@ class Update extends axis\procedure\Record
         $userManager = $this->user;
 
         if (!$userManager->isLoggedIn()) {
-            throw Glitch::EUnauthorized('Cannot edit guests');
+            throw Exceptional::Unauthorized(
+                'Cannot edit guests'
+            );
         }
 
         $record = $this->_unit->fetch()
@@ -27,7 +29,7 @@ class Update extends axis\procedure\Record
             ->toRow();
 
         if (!$record) {
-            throw Glitch::{'df/opal/record/ENotFound'}(
+            throw Exceptional::{'df/opal/record/NotFound'}(
                 'Client record not found'
             );
         }

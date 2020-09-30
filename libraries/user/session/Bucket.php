@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\user;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Bucket implements user\session\IBucket, Dumpable
 {
@@ -27,7 +27,7 @@ class Bucket implements user\session\IBucket, Dumpable
         $this->_name = $name;
 
         if (empty($name)) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Invalid empty name bucket name'
             );
         }

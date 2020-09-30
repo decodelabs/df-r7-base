@@ -13,7 +13,7 @@ use df\flex;
 
 use DecodeLabs\Tagged\Html;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements IWidget
 {
@@ -27,7 +27,7 @@ abstract class Base implements IWidget
         $class = 'df\\aura\\html\\widget\\'.$name;
 
         if (!class_exists($class)) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'Widget '.$name.' could not be found'
             );
         }
@@ -38,7 +38,9 @@ abstract class Base implements IWidget
         $output = $reflection->newInstanceArgs($args);
 
         if (!$output instanceof IWidget) {
-            throw Glitch::ELogic('Generated widget object does not implement IWidget', null, $output);
+            throw Exceptional::Logic(
+                'Generated widget object does not implement IWidget', null, $output
+            );
         }
 
         if ($output instanceof self) {

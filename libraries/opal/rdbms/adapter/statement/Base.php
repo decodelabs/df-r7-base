@@ -12,6 +12,7 @@ use df\flex;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpable
 {
@@ -71,7 +72,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
     public function setSql($sql)
     {
         if ($this->_isExecuted) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Cannot change statement parameters, statement has already been executed'
             );
         }
@@ -83,7 +84,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
     public function prependSql($sql)
     {
         if ($this->_isExecuted) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Cannot change statement parameters, statement has already been executed'
             );
         }
@@ -95,7 +96,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
     public function appendSql($sql)
     {
         if ($this->_isExecuted) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Cannot change statement parameters, statement has already been executed'
             );
         }
@@ -112,7 +113,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
     public function generateUniqueKey()
     {
         if ($this->_isExecuted) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Cannot change statement parameters, statement has already been executed'
             );
         }
@@ -147,7 +148,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
     public function bind($key, $value)
     {
         if ($this->_isExecuted) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Cannot change statement parameters, statement has already been executed'
             );
         }
@@ -163,7 +164,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
     public function bindLob($key, $value)
     {
         if ($this->_isExecuted) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Cannot change statement parameters, statement has already been executed'
             );
         }
@@ -179,7 +180,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
     public function importBindings(opal\rdbms\IStatement $stmt)
     {
         if ($this->_isExecuted) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Cannot change statement parameters, statement has already been executed'
             );
         }
@@ -193,7 +194,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
     public function executeRaw()
     {
         if ($this->_isExecuted) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Statements cannot be executed more than once'
             );
         }
@@ -218,7 +219,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
     public function executeRead()
     {
         if ($this->_isExecuted) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Statements cannot be executed more than once'
             );
         }
@@ -252,7 +253,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
     public function executeWrite()
     {
         if ($this->_isExecuted) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Statements cannot be executed more than once'
             );
         }
@@ -281,7 +282,9 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
     // Result
     public function import(...$values)
     {
-        throw Glitch::ERuntime('This collection is read only');
+        throw Exceptional::Runtime(
+            'This collection is read only'
+        );
     }
 
     public function isEmpty(): bool
@@ -291,7 +294,9 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
 
     public function clear()
     {
-        throw Glitch::ERuntime('This collection is read only');
+        throw Exceptional::Runtime(
+            'This collection is read only'
+        );
     }
 
     public function extract()
@@ -334,7 +339,9 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
 
     public function count()
     {
-        throw Glitch::ERuntime('This collection is streamed and cannot be counted');
+        throw Exceptional::Runtime(
+            'This collection is streamed and cannot be counted'
+        );
     }
 
     public function getIterator()

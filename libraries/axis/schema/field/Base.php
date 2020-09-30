@@ -10,8 +10,8 @@ use df\core;
 use df\axis;
 use df\opal;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements axis\schema\IField, \Serializable, Dumpable
 {
@@ -24,7 +24,7 @@ abstract class Base implements axis\schema\IField, \Serializable, Dumpable
         $class = 'df\\axis\\schema\\field\\'.ucfirst($superType);
 
         if (!class_exists($class)) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'Field type '.$superType.' could not be found'
             );
         }
@@ -56,7 +56,7 @@ abstract class Base implements axis\schema\IField, \Serializable, Dumpable
                 $hasInit = true;
                 $this->{$method}(...$args);
             } else {
-                throw Glitch::ENotFound(
+                throw Exceptional::NotFound(
                     'Field type '.$superType.' does not support sub type '.$subType
                 );
             }

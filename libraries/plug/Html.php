@@ -17,7 +17,7 @@ use DecodeLabs\Tagged\Html as Tagged;
 use DecodeLabs\Tagged\Buffer;
 use DecodeLabs\Chirp\Parser as Chirp;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Html implements arch\IDirectoryHelper
 {
@@ -85,7 +85,9 @@ class Html implements arch\IDirectoryHelper
         }
 
         if (!class_exists(\Parsedown::class)) {
-            throw Glitch::EImplementation('Parsedown library is not available');
+            throw Exceptional::Implementation(
+                'Parsedown library is not available'
+            );
         }
 
         $parser = new \Parsedown();
@@ -129,7 +131,9 @@ class Html implements arch\IDirectoryHelper
     public function tweet($text)
     {
         if (!class_exists(Chirp::class)) {
-            throw Glitch::EImplementation('Chirp library is not available');
+            throw Exceptional::Implementation(
+                'Chirp library is not available'
+            );
         }
 
         $output = (new Chirp())->parse($text);
@@ -280,7 +284,9 @@ class Html implements arch\IDirectoryHelper
         }
 
         if (!$address = flow\mail\Address::factory($address)) {
-            throw Glitch::EInvalidArgument('Invalid email address');
+            throw Exceptional::InvalidArgument(
+                'Invalid email address'
+            );
         }
 
         if ($body === null) {
@@ -330,7 +336,9 @@ class Html implements arch\IDirectoryHelper
         $uriHelper = $this->context->uri;
 
         if (!$uriHelper instanceof Uri) {
-            throw Glitch::ERuntime('Bad helper!');
+            throw Exceptional::Runtime(
+                'Bad helper!'
+            );
         }
 
         return $this->link(

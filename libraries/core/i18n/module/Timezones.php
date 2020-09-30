@@ -7,7 +7,7 @@ namespace df\core\i18n\module;
 
 use df\core;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Timezones extends Base implements ITimezonesModule
 {
@@ -109,7 +109,9 @@ class Timezones extends Base implements ITimezonesModule
         }
 
         if (!$timezone instanceof \DateTimeZone) {
-            throw Glitch::EInvalidArgument('Invalid timezone specified!');
+            throw Exceptional::InvalidArgument(
+                'Invalid timezone specified!'
+            );
         }
 
         $date = new \DateTime('now', $timezone);

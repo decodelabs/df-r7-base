@@ -12,7 +12,7 @@ use df\axis;
 use df\user;
 use df\opal;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class RegisterLocal extends axis\procedure\Record
 {
@@ -21,7 +21,9 @@ class RegisterLocal extends axis\procedure\Record
     protected function _prepare()
     {
         if ($this->context->user->isLoggedIn()) {
-            throw Glitch::EUnauthorized('Already logged in');
+            throw Exceptional::Unauthorized(
+                'Already logged in'
+            );
         }
     }
 

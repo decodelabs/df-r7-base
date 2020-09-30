@@ -11,8 +11,6 @@ use df\user;
 use df\axis;
 use df\flex;
 
-use DecodeLabs\Glitch;
-
 class Session extends Base implements user\session\IController
 {
     protected static $_gcProbability = 3;
@@ -56,7 +54,7 @@ class Session extends Base implements user\session\IController
         $this->backend = axis\Model::factory('session');
 
         if (!$this->backend instanceof user\session\IBackend) {
-            throw Glitch::{'df/user/session/ELogic'}(
+            throw Exceptional::{'df/user/session/Logic'}(
                 'Session model does not implement user\\session\\IBackend'
             );
         }
@@ -199,7 +197,7 @@ class Session extends Base implements user\session\IController
     public function getBucket($name)
     {
         if (!$this->_isOpen) {
-            throw Glitch::{'df/user/session/ELogic'}(
+            throw Exceptional::{'df/user/session/Logic'}(
                 'Cannot get a session bucket once the session has been destroyed'
             );
         }
@@ -216,7 +214,7 @@ class Session extends Base implements user\session\IController
     public function getBuckets(): array
     {
         if (!$this->_isOpen) {
-            throw Glitch::{'df/user/session/ELogic'}(
+            throw Exceptional::{'df/user/session/Logic'}(
                 'Cannot get a session bucket once the session has been destroyed'
             );
         }
@@ -227,7 +225,7 @@ class Session extends Base implements user\session\IController
     public function getBucketsLike(string $bucket, string $operator=null): array
     {
         if (!$this->_isOpen) {
-            throw Glitch::{'df/user/session/ELogic'}(
+            throw Exceptional::{'df/user/session/Logic'}(
                 'Cannot get a session bucket once the session has been destroyed'
             );
         }
@@ -238,7 +236,7 @@ class Session extends Base implements user\session\IController
     public function getBucketsForUserLike(string $userId, string $bucket, string $operator=null): array
     {
         if (!$this->_isOpen) {
-            throw Glitch::{'df/user/session/ELogic'}(
+            throw Exceptional::{'df/user/session/Logic'}(
                 'Cannot get a session bucket once the session has been destroyed'
             );
         }
@@ -249,7 +247,7 @@ class Session extends Base implements user\session\IController
     public function getBucketsForAllLike(string $bucket, string $operator=null): array
     {
         if (!$this->_isOpen) {
-            throw Glitch::{'df/user/session/ELogic'}(
+            throw Exceptional::{'df/user/session/Logic'}(
                 'Cannot get a session bucket once the session has been destroyed'
             );
         }
@@ -262,7 +260,7 @@ class Session extends Base implements user\session\IController
     public function clearBuckets(string $bucket, string $operator=null)
     {
         if (!$this->_isOpen) {
-            throw Glitch::{'df/user/session/ELogic'}(
+            throw Exceptional::{'df/user/session/Logic'}(
                 'Cannot get a session bucket once the session has been destroyed'
             );
         }
@@ -274,7 +272,7 @@ class Session extends Base implements user\session\IController
     public function clearBucketsForUser(string $userId, string $bucket, string $operator=null)
     {
         if (!$this->_isOpen) {
-            throw Glitch::{'df/user/session/ELogic'}(
+            throw Exceptional::{'df/user/session/Logic'}(
                 'Cannot get a session bucket once the session has been destroyed'
             );
         }
@@ -286,7 +284,7 @@ class Session extends Base implements user\session\IController
     public function clearBucketsForAll(string $bucket, string $operator=null)
     {
         if (!$this->_isOpen) {
-            throw Glitch::{'df/user/session/ELogic'}(
+            throw Exceptional::{'df/user/session/Logic'}(
                 'Cannot get a session bucket once the session has been destroyed'
             );
         }

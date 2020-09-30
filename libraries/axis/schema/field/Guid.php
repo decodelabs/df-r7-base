@@ -116,7 +116,7 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField
         if ($value !== null) {
             try {
                 $value = flex\Guid::factory($value);
-            } catch (flex\EGlitch $e) {
+            } catch (flex\Exception $e) {
                 $value = flex\Guid::void();
             }
         }

@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\mesh;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Manager implements IManager, Dumpable
 {
@@ -87,7 +87,7 @@ class Manager implements IManager, Dumpable
 
         if ((!$handler = $this->getHandler($locator))
         || (!$handler instanceof IEntityHandler)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'There is no entity handler for scheme: '.$locator->getScheme()
             );
         }
@@ -99,7 +99,7 @@ class Manager implements IManager, Dumpable
         $entity = $handler->fetchEntity($this, $node);
 
         if ($entity === null) {
-            throw Glitch::{'df/mesh/entity/ENotFound'}(
+            throw Exceptional::{'df/mesh/entity/NotFound'}(
                 'Entity type '.$locator->toStringUpTo($node).' could not be found'
             );
         }
@@ -109,7 +109,7 @@ class Manager implements IManager, Dumpable
 
             foreach ($nodes as $node) {
                 if (!$entity instanceof mesh\entity\IParentEntity) {
-                    throw Glitch::{'df/mesh/entity/ENotFound'}(
+                    throw Exceptional::{'df/mesh/entity/NotFound'}(
                         'Could not load entity '.$locator->toString().' - '.
                         'parent entity '.$locator->toStringUpTo($lastNode).' does not provide sub entities'
                     );
@@ -118,7 +118,7 @@ class Manager implements IManager, Dumpable
                 $entity = $entity->fetchSubEntity($this, $node);
 
                 if ($entity === null) {
-                    throw Glitch::{'df/mesh/entity/ENotFound'}(
+                    throw Exceptional::{'df/mesh/entity/NotFound'}(
                         'Entity type '.$locator->toStringUpTo($node).' could not be found'
                     );
                 }

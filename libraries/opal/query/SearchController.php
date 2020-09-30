@@ -10,8 +10,8 @@ use df\core;
 use df\opal;
 use df\flex;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class SearchController implements ISearchController, Dumpable
 {
@@ -126,7 +126,7 @@ class SearchController implements ISearchController, Dumpable
                     break;
 
                 default:
-                    throw Glitch::ERuntime(
+                    throw Exceptional::Runtime(
                         'Field '.$key.' does not support search queries'
                     );
             }
@@ -247,7 +247,9 @@ class SearchController implements ISearchController, Dumpable
         }
 
         if ($this->_phrase === null) {
-            throw Glitch::ERuntime('No search phrase has been set');
+            throw Exceptional::Runtime(
+                'No search phrase has been set'
+            );
         }
 
         if (empty($this->_fields)) {
@@ -269,7 +271,9 @@ class SearchController implements ISearchController, Dumpable
             }
 
             if (empty($this->_fields)) {
-                throw Glitch::ERuntime('No search fields have been set');
+                throw Exceptional::Runtime(
+                    'No search fields have been set'
+                );
             }
         }
 

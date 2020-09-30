@@ -10,7 +10,7 @@ use df\core;
 use df\apex;
 use df\arch;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class HttpApcuClear extends arch\node\Base
 {
@@ -24,7 +24,9 @@ class HttpApcuClear extends arch\node\Base
         //if($_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR']) {
         $cleared = $this->_clearApcu();
         //} else {
-        //throw Glitch::ERuntime('This action can only be triggered from localhost');
+        //throw Exceptional::Runtime(
+        //'This action can only be triggered from localhost'
+        //);
         //$cleared = null;
         //}
 

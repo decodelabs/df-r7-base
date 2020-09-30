@@ -78,7 +78,7 @@ class ContentSlot extends arch\node\form\Delegate implements
             try {
                 $this->_blocks[$delegateId] = fire\block\Base::factory($type)
                     ->isNested($this->_isNested);
-            } catch (fire\block\ENotFound $e) {
+            } catch (fire\block\NotFoundException $e) {
             }
         }
     }

@@ -11,10 +11,7 @@ use df\axis;
 use df\opal;
 use df\user;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
 
 class Rdbms implements
     axis\ISchemaProviderAdapter,
@@ -282,7 +279,7 @@ class Rdbms implements
     public function handleQueryException(opal\query\IQuery $query, \Throwable $e)
     {
         // Table not found
-        if ($e instanceof opal\rdbms\ETableNotFound) {
+        if ($e instanceof opal\rdbms\TableNotFoundException) {
             $table = $e->getData()['table'] ?? null;
 
             if ($table !== null && strtolower($table) == strtolower($this->_unit->getStorageBackendName())) {
@@ -313,7 +310,7 @@ class Rdbms implements
         foreach ($idList as $unitId) {
             try {
                 $unit = $model->loadUnitFromId($unitId);
-            } catch (axis\EGlitch $e) {
+            } catch (axis\Exception $e) {
                 $remove[] = $unitId;
                 continue;
             }

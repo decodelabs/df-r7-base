@@ -11,6 +11,7 @@ use df\neon;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Color implements IColor, Dumpable
 {
@@ -131,7 +132,9 @@ class Color implements IColor, Dumpable
             );
         }
 
-        throw Glitch::{'EInvalidArgument,EColor'}('Color name '.$name.' is not recognized');
+        throw Exceptional::{'InvalidArgument,Color'}(
+            'Color name '.$name.' is not recognized'
+        );
     }
 
     public static function isValidName(string $name): bool
@@ -161,7 +164,9 @@ class Color implements IColor, Dumpable
             $b = substr($hex, 2, 1);
             $b = hexdec($b.$b);
         } else {
-            throw Glitch::{'EInvalidArgument,EColor'}('Invalid color '.$hex);
+            throw Exceptional::{'InvalidArgument,Color'}(
+                'Invalid color '.$hex
+            );
         }
 
         return new self($r / 255, $g / 255, $b / 255);
@@ -236,7 +241,7 @@ class Color implements IColor, Dumpable
                 break;
 
             default:
-                throw Glitch::EInvalidArgument([
+                throw Exceptional::InvalidArgument([
                     'message' => 'Invalid color mode',
                     'data' => $mode
                 ]);

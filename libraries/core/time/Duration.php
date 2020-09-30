@@ -8,10 +8,8 @@ namespace df\core\time;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Exceptional;
 
 class Duration implements IDuration, Dumpable
 {
@@ -202,7 +200,7 @@ class Duration implements IDuration, Dumpable
             && $interval->i == 0
             && $interval->s == 0
             && false === strpos($time, '0')) {
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     'Invalid duration string: '.$time
                 );
             }
@@ -593,7 +591,7 @@ class Duration implements IDuration, Dumpable
                 break;
 
             default:
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     'Invalid duration unit: '.$id
                 );
         }

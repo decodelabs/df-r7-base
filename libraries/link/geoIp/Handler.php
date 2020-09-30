@@ -10,7 +10,7 @@ use df\link\Ip;
 use df\link\geoIp\Adapter;
 use df\link\geoIp\Result;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Handler
 {
@@ -32,14 +32,14 @@ class Handler
             $class = 'df\\link\\geoIp\\Adapter\\'.ucfirst($adapter);
 
             if (!class_exists($class)) {
-                throw Glitch::ERuntime(
+                throw Exceptional::Runtime(
                     'GeoIp adapter '.$adapter.' could not be found'
                 );
             }
 
             try {
                 $adapter = $class::fromConfig();
-            } catch (ERuntime $e) {
+            } catch (RuntimeException $e) {
                 $adapter = null;
             }
         }

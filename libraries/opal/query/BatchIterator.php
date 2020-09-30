@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class BatchIterator implements IBatchIterator
 {
@@ -45,7 +45,7 @@ class BatchIterator implements IBatchIterator
         }
 
         if (!$result instanceof core\collection\ICollection) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Query result is not an ICollection - maybe you need to use a custom batch iterator?'
             );
         }
@@ -186,7 +186,9 @@ class BatchIterator implements IBatchIterator
 
     public function import(...$values)
     {
-        throw Glitch::ERuntime('This collection is read only');
+        throw Exceptional::Runtime(
+            'This collection is read only'
+        );
     }
 
     public function isEmpty(): bool
@@ -202,7 +204,9 @@ class BatchIterator implements IBatchIterator
 
     public function clear()
     {
-        throw Glitch::ERuntime('This collection is read only');
+        throw Exceptional::Runtime(
+            'This collection is read only'
+        );
     }
 
     public function extract()

@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\flex;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Base implements IMenu, \Serializable
 {
@@ -261,7 +261,7 @@ class Base implements IMenu, \Serializable
 
         if ($entryList instanceof IEntryList) {
             if ($entryList->hasMenu($this)) {
-                throw Glitch::ERecursion(
+                throw Exceptional::Recursion(
                     'You cannot nest menus within themselves'
                 );
             }

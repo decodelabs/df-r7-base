@@ -12,8 +12,8 @@ use df\user;
 use df\link;
 use df\aura;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Context implements IContext, \Serializable, Dumpable
 {
@@ -32,7 +32,7 @@ class Context implements IContext, \Serializable, Dumpable
                 if ($context = $runner->getContext()) {
                     return $context;
                 }
-            } catch (\ENoContext $e) {
+            } catch (core\app\runner\NoContextException $e) {
             }
         }
 
@@ -46,7 +46,7 @@ class Context implements IContext, \Serializable, Dumpable
         if ($runner instanceof core\IContextAware) {
             try {
                 return $runner->getContext();
-            } catch (\ENoContext $e) {
+            } catch (core\app\runner\NoContextException $e) {
             }
         }
 
@@ -140,7 +140,7 @@ class Context implements IContext, \Serializable, Dumpable
     public function getDispatchContext(): core\IContext
     {
         if (!$this->runner instanceof core\IContextAware) {
-            throw Glitch::ENoContext(
+            throw Exceptional::NoContext(
                 'Current runner is not context aware'
             );
         }

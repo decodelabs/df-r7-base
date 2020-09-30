@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\link;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class RestApi extends Base implements IRestApiNode
 {
@@ -44,7 +44,7 @@ abstract class RestApi extends Base implements IRestApiNode
             $func = 'execute'.ucfirst(strtolower($httpMethod));
 
             if (!method_exists($this, $func)) {
-                throw Glitch::EApi([
+                throw Exceptional::Api([
                     'message' => 'Node does not support '.$httpMethod.' method',
                     'http' => 400
                 ]);
@@ -87,7 +87,10 @@ abstract class RestApi extends Base implements IRestApiNode
 
         $data = null;
 
-        if ($e instanceof \EGlitch) {
+        if (
+            $e instanceof \EGlitch ||
+            $e instanceof Exceptional\Exception
+        ) {
             $data = $e->getData();
         }
 

@@ -10,7 +10,7 @@ use df\core;
 use df\mesh;
 use df\axis;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Hook implements IHook
 {
@@ -140,7 +140,7 @@ abstract class Hook implements IHook
                         $method = 'on'.ucfirst($methodName);
 
                         if (!method_exists($hook, $method)) {
-                            throw Glitch::EUnexpectedValue(
+                            throw Exceptional::UnexpectedValue(
                                 'Action map method '.$method.' could not be found on hook '.$name
                             );
                         }
@@ -165,7 +165,7 @@ abstract class Hook implements IHook
         $class = 'df\\apex\\hooks\\'.ucfirst($name);
 
         if (!class_exists($class)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Hook '.$name.' could not be found'
             );
         }

@@ -10,7 +10,7 @@ use df\core;
 use df\flex;
 use df\halo;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Counter implements flex\code\IProbe, core\lang\IAcceptTypeProcessor, \ArrayAccess
 {
@@ -62,7 +62,9 @@ class Counter implements flex\code\IProbe, core\lang\IAcceptTypeProcessor, \Arra
 
         if (in_array($ext, self::TEXT_TYPES)) {
             if (false === ($fp = fopen($path, 'r'))) {
-                throw Glitch::ERuntime('Unable to open probe target', null, $path);
+                throw Exceptional::Runtime(
+                    'Unable to open probe target', null, $path
+                );
             }
 
             while (fgets($fp)) {
@@ -154,7 +156,9 @@ class Counter implements flex\code\IProbe, core\lang\IAcceptTypeProcessor, \Arra
 
     public function offsetSet($key, $value)
     {
-        throw Glitch::ELogic('Counter probe is read only');
+        throw Exceptional::Logic(
+            'Counter probe is read only'
+        );
     }
 
     public function offsetGet($key)
@@ -169,7 +173,9 @@ class Counter implements flex\code\IProbe, core\lang\IAcceptTypeProcessor, \Arra
 
     public function offsetUnset($key)
     {
-        throw Glitch::ELogic('Counter probe is read only');
+        throw Exceptional::Logic(
+            'Counter probe is read only'
+        );
     }
 }
 

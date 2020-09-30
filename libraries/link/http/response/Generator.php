@@ -9,10 +9,10 @@ use df;
 use df\core;
 use df\link;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Atlas\DataReceiver;
 use DecodeLabs\Atlas\DataReceiverTrait;
 use DecodeLabs\Atlas\DataSender;
+use DecodeLabs\Exceptional;
 
 class Generator extends Base implements link\http\IGeneratorResponse
 {
@@ -101,7 +101,7 @@ class Generator extends Base implements link\http\IGeneratorResponse
 
     public function getContent()
     {
-        throw Glitch::ERuntime(
+        throw Exceptional::Runtime(
             'Streamed generator responses can only generate their content via a channel'
         );
     }

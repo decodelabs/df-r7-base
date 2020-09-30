@@ -12,7 +12,7 @@ use df\axis;
 use df\opal;
 use df\mesh;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Unit extends axis\unit\Table
 {
@@ -98,7 +98,7 @@ class Unit extends axis\unit\Table
         $locator = mesh\entity\Locator::factory($locator);
 
         if (!$locator->getId()) {
-            throw Glitch::{'df/mesh/entity/EInvalidArgument'}(
+            throw Exceptional::{'df/mesh/entity/InvalidArgument'}(
                 'Locator does not have an id'
             );
         }

@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Delegate extends Base implements core\validate\IDelegateField
 {
@@ -30,7 +30,7 @@ class Delegate extends Base implements core\validate\IDelegateField
     public function setDelegate(arch\node\IDelegate $delegate)
     {
         if (!$delegate instanceof arch\node\IResultProviderDelegate) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Delegate '.$delegate->getDelegateId().' does not provide a result'
             );
         }
@@ -73,7 +73,7 @@ class Delegate extends Base implements core\validate\IDelegateField
     {
         // Prepare
         if (!$this->_delegate) {
-            throw Glitch::ESetup('Delegate not set');
+            throw Exceptional::Setup('Delegate not set');
         }
 
         $value = false;

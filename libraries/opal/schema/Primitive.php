@@ -10,7 +10,7 @@ use df\core;
 use df\opal;
 use df\flex;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Primitive implements IPrimitive
 {
@@ -313,7 +313,7 @@ class Primitive_MultiField extends Primitive implements IMultiFieldPrimitive
 
         foreach ($primitives as $name => $primitive) {
             if (!$primitive instanceof IPrimitive) {
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     'Invalid primitive'
                 );
             }

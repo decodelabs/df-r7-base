@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Initiator implements IInitiator
 {
@@ -214,14 +214,16 @@ class Initiator implements IInitiator
                 break;
 
             default:
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     $type.' is not a valid populate type'
                 );
         }
 
-        if ($this->_joinType == IPopulateQuery::TYPE_SOME
-        && count($fields) != 1) {
-            throw Glitch::EInvalidArgument(
+        if (
+            $this->_joinType == IPopulateQuery::TYPE_SOME &&
+            count($fields) != 1
+        ) {
+            throw Exceptional::InvalidArgument(
                 'populateSome() can only handle one field at a time'
             );
         }
@@ -275,13 +277,13 @@ class Initiator implements IInitiator
                 break;
 
             default:
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     $type.' is not a valid populate type'
                 );
         }
 
         if (count($fields) != 1) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'attachRelation() can only handle one field at a time'
             );
         }
@@ -329,7 +331,7 @@ class Initiator implements IInitiator
                 break;
 
             default:
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     $type.' is not a valid join type'
                 );
         }
@@ -358,7 +360,7 @@ class Initiator implements IInitiator
                 break;
 
             default:
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     $type.' is not a valid join type'
                 );
         }
@@ -437,7 +439,7 @@ class Initiator implements IInitiator
     protected function _setMode($mode)
     {
         if ($this->_mode !== null) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'Query initiator mode has already been set'
             );
         }
@@ -474,7 +476,7 @@ class Initiator implements IInitiator
                 $source->isPrimary(true);
 
                 if (!$source->getAdapter()->supportsQueryType($this->_mode)) {
-                    throw Glitch::ELogic(
+                    throw Exceptional::Logic(
                         'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
                         'does not support SELECT queries'
                     );
@@ -495,7 +497,7 @@ class Initiator implements IInitiator
                 $source->isPrimary(true);
 
                 if (!$source->getAdapter()->supportsQueryType($this->_mode)) {
-                    throw Glitch::ELogic(
+                    throw Exceptional::Logic(
                         'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
                         'does not support UNION queries'
                     );
@@ -517,7 +519,7 @@ class Initiator implements IInitiator
                 $source->isPrimary(true);
 
                 if (!$source->getAdapter()->supportsQueryType($this->_mode)) {
-                    throw Glitch::ELogic(
+                    throw Exceptional::Logic(
                         'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
                         'does not support FETCH queries'
                     );
@@ -531,7 +533,7 @@ class Initiator implements IInitiator
                 $source->isPrimary(true);
 
                 if (!$source->getAdapter()->supportsQueryType($this->_mode)) {
-                    throw Glitch::ELogic(
+                    throw Exceptional::Logic(
                         'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
                         'does not support DELETE queries'
                     );
@@ -556,7 +558,7 @@ class Initiator implements IInitiator
                 $source = $sourceManager->newSource($sourceAdapter, $alias, [$fieldName]);
 
                 if (!$source->getAdapter()->supportsQueryType($this->_mode)) {
-                    throw Glitch::ELogic(
+                    throw Exceptional::Logic(
                         'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
                         'does not support CORRELATION queries'
                     );
@@ -576,7 +578,7 @@ class Initiator implements IInitiator
 
                 /*
                 if($sourceManager->getSourceByAlias($alias)) {
-                    throw Glitch::ELogic(
+                    throw Exceptional::Logic(
                         'A source has already been aliased as "'.$alias.'" - join source aliases must be unique'
                     );
                 }
@@ -593,14 +595,14 @@ class Initiator implements IInitiator
 
                 if ($source->getAdapterHash() == $this->_parentQuery->getSource()->getAdapterHash()) {
                     if (!$source->getAdapter()->supportsQueryType($this->_mode)) {
-                        throw Glitch::ELogic(
+                        throw Exceptional::Logic(
                             'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().
                             ' does not support joins'
                         );
                     }
                 } else {
                     if (!$source->getAdapter()->supportsQueryType(IQueryTypes::REMOTE_JOIN)) {
-                        throw Glitch::ELogic(
+                        throw Exceptional::Logic(
                             'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().
                             ' does not support remote joins'
                         );
@@ -615,7 +617,7 @@ class Initiator implements IInitiator
             case IQueryTypes::SELECT_ATTACH:
             case IQueryTypes::FETCH_ATTACH:
                 if ($alias === null) {
-                    throw Glitch::EInvalidArgument(
+                    throw Exceptional::InvalidArgument(
                         'Attachment sources must be aliased'
                     );
                 }
@@ -630,14 +632,14 @@ class Initiator implements IInitiator
 
                 if ($source->getAdapterHash() == $this->_parentQuery->getSource()->getAdapterHash()) {
                     if (!$source->getAdapter()->supportsQueryType($this->_mode)) {
-                        throw Glitch::ELogic(
+                        throw Exceptional::Logic(
                             'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().
                             ' does not support attachments'
                         );
                     }
                 } else {
                     if (!$source->getAdapter()->supportsQueryType(IQueryTypes::REMOTE_ATTACH)) {
-                        throw Glitch::ELogic(
+                        throw Exceptional::Logic(
                             'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().
                             ' does not support remote attachments'
                         );
@@ -654,12 +656,12 @@ class Initiator implements IInitiator
 
                 // no break
             case null:
-                throw Glitch::ELogic(
+                throw Exceptional::Logic(
                     'Query initiator mode has not been set'
                 );
 
             default:
-                throw Glitch::ELogic(
+                throw Exceptional::Logic(
                     'Query initiator mode '.self::modeIdToName($this->_mode).' is not compatible with \'from\' syntax'
                 );
         }
@@ -693,7 +695,7 @@ class Initiator implements IInitiator
                 $source->isPrimary(true);
 
                 if (!$source->getAdapter()->supportsQueryType($this->_mode)) {
-                    throw Glitch::ELogic(
+                    throw Exceptional::Logic(
                         'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
                         'does not support INSERT'
                     );
@@ -706,7 +708,7 @@ class Initiator implements IInitiator
                 $source->isPrimary(true);
 
                 if (!$source->getAdapter()->supportsQueryType($this->_mode)) {
-                    throw Glitch::ELogic(
+                    throw Exceptional::Logic(
                         'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
                         'does not support batch INSERT queries'
                     );
@@ -715,12 +717,12 @@ class Initiator implements IInitiator
                 return new BatchInsert($sourceManager, $source, $this->_data);
 
             case null:
-                throw Glitch::ELogic(
+                throw Exceptional::Logic(
                     'Query initiator mode has not been set'
                 );
 
             default:
-                throw Glitch::ELogic(
+                throw Exceptional::Logic(
                     'Query initiator mode '.self::modeIdToName($this->_mode).' is not compatible with \'into\' syntax'
                 );
         }
@@ -736,7 +738,7 @@ class Initiator implements IInitiator
                 $source->isPrimary(true);
 
                 if (!$source->getAdapter()->supportsQueryType($this->_mode)) {
-                    throw Glitch::ELogic(
+                    throw Exceptional::Logic(
                         'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
                         'does not support REPLACE queries'
                     );
@@ -749,7 +751,7 @@ class Initiator implements IInitiator
                 $source->isPrimary(true);
 
                 if (!$source->getAdapter()->supportsQueryType($this->_mode)) {
-                    throw Glitch::ELogic(
+                    throw Exceptional::Logic(
                         'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
                         'does not support batch REPLACE queries'
                     );
@@ -762,7 +764,7 @@ class Initiator implements IInitiator
                 $source->isPrimary(true);
 
                 if (!$source->getAdapter()->supportsQueryType($this->_mode)) {
-                    throw Glitch::ELogic(
+                    throw Exceptional::Logic(
                         'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
                         'does not support UPDATE queries'
                     );
@@ -771,12 +773,12 @@ class Initiator implements IInitiator
                 return new Update($sourceManager, $source, $this->_data);
 
             case null:
-                throw Glitch::ELogic(
+                throw Exceptional::Logic(
                     'Query initiator mode has not been set'
                 );
 
             default:
-                throw Glitch::ELogic(
+                throw Exceptional::Logic(
                     'Query initiator mode '.self::modeIdToName($this->_mode).' is not compatible with \'in\' syntax'
                 );
         }

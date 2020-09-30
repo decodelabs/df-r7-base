@@ -13,7 +13,7 @@ use df\axis;
 use df\opal;
 
 use DecodeLabs\Terminus\Cli;
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class TaskPurgeTableBackups extends arch\node\Task
 {
@@ -32,19 +32,19 @@ class TaskPurgeTableBackups extends arch\node\Task
         $unitId = $this->request['unit'];
 
         if (!$unit = axis\Model::loadUnitFromId($unitId)) {
-            throw Glitch::{'df/axis/unit/ENotFound'}(
+            throw Exceptional::{'df/axis/unit/NotFound'}(
                 'Unit '.$unitId.' not found'
             );
         }
 
         if ($unit->getUnitType() != 'table') {
-            throw Glitch::{'df/axis/unit/EDomain'}(
+            throw Exceptional::{'df/axis/unit/Domain'}(
                 'Unit '.$unitId.' is not a table'
             );
         }
 
         if (!$unit instanceof axis\IAdapterBasedStorageUnit) {
-            throw Glitch::{'df/axis/unit/EDomain'}(
+            throw Exceptional::{'df/axis/unit/Domain'}(
                 'Table unit '.$unitId.' is not adapter based - don\'t know how to rebuild it!'
             );
         }
@@ -59,7 +59,7 @@ class TaskPurgeTableBackups extends arch\node\Task
         $func = '_purge'.$adapterName.'Table';
 
         if (!method_exists($this, $func)) {
-            throw Glitch::{'df/axis/unit/EDomain'}(
+            throw Exceptional::{'df/axis/unit/Domain'}(
                 'Table unit '.$unitId.' is using an adapter that doesn\'t currently support rebuilding'
             );
         }

@@ -11,8 +11,6 @@ use df\spur;
 use df\link;
 use df\flex;
 
-use DecodeLabs\Glitch;
-
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Psr7\Request as HttpRequest;
 use Psr\Http\Message\ResponseInterface;

@@ -11,7 +11,7 @@ use df\spur;
 use df\link;
 use df\flex;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Psr7\Request as HttpRequest;
@@ -92,7 +92,7 @@ trait TGuzzleMediator
                 'http_errors' => false
             ]);
         } catch (\Throwable $e) {
-            throw Glitch::{'EImplementation,ETransport,EApi'}([
+            throw Exceptional::{'Implementation,Transport,Api'}([
                 'message' => $e->getMessage(),
                 'previous' => $e
             ]);
@@ -108,13 +108,13 @@ trait TGuzzleMediator
             $code = $response->getStatusCode();
 
             if ($code >= 500) {
-                throw Glitch::{'EImplementation'}([
+                throw Exceptional::{'Implementation'}([
                     'message' => $message,
                     'data' => (string)$response->getBody(),
                     'code' => $code
                 ]);
             } else {
-                throw Glitch::{'EApi'}([
+                throw Exceptional::{'Api'}([
                     'message' => $message,
                     'data' => $this->_normalizeErrorData((string)$response->getBody()),
                     'code' => $code

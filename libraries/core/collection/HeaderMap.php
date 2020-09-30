@@ -8,8 +8,8 @@ namespace df\core\collection;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class HeaderMap implements IHeaderMap, Dumpable
 {
@@ -83,7 +83,9 @@ class HeaderMap implements IHeaderMap, Dumpable
     public function set($key, $value=null)
     {
         if (empty($key)) {
-            throw Glitch::EInvalidArgument('Invalid header input');
+            throw Exceptional::InvalidArgument(
+                'Invalid header input'
+            );
         }
 
         $key = $this->normalizeKey($key);
@@ -110,7 +112,9 @@ class HeaderMap implements IHeaderMap, Dumpable
     public function add($key, $value)
     {
         if (empty($key) || (isset($value) && !is_scalar($value))) {
-            throw Glitch::EInvalidArgument('Invalid header input');
+            throw Exceptional::InvalidArgument(
+                'Invalid header input'
+            );
         }
 
         $key = $this->normalizeKey($key);
@@ -136,7 +140,9 @@ class HeaderMap implements IHeaderMap, Dumpable
     public function append($key, $value)
     {
         if (empty($key) || (isset($value) && !is_scalar($value))) {
-            throw Glitch::EInvalidArgument('Invalid header input');
+            throw Exceptional::InvalidArgument(
+                'Invalid header input'
+            );
         }
 
         $key = $this->normalizeKey($key);

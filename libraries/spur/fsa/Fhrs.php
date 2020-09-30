@@ -11,7 +11,7 @@ use df\spur;
 use df\link;
 use df\flex;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 use Psr\Http\Message\ResponseInterface;
 
 class Fhrs implements IFhrsMediator
@@ -198,7 +198,9 @@ class Fhrs implements IFhrsMediator
                     break;
 
                 default:
-                    throw Glitch::EInvalidArgument('Invalid establishment search key: '.$key);
+                    throw Exceptional::InvalidArgument(
+                        'Invalid establishment search key: '.$key
+                    );
             }
         }
 
@@ -237,15 +239,15 @@ class Fhrs implements IFhrsMediator
         $data = flex\Json::stringToTree((string)$response->getBody());
         $message = $data->get('Message', $data->getValue() ?? 'Request failed');
         $code = $response->getStatusCode();
-        $errorType = 'EApi';
+        $errorType = 'Api';
 
         switch ($code) {
             case 404:
-                $errorType .= ',ENotFound';
+                $errorType .= ',NotFound';
                 break;
         }
 
-        return Glitch::{$errorType}([
+        return Exceptional::{$errorType}([
             'message' => $message,
             'code' => $code
         ]);

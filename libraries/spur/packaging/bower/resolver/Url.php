@@ -10,7 +10,6 @@ use df\core;
 use df\spur;
 use df\link;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 
 class Url implements spur\packaging\bower\IResolver

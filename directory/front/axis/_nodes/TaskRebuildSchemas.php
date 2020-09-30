@@ -26,7 +26,7 @@ class TaskRebuildSchemas extends arch\node\Task
         foreach ($list as $unitId) {
             try {
                 $unit = axis\Model::loadUnitFromId($unitId);
-            } catch (axis\EGlitch $e) {
+            } catch (axis\Exception $e) {
                 Cli::operative('Skipped '.$unitId.', definition not found');
                 continue;
             }

@@ -12,6 +12,7 @@ use df\arch;
 use df\link;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class TaskDefault extends arch\node\Base
 {
@@ -21,7 +22,7 @@ class TaskDefault extends arch\node\Base
     public function execute()
     {
         if (!$exception = $this->runner->getDispatchException()) {
-            throw Glitch::EForbidden([
+            throw Exceptional::Forbidden([
                 'message' => 'You shouldn\'t be here',
                 'http' => 403
             ]);

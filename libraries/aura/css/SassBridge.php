@@ -15,8 +15,9 @@ use df\flex;
 
 use DecodeLabs\Systemic;
 use DecodeLabs\Atlas;
-use DecodeLabs\Glitch;
 use DecodeLabs\Terminus\Session;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch;
 
 class SassBridge implements ISassBridge
 {
@@ -47,7 +48,7 @@ class SassBridge implements ISassBridge
         $path = realpath($path);
 
         if ($path === false || !is_file($path)) {
-            throw Glitch::ENotFound([
+            throw Exceptional::NotFound([
                 'message' => 'Sass file not found',
                 'data' => $path
             ]);
@@ -133,7 +134,9 @@ class SassBridge implements ISassBridge
                 $this->compile();
             } else {
                 if (false === ($manifestData = file_get_contents($manifestPath))) {
-                    throw Glitch::ERuntime('Unable to read manifest data', null, $manifestPath);
+                    throw Exceptional::Runtime(
+                        'Unable to read manifest data', null, $manifestPath
+                    );
                 }
 
                 $files = json_decode($manifestData, true);
@@ -317,12 +320,12 @@ class SassBridge implements ISassBridge
         $output = $result->getOutput();
 
         if ($result->hasError()) {
-            $error = Glitch::ERuntime(
+            $error = Exceptional::Runtime(
                 $result->getError()
             );
 
             if (!empty($output)) {
-                core\logException($error);
+                Glitch::logException($error);
             } else {
                 throw $error;
             }
@@ -330,7 +333,7 @@ class SassBridge implements ISassBridge
 
 
         if (false !== stripos($output, 'error')) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 $output
             );
         }
@@ -348,7 +351,9 @@ class SassBridge implements ISassBridge
         $cssFilePath = $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css';
 
         if (false === ($content = file_get_contents($cssFilePath))) {
-            throw Glitch::ERuntime('Unable to read temp css file', null, $cssFilePath);
+            throw Exceptional::Runtime(
+                'Unable to read temp css file', null, $cssFilePath
+            );
         }
 
         // Replace map url
@@ -369,7 +374,9 @@ class SassBridge implements ISassBridge
         // Replace map file paths
         if ($mapExists && $envMode != 'production') {
             if (false === ($content = file_get_contents($mapPath))) {
-                throw Glitch::ERuntime('Unable to read map file', null, $mapPath);
+                throw Exceptional::Runtime(
+                    'Unable to read map file', null, $mapPath
+                );
             }
 
             $content = str_replace(
@@ -534,7 +541,9 @@ class SassBridge implements ISassBridge
                 if ($output) {
                     return $output;
                 } else {
-                    throw Glitch::ENotFound('Theme sass file not found: '.$path);
+                    throw Exceptional::NotFound(
+                        'Theme sass file not found: '.$path
+                    );
                 }
 
                 break;

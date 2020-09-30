@@ -11,10 +11,8 @@ use df\axis;
 use df\opal;
 use df\mesh;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Exceptional;
 
 class OneRelationValueContainer implements
     opal\record\IJobAwareValueContainer,
@@ -30,7 +28,9 @@ class OneRelationValueContainer implements
     public function __construct(axis\schema\IRelationField $field, opal\record\IRecord $parentRecord=null, $value=null)
     {
         if (!$field instanceof opal\schema\ITargetPrimaryFieldAwareRelationField) {
-            throw Glitch::ELogic('Unsupport field type', null, $field);
+            throw Exceptional::Logic(
+                'Unsupport field type', null, $field
+            );
         }
 
         $this->_field = $field;
@@ -93,7 +93,7 @@ class OneRelationValueContainer implements
         } elseif (!$value instanceof opal\record\IPrimaryKeySet) {
             try {
                 $value = $this->_value->duplicateWith($value);
-            } catch (opal\record\EGlitch $e) {
+            } catch (opal\record\Exception $e) {
                 return false;
             }
         }
@@ -260,7 +260,6 @@ class OneRelationValueContainer implements
 
     public function deployDeleteJobs(mesh\job\IQueue $queue, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordJob=null)
     {
-        //Glitch::incomplete($queue, $record, $recordJob);
     }
 
     public function acceptDeleteJobChanges(opal\record\IRecord $record)

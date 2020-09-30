@@ -14,7 +14,7 @@ use df\axis;
 use df\neon;
 use df\link;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Media implements arch\IDirectoryHelper
 {
@@ -133,7 +133,7 @@ class Media implements arch\IDirectoryHelper
             $output = $this->context->http->redirect($filePath);
         } else {
             if (!is_file($filePath)) {
-                throw Glitch::{'df/core/fs/ENotFound'}([
+                throw Exceptional::{'df/core/fs/NotFound'}([
                     'message' => 'Media file could not be found in storage - this is bad!',
                     'http' => 404
                 ]);
@@ -191,7 +191,7 @@ class Media implements arch\IDirectoryHelper
     {
         try {
             $filePath = $this->_getDownloadFileLocation($fileId, $versionId, $isActive);
-        } catch (core\fs\ENotFound $e) {
+        } catch (core\fs\NotFoundException $e) {
             if (!df\Launchpad::$app->isProduction()) {
                 return $this->serveFallbackImage($contentType, $fileName, $transformation);
             }
@@ -298,7 +298,7 @@ class Media implements arch\IDirectoryHelper
             $filePath = $handler->getFilePath($fileId, $versionId);
 
             if (!is_file($filePath)) {
-                throw Glitch::{'df/core/fs/ENotFound'}([
+                throw Exceptional::{'df/core/fs/NotFound'}([
                     'message' => 'Media file could not be found in storage - this is bad!',
                     'http' => 404
                 ]);

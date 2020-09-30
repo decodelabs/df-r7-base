@@ -13,7 +13,7 @@ use df\link\geoIp\Adapter;
 use df\link\geoIp\Result;
 use df\link\geoIp\Config;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class MaxMindDb implements Adapter
 {
@@ -24,13 +24,13 @@ class MaxMindDb implements Adapter
         $file = self::getFileFromConfig();
 
         if (empty($file)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'MaxMind DB file has not been set in config'
             );
         }
 
         if (!is_file($file)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'MaxMind DB file could not be found'
             );
         }

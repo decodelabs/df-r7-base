@@ -8,10 +8,8 @@ namespace df\core\unit;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Exceptional;
 
 class Angle implements IAngle, Dumpable
 {
@@ -59,7 +57,9 @@ class Angle implements IAngle, Dumpable
                 break;
 
             default:
-                throw Glitch::EInvalidArgument('Unsupport angle unit: '.$this->_unit);
+                throw Exceptional::InvalidArgument(
+                    'Unsupport angle unit: '.$this->_unit
+                );
         }
 
         $upper = $limit;
@@ -148,7 +148,9 @@ class Angle implements IAngle, Dumpable
                 break;
 
             default:
-                throw Glitch::EInvalidArgument('Unsupport angle unit: '.$inUnit);
+                throw Exceptional::InvalidArgument(
+                    'Unsupport angle unit: '.$inUnit
+                );
         }
 
         switch ($outUnit) {

@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Join implements IJoinQuery, Dumpable
 {
@@ -53,7 +53,7 @@ class Join implements IJoinQuery, Dumpable
                 break;
 
             default:
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     $type.' is not a valid join type'
                 );
         }
@@ -132,7 +132,7 @@ class Join implements IJoinQuery, Dumpable
     public function combineAll($nullField=null, string $alias=null)
     {
         if (!$this->_parent instanceof ICombinableQuery) {
-            throw Glitch::EDefinition(
+            throw Exceptional::Definition(
                 'Parent query is not combinable'
             );
         }

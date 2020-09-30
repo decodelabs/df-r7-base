@@ -13,8 +13,8 @@ use df\flex;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class ContentPart implements IContentPart, Dumpable
 {
@@ -56,7 +56,7 @@ class ContentPart implements IContentPart, Dumpable
                     break;
 
                 default:
-                    throw Glitch::EInvalidArgument(
+                    throw Exceptional::InvalidArgument(
                         'Invalid encoding type: '.$encoding
                     );
             }
@@ -89,13 +89,13 @@ class ContentPart implements IContentPart, Dumpable
     public function setContentType($type)
     {
         if (strtolower(substr($type, 0, 10)) == 'multipart/') {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Please use newMultiPart() for multipart types'
             );
         }
 
         if (preg_match('/boundary=".*"/i', $type)) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Please use newMultiPart() for multipart types, invalid boundary definition detected'
             );
         }
@@ -129,7 +129,7 @@ class ContentPart implements IContentPart, Dumpable
                 break;
 
             default:
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     'Invalid encoding type: '.$encoding
                 );
         }
@@ -212,7 +212,7 @@ class ContentPart implements IContentPart, Dumpable
     public function setContent($content)
     {
         if (is_resource($content)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Resource streams are not currently supported in mime messages'
             );
         }

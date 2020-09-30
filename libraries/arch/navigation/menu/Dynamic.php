@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Dynamic extends Base
 {
@@ -88,7 +88,7 @@ class Dynamic extends Base
             if (is_array($entry)) {
                 $entry = arch\navigation\entry\Base::fromArray($entry);
             } else {
-                throw Glitch::EInvalidArgument([
+                throw Exceptional::InvalidArgument([
                     'message' => 'Invalid entry definition',
                     'data' => $entry
                 ]);

@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\aura;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements IScaffold
 {
@@ -45,7 +45,9 @@ abstract class Base implements IScaffold
         $class = self::getClassFor($context->location, $runMode);
 
         if (!$class) {
-            throw Glitch::ENotFound('Scaffold could not be found for '.$context->location);
+            throw Exceptional::NotFound(
+                'Scaffold could not be found for '.$context->location
+            );
         }
 
         $output = new $class($context);
@@ -136,7 +138,7 @@ abstract class Base implements IScaffold
                     return $node;
                 }
 
-                throw Glitch::{'df/arch/node/ENotFound,ENotFound'}(
+                throw Exceptional::{'df/arch/node/NotFound,NotFound'}(
                     'Scaffold at '.$this->context->location.' cannot provide node '.$node
                 );
             }
@@ -181,7 +183,7 @@ abstract class Base implements IScaffold
             $output = $this->{$method}($args);
 
             if (!$output instanceof arch\IComponent) {
-                throw Glitch::{'df/arch/component/ENotFound,ENotFound'}(
+                throw Exceptional::{'df/arch/component/NotFound,NotFound'}(
                     'Scaffold at '.$this->context->location.' attempted but failed to provide component '.$origName
                 );
             }
@@ -189,7 +191,7 @@ abstract class Base implements IScaffold
             return $output;
         }
 
-        throw Glitch::{'df/arch/component/ENotFound,ENotFound'}(
+        throw Exceptional::{'df/arch/component/NotFound,NotFound'}(
             'Scaffold at '.$this->context->location.' cannot provide component '.$origName
         );
     }
@@ -206,7 +208,7 @@ abstract class Base implements IScaffold
         $method = 'build'.$name.'FormDelegate';
 
         if (!method_exists($this, $method)) {
-            throw Glitch::{'df/arch/node/ENotFound,ENotFound'}(
+            throw Exceptional::{'df/arch/node/NotFound,NotFound'}(
                 'Scaffold at '.$this->context->location.' cannot provide form delegate '.$origName
             );
         }
@@ -214,7 +216,7 @@ abstract class Base implements IScaffold
         $output = $this->{$method}($state, $event, $id);
 
         if (!$output instanceof arch\node\IDelegate) {
-            throw Glitch::{'df/arch/node/ENotFound,ENotFound'}(
+            throw Exceptional::{'df/arch/node/NotFound,NotFound'}(
                 'Scaffold at '.$this->context->location.' attempted but failed to provide form delegate '.$origName
             );
         }
@@ -227,7 +229,7 @@ abstract class Base implements IScaffold
         $method = 'generate'.ucfirst($name).'Menu';
 
         if (!method_exists($this, $method)) {
-            throw Glitch::{'df/arch/navigation/ENotFound,ENotFound'}(
+            throw Exceptional::{'df/arch/navigation/NotFound,NotFound'}(
                 'Scaffold at '.$this->context->location.' could not provider menu '.$name
             );
         }
@@ -270,7 +272,9 @@ abstract class Base implements IScaffold
     public function generateAttributeList(array $fields, $record=true)
     {
         if (!$this instanceof IRecordDataProviderScaffold) {
-            throw Glitch::ELogic('Scaffold cannot generate attribute list');
+            throw Exceptional::Logic(
+                'Scaffold cannot generate attribute list'
+            );
         }
 
         if ($record === true) {
@@ -358,7 +362,9 @@ abstract class Base implements IScaffold
     public function generateCollectionList(array $fields, $collection=null)
     {
         if (!$this instanceof IRecordDataProviderScaffold) {
-            throw Glitch::ELogic('Scaffold cannot generate collection list');
+            throw Exceptional::Logic(
+                'Scaffold cannot generate collection list'
+            );
         }
 
         $nameKey = $this->getRecordNameField();

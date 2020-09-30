@@ -11,8 +11,8 @@ use df\arch;
 use df\aura;
 use df\link;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Base implements INode, Dumpable
 {
@@ -46,7 +46,7 @@ class Base implements INode, Dumpable
             try {
                 $scaffold = arch\scaffold\Base::factory($context);
                 return $scaffold->loadNode();
-            } catch (arch\scaffold\ENotFound $e) {
+            } catch (arch\scaffold\NotFoundException $e) {
             }
         }
 
@@ -55,7 +55,7 @@ class Base implements INode, Dumpable
                 return $node;
             }
 
-            throw Glitch::ENotFound([
+            throw Exceptional::NotFound([
                 'message' => 'No node could be found for '.utf8_encode($context->location->toString()),
                 'http' => 404
             ]);
@@ -203,14 +203,14 @@ class Base implements INode, Dumpable
             $client = $this->context->user->getClient();
 
             if ($client->isDeactivated()) {
-                throw Glitch::EForbidden([
+                throw Exceptional::Forbidden([
                     'message' => 'Client deactivated',
                     'http' => 403
                 ]);
             }
 
             if (!$client->canAccess($this)) {
-                throw Glitch::EUnauthorized([
+                throw Exceptional::Unauthorized([
                     'message' => 'Insufficient permissions',
                     'http' => 401
                 ]);
@@ -308,7 +308,7 @@ class Base implements INode, Dumpable
             return $this->context->http->redirect($request);
         }
 
-        throw Glitch::ENotFound([
+        throw Exceptional::NotFound([
             'message' => 'No handler could be found for node: '.
                 $this->context->location->toString(),
             'http' => 404
@@ -349,7 +349,7 @@ class Base implements INode, Dumpable
                 }
         }
 
-        throw Glitch::ENotFound([
+        throw Exceptional::NotFound([
             'message' => 'No ajax content found',
             'http' => 404
         ]);

@@ -9,11 +9,11 @@ use df;
 use df\core;
 use df\flex;
 
-use DecodeLabs\Glitch;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Mode;
 use DecodeLabs\Atlas\File;
+
+use DecodeLabs\Exceptional;
 
 class Reader implements IReader
 {
@@ -94,13 +94,15 @@ class Reader implements IReader
     public function extractFields(): IReader
     {
         if ($this->_fields !== null) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Fields have already been set'
             );
         }
 
         if (!$row = $this->getRow()) {
-            throw Glitch::EUnexpectedValue('Unable to extract fields row from CSV', null, $this);
+            throw Exceptional::UnexpectedValue(
+                'Unable to extract fields row from CSV', null, $this
+            );
         }
 
         $this->setFields(...$row);

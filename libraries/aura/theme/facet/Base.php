@@ -10,7 +10,7 @@ use df\core;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements aura\theme\IFacet
 {
@@ -22,7 +22,7 @@ abstract class Base implements aura\theme\IFacet
         $class = 'df\\aura\\theme\\facet\\'.ucfirst($name);
 
         if (!class_exists($class)) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'Theme facet '.$name.' could not be found'
             );
         }

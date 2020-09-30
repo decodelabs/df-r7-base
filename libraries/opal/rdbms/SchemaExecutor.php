@@ -10,6 +10,7 @@ use df\core;
 use df\opal;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class SchemaExecutor implements ISchemaExecutor
 {
@@ -21,7 +22,7 @@ abstract class SchemaExecutor implements ISchemaExecutor
         $class = 'df\\opal\\rdbms\\variant\\'.$type.'\\SchemaExecutor';
 
         if (!class_exists($class)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'There is no schema executor available for '.$type
             );
         }
@@ -79,7 +80,7 @@ abstract class SchemaExecutor implements ISchemaExecutor
 
         foreach ($schema->getIndexes() as $index) {
             if ($index->isVoid()) {
-                throw Glitch::{'df/opal/schema/ERuntime'}(
+                throw Exceptional::{'df/opal/schema/Runtime'}(
                     'Index '.$index->getName().' is invalid'
                 );
             }
@@ -93,7 +94,7 @@ abstract class SchemaExecutor implements ISchemaExecutor
         // Foreign keys
         foreach ($schema->getForeignKeys() as $key) {
             if ($key->isVoid()) {
-                throw Glitch::{'df/opal/rdbms/EForeignKeyConflict'}(
+                throw Exceptional::{'df/opal/rdbms/ForeignKeyConflict'}(
                     'Foreign key '.$key->getName().' is invalid'
                 );
             }

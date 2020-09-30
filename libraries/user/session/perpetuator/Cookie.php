@@ -12,7 +12,7 @@ use df\arch;
 use df\link;
 use df\axis;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Cookie implements user\session\IPerpetuator
 {
@@ -40,7 +40,7 @@ class Cookie implements user\session\IPerpetuator
                 $cookie = $cookies->get(self::JOIN_NAME);
                 $cookies->remove(self::JOIN_NAME);
 
-                throw Glitch::EUnexpectedValue([
+                throw Exceptional::UnexpectedValue([
                     'message' => 'Invalid join cookie: "'.$cookie.'"',
                     'previous' => $e
                 ]);

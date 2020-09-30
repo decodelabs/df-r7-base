@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\link;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class HeaderCollection extends core\collection\HeaderMap implements link\http\IResponseHeaderCollection
 {
@@ -144,7 +144,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         $http = array_shift($lines);
 
         if (!preg_match("|^HTTP/([\d\.x]+) (\d+)( ([^\r\n]+))?|", $http, $matches)) {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Headers do not appear to be valid HTTP format'
             );
         }
@@ -169,7 +169,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
     public function setStatusCode(int $code)
     {
         if (!self::isValidStatusCode($code)) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 $code.' is not a valid http response code'
             );
         }

@@ -11,7 +11,7 @@ use df\opal;
 use df\user;
 use df\mesh;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 interface IRecordAdapterProvider
 {
@@ -53,11 +53,11 @@ trait TPrimaryKeySetProvider
 
         if ($fields === null) {
             if ($this->_adapter) {
-                throw Glitch::ELogic(
+                throw Exceptional::Logic(
                     'Record type '.$this->_adapter->getQuerySourceId().' has no primary fields'
                 );
             } else {
-                throw Glitch::ELogic(
+                throw Exceptional::Logic(
                     'Anonymous record has no primary fields'
                 );
             }

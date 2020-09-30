@@ -15,7 +15,7 @@ use df\flex;
 
 use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Atlas;
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class TaskMedia extends arch\node\Task
 {
@@ -118,11 +118,13 @@ class TaskMedia extends arch\node\Task
 
                         Cli::error('NOT FOUND'.($message ? ': '.$message : null));
                     } elseif ($response->getStatusCode() === 403) {
-                        throw Glitch::{'EInvalidArgument,EApi'}(
+                        throw Exceptional::{'InvalidArgument,Api'}(
                             'Migration key is invalid - check application pass keys match'
                         );
                     } elseif ($response->getStatusCode() >= 400) {
-                        throw Glitch::EApi('Migration failed!!!');
+                        throw Exceptional::Api(
+                            'Migration failed!!!'
+                        );
                     }
                 } else {
                     $file = Atlas::$http->saveResponse($response, $path);
@@ -149,7 +151,7 @@ class TaskMedia extends arch\node\Task
             ->validate(['url' => $url]);
 
         if (!$validator->isValid()) {
-            throw Glitch::EInvalidArgument([
+            throw Exceptional::InvalidArgument([
                 'message' => 'Sorry, the URL you entered is invalid',
             ]);
         }

@@ -16,7 +16,7 @@ use df\mesh;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Data implements core\ISharedHelper, opal\query\IEntryPoint
 {
@@ -73,7 +73,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
     {
         if ($primary === null) {
             $name = $query->getSource()->getDisplayName();
-            throw Glitch::{'df/opal/record/ENotFound'}([
+            throw Exceptional::{'df/opal/record/NotFound'}([
                 'message' => 'Item not found - '.$name.'#NULL',
                 'http' => 404
             ]);
@@ -84,7 +84,9 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
         }
 
         if (!$query instanceof opal\query\IWhereClauseQuery) {
-            throw Glitch::ELogic('Query is not a where clause factory', null, $query);
+            throw Exceptional::Logic(
+                'Query is not a where clause factory', null, $query
+            );
         }
 
         $this->applyQueryPrimaryClause($query, $primary);
@@ -100,7 +102,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
             }
 
             $name = $query->getSource()->getDisplayName();
-            throw Glitch::{'df/opal/record/ENotFound'}([
+            throw Exceptional::{'df/opal/record/NotFound'}([
                 'message' => 'Item not found - '.$name.'#'.$primary,
                 'http' => 404
             ]);
@@ -136,7 +138,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
 
         if ($output === null) {
             $name = $query->getSource()->getDisplayName();
-            throw Glitch::{'df/opal/record/ENotFound'}([
+            throw Exceptional::{'df/opal/record/NotFound'}([
                 'message' => 'Item not found - '.$name,
                 'http' => 404
             ]);
@@ -163,7 +165,9 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
             $unit = $this->fetchEntity($unit);
 
             if (!$unit instanceof axis\IUnit) {
-                throw Glitch::{'df/axis/ERuntime'}('Invalid unit passed for procedure');
+                throw Exceptional::{'df/axis/Runtime'}(
+                    'Invalid unit passed for procedure'
+                );
             }
         }
 
@@ -207,7 +211,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
         $adapter = $source->getAdapter();
 
         if (!$this->context->getUserManager()->canAccess($adapter, $action)) {
-            throw Glitch::{'df/opal/record/EUnauthorized'}([
+            throw Exceptional::{'df/opal/record/Unauthorized'}([
                 'message' => 'Cannot '.$actionName.' '.$source->getDisplayName().' items',
                 'http' => 401
             ]);
@@ -335,14 +339,14 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
         }
 
         if (!$output = $this->fetchEntity($id)) {
-            throw Glitch::{'df/opal/record/ENotFound'}([
+            throw Exceptional::{'df/opal/record/NotFound'}([
                 'message' => 'Entity not found - '.$id,
                 'http' => 404
             ]);
         }
 
         if (!$this->context->getUserManager()->canAccess($output, $action)) {
-            throw Glitch::{'df/opal/record/EUnauthorized'}([
+            throw Exceptional::{'df/opal/record/Unauthorized'}([
                 'message' => 'Cannot '.$actionName.' entity '.$id,
                 'http' => 401
             ]);

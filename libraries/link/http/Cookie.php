@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\link;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Cookie implements ICookie
 {
@@ -91,13 +91,13 @@ class Cookie implements ICookie
         $name = (string)$name;
 
         if (empty($name) && !is_numeric($name)) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Empty cookie name'
             );
         }
 
         if (preg_match('/[\x00-\x20\x22\x28-\x29\x2c\x2f\x3a-\x40\x5b-\x5d\x7b\x7d\x7f]/', $name)) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Cookie name contains control character or space'
             );
         }

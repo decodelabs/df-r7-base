@@ -11,9 +11,9 @@ use df\spur;
 use df\flex;
 use df\fuse;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Terminus\Session;
+use DecodeLabs\Exceptional;
 
 class Installer implements IInstaller
 {
@@ -169,13 +169,13 @@ class Installer implements IInstaller
                     $range = flex\VersionRange::factory($depPackage->version);
 
                     if (!$range->contains($installed->version) && $installed->installName == $depPackage->installName) {
-                        throw Glitch::ERuntime(
+                        throw Exceptional::Runtime(
                             'Unable to satisfy '.$package->name.' dependencies - version conflict for '.$package->name
                         );
                     } else {
                         $depPackage = $installed;
                     }
-                } catch (flex\EGlitch $e) {
+                } catch (flex\Exception $e) {
                     // never mind
                 }
             }
@@ -400,7 +400,7 @@ class Installer implements IInstaller
             try {
                 $package->version = flex\VersionRange::factory($package->source);
                 $package->source = $package->name;
-            } catch (flex\EGlitch $e) {
+            } catch (flex\Exception $e) {
                 $package->name = $package->source;
             }
 
@@ -412,7 +412,7 @@ class Installer implements IInstaller
                     $package->url = $registry['url'];
                     $package->name = $registry['name'];
                     $package->isRegistry = true;
-                } catch (EApi $e) {
+                } catch (ApiException $e) {
                     // never mind
                 }
 
@@ -424,7 +424,9 @@ class Installer implements IInstaller
         }
 
         if (!$package->resolver) {
-            throw Glitch::ERuntime('No valid resolver could be found for package: '.$package->name);
+            throw Exceptional::Runtime(
+                'No valid resolver could be found for package: '.$package->name
+            );
         }
 
         if (!$package->installName) {
@@ -437,7 +439,7 @@ class Installer implements IInstaller
 
             try {
                 $range = flex\VersionRange::factory($package->version);
-            } catch (flex\EGlitch $e) {
+            } catch (flex\Exception $e) {
                 $range = null;
             }
 
@@ -455,7 +457,7 @@ class Installer implements IInstaller
                         foreach ($versions as $versionStr) {
                             try {
                                 $version = flex\Version::factory($versionStr);
-                            } catch (flex\EGlitch $e) {
+                            } catch (flex\Exception $e) {
                                 continue;
                             }
 
@@ -511,7 +513,9 @@ class Installer implements IInstaller
         $class = 'df\\spur\\packaging\\bower\\resolver\\'.$name;
 
         if (!class_exists($class)) {
-            throw Glitch::ELogic($name.' resolver isn\'t done yet');
+            throw Exceptional::Logic(
+                $name.' resolver isn\'t done yet'
+            );
         }
 
         return $this->_resolvers[$name] = new $class();
@@ -561,7 +565,7 @@ class Installer implements IInstaller
         } elseif (is_dir($sourcePath)) {
             Atlas::$fs->copyDir($sourcePath, $destination);
         } else {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Unable to locate fetched package source in cache: '.$package->cacheFileName
             );
         }

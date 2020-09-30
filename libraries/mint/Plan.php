@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\mint;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Plan implements mint\IPlan, Dumpable
 {
@@ -75,7 +75,7 @@ class Plan implements mint\IPlan, Dumpable
                 break;
 
             default:
-                throw Glitch::EInvalidArgument([
+                throw Exceptional::InvalidArgument([
                     'message' => 'Invalid interval',
                     $interval
                 ]);

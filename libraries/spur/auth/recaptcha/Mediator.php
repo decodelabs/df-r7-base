@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 use df\link;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Mediator implements IMediator
 {
@@ -49,11 +49,15 @@ class Mediator implements IMediator
                 switch ((string)$node) {
                     case 'invalid-input-response':
                     case 'missing-input-response':
-                        throw Glitch::ERuntime('Invalid input response: '.$key);
+                        throw Exceptional::Runtime(
+                            'Invalid input response: '.$key
+                        );
 
                     case 'invalid-input-secret':
                     case 'missing-input-secret':
-                        throw Glitch::ERuntime('Invalid secret: '.$this->_secret);
+                        throw Exceptional::Runtime(
+                            'Invalid secret: '.$this->_secret
+                        );
                 }
             }
         }

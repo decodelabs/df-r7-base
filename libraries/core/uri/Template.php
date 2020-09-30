@@ -8,7 +8,7 @@ namespace df\core\uri;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Template implements ITemplate
 {
@@ -162,7 +162,9 @@ class Template implements ITemplate
     protected function _parseExpression($expression)
     {
         if (!strlen($expression)) {
-            throw Glitch::EUnexpectedValue('Empty template expression');
+            throw Exceptional::UnexpectedValue(
+                'Empty template expression'
+            );
         }
 
         $output = new Template_Expression();

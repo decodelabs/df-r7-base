@@ -9,6 +9,7 @@ use df;
 use df\core;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 // String provider
 interface IStringProvider
@@ -101,7 +102,9 @@ trait TValueMap
             } elseif (is_array($source)) {
                 $value = $source[$fromField] ?? null;
             } else {
-                throw Glitch::EUnexpectedValue('Unsupported data source', null, $source);
+                throw Exceptional::UnexpectedValue(
+                    'Unsupported data source', null, $source
+                );
             }
 
             if ($this instanceof core\collection\ICollection) {
@@ -194,7 +197,9 @@ class Package
         $class = 'df\\apex\\packages\\'.$name.'\\Package';
 
         if (!class_exists($class)) {
-            throw Glitch::ERuntime('Package '.$name.' could not be found');
+            throw Exceptional::Runtime(
+                'Package '.$name.' could not be found'
+            );
         }
 
         return new $class($name);
@@ -333,7 +338,9 @@ trait TManager
         $ref = new \ReflectionClass($class);
 
         if ($ref->isAbstract()) {
-            throw Glitch::ELogic('Unable to instantiate abstract Manager: '.__CLASS__);
+            throw Exceptional::Logic(
+                'Unable to instantiate abstract Manager: '.__CLASS__
+            );
         }
 
         return new $class();
@@ -375,7 +382,7 @@ trait THelperProvider
         $helper = $this->getHelper($method);
 
         if (!is_callable($helper)) {
-            throw Glitch::EBadMethodCall(
+            throw Exceptional::BadMethodCall(
                 'Helper '.$method.' is not callable'
             );
         }
@@ -394,7 +401,7 @@ trait THelperProvider
         $output = $this->_loadHelper($name);
 
         if (!$output && !$returnNull) {
-            throw Glitch::{'EHelperNotFound,ENotFound'}(
+            throw Exceptional::{'HelperNotFound,NotFound'}(
                 'Helper '.$name.' could not be found'
             );
         }

@@ -11,6 +11,7 @@ use df\arch;
 use df\halo;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunner
 {
@@ -29,7 +30,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
     public function getCommand()
     {
         if (!$this->_command) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'The task command is not available until the application has been dispatched'
             );
         }
@@ -43,7 +44,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
     public function getContext()
     {
         if (!$this->_context) {
-            throw Glitch::ENoContext(
+            throw Exceptional::NoContext(
                 'A context is not available until the application has been dispatched'
             );
         }
@@ -83,7 +84,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
         }
 
         if (!$request) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'No task path has been specified'
             );
         }
@@ -166,7 +167,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
 
         // Forwarding
         if ($response instanceof arch\IRequest) {
-            throw Glitch::EImplementation(
+            throw Exceptional::Implementation(
                 'Request forwarding is no longer supported'
             );
         }

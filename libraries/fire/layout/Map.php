@@ -11,7 +11,7 @@ use df\fire;
 use df\arch;
 use df\aura;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Map implements fire\ILayoutMap
 {
@@ -50,7 +50,7 @@ class Map implements fire\ILayoutMap
     {
         foreach ($entries as $entry) {
             if (!$entry instanceof fire\ILayoutMapEntry) {
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     'Invalid map entry detected'
                 );
             }

@@ -11,7 +11,7 @@ use df\user;
 use df\opal;
 use df\mesh;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 // Constants
 interface IState
@@ -268,7 +268,9 @@ trait TAccessLock
     public function getActionLock($node)
     {
         if (!$this instanceof IAccessLock) {
-            throw Glitch::ELogic('Lock requester is not an instance of user\\IAccessLock');
+            throw Exceptional::Logic(
+                'Lock requester is not an instance of user\\IAccessLock'
+            );
         }
 
         return new user\access\lock\Action($this, $node);

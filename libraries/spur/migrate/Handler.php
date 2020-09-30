@@ -12,7 +12,8 @@ use df\link;
 use df\arch;
 use df\flex;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
+
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Pool as HttpPool;
 use GuzzleHttp\Psr7\Request as HttpRequest;
@@ -70,7 +71,7 @@ class Handler implements IHandler
         $content = flex\Json::stringToTree((string)$response->getBody());
 
         if (!$content->data->nodes->contains('media')) {
-            throw Glitch::{'EApi,EForbidden'}([
+            throw Exceptional::{'Api,Forbidden'}([
                 'message' => 'Target app does not support media migration',
                 'data' => $content->data->nodes->toArray(),
                 'http' => 403
@@ -129,7 +130,7 @@ class Handler implements IHandler
 
         if (!$request instanceof link\http\IRequest) {
             if (!$request instanceof link\http\IUrl) {
-                throw Glitch::EBadRequest([
+                throw Exceptional::BadRequest([
                     'message' => 'Invalid request'
                 ]);
             }

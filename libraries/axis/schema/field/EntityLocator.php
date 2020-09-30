@@ -11,7 +11,7 @@ use df\axis;
 use df\opal;
 use df\mesh;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class EntityLocator extends Base implements
     opal\schema\IMultiPrimitiveField,
@@ -54,7 +54,7 @@ class EntityLocator extends Base implements
             } elseif (!empty($this->_defaultValue)) {
                 $value = $this->_defaultValue;
             } else {
-                throw Glitch::EUnexpectedValue(
+                throw Exceptional::UnexpectedValue(
                     'This field cannot be null'
                 );
             }
@@ -81,7 +81,7 @@ class EntityLocator extends Base implements
         switch ($operator) {
             case 'between':
             case 'not between':
-                throw Glitch::ELogic(
+                throw Exceptional::Logic(
                     'EntityLocator fields cannot be filtered with "'.$operator.'" operators'
                 );
 

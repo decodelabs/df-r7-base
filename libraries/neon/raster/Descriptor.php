@@ -11,7 +11,6 @@ use df\neon;
 use df\link;
 use df\flex;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 
 class Descriptor implements IDescriptor
@@ -149,7 +148,7 @@ class Descriptor implements IDescriptor
 
                 try {
                     $image = Image::loadFile($this->_location);
-                } catch (EFormat $e) {
+                } catch (FormatException $e) {
                     $image = Image::newCanvas(100, 100, neon\Color::factory('black'));
                 }
 

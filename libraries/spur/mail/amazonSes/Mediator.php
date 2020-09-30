@@ -11,7 +11,7 @@ use df\spur;
 use df\flow;
 use df\link;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 use Psr\Http\Message\ResponseInterface;
 
 class Mediator implements IMediator
@@ -110,7 +110,9 @@ class Mediator implements IMediator
     public function deleteVerifiedAddress($address)
     {
         if (!$address = flow\mail\Address::factory($address)) {
-            throw Glitch::EUnexpectedValue('Invalid verified address');
+            throw Exceptional::UnexpectedValue(
+                'Invalid verified address'
+            );
         }
 
         $xml = $this->requestXml('delete', [
@@ -214,7 +216,9 @@ class Mediator implements IMediator
     public function sendRawString($from, $string)
     {
         if (!$from = flow\mail\Address::factory($from)) {
-            throw Glitch::EUnexpectedValue('Invalid from address');
+            throw Exceptional::UnexpectedValue(
+                'Invalid from address'
+            );
         }
 
         $xml = $this->requestXml('post', [
@@ -248,13 +252,13 @@ class Mediator implements IMediator
     protected function _prepareRequest(link\http\IRequest $request): link\http\IRequest
     {
         if (!$this->_accessKey) {
-            throw Glitch::ESetup(
+            throw Exceptional::Setup(
                 'Amazon SES access key has not been set'
             );
         }
 
         if (!$this->_secretKey) {
-            throw Glitch::ESetup(
+            throw Exceptional::Setup(
                 'Amazon SES secret key has not been set'
             );
         }
@@ -313,7 +317,7 @@ class Mediator implements IMediator
 
     protected function _extractResponseError(ResponseInterface $response)
     {
-        return Glitch::EApi([
+        return Exceptional::Api([
             'message' => 'SES api error',
             'data' => (string)$response->getBody()
         ]);

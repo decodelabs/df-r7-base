@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\axis;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements IProcedure
 {
@@ -30,7 +30,7 @@ abstract class Base implements IProcedure
         $class = 'df\\apex\\models\\'.$modelName.'\\'.$unitName.'\\procedures\\'.ucfirst($name);
 
         if (!class_exists($class)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Unit procedure '.$modelName.'/'.$unitName.'/'.ucfirst($name).' could not be found'
             );
         }
@@ -96,7 +96,7 @@ abstract class Base implements IProcedure
         }
 
         if (!method_exists($this, '_execute')) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'Unit procedure '.$this->_unit->getUnitId().'/'.$this->getName().' does not implement _execute method'
             );
         }

@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Mysqli extends opal\rdbms\adapter\Base
 {
@@ -22,7 +22,7 @@ class Mysqli extends opal\rdbms\adapter\Base
         }
 
         if (!extension_loaded('mysqli')) {
-            throw Glitch::{'df/opal/rdbms/EAdapterNotFound,ENotFound'}(
+            throw Exceptional::{'df/opal/rdbms/AdapterNotFound,NotFound'}(
                 'Mysqli extension is not available'
             );
         }
@@ -54,7 +54,7 @@ class Mysqli extends opal\rdbms\adapter\Base
         if (version_compare($this->getServerVersion(), '5.0.0', '<')) {
             $this->_closeConnection();
 
-            throw Glitch::{'df/opal/rdbms/EAdapterNotFound,ENotFound'}(
+            throw Exceptional::{'df/opal/rdbms/AdapterNotFound,NotFound'}(
                 'Opal only supports Mysql version 5 and above'
             );
         }
@@ -141,7 +141,7 @@ class Mysqli extends opal\rdbms\adapter\Base
     protected function _beginTransaction()
     {
         if (!mysqli_autocommit($this->_connection, false)) {
-            throw Glitch::{'df/opal/rdbms/ETransaction'}(
+            throw Exceptional::{'df/opal/rdbms/Transaction'}(
                 'Unable to begin transaction - '.mysqli_error($this->_connection)
             );
         }
@@ -150,7 +150,7 @@ class Mysqli extends opal\rdbms\adapter\Base
     protected function _commitTransaction()
     {
         if (!mysqli_commit($this->_connection)) {
-            throw Glitch::{'df/opal/rdbms/ETransaction'}(
+            throw Exceptional::{'df/opal/rdbms/Transaction'}(
                 'Unable to commit transaction - '.mysqli_error($this->_connection)
             );
         }
@@ -161,7 +161,7 @@ class Mysqli extends opal\rdbms\adapter\Base
     protected function _rollbackTransaction()
     {
         if (!mysqli_rollback($this->_connection)) {
-            throw Glitch::{'df/opal/rdbms/ETransaction'}(
+            throw Exceptional::{'df/opal/rdbms/Transaction'}(
                 'Unable to roll back transaction - '.mysqli_error($this->_connection)
             );
         }
@@ -174,7 +174,7 @@ class Mysqli extends opal\rdbms\adapter\Base
     {
         try {
             $this->executeSql('LOCK TABLE '.$table.' WRITE');
-        } catch (opal\rdbms\EGlitch $e) {
+        } catch (opal\rdbms\Exception $e) {
             return false;
         }
 
@@ -185,7 +185,7 @@ class Mysqli extends opal\rdbms\adapter\Base
     {
         try {
             $this->executeSql('UNLOCK TABLES');
-        } catch (opal\rdbms\EGlitch $e) {
+        } catch (opal\rdbms\Exception $e) {
             return false;
         }
 

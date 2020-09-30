@@ -11,8 +11,8 @@ use df\arch;
 use df\halo;
 
 use DecodeLabs\Terminus\Cli;
-use DecodeLabs\Glitch;
 use DecodeLabs\Systemic;
+use DecodeLabs\Exceptional;
 
 abstract class Task extends Base implements ITaskNode
 {
@@ -69,7 +69,7 @@ abstract class Task extends Base implements ITaskNode
         $node = Base::factory($context);
 
         if (!$node instanceof self) {
-            throw Glitch::EDefinition(
+            throw Exceptional::Definition(
                 'Child node '.$request.' does not extend arch\\node\\Task'
             );
         }

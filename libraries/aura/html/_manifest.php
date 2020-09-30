@@ -15,8 +15,8 @@ use DecodeLabs\Tagged\Builder\Tag as TagInterface;
 use DecodeLabs\Tagged\Html;
 use DecodeLabs\Tagged\Html\Tag;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 interface IRenderable
 {
@@ -268,7 +268,9 @@ trait TElementContent
             } elseif ($this->_parent instanceof aura\view\IRenderTarget) {
                 $value = $value->renderTo($this->_parent);
             } else {
-                throw Glitch::ERuntime('Unable to get view target for rendering');
+                throw Exceptional::Runtime(
+                    'Unable to get view target for rendering'
+                );
             }
 
             if (is_string($value)) {

@@ -13,7 +13,6 @@ use df\aura;
 use df\flow;
 
 use DecodeLabs\Tagged\MarkupProxy;
-use DecodeLabs\Glitch;
 
 // Exceptions
 interface IForcedResponse

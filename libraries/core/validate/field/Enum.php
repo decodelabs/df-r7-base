@@ -9,33 +9,34 @@ use df;
 use df\core;
 use df\mesh;
 
-class Enum extends Base implements core\validate\IEnumField {
-
+class Enum extends Base implements core\validate\IEnumField
+{
     use core\validate\TOptionProviderField;
 
 
 
-// Validate
-    public function validate() {
+    // Validate
+    public function validate()
+    {
         // Sanitize
         $value = $this->_sanitizeValue($this->data->getValue());
 
-        if(!$length = $this->_checkRequired($value)) {
+        if (!$length = $this->_checkRequired($value)) {
             return null;
         }
 
 
         // Validate
-        if($this->_type) {
+        if ($this->_type) {
             try {
                 $value = $this->_type->factory($value)->getOption();
-            } catch(core\lang\EEnum $e) {
+            } catch (core\lang\EnumException $e) {
                 $this->addError('invalid', $this->validator->_(
                     'Please select a valid option'
                 ));
             }
         } else {
-            if(!in_array($value, $this->_options)) {
+            if (!in_array($value, $this->_options)) {
                 $this->addError('invalid', $this->validator->_(
                     'Please select a valid option'
                 ));

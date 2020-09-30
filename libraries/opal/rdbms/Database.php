@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Database implements IDatabase
 {
@@ -21,7 +21,7 @@ abstract class Database implements IDatabase
         $class = 'df\\opal\\rdbms\\variant\\'.$type.'\\Database';
 
         if (!class_exists($class)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'There is no database handler available for '.$type
             );
         }

@@ -8,8 +8,8 @@ namespace df\core\uri;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
 {
@@ -35,7 +35,9 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
         foreach ($queue as $key => $part) {
             if ($part == '..') {
                 if (empty($path->_collection)) {
-                    throw Glitch::ERuntime('Invalid local path');
+                    throw Exceptional::Runtime(
+                        'Invalid local path'
+                    );
                 }
 
                 array_pop($path->_collection);
@@ -248,7 +250,9 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
                 );
 
                 if ($input === false) {
-                    throw Glitch::EUnexpectedValue('Unable to parse path info');
+                    throw Exceptional::UnexpectedValue(
+                        'Unable to parse path info'
+                    );
                 }
             } else {
                 $input = [];

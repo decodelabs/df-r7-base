@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Clause implements opal\query\IClause, Dumpable
 {
@@ -52,7 +52,7 @@ class Clause implements opal\query\IClause, Dumpable
     {
         if ($value instanceof opal\query\IQuery
         && !$value instanceof opal\query\ICorrelationQuery) {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Only correlation queries are allowed as query clause values'
             );
         }
@@ -86,7 +86,7 @@ class Clause implements opal\query\IClause, Dumpable
                     );
 
                 default:
-                    throw Glitch::EInvalidArgument(
+                    throw Exceptional::InvalidArgument(
                         'Query field '.$field->getName().' has no virtual field rewriter'
                     );
             }
@@ -112,7 +112,7 @@ class Clause implements opal\query\IClause, Dumpable
             }
         }
 
-        throw Glitch::EInvalidArgument(
+        throw Exceptional::InvalidArgument(
             'Adapter could not rewrite virtual query clause'
         );
     }
@@ -148,7 +148,7 @@ class Clause implements opal\query\IClause, Dumpable
     public function setField(opal\query\IField $field)
     {
         if ($field instanceof opal\query\IVirtualField) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Virtual fields cannot be used directly in clauses'
             );
         }
@@ -221,7 +221,7 @@ class Clause implements opal\query\IClause, Dumpable
             case self::OP_NOT_MATCHES: return self::OP_MATCHES;
 
             default:
-                throw Glitch::{'df/opal/query/EOperator'}(
+                throw Exceptional::{'df/opal/query/Operator'}(
                     'Operator '.$operator.' is not recognized'
                 );
         }
@@ -262,7 +262,7 @@ class Clause implements opal\query\IClause, Dumpable
                     break;
 
                 default:
-                    throw Glitch::{'df/opal/query/EOperator'}(
+                    throw Exceptional::{'df/opal/query/Operator'}(
                         'Operator '.$operator.' is not recognized'
                     );
             }
@@ -321,7 +321,7 @@ class Clause implements opal\query\IClause, Dumpable
             $deref = $value->dereference();
 
             if (count($deref) > 1) {
-                throw Glitch::EUnexpectedValue(
+                throw Exceptional::UnexpectedValue(
                     'Unable to dereference virtual field to single intrinsic for clause value'
                 );
             }
@@ -351,7 +351,7 @@ class Clause implements opal\query\IClause, Dumpable
                     break;
 
                 default:
-                    throw Glitch::EUnexpectedValue(
+                    throw Exceptional::UnexpectedValue(
                         'Correlation clauses cannot use operator '.$this->_operator
                     );
             }
@@ -360,7 +360,7 @@ class Clause implements opal\query\IClause, Dumpable
                 case self::OP_IN:
                 case self::OP_NOT_IN:
                     if ($value instanceof opal\query\IField) {
-                        throw Glitch::EUnexpectedValue(
+                        throw Exceptional::UnexpectedValue(
                             'Value for in operator cannot be a field reference'
                         );
                     }
@@ -379,7 +379,7 @@ class Clause implements opal\query\IClause, Dumpable
                 case self::OP_BETWEEN:
                 case self::OP_NOT_BETWEEN:
                     if ($value instanceof opal\query\IField) {
-                        throw Glitch::EUnexpectedValue(
+                        throw Exceptional::UnexpectedValue(
                             'Value for between operator cannot be a field reference'
                         );
                     }
@@ -389,7 +389,7 @@ class Clause implements opal\query\IClause, Dumpable
                     }
 
                     if (!is_array($value) || count($value) < 2) {
-                        throw Glitch::EUnexpectedValue(
+                        throw Exceptional::UnexpectedValue(
                             'Value for between operator must be an array with 2 numeric elements'
                         );
                     }
@@ -401,7 +401,7 @@ class Clause implements opal\query\IClause, Dumpable
                         $part = array_shift($temp);
 
                         if (!is_numeric($part)) {
-                            throw Glitch::EUnexpectedValue(
+                            throw Exceptional::UnexpectedValue(
                                 'Value for between operator must be an array with 2 numeric elements'
                             );
                         }
@@ -642,7 +642,7 @@ class Clause implements opal\query\IClause, Dumpable
             }
         }
 
-        throw Glitch::EInvalidArgument(
+        throw Exceptional::InvalidArgument(
             'Could not extract multi key field value for '.$name
         );
     }

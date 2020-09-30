@@ -12,7 +12,7 @@ use df\flex;
 use df\flow;
 use df\link;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Filter implements arch\IDirectoryHelper, \ArrayAccess
 {
@@ -27,7 +27,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
         $output = $this->{$type}($value, ...$args);
 
         if (!$nullable && $output === null) {
-            throw Glitch::{'df/core/filter/EUnexpectedValue,EBadRequest'}([
+            throw Exceptional::{'df/core/filter/UnexpectedValue,BadRequest'}([
                 'message' => 'Empty '.$type.' filter value',
                 'http' => 400
             ]);
@@ -70,7 +70,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
                 $output = $this->_filter->{$type}($this->value, ...$args);
 
                 if (!$this->nullable && $output === null) {
-                    throw Glitch::{'df/core/filter/EUnexpectedValue,EBadRequest'}([
+                    throw Exceptional::{'df/core/filter/UnexpectedValue,BadRequest'}([
                         'message' => 'Query var '.$this->_key.' did not contain a valid '.$type,
                         'namespace' => __NAMESPACE__,
                         'http' => 400
@@ -203,7 +203,9 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
     public function email($value, array $options=[]): ?string
     {
         if (!$value = flow\mail\Address::factory($value)) {
-            throw Glitch::EInvalidArgument('Invalid email address');
+            throw Exceptional::InvalidArgument(
+                'Invalid email address'
+            );
         }
 
         $value->setAddress($this->_applyFilter($value->getAddress(), FILTER_SANITIZE_EMAIL));

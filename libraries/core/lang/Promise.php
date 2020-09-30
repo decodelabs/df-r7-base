@@ -10,6 +10,7 @@ use df\core;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Promise implements IPromise, Dumpable
 {
@@ -99,7 +100,7 @@ class Promise implements IPromise, Dumpable
             $rejections[$key] = $error;
         })->then(function () use (&$results, $count) {
             if (count($results) < $count) {
-                throw Glitch::ERuntime(
+                throw Exceptional::Runtime(
                     'Not enough promises delivered a result'
                 );
             }
@@ -197,7 +198,7 @@ class Promise implements IPromise, Dumpable
     public function beginThis($value=null)
     {
         if ($this->_hasBegun) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'Promise action has already begun'
             );
         }
@@ -207,7 +208,7 @@ class Promise implements IPromise, Dumpable
         }
 
         if ($this->_hasDelivered) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'Promise has already delivered'
             );
         }
@@ -233,7 +234,7 @@ class Promise implements IPromise, Dumpable
     public function beginThisError(\Throwable $e)
     {
         if ($this->_hasBegun) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'Promise action has already begun'
             );
         }
@@ -243,7 +244,7 @@ class Promise implements IPromise, Dumpable
         }
 
         if ($this->_hasDelivered) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'Promise has already delivered'
             );
         }
@@ -403,7 +404,9 @@ class Promise implements IPromise, Dumpable
         }
 
         if ($type === null) {
-            throw Glitch::Elogic('Error handling must be able to accept an exception as its first argument');
+            throw Exceptional::Logic(
+                'Error handling must be able to accept an exception as its first argument'
+            );
         }
 
         $this->_errorHandlers[$type] = $callback;
@@ -495,7 +498,9 @@ class Promise implements IPromise, Dumpable
     public function __call($method, array $args)
     {
         if (substr($method, 0, 2) != 'on') {
-            throw Glitch::EBadMethodCall('Method '.$method.' does not exist');
+            throw Exceptional::BadMethodCall(
+                'Method '.$method.' does not exist'
+            );
         }
 
         return $this->on(substr($method, 2), array_shift($args));
@@ -651,7 +656,7 @@ class Promise implements IPromise, Dumpable
     public function deliver($value)
     {
         if ($this->_hasDelivered) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'Promise has already delivered'
             );
         }
@@ -667,7 +672,7 @@ class Promise implements IPromise, Dumpable
     public function deliverError(\Throwable $error)
     {
         if ($this->_hasDelivered) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'Promise has already delivered'
             );
         }

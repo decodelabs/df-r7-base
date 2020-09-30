@@ -11,7 +11,7 @@ use df\flow;
 use df\user;
 use df\axis;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Source implements ISource
 {
@@ -81,7 +81,7 @@ class Source implements ISource
             try {
                 $manifest = $this->_adapter->fetchManifest();
             } catch (\Throwable $e) {
-                throw Glitch::EApi([
+                throw Exceptional::Api([
                     'message' => 'Unable to fetch manifest from adapter',
                     'previous' => $e
                 ]);
@@ -318,7 +318,7 @@ class Source implements ISource
         $manifest = $this->getManifest();
 
         if (!isset($manifest[$listId])) {
-            throw Glitch::{'EApi,ENotFound'}(
+            throw Exceptional::{'Api,NotFound'}(
                 'List id '.$listId.' could not be found on source '.$this->_id
             );
         }
@@ -326,7 +326,7 @@ class Source implements ISource
         try {
             $result = $this->_adapter->subscribeUserToList($client, $listId, $manifest[$listId], $groups, $replace);
         } catch (\Throwable $e) {
-            throw Glitch::EApi([
+            throw Exceptional::Api([
                 'message' => 'Adapter failed to subscribe user to list',
                 'previous' => $e,
                 'data' => [
@@ -417,7 +417,7 @@ class Source implements ISource
             try {
                 $manifest = array_merge($manifest, $this->_adapter->fetchClientManifest($lists));
             } catch (\Throwable $e) {
-                throw Glitch::EApi([
+                throw Exceptional::Api([
                     'message' => 'Failed to fetch client manifest',
                     'previous' => $e
                 ]);
@@ -437,7 +437,7 @@ class Source implements ISource
         try {
             $this->_adapter->updateListUserDetails($oldEmail, $client, $this->getManifest());
         } catch (\Throwable $e) {
-            throw Glitch::EApi([
+            throw Exceptional::Api([
                 'message' => 'Unable to update list user details',
                 'previous' => $e
             ]);
@@ -452,7 +452,7 @@ class Source implements ISource
         try {
             $this->_adapter->unsubscribeUserFromList($client, $listId);
         } catch (\Throwable $e) {
-            throw Glitch::EApi([
+            throw Exceptional::Api([
                 'message' => 'Failed unsubscribing user from list',
                 'previous' => $e,
                 'data' => [

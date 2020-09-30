@@ -13,7 +13,7 @@ use df\fire;
 use df\aura;
 
 use DecodeLabs\Tagged\Html;
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class ContentBlock extends arch\node\form\Delegate implements
     arch\node\IInlineFieldRenderableDelegate,
@@ -129,7 +129,9 @@ class ContentBlock extends arch\node\form\Delegate implements
             $this->_state->removeStore('blockType');
         } else {
             if (!$block = fire\block\Base::normalize($type)) {
-                throw Glitch::EInvalidArgument('Cannot build block of type '.$type);
+                throw Exceptional::InvalidArgument(
+                    'Cannot build block of type '.$type
+                );
             }
 
             $block->isNested($this->_isNested);

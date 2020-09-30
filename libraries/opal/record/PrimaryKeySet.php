@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class PrimaryKeySet implements IPrimaryKeySet, Dumpable
 {
@@ -21,7 +21,7 @@ class PrimaryKeySet implements IPrimaryKeySet, Dumpable
     public static function fromEntityId($id)
     {
         if (substr($id, 0, 7) != 'keySet?') {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Invalid entity id: '.$id
             );
         }
@@ -141,7 +141,7 @@ class PrimaryKeySet implements IPrimaryKeySet, Dumpable
             if ($values === null || count($this->_keys) == 1) {
                 $values = array_fill_keys(array_keys($this->_keys), $values);
             } else {
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     'Primary key set values do not map to keys'
                 );
             }

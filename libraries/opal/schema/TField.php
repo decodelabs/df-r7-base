@@ -10,7 +10,7 @@ use df\core;
 use df\opal;
 use df\mesh;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 trait TField
 {
@@ -656,7 +656,7 @@ trait TField_OptionProvider
                     $typeString = (new core\lang\TypeRef($type))->getClassPath();
                 }
             } else {
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     'Type cannot provide an enum'
                 );
             }
@@ -775,11 +775,11 @@ trait TField_BitSizeRestricted
         $size = (int)$size;
 
         if ($size > 64) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Maximum bit size is 64'
             );
         } elseif ($size < 1) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Minimum bit size is 1'
             );
         }
@@ -877,7 +877,7 @@ trait TField_ByteSizeRestricted
                 if ($size < 8) {
                     $size = 8;
                 } else {
-                    throw Glitch::EInvalidArgument(
+                    throw Exceptional::InvalidArgument(
                         'Maximum byte size is 8'
                     );
                 }
@@ -980,7 +980,7 @@ trait TField_LargeByteSizeRestricted
                 } elseif ($size < 32) {
                     $size = 32;
                 } else {
-                    throw Glitch::EInvalidArgument(
+                    throw Exceptional::InvalidArgument(
                         'Maximum exponent byte size is 2 ^ 32'
                     );
                 }

@@ -10,8 +10,8 @@ use df\core;
 use df\arch;
 use df\aura;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dumpable
 {
@@ -67,7 +67,7 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dump
                 break;
 
             default:
-                throw Glitch::EInvalidArgument([
+                throw Exceptional::InvalidArgument([
                     'message' => 'Invalid paginator mode',
                     'data' => $mode
                 ]);

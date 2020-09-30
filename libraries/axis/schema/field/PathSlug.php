@@ -11,7 +11,7 @@ use df\axis;
 use df\opal;
 use df\flex;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class PathSlug extends Base implements
     axis\schema\IAutoUniqueField,
@@ -85,7 +85,7 @@ class PathSlug extends Base implements
         switch ($operator) {
             case 'between':
             case 'not between':
-                throw Glitch::ELogic(
+                throw Exceptional::Logic(
                     'PathSlug fields cannot be filtered with "'.$operator.'" operators'
                 );
 

@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\flex;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Delimited implements IDelimited
 {
@@ -170,7 +170,7 @@ class Delimited implements IDelimited
                         break;
                     }
 
-                    throw Glitch::EUnexpectedValue(
+                    throw Exceptional::UnexpectedValue(
                         'Unexpected character: '.$char.' at position '.$i.' in '.$input
                     );
             }

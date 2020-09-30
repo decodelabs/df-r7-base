@@ -10,8 +10,8 @@ use df\core;
 use df\arch;
 use df\halo;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Systemic;
+use DecodeLabs\Exceptional;
 
 class Config extends core\Config
 {
@@ -121,7 +121,7 @@ class Config extends core\Config
         }
 
         if (empty($user)) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Invalid username detected'
             );
         }
@@ -167,7 +167,7 @@ class Config extends core\Config
         }
 
         if (empty($group)) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Invalid group name detected'
             );
         }

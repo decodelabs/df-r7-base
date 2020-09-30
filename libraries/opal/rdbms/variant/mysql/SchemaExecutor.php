@@ -11,6 +11,7 @@ use df\opal;
 use df\flex;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class SchemaExecutor extends opal\rdbms\SchemaExecutor
 {
@@ -23,7 +24,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
         $res = $stmt->executeRead();
 
         if ($res->isEmpty()) {
-            throw Glitch::{'df/opal/rdbms/ETableNotFound,ENotFound'}(
+            throw Exceptional::{'df/opal/rdbms/TableNotFound,NotFound'}(
                 'Table '.$name.' could not be found',
                 [
                     'code' => 1051,
@@ -62,7 +63,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
         $res = $stmt->executeRead();
 
         if ($res->isEmpty()) {
-            throw Glitch::{'df/opal/rdbms/ETableNotFound,ENotFound'}(
+            throw Exceptional::{'df/opal/rdbms/TableNotFound,NotFound'}(
                 'Table '.$name.' could not be found',
                 [
                     'code' => 1051,
@@ -110,7 +111,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                 if ($field instanceof opal\schema\INumericField) {
                     $field->isUnsigned(true);
                 } else {
-                    throw Glitch::EUnexpectedValue(
+                    throw Exceptional::UnexpectedValue(
                         'Field '.$field->getName().' is marked as unsigned, but the field type does not support this option'
                     );
                 }
@@ -120,7 +121,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                 if ($field instanceof opal\schema\INumericField) {
                     $field->shouldZerofill(true);
                 } else {
-                    throw Glitch::EUnexpectedValue(
+                    throw Exceptional::UnexpectedValue(
                         'Field '.$field->getName().' is marked as zerofill, but the field type does not support this option'
                     );
                 }
@@ -130,7 +131,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                 if ($field instanceof opal\schema\ICharacterSetAwareField) {
                     $field->setCharacterSet($matches[8]);
                 } else {
-                    throw Glitch::EUnexpectedValue(
+                    throw Exceptional::UnexpectedValue(
                         'Field '.$field->getName().' is marked as having a character set of '.$matches[8].' , but the field type does not support this option'
                     );
                 }
@@ -150,7 +151,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                     if ($field instanceof opal\schema\IAutoIncrementableField) {
                         $field->shouldAutoIncrement(true);
                     } else {
-                        throw Glitch::EUnexpectedValue(
+                        throw Exceptional::UnexpectedValue(
                             'Field '.$field->getName().' is marked as auto increment, but the field type does not support this option'
                         );
                     }
@@ -161,7 +162,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                     if ($field instanceof opal\schema\IAutoTimestampField) {
                         $field->shouldTimestampOnUpdate(true);
                     } else {
-                        throw Glitch::EUnexpectedValue(
+                        throw Exceptional::UnexpectedValue(
                             'Field '.$field->getName().' is marked to auto timestamp on update, but the field type does not support this option'
                         );
                     }
@@ -188,7 +189,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
             }
 
             if (!$field = $schema->getField($row['Column_name'])) {
-                throw Glitch::{'df/opal/rdbms/EIndexNotFound,ENotFound'}(
+                throw Exceptional::{'df/opal/rdbms/IndexNotFound,NotFound'}(
                     'Index field '.$row['Column_name'].' could not be found'
                 );
             }
@@ -240,7 +241,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                 }
 
                 if (!$field = $schema->getField($row['COLUMN_NAME'])) {
-                    throw Glitch::{'df/opal/rdbms/EForeignKeyConflict'}(
+                    throw Exceptional::{'df/opal/rdbms/ForeignKeyConflict'}(
                         'Foreign key field '.$row['COLUMN_NAME'].' could not be found'
                     );
                 }
@@ -477,7 +478,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                 break;
 
             default:
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     'Mysql does not support '.$trigger->getTimingName().' trigger timing'
                 );
         }

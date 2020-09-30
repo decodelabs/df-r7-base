@@ -11,7 +11,7 @@ use df\axis;
 use df\opal;
 
 use DecodeLabs\Terminus\Cli;
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements IFortify
 {
@@ -47,7 +47,7 @@ abstract class Base implements IFortify
         $class = 'df\\apex\\models\\'.$modelName.'\\'.$unitName.'\\fortify\\'.ucfirst($name);
 
         if (!class_exists($class)) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'Unit fortify task '.$modelName.'/'.$unitName.'/'.ucfirst($name).' could not be found'
             );
         }

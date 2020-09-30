@@ -12,6 +12,7 @@ use df\mesh;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements ISchema, Dumpable
 {
@@ -65,7 +66,7 @@ abstract class Base implements ISchema, Dumpable
         foreach ($this->getFieldsToRemove() as $field) {
             foreach ($this->_foreignKeys as $name => $key) {
                 if ($key->hasField($field)) {
-                    throw Glitch::{'df/opal/rdbms/EConstraint'}(
+                    throw Exceptional::{'df/opal/rdbms/Constraint'}(
                         'Foreign key '.$key->getName().' requires to-be-dropped field '.$field->getName().'. '.
                         'You should either not drop this field, or drop this key first'
                     );
@@ -153,7 +154,7 @@ abstract class Base implements ISchema, Dumpable
     public static function fromJson(opal\schema\ISchemaContext $schemaContext, $json)
     {
         if (!$data = json_decode($json, true)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Invalid json schema representation'
             );
         }

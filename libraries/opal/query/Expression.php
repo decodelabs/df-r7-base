@@ -11,6 +11,7 @@ use df\opal;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Expression implements IExpression, Dumpable
 {
@@ -50,7 +51,7 @@ class Expression implements IExpression, Dumpable
     public function op($operator)
     {
         if ($this->_isExpectingValue) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'Found operator when expecting reference or value'
             );
         }
@@ -67,7 +68,7 @@ class Expression implements IExpression, Dumpable
                 break;
 
             default:
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     'Unknown operator: '.$operator
                 );
         }
@@ -105,7 +106,7 @@ class Expression implements IExpression, Dumpable
             }
 
             if (!$field = $sourceManager->extrapolateIntrinsicField($source, $element)) {
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     'Cound not extract reference or value from: '.$element
                 );
             }
@@ -121,7 +122,7 @@ class Expression implements IExpression, Dumpable
             $inner = $element->dereference();
 
             if (count($inner) > 1) {
-                throw Glitch::ELogic(
+                throw Exceptional::Logic(
                     'Cannot use multi-primitive virtual fields in expressions... yet :)'
                 );
             }
@@ -129,7 +130,7 @@ class Expression implements IExpression, Dumpable
             return array_shift($inner);
         } elseif ($element instanceof IExpression) {
             if ($element->isExpectingValue()) {
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     'Cannot add sub expression - it is still expecting a reference or value'
                 );
             }
@@ -137,7 +138,7 @@ class Expression implements IExpression, Dumpable
             return $element;
         }
 
-        throw Glitch::EInvalidArgument(
+        throw Exceptional::InvalidArgument(
             'Count not extract reference or value from element'
         );
     }
@@ -160,13 +161,13 @@ class Expression implements IExpression, Dumpable
     public function addExpression(IExpression $expression)
     {
         if (!$this->_isExpectingValue) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'Cannot add sub expression - expecting an operator'
             );
         }
 
         if ($expression->isExpectingValue()) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Cannot add sub expression - it is still expecting a reference or value'
             );
         }
@@ -179,7 +180,7 @@ class Expression implements IExpression, Dumpable
     public function endExpression()
     {
         if ($this->_isExpectingValue) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'Cannot end expression - expecting reference or value'
             );
         }

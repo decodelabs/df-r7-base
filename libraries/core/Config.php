@@ -10,10 +10,8 @@ use df\core;
 
 use DecodeLabs\Atlas;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Exceptional;
 
 abstract class Config implements IConfig, Dumpable
 {
@@ -37,7 +35,9 @@ abstract class Config implements IConfig, Dumpable
     public static function getInstance()
     {
         if (!static::ID) {
-            throw Glitch::EDefinition('Invalid config id set for '.get_called_class());
+            throw Exceptional::Definition(
+                'Invalid config id set for '.get_called_class()
+            );
         }
 
         return static::_factory(static::ID);
@@ -48,7 +48,9 @@ abstract class Config implements IConfig, Dumpable
         $handlerClass = get_called_class();
 
         if (empty($id)) {
-            throw Glitch::EImplementation('Invalid config id passed for '.$handlerClass);
+            throw Exceptional::Implementation(
+                'Invalid config id passed for '.$handlerClass
+            );
         }
 
         if ($handlerClass::STORE_IN_MEMORY) {

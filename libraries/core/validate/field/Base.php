@@ -8,7 +8,7 @@ namespace df\core\validate\field;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements core\validate\IField
 {
@@ -38,7 +38,7 @@ abstract class Base implements core\validate\IField
         $class = 'df\\core\\validate\\field\\'.ucfirst($type);
 
         if (!class_exists($class)) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'Validator type '.ucfirst($type).' could not be found for field '.$name
             );
         }
@@ -362,7 +362,7 @@ abstract class Base implements core\validate\IField
     public function applyValueTo(&$record, $value)
     {
         if (!is_array($record) && !$record instanceof \ArrayAccess) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Target record does not implement ArrayAccess'
             );
         }

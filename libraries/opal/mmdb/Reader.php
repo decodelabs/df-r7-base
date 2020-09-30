@@ -10,10 +10,10 @@ use df\core;
 use df\opal;
 use df\link;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Mode;
 use DecodeLabs\Atlas\File;
+use DecodeLabs\Exceptional;
 
 class Reader implements IReader
 {
@@ -31,7 +31,7 @@ class Reader implements IReader
         if (is_string($file)) {
             $file = Atlas::$fs->file($file, Mode::READ_ONLY);
         } elseif (!$file instanceof File) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'MMDB file could not be found'
             );
         }
@@ -71,7 +71,7 @@ class Reader implements IReader
             return $this->_fileSize - $i;
         }
 
-        throw Glitch::EUnexpectedValue(
+        throw Exceptional::UnexpectedValue(
             'Unable to read metadata start index'
         );
     }
@@ -82,7 +82,7 @@ class Reader implements IReader
         $ip = link\Ip::factory($ip);
 
         if ($this->_metaData['ip_version'] == 4 && !$ip->isV4()) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Attempting to lookup IPv6 address in IPv4-only database'
             );
         }
@@ -99,7 +99,9 @@ class Reader implements IReader
     protected function _findAddressInTree(link\Ip $ip)
     {
         if (false === ($packed = inet_pton($ip->toString()))) {
-            throw Glitch::ERuntime('Unable to pack IP string', null, $ip);
+            throw Exceptional::Runtime(
+                'Unable to pack IP string', null, $ip
+            );
         }
 
         $rawAddress = array_merge(unpack('C*', $packed));
@@ -123,7 +125,7 @@ class Reader implements IReader
             return $node;
         }
 
-        throw Glitch::EUnexpectedValue(
+        throw Exceptional::UnexpectedValue(
             'Something bad happened looking up MMDB node'
         );
     }
@@ -178,7 +180,7 @@ class Reader implements IReader
                 return $node;
 
             default:
-                throw Glitch::EUnexpectedValue(
+                throw Exceptional::UnexpectedValue(
                     'Unknown record size: '.$this->_metaData['record_size']
                 );
         }
@@ -189,7 +191,7 @@ class Reader implements IReader
         $resolved = $pointer - $this->_metaData['node_count'] + $this->_metaData['search_tree_size'];
 
         if ($resolved > $this->_fileSize) {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'MMDB file search tree is corrupt'
             );
         }

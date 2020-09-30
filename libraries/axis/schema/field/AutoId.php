@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 use df\opal;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class AutoId extends Base implements
     opal\schema\IByteSizeRestrictedField,
@@ -32,7 +32,7 @@ class AutoId extends Base implements
     {
         if ($flag !== null) {
             if (!$flag) {
-                throw Glitch::ELogic(
+                throw Exceptional::Logic(
                     'AutoId field must auto increment'
                 );
             }
@@ -47,7 +47,7 @@ class AutoId extends Base implements
     {
         if ($flag !== null) {
             if (!$flag) {
-                throw Glitch::ELogic(
+                throw Exceptional::Logic(
                     'AutoId field must auto increment'
                 );
             }
@@ -62,7 +62,7 @@ class AutoId extends Base implements
     {
         if ($flag !== null) {
             if ($flag) {
-                throw Glitch::ELogic(
+                throw Exceptional::Logic(
                     'AutoId field must be unsigned'
                 );
             }
@@ -77,7 +77,7 @@ class AutoId extends Base implements
     {
         if ($flag !== null) {
             if (!$flag) {
-                throw Glitch::ELogic(
+                throw Exceptional::Logic(
                     'AutoId field must be unsigned'
                 );
             }
@@ -92,7 +92,7 @@ class AutoId extends Base implements
     {
         if ($flag !== null) {
             if ($flag) {
-                throw Glitch::ELogic(
+                throw Exceptional::Logic(
                     'AutoId field must not zero-fill'
                 );
             }

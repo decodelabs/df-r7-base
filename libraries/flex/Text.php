@@ -9,10 +9,8 @@ use df;
 use df\core;
 use df\flex;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Exceptional;
 
 class Text implements IText, \IteratorAggregate, Dumpable
 {
@@ -546,7 +544,9 @@ class Text implements IText, \IteratorAggregate, Dumpable
         }
 
         if (!self::isValidEncoding($encoding)) {
-            throw Glitch::EInvalidArgument($encoding.' is not a valid string encoding');
+            throw Exceptional::InvalidArgument(
+                $encoding.' is not a valid string encoding'
+            );
         }
 
         $this->_value = mb_convert_encoding($this->_value, $encoding, $this->_encoding);
@@ -824,7 +824,9 @@ class Text implements IText, \IteratorAggregate, Dumpable
     public function split(string $delimiter): array
     {
         if (false === ($output = explode($delimiter, $this->_value))) {
-            throw Glitch::EUnexpectedValue('Unable to split text', null, $this);
+            throw Exceptional::UnexpectedValue(
+                'Unable to split text', null, $this
+            );
         }
 
         return $output;
@@ -833,7 +835,9 @@ class Text implements IText, \IteratorAggregate, Dumpable
     public function regexSplit(string $pattern, int $limit=-1, int $flags=0): array
     {
         if (false === ($output = preg_split($pattern, $this->_value, $limit, $flags))) {
-            throw Glitch::EUnexpectedValue('Unable to split text', null, $this);
+            throw Exceptional::UnexpectedValue(
+                'Unable to split text', null, $this
+            );
         }
 
         return $output;
@@ -884,7 +888,9 @@ class Text implements IText, \IteratorAggregate, Dumpable
     public function toArray(): array
     {
         if (false === ($output = preg_split('/(?<!^)(?!$)/u', $this->_value))) {
-            throw Glitch::EUnexpectedValue('Unable to split text', null, $this);
+            throw Exceptional::UnexpectedValue(
+                'Unable to split text', null, $this
+            );
         }
 
         return $output;
@@ -911,7 +917,7 @@ class Text implements IText, \IteratorAggregate, Dumpable
             $index += $length;
 
             if ($index < 0) {
-                throw Glitch::EOutOfBounds(
+                throw Exceptional::OutOfBounds(
                     'Trying to set a negative index outside of current bounds'
                 );
 
@@ -950,7 +956,7 @@ class Text implements IText, \IteratorAggregate, Dumpable
             $index += $length;
 
             if ($index < 0) {
-                throw Glitch::EOutOfBounds(
+                throw Exceptional::OutOfBounds(
                     'Trying to set a negative index outside of current bounds'
                 );
 
@@ -1106,7 +1112,9 @@ class Text implements IText, \IteratorAggregate, Dumpable
             ($length !== null ? mb_substr($this->_value, $length) : null);
 
         if (false === ($output = preg_split('/(?<!^)(?!$)/u', $output))) {
-            throw Glitch::EUnexpectedValue('Unable to split text', null, $this);
+            throw Exceptional::UnexpectedValue(
+                'Unable to split text', null, $this
+            );
         }
 
         return $output;
@@ -1117,7 +1125,9 @@ class Text implements IText, \IteratorAggregate, Dumpable
         $value = mb_substr($this->_value, $offset, $length, $this->_encoding);
 
         if (false === ($output = preg_split('/(?<!^)(?!$)/u', $value))) {
-            throw Glitch::EUnexpectedValue('Unable to split text', null, $this);
+            throw Exceptional::UnexpectedValue(
+                'Unable to split text', null, $this
+            );
         }
 
         return $output;

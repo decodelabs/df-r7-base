@@ -11,7 +11,7 @@ use df\link;
 use df\flex;
 
 use DecodeLabs\Atlas;
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements link\http\IResponse
 {
@@ -33,7 +33,7 @@ abstract class Base implements link\http\IResponse
     public function setHeaders(core\collection\IHeaderMap $headers)
     {
         if (!$headers instanceof link\http\IResponseHeaderCollection) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Request headers must implement IResponseHeaderCollection'
             );
         }
@@ -98,7 +98,7 @@ abstract class Base implements link\http\IResponse
         $content = $this->getContent();
 
         if (!strlen($content)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Empty json response'
             );
         }
@@ -106,7 +106,7 @@ abstract class Base implements link\http\IResponse
         $data = flex\Json::fromString($content);
 
         if ($data === false || $data === null) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Invalid json response: '.$content
             );
         }

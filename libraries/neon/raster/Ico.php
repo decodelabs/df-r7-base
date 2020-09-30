@@ -9,9 +9,9 @@ use df;
 use df\core;
 use df\neon;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
+use DecodeLabs\Exceptional;
 
 class Ico implements IIcoGenerator
 {
@@ -29,19 +29,21 @@ class Ico implements IIcoGenerator
         $file = Atlas::$fs->file($file);
 
         if (!$file->exists()) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'Source file '.$file->getPath().' does not exist'
             );
         }
 
         if (!getImageSize($file->getPath())) {
-            throw Glitch::{'EUnexpectedValue,EUnreadable'}(
+            throw Exceptional::{'UnexpectedValue,Unreadable'}(
                 'Unable to read image data from '.$file->getPath()
             );
         }
 
         if (false === ($image = imageCreateFromString($file->getContents()))) {
-            throw Glitch::ERuntime('Unable to create image from string');
+            throw Exceptional::Runtime(
+                'Unable to create image from string'
+            );
         }
 
         $sourceWidth = imagesx($image);
@@ -53,7 +55,9 @@ class Ico implements IIcoGenerator
 
         foreach ($sizes as $size) {
             if (false === ($newImage = imageCreateTrueColor($size, $size))) {
-                throw Glitch::ERuntime('Unable to create true color image');
+                throw Exceptional::Runtime(
+                    'Unable to create true color image'
+                );
             }
 
             imageColorTransparent($newImage, imageColorAllocateAlpha($newImage, 0, 0, 0, 127));
@@ -78,7 +82,7 @@ class Ico implements IIcoGenerator
     public function generate(): string
     {
         if (empty($this->_images)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'No images have been added to ICO generator'
             );
         }

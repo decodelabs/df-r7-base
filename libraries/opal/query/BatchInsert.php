@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class BatchInsert implements IBatchInsertQuery, Dumpable
 {
@@ -50,7 +50,7 @@ class BatchInsert implements IBatchInsertQuery, Dumpable
         if ($rows instanceof core\IArrayProvider) {
             $rows = $rows->toArray();
         } elseif (!is_array($rows)) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Batch insert data must be convertible to an array'
             );
         }
@@ -88,13 +88,13 @@ class BatchInsert implements IBatchInsertQuery, Dumpable
         } elseif ($row instanceof core\IArrayProvider) {
             $row = $row->toArray();
         } elseif (!is_array($row)) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Insert data must be convertible to an array'
             );
         }
 
         if (empty($row)) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Insert data must contain at least one field'
             );
         }

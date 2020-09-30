@@ -31,7 +31,7 @@ class VideoEmbed extends Base implements core\validate\IVideoEmbedField
         // Validate
         try {
             $embed = Html::$embed->video($value);
-        } catch (Embed\EGlitch $e) {
+        } catch (Embed\Exception $e) {
             $this->addError('invalid', $this->validator->_(
                 'This does not appear to be a valid video embed'
             ));

@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 trait TSchema
 {
@@ -224,7 +224,7 @@ trait TSchema_FieldProvider
         $name = $field->getName();
 
         if (isset($this->_fields[$name])) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Field '.$name.' has already been defined, use replaceField() instead'
             );
         }
@@ -250,13 +250,13 @@ trait TSchema_FieldProvider
     public function addPreparedFieldAfter($key, opal\schema\IField $field)
     {
         if ($key !== null && !isset($this->_fields[$key])) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Field '.$key.' could not be found to place '.$field->getName().' after'
             );
         }
 
         if (isset($this->_fields[$name = $field->getName()])) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Field '.$name.' has already been defined, use replaceField() instead'
             );
         }
@@ -279,7 +279,7 @@ trait TSchema_FieldProvider
         $name = $field->getName();
 
         if (!isset($this->_fields[$name])) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Field '.$name.' could not be found'
             );
         }
@@ -353,7 +353,7 @@ trait TSchema_FieldProvider
         }
 
         if (isset($this->_fields[$newName])) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Cannot rename field '.$oldName.' to '.$newName.', a field with that name has already been defined'
             );
         }
@@ -598,13 +598,13 @@ trait TSchema_IndexProvider
     public function addPreparedIndex(opal\schema\IIndex $index)
     {
         if (!$this->_validateIndex($index)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Index '.$index->getName().' is not valid for fields: '.implode(', ', array_keys($index->getFields()))
             );
         }
 
         if (isset($this->_indexes[$index->getName()])) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Index '.$index->getName().' has already been defined'
             );
         }
@@ -637,7 +637,7 @@ trait TSchema_IndexProvider
         $name = $index->getName();
 
         if (!isset($this->_indexes[$name])) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Index '.$name.' could not be found'
             );
         }
@@ -691,7 +691,7 @@ trait TSchema_IndexProvider
         }
 
         if (isset($this->_indexes[$newName])) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Cannot rename index '.$oldName.' to '.$newName.', an index with that name has already been defined'
             );
         }
@@ -717,18 +717,18 @@ trait TSchema_IndexProvider
         if ($index !== null) {
             if ($index instanceof opal\schema\IIndex) {
                 if ($this->getIndex($index->getName()) !== $index) {
-                    throw Glitch::EInvalidArgument(
+                    throw Exceptional::InvalidArgument(
                         'Primary index is not from this schema'
                     );
                 }
             } elseif (!$index = $this->getIndex($index)) {
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     'Index '.$name.' could not be found in this schema'
                 );
             }
 
             if (!$index->isUnique()) {
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     'Primary indexes must be unique, '.$index->getName().' is not'
                 );
             }
@@ -1106,7 +1106,7 @@ trait TSchema_ForeignKeyProvider
         $name = $key->getName();
 
         if (isset($this->_foreignKeys[$name])) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Foreign key '.$name.' has already been defined'
             );
         }
@@ -1131,7 +1131,7 @@ trait TSchema_ForeignKeyProvider
         $name = $key->getName();
 
         if (!isset($this->_foreignKeys[$name])) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Foreign key '.$name.' could not be found'
             );
         }
@@ -1180,7 +1180,7 @@ trait TSchema_ForeignKeyProvider
         }
 
         if (isset($this->_foreignKeys[$newName])) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Cannot rename foreign key '.$oldName.' to '.$newName.', a foreign key with that name has already been defined'
             );
         }
@@ -1383,7 +1383,7 @@ trait TSchema_TriggerProvider
         $name = $trigger->getName();
 
         if (isset($this->_triggers[$name])) {
-            throw Glitch::{'df/opal/rdbms/ETriggerConflict'}(
+            throw Exceptional::{'df/opal/rdbms/TriggerConflict'}(
                 'Trigger '.$name.' has already been defined'
             );
         }
@@ -1414,7 +1414,7 @@ trait TSchema_TriggerProvider
         $name = $trigger->getName();
 
         if (!isset($this->_triggers[$name])) {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Trigger '.$name.' could not be found'
             );
         }
@@ -1463,7 +1463,7 @@ trait TSchema_TriggerProvider
         }
 
         if (isset($this->_triggers[$newName])) {
-            throw Glitch::{'df/opal/rdbms/ETriggerConflict'}(
+            throw Exceptional::{'df/opal/rdbms/TriggerConflict'}(
                 'Cannot rename trigger '.$oldName.' to '.$newName.', a field with that name has already been defined'
             );
         }

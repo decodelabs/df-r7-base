@@ -10,9 +10,9 @@ use df\core;
 use df\spur;
 use df\halo;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Systemic;
 use DecodeLabs\Terminus\Session;
+use DecodeLabs\Exceptional;
 
 interface IRepository
 {
@@ -185,12 +185,14 @@ trait TRepository
             $error = trim($result->getError());
 
             if (empty($output)) {
-                throw Glitch::ERuntime($error);
+                throw Exceptional::Runtime($error);
             }
 
-            if (strtolower(substr($error, 0, 5)) == 'error:'
-            || stristr($error, 'aborting')) {
-                throw Glitch::ERuntimen($error);
+            if (
+                strtolower(substr($error, 0, 5)) == 'error:' ||
+                stristr($error, 'aborting')
+            ) {
+                throw Exceptional::Runtime($error);
             }
 
             $output .= "\n".$error;

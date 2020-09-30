@@ -87,7 +87,7 @@ class Probe implements IProbe
 
             try {
                 $unit = axis\Model::loadUnitFromId($unitId);
-            } catch (axis\EGlitch $e) {
+            } catch (axis\Exception $e) {
                 continue;
             }
 

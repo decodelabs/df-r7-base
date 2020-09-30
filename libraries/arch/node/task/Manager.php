@@ -17,6 +17,7 @@ use DecodeLabs\Systemic\Process\Result as ProcessResult;
 use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Terminus\Session;
 use DecodeLabs\Atlas;
+use DecodeLabs\Exceptional;
 
 class Manager implements arch\node\ITaskManager
 {
@@ -96,7 +97,7 @@ class Manager implements arch\node\ITaskManager
         $node = arch\node\Base::factory($context);
 
         if (!$node instanceof arch\node\ITaskNode) {
-            throw Glitch::{'df/arch/node/EDefinition'}(
+            throw Exceptional::{'df/arch/node/Definition'}(
                 'Child node '.$request.' does not extend arch\\node\\Task'
             );
         }

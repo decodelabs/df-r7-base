@@ -8,10 +8,8 @@ namespace df\core\unit;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Exceptional;
 
 class DisplayPosition implements IDisplayPosition, Dumpable
 {
@@ -358,7 +356,7 @@ class DisplayPosition implements IDisplayPosition, Dumpable
             $parentDimension = DisplaySize::factory($parentDimension, null, $this->_allowPlainNumbers);
             $offset->setValue($offset->getValue() + $parentDimension->getValue());
         } else {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Unable to convert relative anchor with current data'
             );
         }

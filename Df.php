@@ -11,6 +11,8 @@ use df\core;
 use DecodeLabs\Veneer;
 use DecodeLabs\Glitch;
 
+use Exception;
+
 class Launchpad
 {
     const CODENAME = 'hydrogen';
@@ -37,7 +39,7 @@ class Launchpad
         $envId = array_pop($parts);
 
         if (array_pop($parts) != 'entry') {
-            throw new \Exception(
+            throw new Exception(
                 'Entry point does not appear to be valid'
             );
         }

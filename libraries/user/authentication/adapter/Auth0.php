@@ -11,7 +11,7 @@ use df\user;
 use df\axis;
 use df\opal;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 use Auth0\SDK\Auth0 as Auth0Conn;
 
@@ -44,7 +44,7 @@ class Auth0 implements user\authentication\IAdapter
         $options = $config->getOptionsFor('Auth0');
 
         if (null === ($domain = $options['domain'])) {
-            throw Glitch::ESetup([
+            throw Exceptional::Setup([
                 'message' => 'Auth0 connection domain has not been specified'
             ]);
         }

@@ -10,9 +10,9 @@ use df\core;
 use df\halo;
 use df\flex;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Systemic;
 use DecodeLabs\Terminus\Session;
+use DecodeLabs\Exceptional;
 
 class Remote implements IRemote
 {
@@ -172,7 +172,7 @@ class Remote implements IRemote
                 break;
 
             default:
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     $command.' is not a valid command'
                 );
         }

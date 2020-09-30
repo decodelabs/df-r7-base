@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\axis;
 
+use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch;
 
 abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
@@ -99,7 +100,9 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
         $options = $this->getOptions();
 
         if (false === ($key = array_search($option, $options, true))) {
-            throw Glitch::EInvalidArgument('Invalid option: '.$option);
+            throw Exceptional::InvalidArgument(
+                'Invalid option: '.$option
+            );
         }
 
         return array_slice($options, 0, (int)$key);
@@ -111,7 +114,9 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
         $options = $this->getOptions();
 
         if (false === ($key = array_search($option, $options, true))) {
-            throw Glitch::EInvalidArgument('Invalid option: '.$option);
+            throw Exceptional::InvalidArgument(
+                'Invalid option: '.$option
+            );
         }
 
         return array_slice($options, 0, (int)$key + 1);
@@ -123,7 +128,9 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
         $options = $this->getOptions();
 
         if (false === ($key = array_search($option, $options, true))) {
-            throw Glitch::EInvalidArgument('Invalid option: '.$option);
+            throw Exceptional::InvalidArgument(
+                'Invalid option: '.$option
+            );
         }
 
         return array_slice($options, (int)$key + 1);
@@ -135,7 +142,9 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
         $options = $this->getOptions();
 
         if (false === ($key = array_search($option, $options, true))) {
-            throw Glitch::EInvalidArgument('Invalid option: '.$option);
+            throw Exceptional::InvalidArgument(
+                'Invalid option: '.$option
+            );
         }
 
         return array_slice($options, (int)$key);
@@ -152,14 +161,14 @@ class Enum_Inst implements core\lang\IInstanceEnum
 
     public static function factory($value)
     {
-        throw Glitch::EImplementation(
+        throw Exceptional::Implementation(
             'Unit enum factory is not accessible'
         );
     }
 
     public static function normalize($value)
     {
-        throw Glitch::EImplementation(
+        throw Exceptional::Implementation(
             'Unit enum normalize is not accessible'
         );
     }
@@ -185,7 +194,7 @@ class Enum_Inst implements core\lang\IInstanceEnum
             } elseif (in_array($value, $this->_labels)) {
                 $value = array_search($value, $this->_labels);
             } else {
-                throw Glitch::{'df/core/lang/EEnum,df/core/lang/EInvalidArgument'}(
+                throw Exceptional::{'df/core/lang/Enum,df/core/lang/InvalidArgument'}(
                     $value.' is not a valid enum option'
                 );
             }

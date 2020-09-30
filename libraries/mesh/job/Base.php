@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\mesh;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements IJob
 {
@@ -47,7 +47,9 @@ abstract class Base implements IJob
         if ($dependency instanceof IJob) {
             $dependency = new Dependency($dependency, $resolution);
         } elseif (!$dependency instanceof IDependency) {
-            throw Glitch::EInvalidArgument('Invalid dependency');
+            throw Exceptional::InvalidArgument(
+                'Invalid dependency'
+            );
         }
 
         $this->_dependencies[] = $dependency;

@@ -8,8 +8,8 @@ namespace df\core\lang;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class TypeRef implements ITypeRef, \Serializable, Dumpable
 {
@@ -23,7 +23,7 @@ class TypeRef implements ITypeRef, \Serializable, Dumpable
             return $class::{'__'.$method}(...$args);
         }
 
-        throw Glitch::EBadMethodCall(
+        throw Exceptional::BadMethodCall(
             'Method '.$method.' is not available on class '.__CLASS__
         );
     }
@@ -71,7 +71,7 @@ class TypeRef implements ITypeRef, \Serializable, Dumpable
         $class = self::_normalizeClassName($type);
 
         if (!class_exists($class)) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Class '.$class.' could not be found'
             );
         }
@@ -96,13 +96,13 @@ class TypeRef implements ITypeRef, \Serializable, Dumpable
 
             if (class_exists($checkType)) {
                 if (!$this->_reflection->isSubclassOf($checkType)) {
-                    throw Glitch::ERuntime(
+                    throw Exceptional::Runtime(
                         $this->_class.' does not extend '.$checkType
                     );
                 }
             } elseif (interface_exists($checkType)) {
                 if (!$this->_reflection->implementsInterface($checkType)) {
-                    throw Glitch::ERuntime(
+                    throw Exceptional::Runtime(
                         $this->_class.' does not implement '.$checkType
                     );
                 }
@@ -125,7 +125,7 @@ class TypeRef implements ITypeRef, \Serializable, Dumpable
     public function __call($method, array $args)
     {
         if (!$this->_reflection->hasMethod($method)) {
-            throw Glitch::EBadMethodCall(
+            throw Exceptional::BadMethodCall(
                 'Method '.$method.' is not available on class '.$this->_class
             );
         }
@@ -133,7 +133,7 @@ class TypeRef implements ITypeRef, \Serializable, Dumpable
         $method = $this->_reflection->getMethod($method);
 
         if (!$method->isStatic() || !$method->isPublic()) {
-            throw Glitch::EBadMethodCall(
+            throw Exceptional::BadMethodCall(
                 'Method '.$method.' is not accessible on class '.$this->_class
             );
         }

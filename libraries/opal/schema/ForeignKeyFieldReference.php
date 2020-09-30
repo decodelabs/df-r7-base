@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class ForeignKeyFieldReference implements IForeignKeyFieldReference
 {
@@ -54,9 +54,11 @@ class ForeignKeyFieldReference implements IForeignKeyFieldReference
     public static function fromStorageArray(opal\schema\ISchema $schema, array $data)
     {
         if (!$schema instanceof opal\schema\IFieldProvider) {
-            throw Glitch::ERuntime('Schem does not provider fields', null, $schema);
+            throw Exceptional::Runtime(
+                'Schem does not provider fields', null, $schema
+            );
         }
-        
+
         return new self($schema->getField($data[0]), $data[1]);
     }
 

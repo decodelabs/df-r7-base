@@ -9,11 +9,11 @@ use df;
 use df\core;
 use df\flex;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\DataReceiver;
 use DecodeLabs\Atlas\DataSender;
 use DecodeLabs\Atlas\Mode;
+use DecodeLabs\Exceptional;
 
 class Builder implements IBuilder
 {
@@ -95,7 +95,7 @@ class Builder implements IBuilder
                 }
             }
         } else {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'No data has been generated for CSV builder'
             );
         }
@@ -105,7 +105,9 @@ class Builder implements IBuilder
     public function setFields(array $fields): IBuilder
     {
         if (empty($fields)) {
-            throw Glitch::ERuntime('CSV file must have at least one field');
+            throw Exceptional::Runtime(
+                'CSV file must have at least one field'
+            );
         }
 
         $this->_fields = $fields;
@@ -180,7 +182,7 @@ class Builder implements IBuilder
     protected function _writeRow(array $row): void
     {
         if (!$this->_receiver) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'No data receiver has been set for CSV builder'
             );
         }

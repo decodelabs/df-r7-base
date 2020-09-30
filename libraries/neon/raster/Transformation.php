@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\neon;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Transformation implements ITransformation, Dumpable
 {
@@ -166,7 +166,7 @@ class Transformation implements ITransformation, Dumpable
     public function apply(): IImage
     {
         if (!$this->_image) {
-            throw Glitch::ESetup(
+            throw Exceptional::Setup(
                 'No image has been set for transformation'
             );
         }

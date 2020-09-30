@@ -7,7 +7,7 @@ namespace df\core\i18n;
 
 use df\core;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Config extends core\Config
 {
@@ -35,7 +35,9 @@ class Config extends core\Config
         $locale = Locale::factory($locale);
 
         if (!$this->isLocaleAllowed($locale)) {
-            throw Glitch::ERuntime('Default locale '.$locale.' is not allowed');
+            throw Exceptional::Runtime(
+                'Default locale '.$locale.' is not allowed'
+            );
         }
 
         $this->values->locale->default = (string)$locale;

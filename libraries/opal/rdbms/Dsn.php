@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Dsn implements IDsn, Dumpable
 {
@@ -52,7 +52,9 @@ class Dsn implements IDsn, Dumpable
             if ($dsn instanceof core\IStringProvider) {
                 $dsn = $dsn->toString();
             } else {
-                throw Glitch::EInvalidArgument('Invalid dsn string!');
+                throw Exceptional::InvalidArgument(
+                    'Invalid dsn string!'
+                );
             }
         }
 
@@ -60,7 +62,9 @@ class Dsn implements IDsn, Dumpable
         $matches = [];
 
         if (!preg_match($regex, $dsn, $matches)) {
-            throw Glitch::EInvalidArgument('Invalid dsn string: '.$dsn);
+            throw Exceptional::InvalidArgument(
+                'Invalid dsn string: '.$dsn
+            );
         }
 
         $this->_adapter = ucfirst(@$matches[2]);
@@ -340,7 +344,9 @@ class Dsn implements IDsn, Dumpable
     public function toString(): string
     {
         if ($this->_adapter === null) {
-            throw Glitch::EInvalidArgument('Dsn must contain adapter value!');
+            throw Exceptional::InvalidArgument(
+                'Dsn must contain adapter value!'
+            );
         }
 
         return $this->_adapter.'://'.$this->getConnectionString();
@@ -358,7 +364,9 @@ class Dsn implements IDsn, Dumpable
     public function getServerString()
     {
         if ($this->_adapter === null) {
-            throw Glitch::EInvalidArgument('Dsn must contain adapter value!');
+            throw Exceptional::InvalidArgument(
+                'Dsn must contain adapter value!'
+            );
         }
 
         $output = $this->_adapter.'://';
@@ -408,7 +416,9 @@ class Dsn implements IDsn, Dumpable
     protected function _getDatabaseString()
     {
         if ($this->_database === null) {
-            throw Glitch::EInvalidArgument('Dsn must contain database value!');
+            throw Exceptional::InvalidArgument(
+                'Dsn must contain database value!'
+            );
         }
 
         $output = $this->_database;
@@ -460,7 +470,9 @@ class Dsn implements IDsn, Dumpable
         }
 
         if ($this->_database === null) {
-            throw Glitch::EInvalidArgument('Dsn must contain database value!');
+            throw Exceptional::InvalidArgument(
+                'Dsn must contain database value!'
+            );
         }
 
         $output .= $this->_database;

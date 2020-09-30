@@ -11,8 +11,8 @@ use df\aura;
 use df\flow;
 use df\arch;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Tagged\Html\Mail\Generator;
+use DecodeLabs\Exceptional;
 
 class Mail extends flow\mail\Message implements ILayoutView
 {
@@ -81,7 +81,7 @@ class Mail extends flow\mail\Message implements ILayoutView
     protected function _beforeRender()
     {
         if ($this->_hasRendered) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Mail views can only render once'
             );
         }

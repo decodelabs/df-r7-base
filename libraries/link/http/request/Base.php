@@ -16,6 +16,7 @@ use DecodeLabs\Atlas\Channel;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Base implements link\http\IRequest, Dumpable
 {
@@ -49,7 +50,9 @@ class Base implements link\http\IRequest, Dumpable
         $output = new $class();
 
         if (false === ($parts = preg_split('|(?:\r?\n){2}|m', $string, 2))) {
-            throw Glitch::EUnexpectedValue('Unable to parse request string', null, $string);
+            throw Exceptional::UnexpectedValue(
+                'Unable to parse request string', null, $string
+            );
         }
 
         $headers = (string)array_shift($parts);
@@ -65,7 +68,7 @@ class Base implements link\http\IRequest, Dumpable
         $protocol = (string)strtok('/');
 
         if ($protocol !== 'HTTP') {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Protocol '.$protocol.' is not valid HTTP'
             );
         }
@@ -165,7 +168,7 @@ class Base implements link\http\IRequest, Dumpable
 
                 try {
                     return new link\Ip($ip);
-                } catch (link\EInvalidArgument $e) {
+                } catch (link\InvalidArgumentException $e) {
                     if (empty($parts)) {
                         return new link\Ip('0.0.0.0');
                     }
@@ -266,7 +269,7 @@ class Base implements link\http\IRequest, Dumpable
                 break;
 
             default:
-                throw Glitch::EUnexpectedValue(
+                throw Exceptional::UnexpectedValue(
                     $method.' is not a valid request method',
                     ['http' => 405]
                 );
@@ -393,7 +396,7 @@ class Base implements link\http\IRequest, Dumpable
     public function setHeaders(core\collection\IHeaderMap $headers)
     {
         if (!$headers instanceof link\http\IRequestHeaderCollection) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Request headers must implement IRequestHeaderCollection'
             );
         }
@@ -439,7 +442,7 @@ class Base implements link\http\IRequest, Dumpable
     {
         if ($this->method !== 'post') {
             if ($post !== null) {
-                throw Glitch::EUnexpectedValue(
+                throw Exceptional::UnexpectedValue(
                     'Post data can only be set when request method is POST'
                 );
             }

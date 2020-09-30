@@ -11,7 +11,7 @@ use df\mint;
 use df\spur;
 
 use Stripe as StripePHP;
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Stripe extends Base implements
     mint\ICaptureProviderGateway,
@@ -44,7 +44,7 @@ class Stripe extends Base implements
         }
 
         if (!$key) {
-            throw Glitch::ESetup(
+            throw Exceptional::Setup(
                 'Stripe API key not set in config'
             );
         }
@@ -61,7 +61,7 @@ class Stripe extends Base implements
         }
 
         if (!$key) {
-            throw Glitch::ESetup(
+            throw Exceptional::Setup(
                 'Stripe API key not set in config'
             );
         }
@@ -96,7 +96,7 @@ class Stripe extends Base implements
             } catch (\Exception $e) {
                 return null;
             }
-        }, 'EIp');
+        }, 'Ip');
     }
 
     public function getWebhookIps(): ?array
@@ -108,7 +108,7 @@ class Stripe extends Base implements
             } catch (\Exception $e) {
                 return null;
             }
-        }, 'EIp');
+        }, 'Ip');
     }
 
 
@@ -126,7 +126,7 @@ class Stripe extends Base implements
             ]);
 
             return array_map('strtoupper', $spec['supported_payment_currencies']);
-        }, 'ECurrency');
+        }, 'Currency');
     }
 
 
@@ -147,7 +147,7 @@ class Stripe extends Base implements
             ], [
                 'api_key' => $this->_apiKey
             ])['id'];
-        }, 'ECharge');
+        }, 'Charge');
     }
 
     public function submitCustomerCharge(mint\ICustomerChargeRequest $charge): string
@@ -166,7 +166,7 @@ class Stripe extends Base implements
             ], [
                 'api_key' => $this->_apiKey
             ])['id'];
-        }, 'ECharge');
+        }, 'Charge');
     }
 
 
@@ -188,7 +188,7 @@ class Stripe extends Base implements
             ], [
                 'api_key' => $this->_apiKey
             ])['id'];
-        }, 'ECharge');
+        }, 'Charge');
     }
 
     public function authorizeCustomerCharge(mint\ICustomerChargeRequest $charge): string
@@ -208,7 +208,7 @@ class Stripe extends Base implements
             ], [
                 'api_key' => $this->_apiKey
             ])['id'];
-        }, 'ECharge');
+        }, 'Charge');
     }
 
     public function captureCharge(mint\IChargeCapture $charge): string
@@ -220,7 +220,7 @@ class Stripe extends Base implements
 
             $charge->capture();
             return $charge['id'];
-        }, 'ECharge,ECapture');
+        }, 'Charge,Capture');
     }
 
 
@@ -230,7 +230,9 @@ class Stripe extends Base implements
     {
         return $this->_execute(function () use ($refund) {
             if (!$amount = $refund->getAmount()) {
-                throw Glitch::EUnexpectedValue('Refund amount has not been set', null, $refund);
+                throw Exceptional::UnexpectedValue(
+                    'Refund amount has not been set', null, $refund
+                );
             }
 
             return StripePHP\Refund::create([
@@ -239,7 +241,7 @@ class Stripe extends Base implements
             ], [
                 'api_key' => $this->_apiKey
             ])['charge'];
-        }, 'ECharge,ERefund');
+        }, 'Charge,Refund');
     }
 
 
@@ -253,14 +255,14 @@ class Stripe extends Base implements
             ]);
 
             if ($customer['deleted']) {
-                throw Glitch::{'EApi,ECustomer,ENotFound'}([
+                throw Exceptional::{'Api,Customer,NotFound'}([
                     'message' => 'Customer has been deleted',
                     'data' => $customer
                 ]);
             }
 
             return $this->_wrapCustomer($customer);
-        }, 'ECustomer');
+        }, 'Customer');
     }
 
     public function addCustomer(mint\ICustomer $customer): mint\ICustomer
@@ -279,13 +281,13 @@ class Stripe extends Base implements
             ]);
 
             return $this->_wrapCustomer($customer);
-        }, 'ECustomer');
+        }, 'Customer');
     }
 
     public function updateCustomer(mint\ICustomer $customer): mint\ICustomer
     {
         if ($customer->getId() === null) {
-            throw Glitch::EInvalidArgument([
+            throw Exceptional::InvalidArgument([
                 'message' => 'Customer Id not set',
                 'data' => $customer
             ]);
@@ -305,7 +307,7 @@ class Stripe extends Base implements
             ]);
 
             return $this->_wrapCustomer($customer);
-        }, 'ECustomer');
+        }, 'Customer');
     }
 
     public function deleteCustomer(string $customerId)
@@ -315,7 +317,7 @@ class Stripe extends Base implements
                 'api_key' => $this->_apiKey
             ]);
             $customer->delete();
-        }, 'ECustomer');
+        }, 'Customer');
 
         return $this;
     }
@@ -365,7 +367,7 @@ class Stripe extends Base implements
             }
 
             return $output;
-        }, 'EPlan');
+        }, 'Plan');
     }
 
 
@@ -391,7 +393,7 @@ class Stripe extends Base implements
 
             $this->clearPlanCache();
             return $this->_wrapPlan($plan);
-        }, 'EPlan');
+        }, 'Plan');
     }
 
     public function updatePlan(mint\IPlan $plan): mint\IPlan
@@ -406,7 +408,7 @@ class Stripe extends Base implements
 
             $this->clearPlanCache();
             return $this->_wrapPlan($plan);
-        }, 'EPlan');
+        }, 'Plan');
     }
 
     public function deletePlan(string $planId)
@@ -418,7 +420,7 @@ class Stripe extends Base implements
             $product = StripePHP\Product::retrieve($productId, ['api_key' => $this->_apiKey]);
             $product->delete();
             $this->clearPlanCache();
-        }, 'EPlan');
+        }, 'Plan');
 
         return $this;
     }
@@ -460,7 +462,7 @@ class Stripe extends Base implements
     public function getSubscriptionsFor(mint\ICustomer $customer): array
     {
         if ($customer->getId() === null) {
-            throw Glitch::EInvalidArgument([
+            throw Exceptional::InvalidArgument([
                 'message' => 'Customer Id not set',
                 'data' => $customer
             ]);
@@ -507,7 +509,7 @@ class Stripe extends Base implements
             ]);
 
             return $this->_wrapSubscription($subscription);
-        }, 'ESubscription');
+        }, 'Subscription');
     }
 
     public function updateSubscription(mint\ISubscription $subscription): mint\ISubscription
@@ -526,7 +528,7 @@ class Stripe extends Base implements
             ]);
 
             return $this->_wrapSubscription($subscription);
-        }, 'ESubscription');
+        }, 'Subscription');
     }
 
     public function endSubscriptionTrial(string $subscriptionId, int $inDays=null): mint\ISubscription
@@ -657,39 +659,39 @@ class Stripe extends Base implements
             return $func();
         } catch (StripePHP\Error\Base $e) {
             $data = $e->getJsonBody()['error'] ?? [];
-            $types = ['EApi'];
+            $types = ['Api'];
 
             if (!empty($eType)) {
                 $types[] = $eType;
             }
 
             if ($e->getHttpStatus() == 404) {
-                $types[] = 'ENotFound';
+                $types[] = 'NotFound';
             }
 
             if ($e instanceof StripePHP\Error\Api ||
                 $e instanceof StripePHP\Error\ApiConnection ||
                 $e instanceof StripePHP\Error\Authentication ||
                 $e instanceof StripePHP\Error\InvalidRequest) {
-                $types[] = 'EImplementation';
+                $types[] = 'Implementation';
             } elseif ($e instanceof StripePHP\Error\Card) {
-                $types[] = 'ECard';
+                $types[] = 'Card';
 
                 switch ($data['code'] ?? null) {
                     case 'invalid_number':
                     case 'incorrect_number':
-                        $types[] = 'ECardNumber';
+                        $types[] = 'CardNumber';
                         break;
 
                     case 'invalid_expiry_month':
                     case 'invalid_expiry_year':
                     case 'expired_card':
-                        $types[] = 'ECardExpiry';
+                        $types[] = 'CardExpiry';
                         break;
 
                     case 'invalid_cvc':
                     case 'incorrect_cvc':
-                        $types[] = 'ECardCvc';
+                        $types[] = 'CardCvc';
                         break;
 
                     case 'invalid_swipe_data':
@@ -697,7 +699,7 @@ class Stripe extends Base implements
                         break;
 
                     case 'incorrect_zip':
-                        $types[] = 'ECardAddress';
+                        $types[] = 'CardAddress';
                         break;
 
                     case 'card_declined':
@@ -705,18 +707,18 @@ class Stripe extends Base implements
                         break;
 
                     case 'missing':
-                        $types[] = 'ENotFound';
-                        $types[] = 'ECardMissing';
+                        $types[] = 'NotFound';
+                        $types[] = 'CardMissing';
                         break;
 
                     case 'processing_error':
                         break;
                 }
             } elseif ($e instanceof StripePHP\Error\RateLimit) {
-                $types[] = 'ERateLimit';
+                $types[] = 'RateLimit';
             }
 
-            throw Glitch::{implode(',', array_unique($types))}([
+            throw Exceptional::{implode(',', array_unique($types))}([
                 'message' => $e->getMessage(),
                 'previous' => $e,
                 'data' => $data

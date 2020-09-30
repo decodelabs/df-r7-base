@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Server implements opal\rdbms\IServer
 {
@@ -77,7 +77,7 @@ class Server implements opal\rdbms\IServer
             return $e;
         }
 
-        return Glitch::{'df/opal/rdbms/EConnection'}($message, [
+        return Exceptional::{'df/opal/rdbms/Connection'}($message, [
             'code' => $number
         ]);
     }
@@ -88,7 +88,7 @@ class Server implements opal\rdbms\IServer
             return $e;
         }
 
-        return Glitch::{'df/opal/rdbms/EQuery'}($message, [
+        return Exceptional::{'df/opal/rdbms/Query'}($message, [
             'code' => $number,
             'data' => [
                 'sql' => $sql
@@ -102,7 +102,7 @@ class Server implements opal\rdbms\IServer
 
         // DB not found
             case 1049:
-                return Glitch::{'df/opal/rdbms/EDatabaseNotFound,ENotFound'}($message, [
+                return Exceptional::{'df/opal/rdbms/DatabaseNotFound,NotFound'}($message, [
                     'code' => $number,
                     'data' => [
                         'sql' => $sql
@@ -119,7 +119,7 @@ class Server implements opal\rdbms\IServer
                     $database = $adapter->getDsn()->getDatabase();
                 }
 
-                return Glitch::{'df/opal/rdbms/ETableConflict'}($message, [
+                return Exceptional::{'df/opal/rdbms/TableConflict'}($message, [
                     'code' => $number,
                     'data' => [
                         'sql' => $sql,
@@ -138,7 +138,7 @@ class Server implements opal\rdbms\IServer
                     $table = $matches[2];
                 }
 
-                return Glitch::{'df/opal/rdbms/ETableNotFound,ENotFound'}($message, [
+                return Exceptional::{'df/opal/rdbms/TableNotFound,NotFound'}($message, [
                     'code' => $number,
                     'data' => [
                         'sql' => $sql,
@@ -149,7 +149,7 @@ class Server implements opal\rdbms\IServer
 
         // Field not found
             case 1054:
-                return Glitch::{'df/opal/rdbms/EFieldNotFound,ENotFound'}($message, [
+                return Exceptional::{'df/opal/rdbms/FieldNotFound,NotFound'}($message, [
                     'code' => $number,
                     'data' => [
                         'sql' => $sql
@@ -158,7 +158,7 @@ class Server implements opal\rdbms\IServer
 
         // Trigger already exists
             case 1359:
-                return Glitch::{'df/opal/rdbms/ETriggerConflict'}($message, [
+                return Exceptional::{'df/opal/rdbms/TriggerConflict'}($message, [
                     'code' => $number,
                     'data' => [
                         'sql' => $sql
@@ -167,7 +167,7 @@ class Server implements opal\rdbms\IServer
 
         // Trigger not found
             case 1360:
-                return Glitch::{'df/opal/rdbms/ETriggerNotFound,ENotFound'}($message, [
+                return Exceptional::{'df/opal/rdbms/TriggerNotFound,NotFound'}($message, [
                     'code' => $number,
                     'data' => [
                         'sql' => $sql
@@ -180,7 +180,7 @@ class Server implements opal\rdbms\IServer
         // Constraint conflict
             case 1062:
             case 1451:
-                return Glitch::{'df/opal/rdbms/EConstraint'}($message, [
+                return Exceptional::{'df/opal/rdbms/Constraint'}($message, [
                     'code' => $number,
                     'data' => [
                         'sql' => $sql
@@ -199,7 +199,7 @@ class Server implements opal\rdbms\IServer
             case 1103:
             case 1109:
             case 2047:
-                return Glitch::{'df/opal/rdbms/EAccess,EForbidden'}($message, [
+                return Exceptional::{'df/opal/rdbms/Access,Forbidden'}($message, [
                     'code' => $number,
                     'data' => [
                         'sql' => $sql
@@ -230,7 +230,7 @@ class Server implements opal\rdbms\IServer
             case 2010:
             case 2003:
             case 2005:
-                return Glitch::{'df/opal/rdbms/EConnection'}($message, [
+                return Exceptional::{'df/opal/rdbms/Connection'}($message, [
                     'code' => $number,
                     'data' => [
                         'sql' => $sql

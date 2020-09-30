@@ -8,14 +8,14 @@ namespace df\core\archive;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Bz2 extends Base
 {
     public function __construct()
     {
         if (!extension_loaded('bz2')) {
-            throw Glitch::EUnsupported(
+            throw Exceptional::Unsupported(
                 'The bz2 extension is not loaded'
             );
         }
@@ -37,11 +37,15 @@ class Bz2 extends Base
         $destFile = $this->_normalizeDecompressDestination($file, $destFile, 'bz2');
 
         if (false === ($output = fopen($destFile, 'w'))) {
-            throw Glitch::ERuntime('Unable to open destination file for writing', null, $destFile);
+            throw Exceptional::Runtime(
+                'Unable to open destination file for writing', null, $destFile
+            );
         }
 
         if (false === ($archive = bzopen($file, 'r'))) {
-            throw Glitch::ERuntime('Unable to open bz2 file for reading', null, $file);
+            throw Exceptional::Runtime(
+                'Unable to open bz2 file for reading', null, $file
+            );
         }
 
         while (!feof($archive)) {

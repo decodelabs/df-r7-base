@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\flex;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements core\IApp
 {
@@ -41,7 +41,9 @@ abstract class Base implements core\IApp
 
         if (df\Launchpad::$isCompiled) {
             if (!class_exists($class)) {
-                throw Glitch::EImplementation('App class not found');
+                throw Exceptional::Implementation(
+                    'App class not found'
+                );
             }
         } else {
             $filePath = $path.'/App.php';
@@ -299,7 +301,9 @@ PHP;
                 return 'Http';
         }
 
-        throw Glitch::EUnexpectedValue('Unable to detect run mode ('.\PHP_SAPI.')');
+        throw Exceptional::UnexpectedValue(
+            'Unable to detect run mode ('.\PHP_SAPI.')'
+        );
     }
 
 

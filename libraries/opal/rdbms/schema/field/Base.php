@@ -8,8 +8,8 @@ namespace df\opal\rdbms\schema\field;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements opal\rdbms\schema\IField, Dumpable
 {
@@ -96,7 +96,7 @@ abstract class Base implements opal\rdbms\schema\IField, Dumpable
         $class = 'df\\opal\\rdbms\\schema\\field\\'.$classType;
 
         if (!class_exists($class)) {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Field type '.$type.' is not currently supported'
             );
         }

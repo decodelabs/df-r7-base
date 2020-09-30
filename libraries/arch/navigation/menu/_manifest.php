@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\arch;
 
+use DecodeLabs\Exceptional;
+
 interface IMenu extends core\IContextAware, arch\navigation\IEntryListGenerator
 {
     public function getId(): core\uri\IUrl;
@@ -57,7 +59,7 @@ trait TResponsiveSourceAdapter
         $func = '_load'.$id->path->getBaseName().'Menu';
 
         if (!method_exists($this, $func)) {
-            throw Glitch::{'ENotFound'}(
+            throw Exceptional::NotFound(
                 'Menu '.$id->path->getBaseName().' could not be loaded'
             );
         }

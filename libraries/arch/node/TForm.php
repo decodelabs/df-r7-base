@@ -13,6 +13,7 @@ use df\opal;
 use df\mesh;
 use df\link;
 
+use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch;
 
 // BASE
@@ -67,7 +68,7 @@ trait TForm
     public function loadDelegate(string $id, string $name): IDelegate
     {
         if (false !== strpos($id, '.')) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Delegate IDs must not contain . character'
             );
         }
@@ -110,7 +111,7 @@ trait TForm
                     core\logException($e);
                 }
 
-                throw Glitch::{'df/arch/node/EDelegate,ENotFound'}(
+                throw Exceptional::{'df/arch/node/Delegate,NotFound'}(
                     'Delegate '.$name.' could not be found at ~'.$area.'/'.$path
                 );
             }
@@ -122,7 +123,7 @@ trait TForm
     public function directLoadDelegate(string $id, string $class): IDelegate
     {
         if (!class_exists($class)) {
-            throw Glitch::{'df/arch/node/EDelegate,ENotFound'}(
+            throw Exceptional::{'df/arch/node/Delegate,NotFound'}(
                 'Cannot direct load delegate '.$id.' - class not found'
             );
         }
@@ -150,7 +151,7 @@ trait TForm
         $id = explode('.', trim($id, ' .'));
 
         if (empty($id)) {
-            throw Glitch::{'df/arch/node/EDelegate,EInvalidArgument'}(
+            throw Exceptional::{'df/arch/node/Delegate,InvalidArgument'}(
                 'Empty delegate id detected'
             );
         }
@@ -158,7 +159,7 @@ trait TForm
         $top = array_shift($id);
 
         if (!isset($this->_delegates[$top])) {
-            throw Glitch::{'df/arch/node/EDelegate,ENotFound'}(
+            throw Exceptional::{'df/arch/node/Delegate,NotFound'}(
                 'Delegate '.$top.' could not be found'
             );
         }
@@ -200,7 +201,7 @@ trait TForm
         $id = explode('.', trim($id, ' .'));
 
         if (empty($id)) {
-            throw Glitch::{'df/arch/node/EDelegate,EInvalidArgument'}(
+            throw Exceptional::{'df/arch/node/Delegate,InvalidArgument'}(
                 'Empty delegate id detected'
             );
         }
@@ -208,7 +209,7 @@ trait TForm
         $top = array_shift($id);
 
         if (!isset($this->_delegates[$top])) {
-            throw Glitch::{'df/arch/node/EDelegate,ENotFound'}(
+            throw Exceptional::{'df/arch/node/Delegate,NotFound'}(
                 'Delegate '.$top.' could not be found'
             );
         }
@@ -409,7 +410,7 @@ trait TForm
             $func = 'onDefaultEvent';
 
             if (!method_exists($this, $func)) {
-                throw Glitch::{'df/arch/node/EEvent,EDefinition'}(
+                throw Exceptional::{'df/arch/node/Event,Definition'}(
                     'Event '.$name.' does not have a handler'
                 );
             }
@@ -530,7 +531,7 @@ trait TForm_ModalDelegate
         $modes = $this->getAvailableModes();
 
         if (!in_array($mode, $modes)) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Mode '.$mode.' is not recognised in this form'
             );
         }
@@ -594,7 +595,7 @@ trait TForm_ModalDelegate
         }
 
         if (!$func || !method_exists($this, $func)) {
-            throw Glitch::{'df/arch/node/EDelegate,EDefinition'}(
+            throw Exceptional::{'df/arch/node/Delegate,Definition'}(
                 'Selector delegate has no render handler for '.$mode.' mode'
             );
         }
@@ -912,7 +913,9 @@ trait TForm_DependentDelegate
     public function applyFilters(opal\query\IQuery $query)
     {
         if (!$query instanceof opal\query\IWhereClauseQuery) {
-            throw Glitch::ELogic('Filter query is not a where clause factory', null, $query);
+            throw Exceptional::Logic(
+                'Filter query is not a where clause factory', null, $query
+            );
         }
 
         if (!empty($this->_filters)) {

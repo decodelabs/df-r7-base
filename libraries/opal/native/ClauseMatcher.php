@@ -11,6 +11,7 @@ use df\opal;
 use df\flex;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class ClauseMatcher implements IClauseMatcher
 {
@@ -74,7 +75,7 @@ class ClauseMatcher implements IClauseMatcher
                 $source = $output->compare->getSource();
 
                 if (null === ($targetField = $source->getFirstOutputDataField())) {
-                    throw Glitch::EUnexpectedValue(
+                    throw Exceptional::UnexpectedValue(
                         'Clause subquery does not have a distinct return field'
                     );
                 }
@@ -135,13 +136,13 @@ class ClauseMatcher implements IClauseMatcher
 
                     case opal\query\clause\Clause::OP_BETWEEN:
                     case opal\query\clause\Clause::OP_NOT_BETWEEN:
-                        throw Glitch::{'df/opal/query/EOperator'}(
+                        throw Exceptional::{'df/opal/query/Operator'}(
                             'Operator '.$operator.' is not valid for clause subqueries'
                         );
 
 
                     default:
-                        throw Glitch::{'df/opal/query/EOperator'}(
+                        throw Exceptional::{'df/opal/query/Operator'}(
                             'Operator '.$operator.' is not recognized'
                         );
                 }
@@ -304,7 +305,7 @@ class ClauseMatcher implements IClauseMatcher
 
 
             default:
-                throw Glitch::{'df/opal/query/EOperator'}(
+                throw Exceptional::{'df/opal/query/Operator'}(
                     'Operator '.$operator.' is not recognized'
                 );
         }

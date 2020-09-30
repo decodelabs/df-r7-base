@@ -10,6 +10,7 @@ use df\core;
 use df\neon;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Image implements IImage
 {
@@ -35,7 +36,7 @@ class Image implements IImage
 
         if (class_exists($class)) {
             if (!$class::isLoadable()) {
-                throw Glitch::EUnsupported(
+                throw Exceptional::Unsupported(
                     'Raster image driver '.$driver.' is not loadable'
                 );
             }
@@ -44,7 +45,7 @@ class Image implements IImage
             return true;
         }
 
-        throw Glitch::ENotFound(
+        throw Exceptional::NotFound(
             $driver.' is not a valid raster image driver'
         );
     }
@@ -55,7 +56,7 @@ class Image implements IImage
             foreach (self::getDriverList() as $driver) {
                 try {
                     self::setDefaultDriver($driver);
-                } catch (EUnsupported $e) {
+                } catch (UnsupportedException $e) {
                     continue;
                 }
 
@@ -63,7 +64,7 @@ class Image implements IImage
             }
 
             if (!self::$_driverClass) {
-                throw Glitch::EComponentUnavailable(
+                throw Exceptional::ComponentUnavailable(
                     'There are no available raster image drivers'
                 );
             }
@@ -79,7 +80,7 @@ class Image implements IImage
         $class = self::getDefaultDriverClass();
 
         if (!is_readable($file)) {
-            throw Glitch::{'EIo,EUnreadable'}(
+            throw Exceptional::{'Io,Unreadable'}(
                 'Raster image '.$file.' is not readable'
             );
         }
@@ -152,13 +153,13 @@ class Image implements IImage
     public function setOutputFormat($format)
     {
         if (!self::isFormatValid($format)) {
-            throw Glitch::{'EInvalidArgument,EFormat'}(
+            throw Exceptional::{'InvalidArgument,Format'}(
                 $format.' is not a valid output raster image format'
             );
         }
 
         if (!$this->_driver->canWrite($format)) {
-            throw Glitch::{'EFormat'}(
+            throw Exceptional::Format(
                 $this->_driver->getName().' image driver cannot write '.$format.' format files'
             );
         }
@@ -176,7 +177,7 @@ class Image implements IImage
     public function setSavePath($savePath)
     {
         if (!is_writable($savePath)) {
-            throw Glitch::{'ERuntime,EUnwritable'}(
+            throw Exceptional::{'Runtime,Unwritable'}(
                 'Raster image save path is not writable'
             );
         }
@@ -201,13 +202,13 @@ class Image implements IImage
     public function save($quality=100)
     {
         if (!$this->_savePath) {
-            throw Glitch::ESetup(
+            throw Exceptional::Setup(
                 'Raster image save path has not been set'
             );
         }
 
         if (!$this->_driver->saveTo($this->_savePath, $this->_normalizePercentage($quality))) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Raster image could not be saved'
             );
         }
@@ -229,7 +230,7 @@ class Image implements IImage
         $this->_normalizeRelativeDimensions($width, $height, $currentWidth, $currentHeight);
 
         if (!$width && !$height) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Invalid proportions specified for resize'
             );
         }
@@ -260,7 +261,9 @@ class Image implements IImage
                 break;
 
             default:
-                throw Glitch::EInvalidArgument('Unsupported resize mode: '.$mode);
+                throw Exceptional::InvalidArgument(
+                    'Unsupported resize mode: '.$mode
+                );
         }
 
         $this->_driver->resize($newWidth, $newHeight);
@@ -466,7 +469,7 @@ class Image implements IImage
     protected function _checkDriverForManipulations()
     {
         if (!$this->_driver instanceof IImageManipulationDriver) {
-            throw Glitch::EUnsupported(
+            throw Exceptional::Unsupported(
                 'Raster image driver '.$this->_driver->getName().' does not support manipulations'
             );
         }
@@ -475,7 +478,7 @@ class Image implements IImage
     protected function _checkDriverForFilters()
     {
         if (!$this->_driver instanceof IImageFilterDriver) {
-            throw Glitch::EUnsupported(
+            throw Exceptional::Unsupported(
                 'Raster image driver '.$this->_driver->getName().' does not support filters'
             );
         }
@@ -788,7 +791,7 @@ class Image implements IImage
             return self::getFormatFromExtension($p['extension']);
         }
 
-        throw Glitch::EFormat(
+        throw Exceptional::Format(
             'Format could not be extracted from path: '.$path
         );
     }
@@ -801,7 +804,7 @@ class Image implements IImage
 
         $extension = strtolower($extension);
 
-        throw Glitch::EFormat(
+        throw Exceptional::Format(
             'Format could not be extracted from extension: '.$extension
         );
     }

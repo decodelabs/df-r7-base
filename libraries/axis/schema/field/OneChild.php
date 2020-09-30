@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 use df\opal;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class OneChild extends Base implements axis\schema\IOneChildField
 {
@@ -62,14 +62,16 @@ class OneChild extends Base implements axis\schema\IOneChildField
         $localRelationManifest = $this->getLocalRelationManifest();
 
         if (!$localRelationManifest->isSingleField()) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Query clause on field '.$this->_name.' cannot be executed as it relies on a multi-field primary key. '.
                 'You should probably use a fieldless join constraint instead'
             );
         }
 
         if (!$parent instanceof opal\query\ISourceProvider) {
-            throw Glitch::ELogic('Clause factory is not a source provider', null, $parent);
+            throw Exceptional::Logic(
+                'Clause factory is not a source provider', null, $parent
+            );
         }
 
         $sourceManager = $parent->getSourceManager();

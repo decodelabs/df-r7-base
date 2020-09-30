@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Transformer implements ITransformer
 {
@@ -23,7 +23,7 @@ abstract class Transformer implements ITransformer
             $output = $transformer->execute();
 
             if ($output && !$output instanceof arch\node\INode) {
-                throw Glitch::{'df/arch/EInvalidNode,EUnexpectedValue'}(
+                throw Exceptional::{'df/arch/InvalidNode,UnexpectedValue'}(
                     'Transformer '.get_class($transformer).' returned an invalid node', [
                         'data' => $output
                     ]

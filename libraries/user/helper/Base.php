@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\user;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements user\IHelper
 {
@@ -20,7 +20,7 @@ abstract class Base implements user\IHelper
         $class = 'df\\user\\helper\\'.ucfirst($name);
 
         if (!class_exists($class)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'User helper '.$name.' could not be found'
             );
         }

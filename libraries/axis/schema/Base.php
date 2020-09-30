@@ -12,6 +12,7 @@ use df\opal;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Base implements ISchema, Dumpable
 {
@@ -103,7 +104,7 @@ class Base implements ISchema, Dumpable
 
         foreach ($fields as $name => $field) {
             if ($field instanceof opal\schema\INullPrimitiveField) {
-                throw Glitch::ERuntime(
+                throw Exceptional::Runtime(
                     'Indexes cannot be defined for NullPrimitive fields ('.$this->getName().'.'.$name.')'
                 );
             }
@@ -225,13 +226,15 @@ class Base implements ISchema, Dumpable
     public static function fromJson(opal\schema\ISchemaContext $unit, $json)
     {
         if (!$data = json_decode($json, true)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Invalid json schema representation'
             );
         }
 
         if (!$unit instanceof axis\ISchemaBasedStorageUnit) {
-            throw Glitch::ELogic('Schema context is not a storage unit', null, $unit);
+            throw Exceptional::Logic(
+                'Schema context is not a storage unit', null, $unit
+            );
         }
 
         $output = new self($unit, $unit->getUnitName());

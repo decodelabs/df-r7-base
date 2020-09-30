@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\flow;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements flow\mail\ITransport
 {
@@ -32,7 +32,7 @@ abstract class Base implements flow\mail\ITransport
     public static function factory($name)
     {
         if (!$class = self::getTransportClass($name)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Mail transport '.$name.' could not be found'
             );
         }

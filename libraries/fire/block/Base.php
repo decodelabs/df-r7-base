@@ -18,6 +18,7 @@ use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
 use DecodeLabs\Tagged\Xml\SerializableTrait as XmlSerializableTrait;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base implements fire\IBlock
 {
@@ -33,13 +34,17 @@ abstract class Base implements fire\IBlock
     public static function fromXmlElement(XmlElement $element)
     {
         if (null === ($type = $element->getAttribute('type'))) {
-            throw Glitch::EUnexpectedValue('Block XML does not contain type attribute', null, $element);
+            throw Exceptional::UnexpectedValue(
+                'Block XML does not contain type attribute', null, $element
+            );
         }
 
         $output = self::factory($type);
 
         if (!$output instanceof XmlSerializable) {
-            throw Glitch::EUnexpectedValue('Block object is not instanceof XmlSerializable', null, $output);
+            throw Exceptional::UnexpectedValue(
+                'Block object is not instanceof XmlSerializable', null, $output
+            );
         }
 
         $output->xmlUnserialize($element);
@@ -51,7 +56,7 @@ abstract class Base implements fire\IBlock
         $class = 'df\\fire\\block\\'.ucfirst($name);
 
         if (!class_exists($class)) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'Block type '.$name.' could not be found'
             );
         }
@@ -156,7 +161,7 @@ abstract class Base implements fire\IBlock
     protected function _validateXmlReader(/*XmlElement*/ $reader)
     {
         if ($reader->getTagName() != 'block') {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Block content object expected block xml element'
             );
         }
@@ -168,7 +173,7 @@ abstract class Base implements fire\IBlock
         }
 
         if (strtolower($type) != strtolower($this->getName())) {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Block content is meant for a '.$reader->getAttribute('type').' block, not a '.$this->getName().' block'
             );
         }

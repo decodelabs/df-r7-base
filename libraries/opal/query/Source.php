@@ -10,8 +10,8 @@ use df\core;
 use df\opal;
 use df\axis;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Source implements ISource, Dumpable
 {
@@ -103,7 +103,7 @@ class Source implements ISource, Dumpable
                 $schema = $this->_adapter->getQueryAdapterSchema();
 
                 if (!$primaryIndex = $schema->getPrimaryIndex()) {
-                    throw Glitch::ERuntime(
+                    throw Exceptional::Runtime(
                         'Unit does not have a primary index'
                     );
                 }
@@ -132,7 +132,9 @@ class Source implements ISource, Dumpable
             // Get name
             if ($name == '@name') {
                 if (!$this->_adapter instanceof axis\ISchemaBasedStorageUnit) {
-                    throw Glitch::ERuntime('Adapter cannot provide record name field', null, $this->_adapter);
+                    throw Exceptional::Runtime(
+                        'Adapter cannot provide record name field', null, $this->_adapter
+                    );
                 }
 
                 $name = $this->_adapter->getRecordNameField();
@@ -141,7 +143,7 @@ class Source implements ISource, Dumpable
 
 
             if (substr($name, 0, 1) == '@') {
-                throw Glitch::ERuntime(
+                throw Exceptional::Runtime(
                     'Unknown symbolic field: '.$name
                 );
             }
@@ -169,7 +171,7 @@ class Source implements ISource, Dumpable
         } elseif ($this->_adapter instanceof INaiveIntegralAdapter) {
             if ($name == '@primary') {
                 if (!$primaryIndex = $this->_adapter->getPrimaryIndex()) {
-                    throw Glitch::ERuntime(
+                    throw Exceptional::Runtime(
                         'Adapter does not have a primary index'
                     );
                 }
@@ -184,7 +186,7 @@ class Source implements ISource, Dumpable
             }
 
             if (substr($name, 0, 1) == '@') {
-                throw Glitch::ERuntime(
+                throw Exceptional::Runtime(
                     'Unknown symbolic field: '.$name
                 );
             }

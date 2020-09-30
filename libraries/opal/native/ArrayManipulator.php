@@ -10,6 +10,7 @@ use df\core;
 use df\opal;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class ArrayManipulator implements IArrayManipulator
 {
@@ -298,7 +299,7 @@ class ArrayManipulator implements IArrayManipulator
                 }
 
                 if (!is_array($sourceData)) {
-                    throw Glitch::EUnexpectedValue(
+                    throw Exceptional::UnexpectedValue(
                         'Invalid source data for remote join'
                     );
                 }
@@ -692,7 +693,9 @@ class ArrayManipulator implements IArrayManipulator
                             break;
 
                         default:
-                            throw Glitch::EUnexpectedValue('Unsupported null order key: '.$nullOrder);
+                            throw Exceptional::UnexpectedValue(
+                                'Unsupported null order key: '.$nullOrder
+                            );
                     }
 
                     $sortNullFields[$sortFieldName] = $nullOrderDirection;
@@ -791,7 +794,7 @@ class ArrayManipulator implements IArrayManipulator
             $attachment = $field->rewritePopulateQueryToAttachment($populate);
 
             if (!$attachment instanceof opal\query\IAttachQuery) {
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     'Cannot populate '.$populate->getFieldName().' - integral schema field cannot convert to attachment'
                 );
             }

@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\mesh;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Locator implements ILocator, Dumpable
 {
@@ -93,7 +93,7 @@ class Locator implements ILocator, Dumpable
                     } elseif (ctype_alnum($char)) {
                         $part .= $char;
                     } else {
-                        throw Glitch::EInvalidArgument(
+                        throw Exceptional::InvalidArgument(
                             'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
                         );
                     }
@@ -122,7 +122,7 @@ class Locator implements ILocator, Dumpable
                     } elseif (preg_match('/[a-zA-Z0-9-_]/', $char)) {
                         $part .= $char;
                     } else {
-                        throw Glitch::EInvalidArgument(
+                        throw Exceptional::InvalidArgument(
                             'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
                         );
                     }
@@ -147,7 +147,7 @@ class Locator implements ILocator, Dumpable
                     } elseif (ctype_alnum($char) || $char == '-') {
                         $part .= $char;
                     } else {
-                        throw Glitch::EInvalidArgument(
+                        throw Exceptional::InvalidArgument(
                             'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
                         );
                     }
@@ -175,7 +175,7 @@ class Locator implements ILocator, Dumpable
                 // Entity id end quote
                 case 5:
                     if ($char != '/') {
-                        throw Glitch::EInvalidArgument(
+                        throw Exceptional::InvalidArgument(
                             'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
                         );
                     }
@@ -196,11 +196,11 @@ class Locator implements ILocator, Dumpable
         }
 
         if (empty($output)) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'No entity type definition detected in: '.$path
             );
         } elseif ($mode != 0) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Unexpected end of locator: '.$path
             );
         }
@@ -281,7 +281,7 @@ class Locator implements ILocator, Dumpable
             $index += count($this->_nodes);
 
             if ($index < 0) {
-                throw Glitch::EInvalidArgument(
+                throw Exceptional::InvalidArgument(
                     'Index is out of bounds'
                 );
             }
@@ -585,7 +585,7 @@ class Locator implements ILocator, Dumpable
 
         // Type
         if (!isset($node['type'])) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Node has no type definition'
             );
         }

@@ -10,8 +10,8 @@ use df\core;
 use df\opal;
 use df\mesh;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Transaction extends mesh\job\Transaction implements ITransaction, Dumpable
 {
@@ -24,7 +24,7 @@ class Transaction extends mesh\job\Transaction implements ITransaction, Dumpable
         if ($source === false) {
             $source = null;
         } elseif (!$source) {
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Implicit source transaction has no source'
             );
         }
@@ -61,7 +61,7 @@ class Transaction extends mesh\job\Transaction implements ITransaction, Dumpable
     public function countAll()
     {
         if ($this->_source === null) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Cannot countAll without implicit source'
             );
         }
@@ -72,7 +72,7 @@ class Transaction extends mesh\job\Transaction implements ITransaction, Dumpable
     public function countAllDistinct()
     {
         if ($this->_source === null) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Cannot countAll without implicit source'
             );
         }

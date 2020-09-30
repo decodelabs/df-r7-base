@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Union implements IUnionQuery
 {
@@ -47,7 +47,7 @@ class Union implements IUnionQuery
     public function getSource()
     {
         if (empty($this->_queries)) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'Union has no child queries yet!'
             );
         }
@@ -86,7 +86,7 @@ class Union implements IUnionQuery
                 $newSource = $query->getSource();
 
                 if ($newSource->getHash() != $primarySource->getHash()) {
-                    throw Glitch::ELogic(
+                    throw Exceptional::Logic(
                         'Union queries must all be on the same adapter'
                     );
                 }

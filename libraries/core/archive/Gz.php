@@ -8,14 +8,14 @@ namespace df\core\archive;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Gz extends Base
 {
     public function __construct()
     {
         if (!extension_loaded('zlib')) {
-            throw Glitch::EUnsupported(
+            throw Exceptional::Unsupported(
                 'The zlib extension is not loaded'
             );
         }
@@ -37,7 +37,7 @@ class Gz extends Base
         $destFile = $this->_normalizeDecompressDestination($file, $destFile, 'gz');
 
         if (false === ($archive = fopen($file, 'rb'))) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'Unable to open gz file: '.$file
             );
         }
@@ -50,11 +50,15 @@ class Gz extends Base
 
 
         if (false === ($output = fopen($destFile, 'w'))) {
-            throw Glitch::ERuntime('Unable to open gz file for writing', null, $destFile);
+            throw Exceptional::Runtime(
+                'Unable to open gz file for writing', null, $destFile
+            );
         }
 
         if (false === ($archive = gzopen($file, 'r'))) {
-            throw Glitch::ERuntime('Unable to open gz file', null, $file);
+            throw Exceptional::Runtime(
+                'Unable to open gz file', null, $file
+            );
         }
 
         $block = 1024;
@@ -80,7 +84,7 @@ class Gz extends Base
         $output = gzcompress($string, 9);
 
         if ($output === false) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Unable to compress bz string'
             );
         }
@@ -94,7 +98,7 @@ class Gz extends Base
         $output = gzuncompress($string);
 
         if ($output === false) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Unable to decompress gz string, appears invalid'
             );
         }

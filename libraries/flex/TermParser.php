@@ -24,7 +24,7 @@ class TermParser implements ITermParser
 
         try {
             $this->_stemmer = flex\stemmer\Base::factory($this->_locale);
-        } catch (flex\EGlitch $e) {
+        } catch (flex\Exception $e) {
         }
     }
 

@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\link;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Memory implements link\http\ICookieJar, Dumpable
 {
@@ -23,7 +23,7 @@ class Memory implements link\http\ICookieJar, Dumpable
                 if (is_string($cookie)) {
                     $cookie = link\http\Cookie::fromString($cookie);
                 } elseif (!$cookie instanceof link\http\ICookie) {
-                    throw Glitch::EInvalidArgument(
+                    throw Exceptional::InvalidArgument(
                         'Invalid cookie'
                     );
                 }

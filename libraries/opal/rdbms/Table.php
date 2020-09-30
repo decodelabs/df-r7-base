@@ -13,6 +13,7 @@ use df\mesh;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Exceptional;
 
 class Table implements ITable, Dumpable
 {
@@ -157,7 +158,7 @@ class Table implements ITable, Dumpable
     public function create(opal\rdbms\schema\ISchema $schema, $dropIfExists=false)
     {
         if ($schema->getName() != $this->_name) {
-            throw Glitch::{'df/opal/rdbms/ETableNotFound,ENotFound'}(
+            throw Exceptional::{'df/opal/rdbms/TableNotFound,NotFound'}(
                 'Schema name '.$schema->getName().' does not match table name '.$this->_name, null,
                 [
                     'database' => $this->_adapter->getDsn()->getDatabase(),
@@ -172,7 +173,7 @@ class Table implements ITable, Dumpable
             if ($dropIfExists) {
                 $exec->drop($this->_name);
             } else {
-                throw Glitch::{'df/opal/rdbms/ETableConflict'}(
+                throw Exceptional::{'df/opal/rdbms/TableConflict'}(
                     'Table '.$schema->getName().' already exists', null,
                     [
                         'database' => $this->_adapter->getDsn()->getDatabase(),

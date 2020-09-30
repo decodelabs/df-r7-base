@@ -10,9 +10,9 @@ use df\core;
 use df\flow;
 use df\user;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
+use DecodeLabs\Exceptional;
 
 class Message implements IMessage
 {
@@ -195,7 +195,7 @@ class Message implements IMessage
             }
         }
 
-        throw Glitch::EInvalidArgument(
+        throw Exceptional::InvalidArgument(
             'Invalid recipient'
         );
     }

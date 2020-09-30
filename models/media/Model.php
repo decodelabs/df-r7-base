@@ -13,8 +13,8 @@ use df\neon;
 use df\flex;
 use df\opal;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
+use DecodeLabs\Exceptional;
 
 class Model extends axis\Model
 {
@@ -29,7 +29,7 @@ class Model extends axis\Model
             if ($publishIfMissing) {
                 $isMissing = true;
             } else {
-                throw Glitch::ERuntime(
+                throw Exceptional::Runtime(
                     'Media file to publish could not be found'
                 );
             }
@@ -155,7 +155,7 @@ class Model extends axis\Model
             if ($publishIfMissing) {
                 $isMissing = true;
             } else {
-                throw Glitch::ERuntime(
+                throw Exceptional::Runtime(
                     'Media file to publish could not be found'
                 );
             }
@@ -239,7 +239,7 @@ class Model extends axis\Model
     public function activateVersion(apex\models\media\file\Record $file, apex\models\media\version\Record $version, $fileData=null)
     {
         if ($version['#file'] != $file['id']) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'Version is not for selected file'
             );
         }
@@ -400,7 +400,7 @@ class Model extends axis\Model
             ->toRow();
 
         if (!$output) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'File version for '.$fileId.' could not be found',
                 ['http' => 404]
             );
@@ -419,14 +419,14 @@ class Model extends axis\Model
             ->toRow();
 
         if (!$output) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'File version '.$versionId.' could not be found',
                 ['http' => 404]
             );
         }
 
         if ($output['purgeDate'] !== null) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'File version '.$versionId.' has been purged'
             );
         }
@@ -469,14 +469,14 @@ class Model extends axis\Model
             ->toRow();
 
         if (!$output) {
-            throw Glitch::ENotFound(
+            throw Exceptional::NotFound(
                 'File version for single context file could not be found',
                 ['http' => 404]
             );
         }
 
         if ($output['purgeDate'] !== null) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'File version for single context file has been purged'
             );
         }

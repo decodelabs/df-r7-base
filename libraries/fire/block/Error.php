@@ -15,7 +15,7 @@ use df\aura;
 use DecodeLabs\Tagged\Xml\Element as XmlElement;
 use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Error extends Base
 {
@@ -86,7 +86,7 @@ class Error extends Base
 
     protected function writeXml(XmlWriter $writer): void
     {
-        throw Glitch::ERuntime(
+        throw Exceptional::Runtime(
             'Error block type cannot be saved to xml'
         );
     }

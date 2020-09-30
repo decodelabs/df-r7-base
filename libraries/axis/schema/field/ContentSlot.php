@@ -12,7 +12,7 @@ use df\fire;
 use df\opal;
 use df\flex;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class ContentSlot extends Base
 {
@@ -65,7 +65,7 @@ class ContentSlot extends Base
             return null;
         }
 
-        throw Glitch::EUnexpectedValue(
+        throw Exceptional::UnexpectedValue(
             'Content slot value appears to be invalid'
         );
     }
@@ -86,7 +86,7 @@ class ContentSlot extends Base
                 return null;
             }
 
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Content slot value cannot be null'
             );
         }

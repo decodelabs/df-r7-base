@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 use df\mint;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class DataList extends core\collection\Tree implements IDataList
 {
@@ -25,7 +25,9 @@ class DataList extends core\collection\Tree implements IDataList
         $this->_total = (int)$data['total_items'];
 
         if (!$keyName = $filter->getKeyName()) {
-            throw Glitch::EDefinition('No filter key name set');
+            throw Exceptional::Definition(
+                'No filter key name set'
+            );
         }
 
         $this->setFilter($filter);

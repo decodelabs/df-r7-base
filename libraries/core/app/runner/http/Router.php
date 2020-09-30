@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\link;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Router implements core\IRegistryObject
 {
@@ -65,7 +65,7 @@ class Router implements core\IRegistryObject
 
         foreach ($map as $area => $domain) {
             if ($area === 'front') {
-                throw Glitch::ESetup(
+                throw Exceptional::Setup(
                     'Front area must be mapped to root url'
                 );
             }
@@ -140,7 +140,7 @@ class Router implements core\IRegistryObject
         } elseif (isset($this->_mapOut['front'])) {
             return $this->_mapOut['front'];
         } else {
-            throw Glitch::ESetup(
+            throw Exceptional::Setup(
                 'No root map defined'
             );
         }
@@ -288,13 +288,17 @@ class Router implements core\IRegistryObject
     public function urlToRequest(link\http\IUrl $url)
     {
         if (!$map = $this->lookupDomain($url->getDomain())) {
-            throw Glitch::ERuntime('Unable to map url domain');
+            throw Exceptional::Runtime(
+                'Unable to map url domain'
+            );
         }
 
         $path = clone $url->getPath();
 
         if (!$map->mapPath($path)) {
-            throw Glitch::ERuntime('Unable to map url path');
+            throw Exceptional::Runtime(
+                'Unable to map url path'
+            );
         }
 
         $request = new arch\Request();

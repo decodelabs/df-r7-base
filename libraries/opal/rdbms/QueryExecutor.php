@@ -11,6 +11,7 @@ use df\opal;
 use df\flex;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class QueryExecutor implements IQueryExecutor
 {
@@ -25,7 +26,7 @@ abstract class QueryExecutor implements IQueryExecutor
         $class = 'df\\opal\\rdbms\\variant\\'.$type.'\\QueryExecutor';
 
         if (!class_exists($class)) {
-            throw Glitch::ERuntime(
+            throw Exceptional::Runtime(
                 'There is no query executor available for '.$type
             );
         }
@@ -104,7 +105,7 @@ abstract class QueryExecutor implements IQueryExecutor
             if ($sourceHash === null) {
                 $sourceHash = $source->getHash();
             } elseif ($source->getHash() != $sourceHash) {
-                throw Glitch::{'df/opal/query/ELogic'}(
+                throw Exceptional::{'df/opal/query/Logic'}(
                     'Union queries must all be on the same adapter'
                 );
             }
@@ -217,7 +218,7 @@ abstract class QueryExecutor implements IQueryExecutor
             } elseif ($query instanceof opal\query\IUnionQuery) {
                 $qExec->buildUnionQuery($tableName, false);
             } else {
-                throw Glitch::{'df/opal/query/ELogic'}(
+                throw Exceptional::{'df/opal/query/Logic'}(
                     'Don\'t know how to derive from query type: '.$query->getQueryType()
                 );
             }
@@ -437,7 +438,7 @@ abstract class QueryExecutor implements IQueryExecutor
     public function executeUpdateQuery($tableName)
     {
         if (!$this->_query instanceof opal\query\IUpdateQuery) {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Executor query is not an update'
             );
         }
@@ -473,7 +474,7 @@ abstract class QueryExecutor implements IQueryExecutor
     public function executeDeleteQuery($tableName)
     {
         if (!$this->_query instanceof opal\query\IDeleteQuery) {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Executor query is not a delete'
             );
         }
@@ -494,7 +495,7 @@ abstract class QueryExecutor implements IQueryExecutor
     public function fetchRemoteJoinData($tableName, array $rows)
     {
         if (!$this->_query instanceof opal\query\IJoinQuery) {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Executor query is not a join'
             );
         }
@@ -535,7 +536,7 @@ abstract class QueryExecutor implements IQueryExecutor
     public function fetchAttachmentData($tableName, array $rows)
     {
         if (!$this->_query instanceof opal\query\IAttachQuery) {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Executor query is not an attachment'
             );
         }
@@ -688,7 +689,7 @@ abstract class QueryExecutor implements IQueryExecutor
     public function buildCorrelation(IStatement $stmt)
     {
         if (!$this->_query instanceof opal\query\ICorrelationQuery) {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Executor query is not a correlation'
             );
         }
@@ -708,7 +709,11 @@ abstract class QueryExecutor implements IQueryExecutor
         $field = $source->getFieldByAlias($fieldAlias);
 
         if (!$field) {
-            throw Glitch::ERuntime('Correlation field not found.. this shouldn\'t happen!', null, [$fieldAlias, $source]);
+            throw Exceptional::Runtime(
+                'Correlation field not found.. this shouldn\'t happen!',
+                null,
+                [$fieldAlias, $source]
+            );
         }
 
         $outFields[/*$fieldAlias*/] = $this->defineField($field, $fieldAlias);
@@ -776,7 +781,7 @@ abstract class QueryExecutor implements IQueryExecutor
     public function buildJoin(IStatement $stmt)
     {
         if (!$this->_query instanceof opal\query\IJoinQuery) {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Executor query is not a join'
             );
         }
@@ -810,7 +815,7 @@ abstract class QueryExecutor implements IQueryExecutor
             } elseif ($query instanceof opal\query\IUnionQuery) {
                 $qExec->buildUnionQuery($tableName, false);
             } else {
-                throw Glitch::{'df/opal/query/ELogic'}(
+                throw Exceptional::{'df/opal/query/Logic'}(
                     'Don\'t know how to derive from query type: '.$query->getQueryType()
                 );
             }
@@ -937,7 +942,7 @@ abstract class QueryExecutor implements IQueryExecutor
                 return $this->defineField($deref[0], $alias);
             }
 
-            throw Glitch::EInvalidArgument(
+            throw Exceptional::InvalidArgument(
                 'Virtual fields can not be used directly'
             );
 
@@ -968,7 +973,7 @@ abstract class QueryExecutor implements IQueryExecutor
                 $output = 'LEAST(('.implode(' + ', $output).') / '.$max.', 1)';
             }
         } else {
-            throw Glitch::EUnexpectedValue(
+            throw Exceptional::UnexpectedValue(
                 'Field type '.get_class($field).' is not currently supported'
             );
         }
@@ -1249,7 +1254,7 @@ abstract class QueryExecutor implements IQueryExecutor
                 return max($listData);
 
             default:
-                throw Glitch::{'df/opal/query/EOperator'}(
+                throw Exceptional::{'df/opal/query/Operator'}(
                     'Operator '.$operator.' cannot be used for a remote join'
                 );
         }
@@ -1279,7 +1284,9 @@ abstract class QueryExecutor implements IQueryExecutor
             // The subquery can be put directly into the parent query
             return $this->defineClauseLocalCorrelation($field, $fieldString, $operator, $correlation);
         } else {
-            throw Glitch::ERuntime('Unable to use remote correlations as clauses');
+            throw Exceptional::Runtime(
+                'Unable to use remote correlations as clauses'
+            );
         }
     }
 
@@ -1447,7 +1454,7 @@ abstract class QueryExecutor implements IQueryExecutor
 
 
             default:
-                throw Glitch::{'df/opal/query/EOperator'}(
+                throw Exceptional::{'df/opal/query/Operator'}(
                     'Operator '.$operator.' is not recognized'
                 );
         }
@@ -1460,7 +1467,7 @@ abstract class QueryExecutor implements IQueryExecutor
          */
 
         if (empty($value)) {
-            throw Glitch::{'df/opal/query/EUnexpectedValue'}(
+            throw Exceptional::{'df/opal/query/UnexpectedValue'}(
                 'Array based clause values must have at least one entry'
             );
         }
@@ -1489,7 +1496,7 @@ abstract class QueryExecutor implements IQueryExecutor
         if ($value instanceof opal\query\IField) {
             $valString = $this->defineFieldReference($value, $allowAlias);
         } elseif (is_array($value)) {
-            throw Glitch::{'df/opal/query/EUnexpectedValue'}(
+            throw Exceptional::{'df/opal/query/UnexpectedValue'}(
                 'Expected a scalar as query value, found an array'
             );
         } else {

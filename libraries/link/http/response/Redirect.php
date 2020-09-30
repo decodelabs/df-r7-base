@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\link;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Redirect extends Base implements link\http\IRedirectResponse
 {
@@ -28,7 +28,9 @@ class Redirect extends Base implements link\http\IRedirectResponse
         $url = link\http\Url::factory($url);
 
         if (!$url->isAbsolute()) {
-            throw Glitch::EInvalidArgument('Redirect URL must include host');
+            throw Exceptional::InvalidArgument(
+                'Redirect URL must include host'
+            );
         }
 
         $this->_url = $url;

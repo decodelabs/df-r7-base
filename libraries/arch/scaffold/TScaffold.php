@@ -16,7 +16,7 @@ use df\flex;
 use df\user;
 
 use DecodeLabs\Tagged\Html;
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 // Record loader
 trait TScaffold_RecordLoader
@@ -44,7 +44,7 @@ trait TScaffold_RecordLoader
             return $this->_recordAdapter;
         }
 
-        throw Glitch::EDefinition(
+        throw Exceptional::Definition(
             'Unable to find a suitable adapter for record scaffold'
         );
     }
@@ -118,8 +118,8 @@ trait TScaffold_RecordDataProvider
         $this->_record = $this->loadRecord($key);
 
         if (!$this->_record) {
-            throw Glitch::{
-                'arch/scaffold/EUnexpectedValue,arch/scaffold/ENotFound'
+            throw Exceptional::{
+                'arch/scaffold/UnexpectedValue,arch/scaffold/NotFound'
             }('Unable to load scaffold record');
         }
 
@@ -296,7 +296,7 @@ trait TScaffold_RecordDataProvider
         foreach ($fields as $field) {
             try {
                 $query->countRelation($field);
-            } catch (opal\query\EGlitch $e) {
+            } catch (opal\query\Exception $e) {
             }
         }
 
@@ -364,7 +364,7 @@ trait TScaffold_RecordDataProvider
     public function buildDeleteDynamicNode()
     {
         if (!$this->canDeleteRecord()) {
-            throw Glitch::{'df/arch/scaffold/ELogic,EUnauthorized'}(
+            throw Exceptional::{'df/arch/scaffold/Logic,Unauthorized'}(
                 'Records cannot be deleted'
             );
         }

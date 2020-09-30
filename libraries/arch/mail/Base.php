@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\aura;
 
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 abstract class Base extends aura\view\Mail implements arch\IMail
 {
@@ -31,7 +31,9 @@ abstract class Base extends aura\view\Mail implements arch\IMail
         $class = 'df\\apex\\directory\\'.$location->getArea().'\\'.implode('\\', $parts);
 
         if (!class_exists($class)) {
-            throw Glitch::ENotFound('Mail '.$origPath.' could not be found');
+            throw Exceptional::NotFound(
+                'Mail '.$origPath.' could not be found'
+            );
         }
 
         return new $class($context->spawnInstance($location));

@@ -14,7 +14,7 @@ use df\link;
 use df\flow;
 
 use DecodeLabs\Atlas;
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 trait TView_RenderTargetProvider
 {
@@ -29,7 +29,7 @@ trait TView_RenderTargetProvider
     public function getRenderTarget()
     {
         if (!$this->_renderTarget) {
-            throw Glitch::{'df/aura/view/ENoView,ENoContext'}(
+            throw Exceptional::{'df/aura/view/NoView,NoContext'}(
                 'No render target has been set'
             );
         }
@@ -54,7 +54,9 @@ trait TView_DeferredRenderable
         $this->setRenderTarget($target);
 
         if (!$this instanceof IDeferredRenderable) {
-            throw Glitch::ELogic('Item is not renderable', null, $this);
+            throw Exceptional::Logic(
+                'Item is not renderable', null, $this
+            );
         }
 
         return $this->render();
@@ -83,7 +85,7 @@ trait TView_SlotContainer
     {
         foreach ($keys as $key) {
             if (!$this->hasSlot($key)) {
-                throw Glitch::{'df/aura/view/ENoSlot,EDomain'}(
+                throw Exceptional::{'df/aura/view/NoSlot,Domain'}(
                     'Slot '.$key.' has not been defined'
                 );
             }
@@ -282,13 +284,8 @@ trait TView
         $output = $innerContent = $this->_onContentRender($innerContent);
 
         if ($this instanceof ILayoutView && $this->shouldUseLayout()) {
-            try {
-                $layout = aura\view\content\Template::loadLayout($this, $innerContent);
-                $output = $layout->renderTo($this);
-            } catch (aura\view\ENoContent $e) {
-                $this->logs->logException($e);
-            }
-
+            $layout = aura\view\content\Template::loadLayout($this, $innerContent);
+            $output = $layout->renderTo($this);
             $output = $this->_onLayoutRender($output);
         }
 
@@ -341,7 +338,7 @@ trait TView
     private function _checkContentProvider()
     {
         if (!$this->content) {
-            throw Glitch::{'EContext,ELogic'}([
+            throw Exceptional::{'Context,Logic'}([
                 'message' => 'No content provider has been set for '.$this->_type.' type view',
                 'http' => 404
             ]);
@@ -392,12 +389,14 @@ trait TView_Response
 
     public function getJsonContent()
     {
-        throw Glitch::ELogic('Views do not provide JsonContent');
+        throw Exceptional::Logic(
+            'Views do not provide JsonContent'
+        );
     }
 
     public function setContentType($type)
     {
-        throw Glitch::ELogic(
+        throw Exceptional::Logic(
             'View content type cannot be changed'
         );
     }
@@ -537,7 +536,7 @@ trait TView_DirectoryHelper
         } elseif (isset($target->view)) {
             $this->view = $target->view;
         } elseif ($this instanceof IImplicitViewHelper) {
-            throw Glitch::{'df/aura/view/EContext'}(
+            throw Exceptional::{'df/aura/view/Context'}(
                 'Cannot use implicit view helper from objects that do not provide a view'
             );
         }
@@ -546,7 +545,7 @@ trait TView_DirectoryHelper
     public function getView()
     {
         if (!$this->view) {
-            throw Glitch::{'df/aura/view/ENoView,ENoContext'}(
+            throw Exceptional::{'df/aura/view/NoView,NoContext'}(
                 'Cannot use implicit view helper from objects that do not provide a view'
             );
         }
@@ -568,7 +567,7 @@ trait TView_CascadingHelperProvider
         $output = $this->_getHelper($method, true);
 
         if (!is_callable($output)) {
-            throw Glitch::{'df/aura/view/EBadMethodCall,aura/view/EDefinition'}(
+            throw Exceptional::{'df/aura/view/BadMethodCall,aura/view/Definition'}(
                 'Helper '.$method.' is not callable'
             );
         }

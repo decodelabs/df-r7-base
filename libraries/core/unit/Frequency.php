@@ -8,10 +8,8 @@ namespace df\core\unit;
 use df;
 use df\core;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Exceptional;
 
 class Frequency implements IFrequency, Dumpable
 {
@@ -125,7 +123,9 @@ class Frequency implements IFrequency, Dumpable
                 break;
 
             default:
-                throw Glitch::EInvalidArgument('Unsupported frequency unit: '.$inUnit);
+                throw Exceptional::InvalidArgument(
+                    'Unsupported frequency unit: '.$inUnit
+                );
         }
 
         $bpm = false;
