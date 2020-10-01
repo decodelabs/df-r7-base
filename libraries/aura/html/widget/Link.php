@@ -13,8 +13,6 @@ use df\link as linkLib;
 use df\user;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
 
 class Link extends Base implements
     ILinkWidget,

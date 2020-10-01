@@ -11,10 +11,7 @@ use df\arch;
 use df\aura;
 
 use DecodeLabs\Tagged\Html;
-
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
 
 abstract class HeaderBar extends Base implements Dumpable
 {

@@ -11,8 +11,6 @@ use df\aura;
 use df\arch;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
 
 class GroupedSelect extends Base implements
     IGroupedSelectionInputWidget,

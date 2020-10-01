@@ -8,8 +8,6 @@ namespace df\core\i18n;
 use df\core;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
 
 class Locale implements ILocale, \Serializable, Dumpable
 {

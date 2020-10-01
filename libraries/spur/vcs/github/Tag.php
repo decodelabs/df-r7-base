@@ -11,8 +11,6 @@ use df\flex;
 use df\spur;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
 
 class Tag implements ITag, Dumpable
 {

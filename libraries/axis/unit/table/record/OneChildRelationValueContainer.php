@@ -12,8 +12,6 @@ use df\opal;
 use df\mesh;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
 
 class OneChildRelationValueContainer implements
     opal\record\IJobAwareValueContainer,

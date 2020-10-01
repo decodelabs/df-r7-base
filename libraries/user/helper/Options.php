@@ -11,8 +11,6 @@ use df\user;
 use df\mesh;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
 
 class Options extends Base implements
     user\ISessionBackedHelper,

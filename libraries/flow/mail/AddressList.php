@@ -10,8 +10,6 @@ use df\core;
 use df\flow;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
 
 class AddressList implements IAddressList, Dumpable
 {
