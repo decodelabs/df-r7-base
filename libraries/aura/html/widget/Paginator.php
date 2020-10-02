@@ -312,7 +312,7 @@ class Paginator extends Base implements Dumpable
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

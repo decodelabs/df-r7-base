@@ -68,7 +68,7 @@ class DataList extends Base implements IUngroupedOptionWidget, Dumpable
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

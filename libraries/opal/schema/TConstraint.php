@@ -322,7 +322,7 @@ trait TConstraint_Index
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {
@@ -530,7 +530,7 @@ trait TConstraint_ForeignKey
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {
@@ -746,7 +746,7 @@ trait TConstraint_Trigger
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

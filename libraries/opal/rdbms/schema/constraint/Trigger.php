@@ -40,7 +40,7 @@ class Trigger implements opal\rdbms\schema\ITrigger, Dumpable
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

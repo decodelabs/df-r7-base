@@ -163,7 +163,7 @@ class Frequency implements IFrequency, Dumpable
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

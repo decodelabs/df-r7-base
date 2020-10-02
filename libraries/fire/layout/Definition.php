@@ -170,7 +170,7 @@ class Definition implements fire\ILayoutDefinition, Dumpable
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

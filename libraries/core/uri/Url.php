@@ -158,7 +158,7 @@ class Url implements IGenericUrl, Dumpable
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

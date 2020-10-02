@@ -364,7 +364,7 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

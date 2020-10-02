@@ -356,7 +356,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
     abstract protected function _fetchRow();
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

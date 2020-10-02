@@ -252,7 +252,7 @@ abstract class Base implements opal\rdbms\schema\IField, Dumpable
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

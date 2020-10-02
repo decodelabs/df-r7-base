@@ -67,7 +67,7 @@ class Label extends Base implements ILabelWidget, Dumpable
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

@@ -130,7 +130,7 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

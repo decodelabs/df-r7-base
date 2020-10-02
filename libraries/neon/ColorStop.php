@@ -83,7 +83,7 @@ class ColorStop implements IColorStop, Dumpable
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

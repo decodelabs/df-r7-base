@@ -95,7 +95,7 @@ class Field implements aura\html\widget\IField, Dumpable
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

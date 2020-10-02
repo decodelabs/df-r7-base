@@ -141,7 +141,7 @@ class Status implements IStatus, Dumpable
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

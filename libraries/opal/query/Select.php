@@ -119,7 +119,7 @@ class Select implements ISelectQuery, Dumpable
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {
@@ -209,7 +209,7 @@ class Select_Attach extends Select implements ISelectAttachQuery
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

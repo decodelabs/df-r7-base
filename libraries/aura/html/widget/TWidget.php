@@ -266,7 +266,7 @@ trait TWidget_FormData
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

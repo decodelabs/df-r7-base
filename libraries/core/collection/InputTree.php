@@ -109,7 +109,7 @@ class InputTree extends Tree implements IInputTree
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

@@ -1173,7 +1173,7 @@ class Text implements IText, \IteratorAggregate, Dumpable
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

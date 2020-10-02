@@ -212,7 +212,7 @@ class Field extends Container implements IFormOrientedWidget
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

@@ -194,7 +194,7 @@ class Expression implements IExpression, Dumpable
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {
@@ -218,7 +218,7 @@ class Expression_Operator implements IExpressionOperator, Dumpable
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {
@@ -241,7 +241,7 @@ class Expression_Value implements IExpressionValue, Dumpable
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

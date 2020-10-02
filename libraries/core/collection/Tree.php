@@ -596,7 +596,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

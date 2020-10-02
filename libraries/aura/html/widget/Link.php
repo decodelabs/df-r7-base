@@ -447,7 +447,7 @@ class Link extends Base implements
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

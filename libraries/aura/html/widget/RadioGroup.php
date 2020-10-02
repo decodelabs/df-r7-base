@@ -170,7 +170,7 @@ class RadioGroup extends Base implements IUngroupedSelectionInputWidget, Dumpabl
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

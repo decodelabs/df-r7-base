@@ -74,7 +74,7 @@ class Button extends Base implements IButtonWidget, IIconProviderWidget, Dumpabl
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

@@ -99,7 +99,7 @@ class IndexFieldReference implements IIndexFieldReference, Dumpable
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

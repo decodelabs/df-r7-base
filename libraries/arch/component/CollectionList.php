@@ -258,7 +258,7 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dump
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

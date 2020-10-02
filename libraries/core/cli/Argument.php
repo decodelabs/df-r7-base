@@ -136,7 +136,7 @@ class Argument implements IArgument, Dumpable
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

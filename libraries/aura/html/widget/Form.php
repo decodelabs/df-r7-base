@@ -159,7 +159,7 @@ class Form extends Container implements IFormWidget, IWidgetShortcutProvider
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

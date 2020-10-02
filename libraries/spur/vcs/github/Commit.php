@@ -58,7 +58,7 @@ class Commit extends CommitReference implements ICommit
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

@@ -196,7 +196,7 @@ class Transaction extends mesh\job\Transaction implements ITransaction, Dumpable
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

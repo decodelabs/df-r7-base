@@ -485,7 +485,7 @@ class Dsn implements IDsn, Dumpable
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

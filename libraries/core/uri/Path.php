@@ -528,7 +528,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

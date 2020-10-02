@@ -371,7 +371,7 @@ abstract class Base implements opal\rdbms\IAdapter, Dumpable
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

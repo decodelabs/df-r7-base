@@ -1177,7 +1177,7 @@ class Base implements IRecord, \Serializable, Dumpable
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

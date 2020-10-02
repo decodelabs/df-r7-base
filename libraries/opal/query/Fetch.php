@@ -82,7 +82,7 @@ class Fetch implements IFetchQuery, Dumpable
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {
@@ -156,7 +156,7 @@ class Fetch_Attach extends Fetch implements IFetchAttachQuery
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

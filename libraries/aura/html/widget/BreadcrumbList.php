@@ -113,7 +113,7 @@ class BreadcrumbList extends Base implements IListWidget, Dumpable
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

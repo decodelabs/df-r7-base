@@ -57,7 +57,7 @@ class NumberTextbox extends Base implements IRangeEntryWidget, Dumpable
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

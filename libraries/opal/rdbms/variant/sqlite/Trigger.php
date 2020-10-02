@@ -76,7 +76,7 @@ class Trigger extends opal\rdbms\schema\constraint\Trigger
 
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {

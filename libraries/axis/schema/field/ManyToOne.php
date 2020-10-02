@@ -63,7 +63,7 @@ class ManyToOne extends One implements axis\schema\IManyToOneField, opal\schema\
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {
