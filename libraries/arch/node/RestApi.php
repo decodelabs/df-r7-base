@@ -87,10 +87,7 @@ abstract class RestApi extends Base implements IRestApiNode
 
         $data = null;
 
-        if (
-            $e instanceof \EGlitch ||
-            $e instanceof Exceptional\Exception
-        ) {
+        if ($e instanceof Exceptional\Exception) {
             $data = $e->getData();
         }
 

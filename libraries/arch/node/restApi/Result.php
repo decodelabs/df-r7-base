@@ -65,15 +65,9 @@ class Result implements arch\node\IRestApiResult
             return $this->_statusCode;
         }
 
-        $code = null;
-
         if ($this->_exception instanceof Exceptional\Exception) {
             $code = $this->_exception->getHttpStatus();
-        } elseif ($this->_exception instanceof \EGlitch) {
-            $code = $this->_exception->getHttpCode();
-        }
 
-        if ($code !== null) {
             if (!link\http\response\HeaderCollection::isValidStatusCode($code)) {
                 $code = 400;
             }
