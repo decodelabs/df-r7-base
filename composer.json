@@ -11,8 +11,8 @@
         "php": "^7.2",
         "symfony/polyfill-mbstring": "~1.7",
 
-        "decodelabs/exceptional": "^0.2",
-        "decodelabs/glitch": "^0.16.2",
+        "decodelabs/exceptional": "^0.2.8",
+        "decodelabs/glitch": "^0.16.3",
         "decodelabs/veneer": "^0.5.5",
         "decodelabs/systemic": "^0.6.9",
         "decodelabs/tagged": "^0.8.4",
@@ -30,7 +30,7 @@
         "phpstan/phpstan": "0.12.45",
         "phpstan/extension-installer": "^1.0",
 
-        "decodelabs/phpstan-decodelabs": "^0.3.5",
+        "decodelabs/phpstan-decodelabs": "^0.3.6",
         "decodelabs/chirp": "dev-develop",
 
         "auth0/auth0-php": "^5.6",
