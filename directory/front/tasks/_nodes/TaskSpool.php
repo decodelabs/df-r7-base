@@ -12,6 +12,7 @@ use df\arch;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Atlas;
 
 class TaskSpool extends arch\node\Task
 {
