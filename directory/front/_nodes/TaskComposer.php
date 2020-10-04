@@ -13,6 +13,7 @@ use df\arch;
 use df\spur;
 
 use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Systemic;
 
 class TaskComposer extends arch\node\Task
 {
