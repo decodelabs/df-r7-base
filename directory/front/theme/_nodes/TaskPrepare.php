@@ -10,13 +10,15 @@ use df\core;
 use df\apex;
 use df\arch;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskPrepare extends arch\node\Task
 {
     public function execute()
     {
         $this->runChild('theme/install-dependencies');
         Cli::newLine();
-        
+
         $this->runChild('theme/rebuild-sass');
     }
 }
