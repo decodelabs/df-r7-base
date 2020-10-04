@@ -36,8 +36,5 @@ parameters:
         - '#^Instantiated class (COM|Memcache) not found.$#'
         - '#expects rararchive, RarArchive given#'
 
-        # Exceptions
-        - '#^Class df\\opal\\rdbms\\ETableNotFound not found\.#'
-
         # Fix these:
         - '#^Unsafe usage of new static\(\)\.$#'
