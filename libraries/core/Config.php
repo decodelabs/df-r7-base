@@ -47,6 +47,12 @@ abstract class Config implements IConfig, Dumpable
     {
         $handlerClass = get_called_class();
 
+        if ($handlerClass === self::class) {
+            throw Exceptional::Implementation(
+                'Cannot instantiate abstract base Config class'
+            );
+        }
+
         if (empty($id)) {
             throw Exceptional::Implementation(
                 'Invalid config id passed for '.$handlerClass

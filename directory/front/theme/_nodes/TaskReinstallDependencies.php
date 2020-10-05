@@ -12,7 +12,7 @@ use df\arch;
 use df\spur;
 use df\fuse;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 
 class TaskReinstallDependencies extends arch\node\Task
 {

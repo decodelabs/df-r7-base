@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\fuse;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 
 class TaskInstallDependencies extends arch\node\Task implements arch\node\IBuildTaskNode
 {

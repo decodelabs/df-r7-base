@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\halo;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
 
 class HttpInvoke extends arch\node\Base

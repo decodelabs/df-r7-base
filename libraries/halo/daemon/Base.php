@@ -10,7 +10,7 @@ use df\core;
 use df\halo;
 use df\flex;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\EventLoop;
 use DecodeLabs\Atlas\EventLoop\Select as SelectLoop;

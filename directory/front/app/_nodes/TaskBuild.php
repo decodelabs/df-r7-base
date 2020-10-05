@@ -12,7 +12,7 @@ use df\arch;
 use df\halo;
 use df\flex;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 
 class TaskBuild extends arch\node\Task
 {
@@ -117,7 +117,7 @@ class TaskBuild extends arch\node\Task
         } catch (\Exception $e) {
             Cli::error($e->getMessage());
         }
-        
+
         Cli::newLine();
     }
 }

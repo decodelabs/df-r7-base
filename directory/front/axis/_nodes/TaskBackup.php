@@ -12,7 +12,7 @@ use df\arch;
 use df\axis;
 use df\opal;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
 use DecodeLabs\Glitch;
 

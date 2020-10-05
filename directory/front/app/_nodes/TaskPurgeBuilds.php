@@ -12,7 +12,7 @@ use df\arch;
 use df\halo;
 use df\flex;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
 
 class TaskPurgeBuilds extends arch\node\Task

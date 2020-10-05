@@ -12,7 +12,7 @@ use df\arch;
 use df\axis;
 use df\opal;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 
 class TaskSetMaster extends arch\node\Task
 {

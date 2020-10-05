@@ -12,7 +12,7 @@ use df\halo;
 use df\arch;
 use df\spur;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Systemic;
 use DecodeLabs\Atlas;
 

@@ -12,7 +12,7 @@ use df\arch;
 use df\flex;
 use df\aura;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
 
 class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode

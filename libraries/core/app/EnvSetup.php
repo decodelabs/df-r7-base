@@ -15,10 +15,6 @@ class EnvSetup
 {
     public static function setup(string $appPath, float $startTime=null)
     {
-        // Veneer
-        Veneer::blacklistNamespaces('df')
-            ->whitelistNamespaces('df\\apex\\directory');
-
         // Glitch
         $glitch = Glitch::setStartTime($startTime ?? microtime(true))
             ->registerPathAliases([

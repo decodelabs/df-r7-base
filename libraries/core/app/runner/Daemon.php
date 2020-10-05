@@ -10,7 +10,7 @@ use df\core;
 use df\halo;
 use df\flex;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
 use DecodeLabs\Systemic;
 use DecodeLabs\Systemic\Process\Managed as ManagedProcess;

@@ -13,7 +13,7 @@ use df\link;
 use df\spur;
 use df\flex;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
 use DecodeLabs\Exceptional;
 

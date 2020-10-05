@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\halo;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Systemic;
 use DecodeLabs\Exceptional;
 

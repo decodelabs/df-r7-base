@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\opal;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 
 class TaskSetCollation extends arch\node\Task
 {

@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\flex;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 
 class TaskSyntax extends arch\node\Task
 {

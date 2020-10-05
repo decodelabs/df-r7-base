@@ -12,7 +12,7 @@ use df\arch;
 use df\link;
 use df\flex;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 use GuzzleHttp\Client as HttpClient;
 
 class TaskApcuClear extends arch\node\Task

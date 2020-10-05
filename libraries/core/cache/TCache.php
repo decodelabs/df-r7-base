@@ -23,6 +23,12 @@ trait TCache
     {
         $class = get_called_class();
 
+        if ($class === FileStore::class) {
+            throw Exceptional::Implementation(
+                'Cannot instantiate abstract root FileStore class'
+            );
+        }
+
         if ($class === Base::class) {
             throw Exceptional::Runtime(
                 'Unable to instantiate abstract Base class: '.$class

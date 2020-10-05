@@ -14,7 +14,7 @@ use df\flex;
 
 use DecodeLabs\Systemic;
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Terminus\Session;
 use DecodeLabs\Atlas;
 use DecodeLabs\Exceptional;

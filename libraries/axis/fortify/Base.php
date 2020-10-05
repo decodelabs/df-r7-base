@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 use df\opal;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Exceptional;
 
 abstract class Base implements IFortify

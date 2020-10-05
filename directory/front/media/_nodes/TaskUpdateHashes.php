@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\neon;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 
 class TaskUpdateHashes extends arch\node\Task
 {

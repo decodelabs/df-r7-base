@@ -13,7 +13,7 @@ use df\halo;
 
 use DecodeLabs\Systemic;
 use DecodeLabs\Atlas;
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 
 class TaskInstall extends arch\node\Task
 {

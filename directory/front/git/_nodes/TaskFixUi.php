@@ -11,7 +11,7 @@ use df\apex;
 use df\halo;
 use df\arch;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 
 class TaskFixUi extends arch\node\Task
 {

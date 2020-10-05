@@ -12,7 +12,7 @@ use df\arch;
 use df\aura;
 use df\fuse;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
 
 class TaskPurgeDependencies extends arch\node\Task

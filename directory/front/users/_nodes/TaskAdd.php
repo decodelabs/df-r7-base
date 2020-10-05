@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\flow;
 
-use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus as Cli;
 
 class TaskAdd extends arch\node\Task
 {
