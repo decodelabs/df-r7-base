@@ -24,7 +24,7 @@ class Html implements arch\IDirectoryHelper
     use arch\TDirectoryHelper;
     use aura\view\TView_DirectoryHelper;
 
-    public function __call($member, $args)
+    public function __call($member, $args): aura\html\widget\IWidget
     {
         return aura\html\widget\Base::factory($this->context, $member, $args);
     }

@@ -20,6 +20,8 @@ $appClass = 'df\\apex\\App';
 
 if ($hasAppFile) {
     require_once $appDir.'/App.php';
+} else {
+    require_once __DIR__.'/App.php';
 }
 
 if (class_exists($appClass)) {

@@ -8,11 +8,7 @@ parameters:
         - directory
         - libraries
         - models
-    ignoreErrors:
-        - '#^Access to constant PASS_KEY on an unknown class df\\apex\\App\.#'
-        -
-            message: '#^Offset [^ ]+ does not exist on string\.#'
-            path: libraries/link/http/upload/File.php
 
     excludes_analyse:
         - libraries/core/archive/Rar.php
+        - libraries/core/archive/Snappy.php

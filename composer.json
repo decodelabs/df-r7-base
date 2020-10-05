@@ -37,6 +37,11 @@
         "stripe/stripe-php": "^6.38",
         "xenolope/quahog": "^2.1"
     },
+    "autoload-dev": {
+        "psr-4": {
+            "DecodeLabs\\PHPStan\\": "phpstan/"
+        }
+    },
     "extra": {
         "branch-alias": {
             "dev-develop": "0.x-dev"

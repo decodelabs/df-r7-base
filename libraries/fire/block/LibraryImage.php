@@ -141,7 +141,7 @@ class LibraryImage extends Base
                     $fa->add(
                         'div.link',
                         $this->html->link(
-                                $this->uri('~admin/media/files/edit?file='.$fileId, '~admin/media/files/details?file='.$fileId),
+                                $this->context->uri('~admin/media/files/edit?file='.$fileId, '~admin/media/files/details?file='.$fileId),
                                 $this->_('Edit file details')
                             )
                             ->setIcon('edit')
