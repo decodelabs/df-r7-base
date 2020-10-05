@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace DecodeLabs\PHPStan\Plug;
 
 use df\core\IContextAware;
+use df\arch\Context;
 
 use DecodeLabs\PHPStan\MethodReflection;
 use DecodeLabs\PHPStan\StaticMethodReflection;
@@ -60,12 +61,22 @@ class InvokeReflectionExtension implements MethodsClassReflectionExtension, Brok
             return false;
         }
 
+        if ($this->getBroker()->getClass(Context::class)->hasMethod($methodName)) {
+            return true;
+        }
+
         $plugClass = 'df\\plug\\'.ucfirst($methodName);
         return class_exists($plugClass);
     }
 
     public function getMethod(ClassReflection $classReflection, string $methodName): MethodReflectionInterface
     {
+        $context = $this->getBroker()->getClass(Context::class);
+
+        if ($context->hasMethod($methodName)) {
+            return $context->getMethod($methodName, new OutOfClassScope());
+        }
+
         return (new MethodReflection($classReflection, $methodName, $this->getWidgetVariants()))
             ->setPrivate(false);
     }
