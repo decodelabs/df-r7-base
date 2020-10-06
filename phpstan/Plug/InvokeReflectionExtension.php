@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Glitch package
+ * This file is part of the PHPStanDecodeLabs package
  * @license http://opensource.org/licenses/MIT
  */
 declare(strict_types=1);
