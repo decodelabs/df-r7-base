@@ -182,7 +182,7 @@ class Remote implements IRemote
         return Systemic::$process->newScriptLauncher($path, [
                 'daemon', $this->_daemon->getName(), $command
             ])
-            ->thenIf($this->_session, function ($launcher) {
+            ->thenIf($this->_session !== null, function ($launcher) {
                 $launcher->setBroker($this->_session->getBroker());
             })
             //->setDecoratable(false)

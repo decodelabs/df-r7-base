@@ -311,7 +311,7 @@ class SassBridge implements ISassBridge
         $args[] = $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css';
 
         $result = Systemic::$process->newLauncher($path, $args)
-            ->thenIf($this->_session, function ($launcher) {
+            ->thenIf($this->_session !== null, function ($launcher) {
                 $launcher->setBroker($this->_session->getBroker());
             })
             ->setWorkingDirectory($this->_workDir)
