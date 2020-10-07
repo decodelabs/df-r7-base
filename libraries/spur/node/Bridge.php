@@ -43,7 +43,7 @@ class Bridge implements IBridge
             ])
             ->setWorkingDirectory($this->_nodePath)
             //->setDecoratable(false)
-            ->thenIf($session !== null, function ($launcher, $session) {
+            ->thenIf($session !== null, function ($launcher) use ($session) {
                 $launcher->setBroker($session->getBroker());
             })
             ->launch();
