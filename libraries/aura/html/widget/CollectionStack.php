@@ -25,6 +25,7 @@ class CollectionStack extends Base implements IDataDrivenListWidget, IMappedList
     protected $_errorMessage = 'No results to display';
     protected $_renderIfEmpty = true;
     protected $_postEvent = 'paginate';
+    protected $_colWidth = null;
 
     public function __construct(arch\IContext $context, $data)
     {
@@ -41,6 +42,17 @@ class CollectionStack extends Base implements IDataDrivenListWidget, IMappedList
         }
 
         return $this->_renderIfEmpty;
+    }
+
+    public function setColWidth(?string $width)
+    {
+        $this->_colWidth = $width;
+        return $this;
+    }
+
+    public function getColWidth(): ?string
+    {
+        return $this->_colWidth;
     }
 
 
@@ -80,7 +92,10 @@ class CollectionStack extends Base implements IDataDrivenListWidget, IMappedList
 
 
             $rowClasses[$fieldKey] = implode(' ', $rowClasses[$fieldKey]);
-            $thTag = new aura\html\Element('th', $tagContent, ['class' => $rowClasses[$fieldKey]]);
+            $thTag = new aura\html\Element('th', $tagContent, [
+                'class' => $rowClasses[$fieldKey],
+                'width' => $this->_colWidth
+            ]);
             $rowTag = new aura\html\Element('tr');
 
             if (!$first) {
@@ -104,10 +119,14 @@ class CollectionStack extends Base implements IDataDrivenListWidget, IMappedList
                 $genTag = new aura\html\Tag('span');
 
                 foreach ($this->_fields as $fieldKey => $field) {
-                    $attr = null;
+                    $attr = [];
 
                     if (isset($rowClasses[$fieldKey])) {
                         $attr = ['class' => $rowClasses[$fieldKey]];
+                    }
+
+                    if ($fieldNum === 0) {
+                        $attr['width'] = $this->_colWidth;
                     }
 
                     $cellTag = new aura\html\Tag($fieldNum === 0 ? 'th' : 'td', $attr);
