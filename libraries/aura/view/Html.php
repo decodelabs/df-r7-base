@@ -766,7 +766,11 @@ class Html extends Base implements IHtmlView, Dumpable
 
     protected function _beforeRender()
     {
-        if (!$this->context->request->isArea('front')) {
+        if (
+            $this->context->request->isArea('admin') ||
+            $this->context->request->isArea('devtools') ||
+            $this->context->request->isArea('mail')
+        ) {
             $this->canIndex(false)->canFollow(false);
         }
 
