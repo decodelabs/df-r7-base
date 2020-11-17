@@ -18,8 +18,9 @@ class Currency extends NumberTextbox
     protected $_inputCurrency = 'GBP';
     protected $_currencySelectable = false;
     protected $_showCurrency = true;
+    protected $_precision = 2;
 
-    public function __construct(arch\IContext $context, $name, $value=null, string $inputCurrency=null, bool $allowSelection=false)
+    public function __construct(arch\IContext $context, $name, $value=null, string $inputCurrency=null, bool $allowSelection=false, int $precision=2)
     {
         $this->_currencySelectable = (bool)$allowSelection;
 
@@ -27,7 +28,9 @@ class Currency extends NumberTextbox
             $this->_inputCurrency = mint\Currency::normalizeCode($inputCurrency);
         }
 
-        $this->setStep(0.01);
+        $this->_precision = $precision;
+        $this->setStep(1 / pow(10, $precision));
+
         parent::__construct($context, $name, $value);
     }
 
@@ -66,6 +69,11 @@ class Currency extends NumberTextbox
         return $output;
     }
 
+    public function getPrecision(): int
+    {
+        return $this->_precision;
+    }
+
     public function getInputCurrency(): ?string
     {
         return $this->_inputCurrency;
@@ -98,8 +106,8 @@ class Currency extends NumberTextbox
         $number = $value->getValue();
 
         if ($number !== null && is_numeric($number)) {
-            $number = number_format((float)str_replace(',', '', (string)$number), 2, '.', '');
-            $number = str_replace('.00', '', $number);
+            $number = number_format((float)str_replace(',', '', (string)$number), $this->_precision, '.', '');
+            $number = rtrim($number, '.0');
         }
 
         $value->setValue($number);
