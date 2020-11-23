@@ -107,7 +107,7 @@ class Currency extends NumberTextbox
 
         if ($number !== null && is_numeric($number)) {
             $number = number_format((float)str_replace(',', '', (string)$number), $this->_precision, '.', '');
-            $number = rtrim($number, '.0');
+            $number = preg_replace('/\.0+$/', '', $number);
         }
 
         $value->setValue($number);
