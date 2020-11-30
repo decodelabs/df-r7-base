@@ -99,7 +99,7 @@ class Html implements arch\IDirectoryHelper
         }
 
         $output = preg_replace_callback('/ (href|src)\=\"([^\"]+)\"/', function ($matches) {
-            return ' '.$matches[1].'="'.$this->context->uri->__invoke($matches[2]).'"';
+            return ' '.$matches[1].'="'.$this->context->uri->__invoke(html_entity_decode($matches[2])).'"';
         }, $output);
 
         $output = Tagged::raw($output);
