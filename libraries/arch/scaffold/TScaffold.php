@@ -817,11 +817,14 @@ trait TScaffold_RecordListProvider
 
     public function generateSelectBarComponent()
     {
-        return $this->html->fieldSet($this->_('With selected...'))->push(function () {
-            $menu = $this->html->menuBar();
-            $this->addSelectBarLinks($menu);
-            return $menu;
-        })->addClass('scaffold with-selected');
+        return $this->html->fieldSet()->push(
+            Html::{'div.label'}($this->_('With selected:')),
+            function () {
+                $menu = $this->html->menuBar();
+                $this->addSelectBarLinks($menu);
+                return $menu;
+            }
+        )->addClass('scaffold with-selected');
     }
 
     public function addSelectBarLinks($menu)
