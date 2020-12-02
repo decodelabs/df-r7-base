@@ -796,10 +796,11 @@ trait TScaffold_RecordListProvider
         }
 
         return $this->html->form($request)->setMethod('get')->push(
-            $this->html->fieldSet($this->_('Search'))->addClass('scaffold search')->push(
+            $this->html->fieldSet()->addClass('scaffold search')->push(
                 $this->_buildQueryPropagationInputs($filter),
 
-                $this->html->searchTextbox('search', $search),
+                $this->html->searchTextbox('search', $search)
+                    ->setPlaceholder('search'),
                 $this->html->submitButton(null, $this->_('Go'))
                     ->setIcon('search')
                     ->addClass('slim')
