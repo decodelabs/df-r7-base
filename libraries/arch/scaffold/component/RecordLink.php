@@ -10,13 +10,15 @@ use df\core;
 use df\arch;
 use df\aura;
 
+use df\arch\scaffold\Record\DataProvider as RecordDataProviderScaffold;
+
 use DecodeLabs\Tagged\Html;
 
 class RecordLink extends arch\component\RecordLink
 {
     protected $_scaffold;
 
-    public function __construct(arch\scaffold\IRecordDataProviderScaffold $scaffold, array $args=null)
+    public function __construct(RecordDataProviderScaffold $scaffold, array $args=null)
     {
         $this->_scaffold = $scaffold;
         parent::__construct($scaffold->getContext(), $args);

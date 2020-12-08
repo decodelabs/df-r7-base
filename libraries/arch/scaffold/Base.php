@@ -10,6 +10,9 @@ use df\core;
 use df\arch;
 use df\aura;
 
+use df\arch\scaffold\Record\DataProvider as RecordDataProvider;
+use df\arch\IRequest as DirectoryRequest;
+
 use DecodeLabs\Exceptional;
 
 abstract class Base implements IScaffold
@@ -268,149 +271,8 @@ abstract class Base implements IScaffold
     }
 
 
-    // Generators
-    public function generateAttributeList(array $fields, $record=true)
-    {
-        if (!$this instanceof IRecordDataProviderScaffold) {
-            throw Exceptional::Logic(
-                'Scaffold cannot generate attribute list'
-            );
-        }
-
-        if ($record === true) {
-            $record = $this->getRecord();
-        }
-
-        $output = new arch\component\AttributeList($this->context, [$fields, $record]);
-        $output->setViewArg(lcfirst($this->getRecordKeyName()));
-        $output->setRenderTarget($this->view);
-        $spacerIterator = 0;
-
-        foreach ($output->getFields() as $field => $enabled) {
-            /*
-            if(substr($field, 0, 2) == '--') {
-                $output->setField('divider'.($spacerIterator++), function($list, $key) use($field) {
-                    $list->addField($key, function($data, $context) use($field) {
-                        if($field == '--') {
-                            $context->addDivider();
-                        } else {
-                            $context->setDivider(ucfirst(substr($field, 2)));
-                        }
-
-                        $context->skipRow();
-                    });
-                });
-
-                continue;
-            }
-            */
-
-            if ($enabled === true) {
-                $method1 = 'define'.ucfirst($field).'Field';
-                $method2 = 'override'.ucfirst($field).'Field';
-                $method = null;
-
-                if (method_exists($this, $method2)) {
-                    $method = $method2;
-                } elseif (method_exists($this, $method1)) {
-                    $method = $method1;
-                }
-
-                $output->setField($field, function ($list, $key) use ($method) {
-                    if ($method) {
-                        $ops = $this->{$method}($list, 'details');
-                    } else {
-                        $ops = false;
-                    }
-
-                    if ($ops === false) {
-                        $list->addField($key, function ($data, $renderContext) {
-                            $key = $renderContext->getField();
-                            $value = null;
-
-                            if (is_array($data)) {
-                                if (isset($data[$key])) {
-                                    $value = $data[$key];
-                                } else {
-                                    $value = null;
-                                }
-                            } elseif ($data instanceof \ArrayAccess) {
-                                $value = $data[$key];
-                            } elseif (is_object($data)) {
-                                if (method_exists($data, '__get')) {
-                                    $value = $data->__get($key);
-                                } elseif (method_exists($data, 'get'.ucfirst($key))) {
-                                    $value = $data->{'get'.ucfirst($key)}();
-                                }
-                            }
-
-                            if ($value instanceof aura\view\IDeferredRenderable
-                            && $this->view) {
-                                $value->setRenderTarget($this->view);
-                            }
-
-                            return $value;
-                        });
-                    }
-                });
-            }
-        }
-
-        return $output;
-    }
-
-    public function generateCollectionList(array $fields, $collection=null)
-    {
-        if (!$this instanceof IRecordDataProviderScaffold) {
-            throw Exceptional::Logic(
-                'Scaffold cannot generate collection list'
-            );
-        }
-
-        $nameKey = $this->getRecordNameField();
-
-        if (empty($fields) || (count($fields) == 1 && current($fields) == 'actions')) {
-            array_unshift($fields, $nameKey);
-        }
-
-        $output = new arch\component\CollectionList($this->context, [$fields, $collection]);
-        $output->setViewArg(lcfirst($this->getRecordKeyName()).'List');
-        $output->setRenderTarget($this->view);
-
-        foreach ($output->getFields() as $field => $enabled) {
-            if ($enabled === true) {
-                $method1 = 'define'.ucfirst($field).'Field';
-                $method2 = 'override'.ucfirst($field).'Field';
-
-                if (method_exists($this, $method2)) {
-                    $output->setField($field, function ($list, $key) use ($method2) {
-                        if (false === $this->{$method2}($list, 'list')) {
-                            $list->addField($key);
-                        }
-                    });
-                } elseif (method_exists($this, $method1)) {
-                    $output->setField($field, function ($list, $key) use ($method1, $field, $nameKey) {
-                        if ($field == $nameKey) {
-                            return $this->autoDefineNameKeyField($field, $list, 'list');
-                        } else {
-                            if (false === $this->{$method1}($list, 'list')) {
-                                $list->addField($key);
-                            }
-                        }
-                    });
-                } elseif ($field == $nameKey) {
-                    $output->setField($field, function ($list, $key) use ($field) {
-                        return $this->autoDefineNameKeyField($field, $list, 'list');
-                    });
-                }
-            }
-        }
-
-        return $output;
-    }
-
     // Helpers
-    protected function _getNodeRequest($node, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[])
+    public function getNodeUri(string $node, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]): DirectoryRequest
     {
         $output = clone $this->context->location;
         $output->setNode($node);

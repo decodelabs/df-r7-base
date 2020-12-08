@@ -139,25 +139,27 @@ class CollectionStack extends Base implements IDataDrivenListWidget, IMappedList
                     $rows[$fieldKey]->push($cellTag->renderWith($value));
 
                     $fieldNum++;
-                }
 
-                if ($renderContext->divider !== null) {
-                    if (!$first) {
-                        $rows[$fieldKey]->append((new aura\html\Element(
-                            'td.spacer', null,
-                            ['rowspan' => count($this->_fields)]
+                    /*
+                    if ($renderContext->divider !== null) {
+                        if (!$first) {
+                            $rows[$fieldKey]->append((new aura\html\Element(
+                                'td.spacer', null,
+                                ['rowspan' => count($this->_fields)]
+                                ))->render());
+                        }
+
+                        if (!empty($renderContext->divider)) {
+                            $content->append((new aura\html\Element(
+                                'td.divider',
+                                $renderContext->divider,
+                                ['rowspan' => count($this->_fields)]
                             ))->render());
-                    }
+                        }
 
-                    if (!empty($renderContext->divider)) {
-                        $content->append((new aura\html\Element(
-                            'td.divider',
-                            $renderContext->divider,
-                            ['rowspan' => count($this->_fields)]
-                        ))->render());
+                        $even = false;
                     }
-
-                    $even = false;
+                    */
                 }
 
                 $first = false;

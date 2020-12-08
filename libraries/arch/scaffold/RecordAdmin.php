@@ -11,17 +11,23 @@ use df\arch;
 use df\aura;
 use df\opal;
 
+use df\arch\scaffold\Record\DataProvider as RecordDataProvider;
+use df\arch\scaffold\Record\DataProviderTrait as RecordDataProviderTrait;
+use df\arch\scaffold\Record\Decorator as RecordDecorator;
+use df\arch\scaffold\Record\DecoratorTrait as RecordDecoratorTrait;
+
 use DecodeLabs\Glitch\Dumpable;
 
 abstract class RecordAdmin extends arch\scaffold\Base implements
-    IRecordLoaderScaffold,
-    IRecordDataProviderScaffold,
-    IRecordListProviderScaffold,
+    RecordDataProvider,
+    RecordDecorator,
+
     ISectionProviderScaffold,
     Dumpable
 {
-    use TScaffold_RecordLoader;
-    use TScaffold_RecordDataProvider;
+    use RecordDataProviderTrait;
+    use RecordDecoratorTrait;
+
     use TScaffold_RecordListProvider;
 
     use TScaffold_SectionProvider;
@@ -177,7 +183,6 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     {
         yield 'properties' => [
             'context' => $this->context,
-            '*adapter' => $this->_recordAdapter,
             '*record' => $this->_record
         ];
     }

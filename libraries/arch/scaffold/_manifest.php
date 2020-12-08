@@ -11,6 +11,8 @@ use df\arch;
 use df\aura;
 use df\opal;
 
+use df\arch\IRequest as DirectoryRequest;
+
 interface IScaffold extends
     core\IRegistryObject,
     core\IContextAware,
@@ -27,56 +29,16 @@ interface IScaffold extends
     public function getDirectoryTitle();
     public function getDirectoryIcon();
     public function getDirectoryKeyName();
+
+    public function getNodeUri(string $node, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]): DirectoryRequest;
 }
 
-interface IRecordLoaderScaffold extends IScaffold
-{
-    public function getRecordAdapter();
-}
 
-interface IRecordDataProviderScaffold extends IRecordLoaderScaffold
-{
-    public function newRecord(array $values=null);
-    public function getRecord();
-    public function getRecordKeyName();
-    public function getRecordUrlKey();
-    public function getRecordId($record=null);
-    public function getRecordIdField();
-    public function getRecordName($record=null);
-    public function getRecordNameField();
-    public function getRecordDescription($record=null);
-    public function getRecordUrl($record=null);
-    public function getRecordIcon($record=null);
-    public function getRecordOperativeLinks($record, $mode);
-
-    public function autoDefineNameKeyField($fieldName, $list, $mode, $label=null);
-    public function getNameKeyFieldMaxLength(): int;
-
-    public function decorateRecordLink($link, $component);
-
-    public function canAddRecord();
-    public function canEditRecord($record=null);
-    public function canDeleteRecord($record=null);
-    public function recordDeleteRequiresConfirmation($record=null): bool;
-
-    public function getRecordDeleteFlags();
-    public function deleteRecord(opal\record\IRecord $record, array $flags=[]);
-
-    public function getRecordBackLinkRequest();
-}
-
-interface IRecordListProviderScaffold extends IRecordLoaderScaffold
-{
-    public function queryRecordList($mode, array $fields=null);
-    public function extendRecordList(opal\query\ISelectQuery $query, $mode);
-    public function applyRecordListSearch(opal\query\ISelectQuery $query, $search);
-
-    public function renderRecordList($query=null, array $fields=null, $callback=null, $queryMode=null);
-}
 
 interface ISectionProviderScaffold extends IScaffold
 {
     public function loadSectionNode();
     public function buildSection($name, $builder, $linkBuilder=null);
     public function getSectionItemCounts();
+    public function getDefaultSection(): string;
 }

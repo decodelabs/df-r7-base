@@ -15,697 +15,10 @@ use df\mesh;
 use df\flex;
 use df\user;
 
+use df\arch\scaffold\Record\DataProvider as RecordDataProvider;
+
 use DecodeLabs\Tagged\Html;
 use DecodeLabs\Exceptional;
-
-// Record loader
-trait TScaffold_RecordLoader
-{
-
-    //const KEY_NAME = null;
-    //const ITEM_NAME = null;
-
-    protected $_recordAdapter;
-
-    public function getRecordAdapter()
-    {
-        if ($this->_recordAdapter) {
-            return $this->_recordAdapter;
-        }
-
-        if (@static::ADAPTER) {
-            $adapter = $this->data->fetchEntity(static::ADAPTER);
-
-            if ($adapter instanceof axis\IUnit) {
-                $this->_recordAdapter = $adapter;
-                return $adapter;
-            }
-        } elseif ($this->_recordAdapter = $this->generateRecordAdapter()) {
-            return $this->_recordAdapter;
-        }
-
-        throw Exceptional::Definition(
-            'Unable to find a suitable adapter for record scaffold'
-        );
-    }
-
-    protected function generateRecordAdapter()
-    {
-    }
-
-    public function getRecordKeyName()
-    {
-        if (@static::KEY_NAME) {
-            return static::KEY_NAME;
-        }
-
-        $adapter = $this->getRecordAdapter();
-
-        if ($adapter instanceof axis\ISchemaBasedStorageUnit) {
-            return $adapter->getRecordKeyName();
-        } elseif ($adapter instanceof axis\IUnit) {
-            return lcfirst($adapter->getUnitName());
-        } else {
-            return 'record';
-        }
-    }
-
-    public function getRecordItemName()
-    {
-        if (@static::ITEM_NAME) {
-            return static::ITEM_NAME;
-        }
-
-        return strtolower(flex\Text::formatName($this->getRecordKeyName()));
-    }
-}
-
-// Record provider
-trait TScaffold_RecordDataProvider
-{
-
-    //const ID_FIELD = 'id';
-    //const NAME_FIELD = 'name';
-    //const URL_KEY = null;
-    //const ADAPTER = null;
-    //const DEFAULT_SECTION = 'details';
-
-    //const CAN_ADD = true;
-    //const CAN_EDIT = true;
-    //const CAN_DELETE = true;
-    //const CONFIRM_DELETE = true;
-
-    //const CAN_SELECT = false;
-
-    //const DETAILS_FIELDS = [];
-
-    protected $_record;
-
-    private $_recordNameKey;
-
-    public function newRecord(array $values=null)
-    {
-        return $this->data->newRecord($this->getRecordAdapter(), $values);
-    }
-
-    public function getRecord()
-    {
-        if ($this->_record) {
-            return $this->_record;
-        }
-
-        $key = $this->context->request->query[$this->getRecordUrlKey()];
-        $this->_record = $this->loadRecord($key);
-
-        if (!$this->_record) {
-            throw Exceptional::{
-                'arch/scaffold/UnexpectedValue,arch/scaffold/NotFound'
-            }('Unable to load scaffold record');
-        }
-
-        return $this->_record;
-    }
-
-    public function getRecordId($record=null)
-    {
-        if (!$record) {
-            $record = $this->getRecord();
-        }
-
-        if ($record instanceof opal\record\IPrimaryKeySetProvider) {
-            return (string)$record->getPrimaryKeySet();
-        }
-
-        return $this->idRecord($record);
-    }
-
-    protected function idRecord($record)
-    {
-        $idKey = $this->getRecordIdField();
-        return @$record[$idKey];
-    }
-
-    public function getRecordName($record=null)
-    {
-        if (!$record) {
-            $record = $this->getRecord();
-        }
-
-
-        $key = $this->getRecordNameField();
-        $output = $this->nameRecord($record);
-
-        return $this->_normalizeFieldOutput($key, $output);
-    }
-
-    protected function nameRecord($record)
-    {
-        $key = $this->getRecordNameField();
-        $output = null;
-
-        if (isset($record[$key])) {
-            $output = $record[$key];
-
-            if ($key == $this->getRecordIdField() && is_numeric($output)) {
-                $output = '#'.$output;
-            }
-        } else {
-            if (is_array($record)) {
-                $available = array_key_exists($key, $record);
-            } elseif ($record instanceof core\collection\IMappedCollection) {
-                $available = $record->has($key);
-            } else {
-                $available = true;
-            }
-
-            $id = $this->getRecordId($record);
-
-            if ($available) {
-                switch ($key) {
-                    case 'title':
-                        $output = Html::{'em'}($this->_('untitled %c%', ['%c%' => $this->getRecordItemName()]));
-                        break;
-
-                    case 'name':
-                        $output = Html::{'em'}($this->_('unnamed %c%', ['%c%' => $this->getRecordItemName()]));
-                        break;
-                }
-            } else {
-                $output = Html::{'em'}($this->getRecordItemName());
-            }
-
-            if (is_numeric($id)) {
-                $output = [$output, Html::{'samp'}('#'.$id)];
-            }
-        }
-
-        return $output;
-    }
-
-    public function getRecordDescription($record=null)
-    {
-        if (!$record) {
-            $record = $this->getRecord();
-        }
-
-        return $this->describeRecord($record);
-    }
-
-    protected function describeRecord($record)
-    {
-        return $this->getRecordName($record);
-    }
-
-    public function getRecordUrl($record=null)
-    {
-        if (!$record) {
-            $record = $this->getRecord();
-        }
-
-        return $this->_getRecordNodeRequest($record, static::DEFAULT_SECTION);
-    }
-
-    public function getRecordIcon($record=null)
-    {
-        if (!$record) {
-            try {
-                $record = $this->getRecord();
-            } catch (\Throwable $e) {
-                return $this->getDirectoryIcon();
-            }
-        }
-
-        if (method_exists($this, 'iconifyRecord')) {
-            return $this->iconifyRecord($record);
-        } else {
-            return $this->getDirectoryIcon();
-        }
-    }
-
-    protected function loadRecord($key)
-    {
-        return $this->data->fetchForAction(
-            $this->getRecordAdapter(),
-            $key
-        );
-    }
-
-    public function getRecordIdField()
-    {
-        if (@static::ID_FIELD) {
-            return static::ID_FIELD;
-        }
-
-        return 'id';
-    }
-
-    public function getRecordNameField()
-    {
-        if ($this->_recordNameKey === null) {
-            if (@static::NAME_FIELD) {
-                $this->_recordNameKey = static::NAME_FIELD;
-            } else {
-                $adapter = $this->getRecordAdapter();
-
-                if ($adapter instanceof axis\ISchemaBasedStorageUnit) {
-                    $this->_recordNameKey = $adapter->getRecordNameField();
-                } else {
-                    $this->_recordNameKey = 'name';
-                }
-            }
-        }
-
-        return $this->_recordNameKey;
-    }
-
-    public function getRecordUrlKey()
-    {
-        if (@static::URL_KEY) {
-            return static::URL_KEY;
-        }
-
-        return $this->getRecordKeyName();
-    }
-
-
-    protected function _countRecordRelations(opal\record\IRecord $record, ...$fields)
-    {
-        $fields = core\collection\Util::flatten($fields);
-        $query = $this->getRecordAdapter()->select('@primary');
-
-        foreach ($fields as $field) {
-            try {
-                $query->countRelation($field);
-            } catch (opal\query\Exception $e) {
-            }
-        }
-
-        $output = [];
-        $data = $query->where('@primary', '=', $record->getPrimaryKeySet())
-            ->toRow();
-
-        foreach ($fields as $key => $field) {
-            if (!isset($data[$field])) {
-                continue;
-            }
-
-            if (!is_string($key)) {
-                $key = $field;
-            }
-
-            $output[$key] = $data[$field];
-        }
-
-        return $output;
-    }
-
-
-    public function decorateRecordLink($link, $component)
-    {
-        return $link;
-    }
-
-
-    public function canAddRecord()
-    {
-        return static::CAN_ADD;
-    }
-
-    public function canEditRecord($record=null)
-    {
-        return static::CAN_EDIT;
-    }
-
-    public function canDeleteRecord($record=null)
-    {
-        return static::CAN_DELETE;
-    }
-
-    public function recordDeleteRequiresConfirmation($record=null): bool
-    {
-        return static::CONFIRM_DELETE;
-    }
-
-
-    protected function _getRecordNodeRequest($record, $node, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[])
-    {
-        return $this->_getNodeRequest($node, [
-            $this->getRecordUrlKey() => $this->getRecordId($record)
-        ], $redirFrom, $redirTo, $propagationFilter);
-    }
-
-
-    public function getRecordBackLinkRequest()
-    {
-        return $this->uri->directoryRequest($this->getParentSectionRequest());
-    }
-
-
-    public function buildDeleteDynamicNode()
-    {
-        if (!$this->canDeleteRecord()) {
-            throw Exceptional::{'df/arch/scaffold/Logic,Unauthorized'}(
-                'Records cannot be deleted'
-            );
-        }
-
-        return new arch\scaffold\node\DeleteForm($this);
-    }
-
-    public function buildDeleteSelectedDynamicNode()
-    {
-        return new arch\scaffold\node\DeleteSelectedForm($this);
-    }
-
-    public function getRecordDeleteFlags()
-    {
-        return [];
-    }
-
-    public function deleteRecord(opal\record\IRecord $record, array $flags=[])
-    {
-        $record->delete();
-        return $this;
-    }
-
-    public function buildLinkComponent(array $args)
-    {
-        return new arch\scaffold\component\RecordLink($this, $args);
-    }
-
-    public function buildDetailsComponent(array $args)
-    {
-        $fields = array_shift($args);
-
-        if (!is_array($fields)) {
-            $fields = [];
-        }
-
-        if (defined('static::DETAILS_FIELDS') && is_array(static::DETAILS_FIELDS)) {
-            $fields = array_merge(static::DETAILS_FIELDS, $fields);
-        } elseif (defined('static::LIST_FIELDS') && is_array(static::LIST_FIELDS)) {
-            $fields = array_merge(static::LIST_FIELDS, $fields);
-        }
-
-        $record = array_shift($args);
-
-        return $this->generateAttributeList($fields, $record);
-    }
-
-
-    public function getRecordOperativeLinks($record, $mode)
-    {
-        $output = [];
-
-        // Edit
-        if ($this->canEditRecord($record)) {
-            $output[] = $this->html->link(
-                    $this->_getRecordNodeRequest($record, 'edit', null, true),
-                    $this->_('Edit '.$this->getRecordItemName())
-                )
-                ->setIcon('edit');
-        }
-
-        // Delete
-        if ($this->canDeleteRecord($record)) {
-            static $back;
-            $redirTo = null;
-
-            if ($mode !== 'list') {
-                if (!isset($back)) {
-                    $back = isset($this->request[$this->getRecordUrlKey()]) ?
-                        $this->getRecordBackLinkRequest() : null;
-                }
-
-                $redirTo = $back;
-            }
-
-            $output[] = $this->html->link(
-                    $this->_getRecordNodeRequest(
-                        $record,
-                        'delete',
-                        null,
-                        true,
-                        $redirTo
-                    ),
-                    $this->_('Delete '.$this->getRecordItemName())
-                )
-                ->setIcon('delete');
-        }
-
-        return $output;
-    }
-
-    public function autoDefineNameKeyField($fieldName, $list, $mode, $label=null)
-    {
-        if ($label === null) {
-            $label = $this->format->name($fieldName);
-        }
-
-        $list->addField($fieldName, $label, function ($item) use ($mode, $fieldName) {
-            if ($mode == 'list') {
-                return $this->apex->component(
-                        ucfirst($this->getRecordKeyName().'Link'),
-                        $item
-                    )
-                    ->setMaxLength($this->getNameKeyFieldMaxLength())
-                    ->setDisposition('informative');
-            }
-
-            $output = $this->getRecordName($item);
-
-            if ($fieldName == 'slug') {
-                $output = Html::{'samp'}($output);
-            }
-
-            return $output;
-        });
-    }
-
-    public function getNameKeyFieldMaxLength(): int
-    {
-        return static::NAME_KEY_FIELD_MAX_LENGTH ?? 40;
-    }
-
-    public function defineSlugField($list, $mode)
-    {
-        $list->addField('slug', function ($item) {
-            return Html::{'samp'}($item['slug']);
-        });
-    }
-
-    public function defineWeightField($list, $mode)
-    {
-        $list->addField('weight', $mode == 'list' ? '#' : $this->_('Order number'));
-    }
-
-    public function defineUrlField($list, $mode)
-    {
-        $list->addField('url', function ($item) use ($mode) {
-            $url = $item['url'];
-
-            if ($url === null) {
-                return $url;
-            }
-
-            if ($mode == 'list') {
-                $url = $this->uri->__invoke($url);
-                $name = $url->getDomain();
-            } else {
-                $name = $url;
-            }
-
-            return $this->html->link($url, $name)
-                ->setIcon('link')
-                ->setTarget('_blank');
-        });
-    }
-
-    public function defineWebsiteField($list, $mode)
-    {
-        $list->addField('website', function ($item) use ($mode) {
-            $url = $item['website'];
-
-            if ($url === null) {
-                return $url;
-            }
-
-            if ($mode == 'list') {
-                $url = $this->uri->__invoke($url);
-                $name = $url->getDomain();
-            } else {
-                $name = $url;
-            }
-
-            return $this->html->link($url, $name)
-                ->setIcon('link')
-                ->setTarget('_blank');
-        });
-    }
-
-    public function defineUserField($list, $mode)
-    {
-        $list->addField('user', function ($item) {
-            return $this->apex->component('~admin/users/clients/UserLink', $item['user']);
-        });
-    }
-
-    public function defineOwnerField($list, $mode)
-    {
-        $list->addField('owner', function ($item) {
-            return $this->apex->component('~admin/users/clients/UserLink', $item['owner']);
-        });
-    }
-
-    public function defineEmailField($list, $mode)
-    {
-        $list->addField('email', function ($item) {
-            return $this->html->mailLink($item['email']);
-        });
-    }
-
-    public function defineCreationDateField($list, $mode)
-    {
-        $list->addField('creationDate', $this->_('Created'), function ($item) use ($mode) {
-            if ($mode == 'list') {
-                return Html::$time->sinceAbs($item['creationDate']);
-            } else {
-                return Html::$time->since($item['creationDate']);
-            }
-        });
-    }
-
-    public function defineModificationDateField($list, $mode)
-    {
-        $list->addField('modificationDate', $this->_('Modified'), function ($item) use ($mode) {
-            if ($mode == 'list') {
-                return Html::$time->sinceAbs($item['modificationDate']);
-            } else {
-                return Html::$time->since($item['modificationDate']);
-            }
-        });
-    }
-
-    public function defineLastEditDateField($list, $mode)
-    {
-        $list->addField('lastEditDate', $this->_('Edited'), function ($item) use ($mode) {
-            if ($mode == 'list') {
-                return Html::$time->sinceAbs($item['lastEditDate']);
-            } else {
-                return Html::$time->since($item['lastEditDate']);
-            }
-        });
-    }
-
-    public function defineIsLiveField($list, $mode)
-    {
-        $list->addField('isLive', $this->_('Live'), function ($item, $context) {
-            if (!$item['isLive']) {
-                $context->getRowTag()->addClass('disabled');
-            }
-
-            return $this->html->booleanIcon($item['isLive']);
-        });
-    }
-
-    public function definePriorityField($list, $mode)
-    {
-        $list->addField('priority', function ($item) {
-            $priority = core\unit\Priority::factory($item['priority']);
-            return $this->html->icon('priority-'.$priority->getOption(), $priority->getLabel())
-                ->addClass('priority-'.$priority->getOption());
-        });
-    }
-
-    public function defineArchiveDateField($list, $mode)
-    {
-        $list->addField('archiveDate', $this->_('Archive'), function ($item, $context) use ($mode) {
-            $date = $item['archiveDate'];
-            $hasDate = (bool)$date;
-            $isPast = $hasDate && $date->isPast();
-
-            if ($isPast && $mode == 'list') {
-                $context->getRowTag()->addClass('inactive');
-            }
-
-            $output = Html::$time->date($date);
-
-            if ($output) {
-                if ($isPast) {
-                    $output->addClass('negative');
-                } elseif ($date->lt('+1 month')) {
-                    $output->addClass('warning');
-                } else {
-                    $output->addClass('positive');
-                }
-            }
-
-            return $output;
-        });
-    }
-
-    public function defineColorField($list, $mode)
-    {
-        $list->addField('color', function ($item, $context) {
-            try {
-                $color = df\neon\Color::factory($item['color']);
-            } catch (\Throwable $e) {
-                return $item['color'];
-            }
-
-            return Html::{'span'}($item['color'])
-                ->setStyle('background', $item['color'])
-                ->setStyle('color', $color->getTextContrastColor())
-                ->setStyle('padding', '0 0.6em');
-        });
-    }
-
-    public function defineEnvironmentModeField($list, $mode)
-    {
-        $list->addField('environmentMode', $mode == 'list' ? $this->_('Env.') : null, function ($mail) use ($mode) {
-            switch ($mail['environmentMode']) {
-                case 'development':
-                    return Html::{'span.priority-low.inactive'}($mode == 'list' ? $this->_('Dev') : $this->_('Development'));
-                case 'testing':
-                    return Html::{'span.priority-medium.inactive'}($mode == 'list' ? $this->_('Test') : $this->_('Testing'));
-                case 'production':
-                    return Html::{'span.priority-high.active'}($mode == 'list' ? $this->_('Prod') : $this->_('Production'));
-            }
-        });
-    }
-
-    public function defineAddressField($list, $mode)
-    {
-        if ($mode == 'list') {
-            $list->addField('address', function ($item) {
-                if (!$addr = $item['address']) {
-                    return;
-                }
-
-                if (!$addr instanceof user\IPostalAddress) {
-                    return $addr;
-                }
-
-                return Html::{'span'}(
-                    $addr->getLocality().', '.$addr->getCountryName(),
-                    ['title' => str_replace("\n", ', ', $addr->toString())]
-                );
-            });
-        } else {
-            $list->addField('address', function ($item) {
-                return $this->html->address($item['address']);
-            });
-        }
-    }
-
-    public function defineActionsField($list, $mode)
-    {
-        $list->addField('actions', function ($item) {
-            return $this->getRecordOperativeLinks($item, 'list');
-        });
-    }
-}
-
 
 // Record list provider
 trait TScaffold_RecordListProvider
@@ -915,7 +228,7 @@ trait TScaffold_SectionProvider
             return $this->_generateNode(function () use ($node) {
                 $record = null;
 
-                if ($this instanceof IRecordDataProviderScaffold) {
+                if ($this instanceof RecordDataProvider) {
                     $record = $this->getRecord();
                 }
 
@@ -954,7 +267,7 @@ trait TScaffold_SectionProvider
         $args = [];
         $record = null;
 
-        if ($this instanceof IRecordDataProviderScaffold) {
+        if ($this instanceof RecordDataProvider) {
             $args[] = $record = $this->getRecord();
         }
 
@@ -977,7 +290,7 @@ trait TScaffold_SectionProvider
     {
         return (new arch\scaffold\component\HeaderBar($this, 'section', $args))
             ->setTitle(
-                $this instanceof IRecordDataProviderScaffold ?
+                $this instanceof RecordDataProvider ?
                     [
                         ucfirst($this->getRecordItemName()).': ',
                         $this->getRecordDescription()
@@ -990,12 +303,12 @@ trait TScaffold_SectionProvider
 
     protected function getParentSectionRequest()
     {
-        return $this->_getNodeRequest('index');
+        return $this->getNodeUri('index');
     }
 
     public function addSectionOperativeLinks($menu, $bar)
     {
-        if ($this instanceof IRecordDataProviderScaffold) {
+        if ($this instanceof RecordDataProvider) {
             $menu->addLinks($this->getRecordOperativeLinks($this->getRecord(), 'sectionHeaderBar'));
         }
     }
@@ -1036,7 +349,7 @@ trait TScaffold_SectionProvider
         $i = 0;
         $record = null;
 
-        if ($this instanceof IRecordDataProviderScaffold) {
+        if ($this instanceof RecordDataProvider) {
             try {
                 $record = $this->getRecord();
             } catch (\Throwable $e) {
@@ -1047,9 +360,9 @@ trait TScaffold_SectionProvider
             $i++;
 
             if ($record) {
-                $request = $this->_getRecordNodeRequest($record, $node);
+                $request = $this->getRecordNodeUri($record, $node);
             } else {
-                $request = $this->_getNodeRequest($node);
+                $request = $this->getNodeUri($node);
             }
 
             $link = $entryList->newLink($request, $set['name'])
@@ -1087,7 +400,7 @@ trait TScaffold_SectionProvider
     {
         $sections = $this->_getSections();
         unset($sections['details']);
-        return $this->_countRecordRelations($record, array_keys($sections));
+        return $this->countRecordRelations($record, array_keys($sections));
     }
 
 
@@ -1099,6 +412,19 @@ trait TScaffold_SectionProvider
         if (method_exists($this, $method)) {
             return $this->{$method}($bar);
         }
+    }
+
+
+    public function getDefaultSection(): string
+    {
+        if (
+            defined(static::DEFAULT_SECTION) &&
+            static::DEFAULT_SECTION !== null
+        ) {
+            return static::DEFAULT_SECTION;
+        }
+
+        return 'details';
     }
 }
 
@@ -1144,12 +470,12 @@ trait TScaffold_RecordIndexHeaderBarProvider
 {
     public function addIndexOperativeLinks($menu, $bar)
     {
-        if ($this->canAddRecord()) {
+        if ($this->canAddRecords()) {
             $recordAdapter = $this->getRecordAdapter();
 
             $menu->addLinks(
                 $bar->html->link(
-                        $bar->uri($this->_getNodeRequest('add'), true),
+                        $bar->uri($this->getNodeUri('add'), true),
                         $this->_('Add '.$this->getRecordItemName())
                     )
                     ->setIcon('add')
