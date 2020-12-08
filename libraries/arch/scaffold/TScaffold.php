@@ -418,7 +418,7 @@ trait TScaffold_SectionProvider
     public function getDefaultSection(): string
     {
         if (
-            defined(static::DEFAULT_SECTION) &&
+            defined('static::DEFAULT_SECTION') &&
             static::DEFAULT_SECTION !== null
         ) {
             return static::DEFAULT_SECTION;
