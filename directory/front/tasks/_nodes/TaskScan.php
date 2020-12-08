@@ -82,14 +82,10 @@ class TaskScan extends arch\node\Task
     protected function updateSchedules(array $schedules): array
     {
         $reset = isset($this->request['reset']);
-        $lastRuns = null;
 
         if ($reset) {
             // Reset
             Cli::{'yellow'}('Resetting auto scheduled tasks: ');
-
-            $lastRuns = $this->data->task->schedule->select('request', 'lastRun')
-                ->toList('request', 'lastRun');
 
             $deleted = $this->data->task->schedule->delete()
                 ->where('request', 'in', array_keys($schedules))
@@ -145,6 +141,9 @@ class TaskScan extends arch\node\Task
     protected function writeSchedules(array $schedules): void
     {
         $spaced = false;
+
+        $lastRuns = $this->data->task->schedule->select('request', 'lastRun')
+            ->toList('request', 'lastRun');
 
         // Write
         foreach ($schedules as $request => $set) {
