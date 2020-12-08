@@ -3,28 +3,25 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\scaffold\node;
+namespace df\arch\scaffold\Node;
 
-use df;
-use df\core;
-use df\arch;
-use df\aura;
+use df\arch\node\Form as Form;
 
-abstract class AffectSelectedForm extends arch\node\Form
+abstract class AffectSelectedForm extends Form
 {
     const AUTO_INSTANCE_ID_IGNORE = ['selected'];
 
-    protected $_scaffold;
-    protected $_ids = [];
+    protected $scaffold;
+    protected $ids = [];
 
     protected function init()
     {
-        if (!$this->_scaffold) {
-            $this->_scaffold = $this->scaffold;
+        if (!$this->scaffold) {
+            $this->scaffold = $this->scaffold;
         }
 
         if (isset($this->request['selected'])) {
-            $this->_ids = explode(',', $this->request['selected']);
+            $this->ids = explode(',', $this->request['selected']);
         }
     }
 
@@ -47,15 +44,15 @@ abstract class AffectSelectedForm extends arch\node\Form
         $form = $this->content->addForm();
 
         $form->push(function () {
-            $keyName = $this->_scaffold->getRecordKeyName();
-            $query = $this->_scaffold->queryRecordList($this->request->getNode())
-                ->where($this->_scaffold->getRecordIdField(), 'in', $this->_ids)
+            $keyName = $this->scaffold->getRecordKeyName();
+            $query = $this->scaffold->queryRecordList($this->request->getNode())
+                ->where($this->scaffold->getRecordIdField(), 'in', $this->ids)
                 ->limit(100)
                 ->paginateWith($this->request->query);
 
             return $this->apex->component(ucfirst($keyName).'List', ['actions' => false])
                 ->setCollection($query)
-                ->setSlot('scaffold', $this->_scaffold)
+                ->setSlot('scaffold', $this->scaffold)
                 ->render();
         });
 
@@ -69,7 +66,7 @@ abstract class AffectSelectedForm extends arch\node\Form
 
     protected function fetchSelectedRecords()
     {
-        return $this->_scaffold->getRecordAdapter()->fetch()
-            ->where('id', 'in', $this->_ids);
+        return $this->scaffold->getRecordAdapter()->fetch()
+            ->where('id', 'in', $this->ids);
     }
 }

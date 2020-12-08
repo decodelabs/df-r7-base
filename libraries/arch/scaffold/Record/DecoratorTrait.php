@@ -16,12 +16,15 @@ use df\arch\component\CollectionList as CollectionListComponent;
 use df\arch\component\RecordLink as RecordLinkComponent;
 use df\arch\scaffold\Component\RecordLink as ScaffoldRecordLinkComponent;
 
-use df\arch\scaffold\node\DeleteForm as ScaffoldDeleteForm;
-use df\arch\scaffold\node\DeleteSelectedForm as ScaffoldDeleteSelectedForm;
+use df\arch\scaffold\Node\DeleteForm as ScaffoldDeleteForm;
+use df\arch\scaffold\Node\DeleteSelectedForm as ScaffoldDeleteSelectedForm;
 
 use df\arch\node\Form as FormNode;
 use df\arch\node\IDelegate as Delegate;
-use df\arch\scaffold\node\form\SelectorDelegate as ScaffoldSelectorDelegate;
+use df\arch\scaffold\Node\Form\SelectorDelegate as ScaffoldSelectorDelegate;
+
+use df\arch\node\IFormState as FormState;
+use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
 
 use df\core\unit\Priority as PriorityUnit;
 use df\neon\Color;
@@ -63,7 +66,7 @@ trait DecoratorTrait
 
 
     // Delegate handlers
-    public function buildSelectorFormDelegate($state, $event, $id): Delegate
+    public function buildSelectorFormDelegate(FormState $state, FormEventDescriptor $event, string $id): Delegate
     {
         return new ScaffoldSelectorDelegate($this, $state, $event, $id);
     }

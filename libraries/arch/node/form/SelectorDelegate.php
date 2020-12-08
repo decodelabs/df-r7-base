@@ -12,6 +12,9 @@ use df\aura;
 use df\opal;
 use df\mesh;
 
+use df\opal\query\ISelectQuery as SelectQuery;
+use df\arch\IComponent as Component;
+
 use DecodeLabs\Tagged\Html;
 use DecodeLabs\Exceptional;
 
@@ -94,21 +97,21 @@ abstract class SelectorDelegate extends Delegate implements
 
 
     // Queries
-    abstract protected function _getBaseQuery($fields=null);
+    abstract protected function getBaseQuery(array $fields=null): SelectQuery;
 
-    protected function _getQuery($fields=null, $search=null)
+    protected function getQuery(?array $fields=null, ?string $search=null): SelectQuery
     {
-        $query = $this->_getBaseQuery($fields);
+        $query = $this->getBaseQuery($fields);
         $this->applyFilters($query);
 
         if ($search !== null) {
-            $this->_applyQuerySearch($query, $search);
+            $this->applyQuerySearch($query, $search);
         }
 
         return $query;
     }
 
-    protected function _applyQuerySearch(opal\query\IQuery $query, $search)
+    protected function applyQuerySearch(opal\query\ISelectQuery $query, string $search): void
     {
         if ($query instanceof opal\query\ISearchableQuery) {
             $query->searchFor($search);
@@ -131,15 +134,15 @@ abstract class SelectorDelegate extends Delegate implements
             $selected = [$selected];
         }
 
-        $rowSet = $this->_getQuery()
+        $rowSet = $this->getQuery()
             ->where('@primary', 'in', $selected)
             ->toArray();
 
         $rows = [];
 
         foreach ($rowSet as $row) {
-            $id = $this->_getResultId($row);
-            $rows[(string)$id] = $row;
+            $id = $this->getResultId($row);
+            $rows[$id] = $row;
         }
 
         $output = [];
@@ -157,31 +160,31 @@ abstract class SelectorDelegate extends Delegate implements
         return $output;
     }
 
-    protected function _getResultId($result)
+    protected function getResultId(array $row): string
     {
-        return $result['id'];
+        return (string)$row['id'];
     }
 
-    protected function _getResultDisplayName($result)
+    protected function getResultDisplayName(array $result)
     {
         return $result['name'];
     }
 
     protected function _countTotalItems()
     {
-        return $this->_getQuery()->count();
+        return $this->getQuery()->count();
     }
 
     protected function _getOptionsList()
     {
         $output = [];
-        $query = $this->_getQuery()
+        $query = $this->getQuery()
             ->paginate()
                 ->setDefaultLimit(100)
                 ->applyWith([]);
 
         foreach ($query as $row) {
-            $output[(string)$this->_getResultId($row)] = $this->_getResultDisplayName($row);
+            $output[$this->getResultId($row)] = $this->getResultDisplayName($row);
         }
 
         return $output;
@@ -190,7 +193,7 @@ abstract class SelectorDelegate extends Delegate implements
 
     public function getSourceEntityLocator(): mesh\entity\ILocator
     {
-        $adapter = $this->_getBaseQuery()->getSource()->getAdapter();
+        $adapter = $this->getBaseQuery()->getSource()->getAdapter();
 
         if (!$adapter instanceof mesh\entity\ILocatorProvider) {
             throw Exceptional::{'df/mesh/entity/Runtime'}(
@@ -210,7 +213,7 @@ abstract class SelectorDelegate extends Delegate implements
         $list = $this->_fetchSelectionList();
 
         if (!empty($list) && ($result = array_shift($list))) {
-            return $this->_getResultDisplayName($result);
+            return $this->getResultDisplayName($result);
         }
     }
 
@@ -224,7 +227,7 @@ abstract class SelectorDelegate extends Delegate implements
         if (isset($this->request[$id]) && !isset($this->values->selected)) {
             $this->setSelected($this->request[$id]);
         } elseif ($this->_isRequired && $this->_autoSelect) {
-            $r = $this->_getQuery(['@primary'])->limit(2)->toList('@primary');
+            $r = $this->getQuery(['@primary'])->limit(2)->toList('@primary');
 
             if (count($r) == 1) {
                 $this->setSelected(array_shift($r));
@@ -342,7 +345,7 @@ abstract class SelectorDelegate extends Delegate implements
                     $count--;
 
                     $displayList[] = Html::{'strong'}(
-                        $this->_getResultDisplayName(array_shift($tempList))
+                        $this->getResultDisplayName(array_shift($tempList))
                     );
                 }
 
@@ -359,7 +362,7 @@ abstract class SelectorDelegate extends Delegate implements
                 );
 
                 foreach ($selected as $row) {
-                    $id = $this->_getResultId($row);
+                    $id = $this->getResultId($row);
 
                     $fa->push(
                         $this->html->hidden(
@@ -375,8 +378,8 @@ abstract class SelectorDelegate extends Delegate implements
                 // Selection made
                 $selected = array_shift($selected);
 
-                $resultId = $this->_getResultId($selected);
-                $resultName = $this->_getResultDisplayName($selected);
+                $resultId = $this->getResultId($selected);
+                $resultName = $this->getResultDisplayName($selected);
 
                 $fa->push(
                     Html::{'strong'}($resultName),
@@ -541,11 +544,11 @@ abstract class SelectorDelegate extends Delegate implements
                 }
 
                 foreach ($selected as $entry) {
-                    $keyList[] = $this->_getResultId($entry);
+                    $keyList[] = $this->getResultId($entry);
                 }
             }
 
-            $query = $this->_getQuery(null, $search);
+            $query = $this->getQuery(null, $search);
             $query->wherePrerequisite('@primary', '!in', $keyList);
             $query->paginate()->setDefaultLimit(50)->applyWith($this->values->paginator);
 
@@ -555,7 +558,7 @@ abstract class SelectorDelegate extends Delegate implements
                 $fa->addHidden($this->fieldName('paginator['.$key.']'), $val);
             }
 
-            $collectionWidget = $this->_renderCollectionList($query);
+            $collectionWidget = $this->renderCollectionList($query);
 
             if ($collectionWidget instanceof aura\html\widget\IWidgetProxy) {
                 $collectionWidget = $collectionWidget->toWidget();
@@ -570,7 +573,7 @@ abstract class SelectorDelegate extends Delegate implements
                 }
 
                 $collectionWidget->addFieldAtIndex(0, 'select', 'x', function ($row) {
-                    $id = $this->_getResultId($row);
+                    $id = $this->getResultId($row);
 
                     return [
                         $this->_renderCheckbox($id),
@@ -591,8 +594,8 @@ abstract class SelectorDelegate extends Delegate implements
             } else {
                 // Fallback to standard
                 foreach ($query as $result) {
-                    $id = $this->_getResultId($result);
-                    $name = $this->_getResultDisplayName($result);
+                    $id = $this->getResultId($result);
+                    $name = $this->getResultDisplayName($result);
 
                     $fa->push(
                         $this->html->hidden($this->fieldName('searchResults[]'), $id),
@@ -681,8 +684,8 @@ abstract class SelectorDelegate extends Delegate implements
         $fa = $fs->addField($this->_('Selected'));
         $fa->addClass('delegate-selector');
 
-        $id = $this->_getResultId($selected);
-        $name = $this->_getResultDisplayName($selected);
+        $id = $this->getResultId($selected);
+        $name = $this->getResultDisplayName($selected);
 
         $fa->push(
             Html::{'div.w.list.selection'}([
@@ -712,8 +715,8 @@ abstract class SelectorDelegate extends Delegate implements
         $fa->addClass('delegate-selector');
 
         foreach ($selected as $result) {
-            $id = $this->_getResultId($result);
-            $name = $this->_getResultDisplayName($result);
+            $id = $this->getResultId($result);
+            $name = $this->getResultDisplayName($result);
 
             $fa->push(
                 Html::{'div.w.list.selection'}([
@@ -735,7 +738,7 @@ abstract class SelectorDelegate extends Delegate implements
     }
 
 
-    protected function _renderCollectionList($result)
+    protected function renderCollectionList(?iterable $collection): ?Component
     {
         return null;
     }
@@ -792,7 +795,7 @@ abstract class SelectorDelegate extends Delegate implements
         }
 
         $selected = $this->getSelected();
-        $query = $this->_getQuery(['@primary'], $this->values['search']);
+        $query = $this->getQuery(['@primary'], $this->values['search']);
 
         foreach ($query->toList('@primary') as $key) {
             $selected[(string)$key] = (string)$key;

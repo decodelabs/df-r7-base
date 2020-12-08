@@ -3,12 +3,9 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\scaffold\node;
+namespace df\arch\scaffold\Node;
 
-use df;
-use df\core;
-use df\arch;
-use df\aura;
+use df\arch\scaffold\IScaffold as Scaffold;
 
 use DecodeLabs\Tagged\Html;
 
@@ -17,15 +14,15 @@ class DeleteSelectedForm extends AffectSelectedForm
     const IS_PERMANENT = true;
     const DEFAULT_EVENT = 'delete';
 
-    public function __construct(arch\scaffold\IScaffold $scaffold)
+    public function __construct(Scaffold $scaffold)
     {
-        $this->_scaffold = $scaffold;
+        $this->scaffold = $scaffold;
         parent::__construct($scaffold->getContext());
     }
 
     protected function requiresConfirmation(): bool
     {
-        return $this->_scaffold->recordDeleteRequiresConfirmation();
+        return $this->scaffold->recordDeleteRequiresConfirmation();
     }
 
     protected function renderUi($fs)
@@ -128,7 +125,7 @@ class DeleteSelectedForm extends AffectSelectedForm
     protected function apply()
     {
         foreach ($this->fetchSelectedRecords() as $item) {
-            if ($this->_scaffold->canDeleteRecord($item)) {
+            if ($this->scaffold->canDeleteRecord($item)) {
                 $item->delete();
             }
         }

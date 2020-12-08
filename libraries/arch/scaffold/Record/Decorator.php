@@ -15,6 +15,9 @@ use df\arch\component\RecordLink as RecordLinkComponent;
 use df\arch\node\Form as FormNode;
 use df\arch\node\IDelegate as Delegate;
 
+use df\arch\node\IFormState as FormState;
+use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
+
 interface Decorator extends Scaffold
 {
     // Node builders
@@ -22,7 +25,7 @@ interface Decorator extends Scaffold
     public function buildDeleteSelectedDynamicNode(): FormNode;
 
     // Delegate builders
-    public function buildSelectorFormDelegate($state, $event, $id): Delegate;
+    public function buildSelectorFormDelegate(FormState $state, FormEventDescriptor $event, string $id): Delegate;
 
     // Component builders
     public function buildDetailsComponent(array $args): Component;

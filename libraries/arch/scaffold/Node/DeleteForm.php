@@ -3,46 +3,44 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\scaffold\node;
+namespace df\arch\scaffold\Node;
 
-use df;
-use df\core;
-use df\arch;
-use df\aura;
+use df\arch\node\DeleteForm as DeleteFormBase;
+use df\arch\scaffold\IScaffold as Scaffold;
 
-class DeleteForm extends arch\node\DeleteForm
+class DeleteForm extends DeleteFormBase
 {
-    protected $_scaffold;
+    protected $scaffold;
 
-    public function __construct(arch\scaffold\IScaffold $scaffold)
+    public function __construct(Scaffold $scaffold)
     {
-        $this->_scaffold = $scaffold;
+        $this->scaffold = $scaffold;
         parent::__construct($scaffold->getContext());
     }
 
     protected function getInstanceId()
     {
-        return $this->_scaffold->getRecordId();
+        return $this->scaffold->getRecordId();
     }
 
     protected function getItemName()
     {
-        return $this->_scaffold->getRecordItemName();
+        return $this->scaffold->getRecordItemName();
     }
 
     protected function requiresConfirmation(): bool
     {
-        return $this->_scaffold->recordDeleteRequiresConfirmation();
+        return $this->scaffold->recordDeleteRequiresConfirmation();
     }
 
     protected function createItemUi($container)
     {
         $container->push(
-            $this->apex->component(ucfirst($this->_scaffold->getRecordKeyName()).'Details')
-                ->setRecord($this->_scaffold->getRecord())
+            $this->apex->component(ucfirst($this->scaffold->getRecordKeyName()).'Details')
+                ->setRecord($this->scaffold->getRecord())
         );
 
-        foreach ($this->_scaffold->getRecordDeleteFlags() as $key => $label) {
+        foreach ($this->scaffold->getRecordDeleteFlags() as $key => $label) {
             $container->addField()->addClass('stacked')->push(
                 $this->html->checkbox($key, $this->values->{$key}, $label)
             );
@@ -51,7 +49,7 @@ class DeleteForm extends arch\node\DeleteForm
 
     protected function apply()
     {
-        $flags = $this->_scaffold->getRecordDeleteFlags();
+        $flags = $this->scaffold->getRecordDeleteFlags();
         $validator = $this->data->newValidator();
 
         foreach ($flags as $key => $label) {
@@ -64,13 +62,13 @@ class DeleteForm extends arch\node\DeleteForm
             $flags[$key] = $validator[$key];
         }
 
-        $this->_scaffold->deleteRecord($this->_scaffold->getRecord(), $flags);
+        $this->scaffold->deleteRecord($this->scaffold->getRecord(), $flags);
     }
 
     protected function finalize()
     {
         return $this->complete(function () {
-            //return $this->uri->directoryRequest($this->_scaffold->getRecordParentUriFor($this->_scaffold->getRecord()));
+            //return $this->uri->directoryRequest($this->scaffold->getRecordParentUriFor($this->scaffold->getRecord()));
         });
     }
 }
