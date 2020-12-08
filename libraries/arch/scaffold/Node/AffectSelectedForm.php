@@ -17,7 +17,7 @@ abstract class AffectSelectedForm extends Form
     protected function init()
     {
         if (!$this->scaffold) {
-            $this->scaffold = $this->scaffold;
+            $this->scaffold = $this->context->scaffold;
         }
 
         if (isset($this->request['selected'])) {
