@@ -12,14 +12,3 @@ parameters:
     excludes_analyse:
         - libraries/core/archive/Rar.php
         - libraries/core/archive/Snappy.php
-
-services:
-    -
-        class: DecodeLabs\PHPStan\Plug\HtmlReflectionExtension
-        tags:
-            - phpstan.broker.methodsClassReflectionExtension
-
-    -
-        class: DecodeLabs\PHPStan\Plug\InvokeReflectionExtension
-        tags:
-            - phpstan.broker.methodsClassReflectionExtension
