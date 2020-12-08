@@ -27,14 +27,3 @@ parameters:
 
         # Fix these:
         - '#^Unsafe usage of new static\(\)\.$#'
-
-services:
-    -
-        class: DecodeLabs\PHPStan\Plug\HtmlReflectionExtension
-        tags:
-            - phpstan.broker.methodsClassReflectionExtension
-
-    -
-        class: DecodeLabs\PHPStan\Plug\InvokeReflectionExtension
-        tags:
-            - phpstan.broker.methodsClassReflectionExtension
