@@ -15,11 +15,11 @@ use DecodeLabs\Glitch\Dumpable;
 
 abstract class HeaderBar extends Base implements Dumpable
 {
-    protected $_record;
-    protected $_title;
-    protected $_subTitle;
-    protected $_backLinkRequest;
-    protected $_icon;
+    protected $record;
+    protected $title;
+    protected $subTitle;
+    protected $backLinkRequest;
+    protected $icon;
 
     protected function init($record=null, $title=null, $subTitle=null)
     {
@@ -32,13 +32,13 @@ abstract class HeaderBar extends Base implements Dumpable
     // Record
     public function setRecord($record)
     {
-        $this->_record = $record;
+        $this->record = $record;
         return $this;
     }
 
     public function getRecord()
     {
-        return $this->_record;
+        return $this->record;
     }
 
 
@@ -49,13 +49,13 @@ abstract class HeaderBar extends Base implements Dumpable
             $title = null;
         }
 
-        $this->_title = $title;
+        $this->title = $title;
         return $this;
     }
 
     public function getTitle()
     {
-        return $this->_title;
+        return $this->title;
     }
 
 
@@ -66,39 +66,39 @@ abstract class HeaderBar extends Base implements Dumpable
             $subTitle = null;
         }
 
-        $this->_subTitle = $subTitle;
+        $this->subTitle = $subTitle;
         return $this;
     }
 
     public function getSubTitle()
     {
-        return $this->_subTitle;
+        return $this->subTitle;
     }
 
 
     // Back link
     public function setBackLinkRequest($request)
     {
-        $this->_backLinkRequest = $request;
+        $this->backLinkRequest = $request;
         return $this;
     }
 
     public function getBackLinkRequest()
     {
-        return $this->_backLinkRequest;
+        return $this->backLinkRequest;
     }
 
 
     // Icon
     public function setIcon(string $icon=null)
     {
-        $this->_icon = $icon;
+        $this->icon = $icon;
         return $this;
     }
 
     public function getIcon()
     {
-        return $this->_icon;
+        return $this->icon;
     }
 
 
@@ -109,27 +109,27 @@ abstract class HeaderBar extends Base implements Dumpable
         $output = [];
 
         // Title
-        if (empty($this->_title)) {
+        if (empty($this->title)) {
             $title = $this->_getDefaultTitle();
         } else {
-            $title = $this->_title;
+            $title = $this->title;
         }
 
         if ($title !== null) {
             $output[] = $title = Html::{'h2'}($title);
 
-            if ($this->_icon) {
-                $title->prepend($this->html->icon($this->_icon));
+            if ($this->icon) {
+                $title->prepend($this->html->icon($this->icon));
             }
         }
 
 
         // SubTitle
 
-        if (empty($this->_subTitle)) {
+        if (empty($this->subTitle)) {
             $subTitle = $this->_getDefaultSubTitle();
         } else {
-            $subTitle = $this->_subTitle;
+            $subTitle = $this->subTitle;
         }
 
         if ($subTitle !== null) {
@@ -150,7 +150,7 @@ abstract class HeaderBar extends Base implements Dumpable
         $this->_addSubOperativeLinks($primaryMenu);
         $primaryMenu->addSpacer();
         $this->_addTransitiveLinks($primaryMenu);
-        $primaryMenu->addLink($this->html->backLink($this->_backLinkRequest));
+        $primaryMenu->addLink($this->html->backLink($this->backLinkRequest));
 
         // Secondary
         $output[] = $secondaryMenu = $this->html->menuBar()->addClass('secondary');

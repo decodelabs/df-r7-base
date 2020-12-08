@@ -28,8 +28,6 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     use RecordDataProviderTrait;
     use RecordDecoratorTrait;
 
-    use TScaffold_RecordListProvider;
-
     use TScaffold_SectionProvider;
 
     use TScaffold_IndexHeaderBarProvider;
@@ -92,14 +90,13 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     public function renderDetailsSectionBody($record)
     {
         $keyName = $this->getRecordKeyName();
-
         return $this->apex->component(ucfirst($keyName).'Details')
             ->setRecord($record);
     }
 
 
     // Components
-    public function renderRecordList($query=null, array $fields=null, $callback=null, $queryMode=null)
+    public function renderRecordList($query=null, array $fields=null, $callback=null, ?string $queryMode=null)
     {
         if ($queryMode === null) {
             $queryMode = $this->request->getNode();
@@ -183,7 +180,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     {
         yield 'properties' => [
             'context' => $this->context,
-            '*record' => $this->_record
+            '*record' => $this->record
         ];
     }
 }

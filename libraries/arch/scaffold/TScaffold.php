@@ -20,148 +20,6 @@ use df\arch\scaffold\Record\DataProvider as RecordDataProvider;
 use DecodeLabs\Tagged\Html;
 use DecodeLabs\Exceptional;
 
-// Record list provider
-trait TScaffold_RecordListProvider
-{
-
-    // const LIST_FIELDS = [];
-    // const SEARCH_FIELDS = [];
-
-    public function queryRecordList($mode, array $fields=null)
-    {
-        $output = $this->getRecordAdapter()->select($fields);
-
-        //if($fields === null) {
-        $this->prepareRecordList($output, $mode);
-        //}
-
-        return $output;
-    }
-
-    public function extendRecordList(opal\query\ISelectQuery $query, $mode)
-    {
-        $this->prepareRecordList($query, $mode);
-        return $query;
-    }
-
-    protected function prepareRecordList($query, $mode)
-    {
-    }
-
-    public function applyRecordListSearch(opal\query\ISelectQuery $query, $search)
-    {
-        $this->searchRecordList($query, $search);
-        return $query;
-    }
-
-    protected function searchRecordList($query, $search)
-    {
-        if (defined('static::SEARCH_FIELDS')
-        && is_array(static::SEARCH_FIELDS)
-        && !empty(static::SEARCH_FIELDS)) {
-            $fields = static::SEARCH_FIELDS;
-        } else {
-            $fields = null;
-        }
-
-        $query->searchFor($search, $fields);
-    }
-
-
-    public function buildListComponent(array $args)
-    {
-        $fields = array_shift($args);
-
-        if (!is_array($fields)) {
-            $fields = [];
-        }
-
-        if (defined('static::LIST_FIELDS') && is_array(static::LIST_FIELDS)) {
-            $fields = array_merge(static::LIST_FIELDS, $fields);
-        }
-
-        $hasActions = false;
-
-        foreach ($fields as $key => $val) {
-            if ($key === 'actions' || $val === 'actions') {
-                $hasActions = true;
-                break;
-            }
-        }
-
-        if (!$hasActions) {
-            $fields['actions'] = true;
-        }
-
-        $collection = array_shift($args);
-        return $this->generateCollectionList($fields, $collection);
-    }
-
-    public function generateSearchBarComponent()
-    {
-        $search = $this->request->getQueryTerm('search');
-        $request = clone $this->context->request;
-        $resetRequest = clone $request;
-        $filter = ['search', 'lm', 'pg', 'of', 'od'];
-
-        foreach ($filter as $key) {
-            $resetRequest->query->remove($key);
-        }
-
-        return $this->html->form($request)->setMethod('get')->push(
-            $this->html->fieldSet()->addClass('scaffold search')->push(
-                $this->_buildQueryPropagationInputs($filter),
-
-                $this->html->searchTextbox('search', $search)
-                    ->setPlaceholder('search'),
-                $this->html->submitButton(null, $this->_('Go'))
-                    ->setIcon('search')
-                    ->addClass('slim')
-                    ->setDisposition('positive'),
-
-                $this->html->link(
-                        $resetRequest,
-                        $this->_('Reset')
-                    )
-                    ->setIcon('refresh')
-            )
-        );
-    }
-
-    public function generateSelectBarComponent()
-    {
-        return $this->html->fieldSet()->push(
-            Html::{'div.label'}($this->_('With selected:')),
-            function () {
-                $menu = $this->html->menuBar();
-                $this->addSelectBarLinks($menu);
-                return $menu;
-            }
-        )->addClass('scaffold with-selected');
-    }
-
-    public function addSelectBarLinks($menu)
-    {
-        $menu->addLinks(
-            $this->html->link(
-                    $this->uri('./delete-selected', true),
-                    $this->_('Delete')
-                )
-                ->setIcon('delete')
-        );
-    }
-
-    public function buildSelectorFormDelegate($state, $event, $id)
-    {
-        return new arch\scaffold\node\form\SelectorDelegate($this, $state, $event, $id);
-    }
-}
-
-
-
-
-
-
 trait TScaffold_SectionProvider
 {
 
@@ -276,7 +134,7 @@ trait TScaffold_SectionProvider
 
         $hb = $this->apex->component('SectionHeaderBar', $record);
 
-        if ($hb instanceof arch\scaffold\component\HeaderBar) {
+        if ($hb instanceof arch\scaffold\Component\HeaderBar) {
             $hb->setSubOperativeLinkBuilder($linkBuilder);
         }
 
@@ -288,7 +146,7 @@ trait TScaffold_SectionProvider
 
     public function buildSectionHeaderBarComponent(array $args)
     {
-        return (new arch\scaffold\component\HeaderBar($this, 'section', $args))
+        return (new arch\scaffold\Component\HeaderBar($this, 'section', $args))
             ->setTitle(
                 $this instanceof RecordDataProvider ?
                     [
@@ -437,7 +295,7 @@ trait TScaffold_IndexHeaderBarProvider
 {
     public function buildIndexHeaderBarComponent(array $args=null)
     {
-        return (new arch\scaffold\component\HeaderBar($this, 'index', $args))
+        return (new arch\scaffold\Component\HeaderBar($this, 'index', $args))
             ->setTitle($this->getDirectoryTitle())
             ->setBackLinkRequest($this->getIndexBackLinkRequest());
     }
@@ -455,7 +313,7 @@ trait TScaffold_IndexHeaderBarProvider
         $args = [$this->view, $this];
         $hb = $this->apex->component('IndexHeaderBar');
 
-        if ($hb instanceof arch\scaffold\component\HeaderBar) {
+        if ($hb instanceof arch\scaffold\Component\HeaderBar) {
             $hb->setSubOperativeLinkBuilder($linkBuilder);
         }
 

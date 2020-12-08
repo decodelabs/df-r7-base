@@ -113,6 +113,11 @@ abstract class Base implements arch\IComponent
         return (string)array_pop($parts);
     }
 
+    protected function getComponentArgs(): array
+    {
+        return $this->_componentArgs ?? [];
+    }
+
 
     // Renderable
     public function toString(): string

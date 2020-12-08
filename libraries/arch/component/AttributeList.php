@@ -16,10 +16,10 @@ use DecodeLabs\Glitch\Dumpable;
 
 class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Dumpable
 {
-    protected $_record;
-    protected $_renderIfEmpty = null;
-    protected $_fields = [];
-    protected $_viewArg;
+    protected $record;
+    protected $renderIfEmpty = null;
+    protected $fields = [];
+    protected $viewArg;
 
     protected function init(array $fields=null, $record=null)
     {
@@ -31,32 +31,32 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Dumpa
             $this->setFields($fields);
         }
 
-        if ($this->_viewArg === null) {
-            $this->_viewArg = 'record';
+        if ($this->viewArg === null) {
+            $this->viewArg = 'record';
         }
     }
 
     // Record
     public function setRecord($record)
     {
-        $this->_record = $record;
+        $this->record = $record;
         return $this;
     }
 
     public function getRecord()
     {
-        return $this->_record;
+        return $this->record;
     }
 
     // Error
     public function shouldRenderIfEmpty(bool $flag=null)
     {
         if ($flag !== null) {
-            $this->_renderIfEmpty = $flag;
+            $this->renderIfEmpty = $flag;
             return $this;
         }
 
-        return $this->_renderIfEmpty;
+        return $this->renderIfEmpty;
     }
 
     // Fields
@@ -81,7 +81,11 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Dumpa
             $value = '';
         }
 
-        if ($value === true && isset($this->_fields[$key]) && $this->_fields[$key] instanceof core\lang\ICallback) {
+        if (
+            $value === true &&
+            isset($this->fields[$key]) &&
+            $this->fields[$key] instanceof core\lang\ICallback
+        ) {
             return $this;
         }
 
@@ -89,20 +93,20 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Dumpa
             $value = core\lang\Callback::factory($value);
         }
 
-        $this->_fields[$key] = $value;
+        $this->fields[$key] = $value;
         return $this;
     }
 
     public function getFields()
     {
-        return $this->_fields;
+        return $this->fields;
     }
 
     public function hideField(...$keys)
     {
         foreach ($keys as $key) {
-            if (isset($this->_fields[$key])) {
-                $this->_fields[$key] = false;
+            if (isset($this->fields[$key])) {
+                $this->fields[$key] = false;
             }
         }
 
@@ -112,8 +116,8 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Dumpa
     public function showField(...$keys)
     {
         foreach ($keys as $key) {
-            if (isset($this->_fields[$key]) && $this->_fields[$key] == false) {
-                $this->_fields[$key] = true;
+            if (isset($this->fields[$key]) && $this->fields[$key] == false) {
+                $this->fields[$key] = true;
             }
         }
 
@@ -122,26 +126,26 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Dumpa
 
     public function isFieldVisible($key): bool
     {
-        return isset($this->_fields[$key])
-            && $this->_fields[$key] !== false;
+        return isset($this->fields[$key])
+            && $this->fields[$key] !== false;
     }
 
     public function addCustomField($key, $callback)
     {
-        $this->_fields[$key] = core\lang\Callback::factory($callback);
+        $this->fields[$key] = core\lang\Callback::factory($callback);
         return $this;
     }
 
     // View arg
     public function setViewArg($arg)
     {
-        $this->_viewArg = $arg;
+        $this->viewArg = $arg;
         return $this;
     }
 
     public function getViewArg()
     {
-        return $this->_viewArg;
+        return $this->viewArg;
     }
 
 
@@ -153,17 +157,17 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Dumpa
 
     protected function _execute()
     {
-        if ($this->_record === null
-        && $this->_viewArg !== null
-        && $this->view->hasSlot($this->_viewArg)) {
-            $this->_record = $this->view->getSlot($this->_viewArg);
+        if ($this->record === null
+        && $this->viewArg !== null
+        && $this->view->hasSlot($this->viewArg)) {
+            $this->record = $this->view->getSlot($this->viewArg);
         }
 
         $output = [];
         $list = $this->_createBaseList();
         $divider = 0;
 
-        foreach ($this->_fields as $key => $value) {
+        foreach ($this->fields as $key => $value) {
             if (substr($key, 0, 2) == '--') {
                 if (is_string($value)) {
                     $title = $value;
@@ -214,11 +218,11 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Dumpa
 
     protected function _createBaseList()
     {
-        $output = $this->view->html->attributeList($this->_record);
+        $output = $this->view->html->attributeList($this->record);
         $output->getRendererContext()->setComponent($this);
 
-        if ($this->_renderIfEmpty !== null) {
-            $output->shouldRenderIfEmpty($this->_renderIfEmpty);
+        if ($this->renderIfEmpty !== null) {
+            $output->shouldRenderIfEmpty($this->renderIfEmpty);
         }
 
         return $output;

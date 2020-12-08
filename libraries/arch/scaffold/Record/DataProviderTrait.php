@@ -5,23 +5,22 @@
  */
 namespace df\arch\scaffold\Record;
 
-use df;
-use df\core;
-use df\arch;
-use df\aura;
-use df\axis;
-use df\opal;
-use df\mesh;
-use df\flex;
-use df\user;
-
 use df\arch\scaffold\ISectionProviderScaffold as SectionProviderScaffold;
 
 use df\opal\record\IRecord as Record;
 use df\arch\IRequest as DirectoryRequest;
 
 use df\core\collection\Util as CollectionUtil;
+use df\core\collection\IMappedCollection as MappedCollection;
+
 use df\opal\query\Exception as QueryException;
+use df\opal\query\ISelectQuery as SelectQuery;
+use df\opal\record\IPrimaryKeySetProvider as PrimaryKeySetProvider;
+
+use df\axis\IUnit as Unit;
+use df\axis\ISchemaBasedStorageUnit as SchemaBasedStorageUnit;
+
+use df\flex\Text;
 
 use DecodeLabs\Tagged\Html;
 use DecodeLabs\Exceptional;
@@ -41,7 +40,9 @@ trait DataProviderTrait
     //const CAN_DELETE = true;
     //const CONFIRM_DELETE = true;
 
-    protected $_record;
+    //const SEARCH_FIELDS = [];
+
+    protected $record;
 
 
     // Key names
@@ -56,9 +57,9 @@ trait DataProviderTrait
 
         $adapter = $this->getRecordAdapter();
 
-        if ($adapter instanceof axis\ISchemaBasedStorageUnit) {
+        if ($adapter instanceof SchemaBasedStorageUnit) {
             return $adapter->getRecordKeyName();
-        } elseif ($adapter instanceof axis\IUnit) {
+        } elseif ($adapter instanceof Unit) {
             return lcfirst($adapter->getUnitName());
         } else {
             return 'record';
@@ -90,7 +91,7 @@ trait DataProviderTrait
             } else {
                 $adapter = $this->getRecordAdapter();
 
-                if ($adapter instanceof axis\ISchemaBasedStorageUnit) {
+                if ($adapter instanceof SchemaBasedStorageUnit) {
                     $output = $adapter->getRecordNameField();
                 } else {
                     $output = 'name';
@@ -131,7 +132,7 @@ trait DataProviderTrait
             return static::ITEM_NAME;
         }
 
-        return strtolower(flex\Text::formatName($this->getRecordKeyName()));
+        return strtolower(Text::formatName($this->getRecordKeyName()));
     }
 
 
@@ -151,7 +152,7 @@ trait DataProviderTrait
         ) {
             $adapter = $this->data->fetchEntity(static::ADAPTER);
 
-            if ($adapter instanceof axis\IUnit) {
+            if ($adapter instanceof Unit) {
                 $output = $adapter;
                 return $output;
             }
@@ -170,27 +171,27 @@ trait DataProviderTrait
 
 
     // Record IO
-    public function newRecord(array $values=null)
+    public function newRecord(array $values=null): Record
     {
         return $this->data->newRecord($this->getRecordAdapter(), $values);
     }
 
     public function getRecord()
     {
-        if ($this->_record) {
-            return $this->_record;
+        if ($this->record) {
+            return $this->record;
         }
 
         $key = $this->context->request->query[$this->getRecordUrlKey()];
-        $this->_record = $this->loadRecord($key);
+        $this->record = $this->loadRecord($key);
 
-        if (!$this->_record) {
+        if (!$this->record) {
             throw Exceptional::{
-                'arch/scaffold/UnexpectedValue,arch/scaffold/NotFound'
+                'df/arch/scaffold/UnexpectedValue,df/arch/scaffold/NotFound'
             }('Unable to load scaffold record');
         }
 
-        return $this->_record;
+        return $this->record;
     }
 
     protected function loadRecord($key)
@@ -204,6 +205,47 @@ trait DataProviderTrait
     public function deleteRecord(Record $record, array $flags=[])//: void
     {
         $record->delete();
+    }
+
+
+
+
+    // List IO
+    public function queryRecordList(string $mode, array $fields=null): SelectQuery
+    {
+        $output = $this->getRecordAdapter()->select($fields);
+        $this->prepareRecordList($output, $mode);
+
+        return $output;
+    }
+
+    public function extendRecordList(SelectQuery $query, string $mode): SelectQuery
+    {
+        $this->prepareRecordList($query, $mode);
+        return $query;
+    }
+
+    protected function prepareRecordList($query, $mode)
+    {
+    }
+
+    public function applyRecordListSearch(SelectQuery $query, ?string $search): SelectQuery
+    {
+        $this->searchRecordList($query, $search);
+        return $query;
+    }
+
+    protected function searchRecordList($query, $search)
+    {
+        if (defined('static::SEARCH_FIELDS')
+        && is_array(static::SEARCH_FIELDS)
+        && !empty(static::SEARCH_FIELDS)) {
+            $fields = static::SEARCH_FIELDS;
+        } else {
+            $fields = null;
+        }
+
+        $query->searchFor($search, $fields);
     }
 
 
@@ -242,38 +284,27 @@ trait DataProviderTrait
 
 
     // Record field data
-    public function getRecordId($record=null)
+    public function getRecordId(): string
     {
-        if (!$record) {
-            $record = $this->getRecord();
-        }
+        return $this->identifyRecord($this->getRecord());
+    }
 
-        if ($record instanceof opal\record\IPrimaryKeySetProvider) {
+    public function identifyRecord($record): string
+    {
+        if ($record instanceof PrimaryKeySetProvider) {
             return (string)$record->getPrimaryKeySet();
         }
 
-        return $this->idRecord($record);
-    }
-
-    protected function idRecord($record)
-    {
         $idKey = $this->getRecordIdField();
-        return @$record[$idKey];
+        return (string)@$record[$idKey];
     }
 
-    public function getRecordName($record=null)
+    public function getRecordName()
     {
-        if (!$record) {
-            $record = $this->getRecord();
-        }
-
-        $key = $this->getRecordNameField();
-        $output = $this->nameRecord($record);
-
-        return $this->_normalizeFieldOutput($key, $output);
+        return $this->nameRecord($this->getRecord());
     }
 
-    protected function nameRecord($record)
+    public function nameRecord($record)
     {
         $key = $this->getRecordNameField();
         $output = null;
@@ -287,13 +318,13 @@ trait DataProviderTrait
         } else {
             if (is_array($record)) {
                 $available = array_key_exists($key, $record);
-            } elseif ($record instanceof core\collection\IMappedCollection) {
+            } elseif ($record instanceof MappedCollection) {
                 $available = $record->has($key);
             } else {
                 $available = true;
             }
 
-            $id = $this->getRecordId($record);
+            $id = $this->identifyRecord($record);
 
             if ($available) {
                 switch ($key) {
@@ -314,54 +345,37 @@ trait DataProviderTrait
             }
         }
 
-        return $output;
+        return $this->_normalizeFieldOutput($key, $output);
     }
 
-    public function getRecordDescription($record=null)
+    public function getRecordDescription()
     {
-        if (!$record) {
+        return $this->describeRecord($this->getRecord());
+    }
+
+    public function describeRecord($record)
+    {
+        return $this->nameRecord($record);
+    }
+
+
+
+    public function getRecordIcon(): ?string
+    {
+        try {
             $record = $this->getRecord();
-        }
-
-        return $this->describeRecord($record);
-    }
-
-    protected function describeRecord($record)
-    {
-        return $this->getRecordName($record);
-    }
-
-    public function getRecordUrl($record=null)
-    {
-        if (!$record) {
-            $record = $this->getRecord();
-        }
-
-        if ($this instanceof SectionProviderScaffold) {
-            $default = $this->getDefaultSection();
-        } else {
-            $default = 'details';
-        }
-
-        return $this->getRecordNodeUri($record, $default);
-    }
-
-    public function getRecordIcon($record=null): ?string
-    {
-        if (!$record) {
-            try {
-                $record = $this->getRecord();
-            } catch (\Throwable $e) {
-                return $this->getDirectoryIcon();
-            }
-        }
-
-        if (method_exists($this, 'iconifyRecord')) {
-            return $this->iconifyRecord($record);
-        } else {
+        } catch (\Throwable $e) {
             return $this->getDirectoryIcon();
         }
+
+        return $this->iconifyRecord($record);
     }
+
+    public function iconifyRecord($record): ?string
+    {
+        return $this->getDirectoryIcon();
+    }
+
 
 
 
@@ -446,14 +460,39 @@ trait DataProviderTrait
 
 
     // URL locations
-    public function getRecordNodeUri($record, string $node, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]): DirectoryRequest
+    public function getRecordUri(): DirectoryRequest
     {
+        return $this->getRecordUriFor($this->getRecord());
+    }
+
+
+    // DELETE
+    public function getRecordNodeUri($record, ?string $node=null, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]): DirectoryRequest
+    {
+        return $this->getRecordUriFor($record, $node, $query, $redirFrom, $redirTo, $propagationFilter);
+    }
+
+    public function getRecordUriFor($record, ?string $node=null, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]): DirectoryRequest
+    {
+        if ($node === null) {
+            if ($this instanceof SectionProviderScaffold) {
+                $node = $this->getDefaultSection();
+            } else {
+                $node = 'details';
+            }
+        }
+
         return $this->getNodeUri($node, [
-            $this->getRecordUrlKey() => $this->getRecordId($record)
+            $this->getRecordUrlKey() => $this->identifyRecord($record)
         ], $redirFrom, $redirTo, $propagationFilter);
     }
 
-    public function getRecordParentUri($record): DirectoryRequest
+    public function getRecordParentUri(): DirectoryRequest
+    {
+        return $this->uri->directoryRequest($this->getParentSectionRequest());
+    }
+
+    public function getRecordParentUriFor($record): DirectoryRequest
     {
         return $this->uri->directoryRequest($this->getParentSectionRequest());
     }

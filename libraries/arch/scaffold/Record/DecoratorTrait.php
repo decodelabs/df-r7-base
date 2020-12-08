@@ -14,12 +14,15 @@ use df\arch\component\AttributeList as AttributeListComponent;
 use df\arch\component\CollectionList as CollectionListComponent;
 
 use df\arch\component\RecordLink as RecordLinkComponent;
-use df\arch\scaffold\component\RecordLink as ScaffoldRecordLinkComponent;
+use df\arch\scaffold\Component\RecordLink as ScaffoldRecordLinkComponent;
 
 use df\arch\scaffold\node\DeleteForm as ScaffoldDeleteForm;
 use df\arch\scaffold\node\DeleteSelectedForm as ScaffoldDeleteSelectedForm;
 
 use df\arch\node\Form as FormNode;
+use df\arch\node\IDelegate as Delegate;
+use df\arch\scaffold\node\form\SelectorDelegate as ScaffoldSelectorDelegate;
+
 use df\core\unit\Priority as PriorityUnit;
 use df\neon\Color;
 use df\user\IPostalAddress as PostalAddress;
@@ -59,61 +62,132 @@ trait DecoratorTrait
     }
 
 
-    // Link set generators
-    public function decorateRecordLink($link, $component)
+    // Delegate handlers
+    public function buildSelectorFormDelegate($state, $event, $id): Delegate
     {
-        return $link;
+        return new ScaffoldSelectorDelegate($this, $state, $event, $id);
     }
 
-    public function getRecordOperativeLinks($record, $mode)
-    {
-        $output = [];
 
-        // Edit
-        if ($this->canEditRecords()) {
-            $output[] = $this->html->link(
-                    $this->getRecordNodeUri($record, 'edit', null, true),
-                    $this->_('Edit '.$this->getRecordItemName())
-                )
-                ->setIcon('edit')
-                ->isDisabled(!$this->isRecordEditable($record));
+
+
+    // Component builders
+    public function buildListComponent(array $args): Component
+    {
+        $fields = array_shift($args);
+
+        if (!is_array($fields)) {
+            $fields = [];
         }
 
-        // Delete
-        if ($this->canDeleteRecords()) {
-            static $back;
-            $redirTo = null;
+        if (
+            defined('static::LIST_FIELDS') &&
+            is_array(static::LIST_FIELDS)
+        ) {
+            $fields = array_merge(static::LIST_FIELDS, $fields);
+        }
 
-            if ($mode !== 'list') {
-                if (!isset($back)) {
-                    $back = isset($this->request[$this->getRecordUrlKey()]) ?
-                        $this->getRecordParentUri($record) : null;
-                }
+        $hasActions = false;
 
-                $redirTo = $back;
+        foreach ($fields as $key => $val) {
+            if ($key === 'actions' || $val === 'actions') {
+                $hasActions = true;
+                break;
             }
-
-            $output[] = $this->html->link(
-                    $this->getRecordNodeUri(
-                        $record,
-                        'delete',
-                        null,
-                        true,
-                        $redirTo
-                    ),
-                    $this->_('Delete '.$this->getRecordItemName())
-                )
-                ->setIcon('delete')
-                ->isDisabled(!$this->isRecordDeleteable($record));
         }
 
-        return $output;
+        if (!$hasActions) {
+            $fields['actions'] = true;
+        }
+
+        $collection = array_shift($args);
+        return $this->generateCollectionList($fields, $collection);
     }
 
+    public function buildDetailsComponent(array $args): Component
+    {
+        $fields = array_shift($args);
 
-    public function buildLinkComponent(array $args): RecordLinkComponent
+        if (!is_array($fields)) {
+            $fields = [];
+        }
+
+        if (
+            defined('static::DETAILS_FIELDS') &&
+            is_array(static::DETAILS_FIELDS)
+        ) {
+            $fields = array_merge(static::DETAILS_FIELDS, $fields);
+        } elseif (
+            defined('static::LIST_FIELDS') &&
+            is_array(static::LIST_FIELDS)
+        ) {
+            $fields = array_merge(static::LIST_FIELDS, $fields);
+        }
+
+        $record = array_shift($args);
+        return $this->generateAttributeList($fields, $record);
+    }
+
+    public function buildLinkComponent(array $args): Component
     {
         return new ScaffoldRecordLinkComponent($this, $args);
+    }
+
+
+
+
+    public function generateSearchBarComponent()
+    {
+        $search = $this->request->getQueryTerm('search');
+        $request = clone $this->context->request;
+        $resetRequest = clone $request;
+        $filter = ['search', 'lm', 'pg', 'of', 'od'];
+
+        foreach ($filter as $key) {
+            $resetRequest->query->remove($key);
+        }
+
+        return $this->html->form($request)->setMethod('get')->push(
+            $this->html->fieldSet()->addClass('scaffold search')->push(
+                $this->_buildQueryPropagationInputs($filter),
+
+                $this->html->searchTextbox('search', $search)
+                    ->setPlaceholder('search'),
+                $this->html->submitButton(null, $this->_('Go'))
+                    ->setIcon('search')
+                    ->addClass('slim')
+                    ->setDisposition('positive'),
+
+                $this->html->link(
+                        $resetRequest,
+                        $this->_('Reset')
+                    )
+                    ->setIcon('refresh')
+            )
+        );
+    }
+
+    public function generateSelectBarComponent()
+    {
+        return $this->html->fieldSet()->push(
+            Html::{'div.label'}($this->_('With selected:')),
+            function () {
+                $menu = $this->html->menuBar();
+                $this->addSelectBarLinks($menu);
+                return $menu;
+            }
+        )->addClass('scaffold with-selected');
+    }
+
+    public function addSelectBarLinks($menu)
+    {
+        $menu->addLinks(
+            $this->html->link(
+                    $this->uri('./delete-selected', true),
+                    $this->_('Delete')
+                )
+                ->setIcon('delete')
+        );
     }
 
 
@@ -168,7 +242,6 @@ trait DecoratorTrait
 
         return $output;
     }
-
 
     public function generateAttributeList(array $fields, $record=true): AttributeListComponent
     {
@@ -264,23 +337,56 @@ trait DecoratorTrait
 
 
 
-    // Component builders
-    public function buildDetailsComponent(array $args): Component
+
+    // Link set generators
+    public function decorateRecordLink($link, $component)
     {
-        $fields = array_shift($args);
+        return $link;
+    }
 
-        if (!is_array($fields)) {
-            $fields = [];
+    public function getRecordOperativeLinks($record, $mode)
+    {
+        $output = [];
+
+        // Edit
+        if ($this->canEditRecords()) {
+            $output[] = $this->html->link(
+                    $this->getRecordNodeUri($record, 'edit', null, true),
+                    $this->_('Edit '.$this->getRecordItemName())
+                )
+                ->setIcon('edit')
+                ->isDisabled(!$this->isRecordEditable($record));
         }
 
-        if (defined('static::DETAILS_FIELDS') && is_array(static::DETAILS_FIELDS)) {
-            $fields = array_merge(static::DETAILS_FIELDS, $fields);
-        } elseif (defined('static::LIST_FIELDS') && is_array(static::LIST_FIELDS)) {
-            $fields = array_merge(static::LIST_FIELDS, $fields);
+        // Delete
+        if ($this->canDeleteRecords()) {
+            static $back;
+            $redirTo = null;
+
+            if ($mode !== 'list') {
+                if (!isset($back)) {
+                    $back = isset($this->request[$this->getRecordUrlKey()]) ?
+                        $this->getRecordParentUriFor($record) : null;
+                }
+
+                $redirTo = $back;
+            }
+
+            $output[] = $this->html->link(
+                    $this->getRecordNodeUri(
+                        $record,
+                        'delete',
+                        null,
+                        true,
+                        $redirTo
+                    ),
+                    $this->_('Delete '.$this->getRecordItemName())
+                )
+                ->setIcon('delete')
+                ->isDisabled(!$this->isRecordDeleteable($record));
         }
 
-        $record = array_shift($args);
-        return $this->generateAttributeList($fields, $record);
+        return $output;
     }
 
 
@@ -303,7 +409,7 @@ trait DecoratorTrait
                     ->setDisposition('informative');
             }
 
-            $output = $this->getRecordName($item);
+            $output = $this->nameRecord($item);
 
             if ($fieldName == 'slug') {
                 $output = Html::{'samp'}($output);

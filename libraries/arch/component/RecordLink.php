@@ -22,17 +22,17 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
 
     const DEFAULT_MISSING_MESSAGE = 'not found';
 
-    protected $_icon = 'item';
-    protected $_disposition = 'transitive';
-    protected $_note;
-    protected $_maxLength;
-    protected $_missingMessage;
-    protected $_node;
-    protected $_redirectFrom;
-    protected $_redirectTo;
-    protected $_name;
-    protected $_matchRequest;
-    protected $_record;
+    protected $icon = 'item';
+    protected $disposition = 'transitive';
+    protected $note;
+    protected $maxLength;
+    protected $missingMessage;
+    protected $node;
+    protected $redirectFrom;
+    protected $redirectTo;
+    protected $name;
+    protected $matchRequest;
+    protected $record;
 
     protected function init($record=null, $name=null, $match=null)
     {
@@ -61,65 +61,65 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
             $record = ['id' => $record];
         }
 
-        $this->_record = $record;
+        $this->record = $record;
         return $this;
     }
 
     public function getRecord()
     {
-        return $this->_record;
+        return $this->record;
     }
 
     // Icon
     public function setIcon(string $icon=null)
     {
-        $this->_icon = $icon;
+        $this->icon = $icon;
         return $this;
     }
 
     public function getIcon()
     {
-        return $this->_icon;
+        return $this->icon;
     }
 
     // Disposition
     public function setDisposition($disposition)
     {
-        $this->_disposition = $disposition;
+        $this->disposition = $disposition;
         return $this;
     }
 
     public function getDisposition()
     {
-        return $this->_disposition;
+        return $this->disposition;
     }
 
     // Note
     public function setNote($note)
     {
-        $this->_note = $note;
+        $this->note = $note;
         return $this;
     }
 
     public function getNote()
     {
-        return $this->_note;
+        return $this->note;
     }
 
     // Missing message
     public function setMissingMessage($message)
     {
-        $this->_missingMessage = $message;
+        $this->missingMessage = $message;
         return $this;
     }
 
     public function getMissingMessage()
     {
-        if (empty($this->_missingMessage)) {
+        if (empty($this->missingMessage)) {
             return static::DEFAULT_MISSING_MESSAGE;
         }
 
-        return $this->_missingMessage;
+        return $this->missingMessage;
     }
 
     // Max length
@@ -131,25 +131,25 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
             $length = (int)$length;
         }
 
-        $this->_maxLength = $length;
+        $this->maxLength = $length;
         return $this;
     }
 
     public function getMaxLength(): ?int
     {
-        return $this->_maxLength;
+        return $this->maxLength;
     }
 
     // Match
     public function setMatchRequest($request)
     {
-        $this->_matchRequest = $request;
+        $this->matchRequest = $request;
         return $this;
     }
 
     public function getMatchRequest()
     {
-        return $this->_matchRequest;
+        return $this->matchRequest;
     }
 
     // Node
@@ -160,11 +160,11 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
                 $this->setIcon('edit');
                 $this->setDisposition('operative');
 
-                if ($this->_redirectFrom === null) {
+                if ($this->redirectFrom === null) {
                     $this->setRedirectFrom(true);
                 }
 
-                if (!$this->_name) {
+                if (!$this->name) {
                     $this->setName($this->_('Edit'));
                 }
 
@@ -174,49 +174,49 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
                 $this->setIcon('delete');
                 $this->setDisposition('negative');
 
-                if ($this->_redirectFrom === null) {
+                if ($this->redirectFrom === null) {
                     $this->setRedirectFrom(true);
                 }
 
-                if (!$this->_name) {
+                if (!$this->name) {
                     $this->setName($this->_('Delete'));
                 }
 
                 break;
         }
 
-        $this->_node = $node;
+        $this->node = $node;
         return $this;
     }
 
     public function getNode()
     {
-        return $this->_node;
+        return $this->node;
     }
 
 
     // Name
     public function setName($name)
     {
-        $this->_name = $name;
+        $this->name = $name;
         return $this;
     }
 
     public function getName(): string
     {
-        return $this->_name;
+        return $this->name;
     }
 
     // Redirect
     public function setRedirectFrom($rf)
     {
-        $this->_redirectFrom = $rf;
+        $this->redirectFrom = $rf;
         return $this;
     }
 
     public function getRedirectFrom()
     {
-        return $this->_redirectFrom;
+        return $this->redirectFrom;
     }
 
     public function setRedirectTo($rt)
@@ -225,13 +225,13 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
             $rt = $this->context->uri->backRequest($rt);
         }
 
-        $this->_redirectTo = $rt;
+        $this->redirectTo = $rt;
         return $this;
     }
 
     public function getRedirectTo()
     {
-        return $this->_redirectTo;
+        return $this->redirectTo;
     }
 
     // Render
@@ -242,18 +242,18 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
 
     protected function _execute()
     {
-        if ($this->_record === null && $this->_isNullable) {
+        if ($this->record === null && $this->_isNullable) {
             return null;
         }
 
         $id = null;
 
-        if ($this->_record) {
-            $id = $this->_getRecordId();
+        if ($this->record) {
+            $id = $this->getRecordId();
         }
 
-        if (!$this->_record || $id === null) {
-            $message = $this->_missingMessage;
+        if (!$this->record || $id === null) {
+            $message = $this->missingMessage;
 
             if (empty($message)) {
                 $message = $this->_(static::DEFAULT_MISSING_MESSAGE);
@@ -268,41 +268,41 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
 
 
         try {
-            $name = $this->_name ?? $this->_getRecordName();
+            $name = $this->name ?? $this->getRecordName();
         } catch (\Throwable $e) {
             $name = $id;
         }
 
         $title = null;
 
-        if ($this->_name !== null) {
+        if ($this->name !== null) {
             $title = $name;
-            $name = $this->_name;
+            $name = $this->name;
         }
 
-        $url = $this->_getRecordUrl($id);
+        $url = $this->getRecordUri($id);
 
         if ($url !== null) {
-            if (!$this->_redirectFrom) {
-                if ($this->_disposition == 'positive' || $this->_disposition == 'negative' || $this->_disposition == 'operative') {
-                    $this->_redirectFrom = true;
+            if (!$this->redirectFrom) {
+                if ($this->disposition == 'positive' || $this->disposition == 'negative' || $this->disposition == 'operative') {
+                    $this->redirectFrom = true;
                 }
             }
 
-            $url = $this->uri->__invoke($url, $this->_redirectFrom, $this->_redirectTo, true);
+            $url = $this->uri->__invoke($url, $this->redirectFrom, $this->redirectTo, true);
 
-            if ($url instanceof arch\IRequest && $this->_node) {
-                $url->setNode($this->_node);
+            if ($url instanceof arch\IRequest && $this->node) {
+                $url->setNode($this->node);
             }
         }
 
 
-        if ($this->_maxLength && is_string($name)) {
+        if ($this->maxLength && is_string($name)) {
             if ($title === null) {
                 $title = $name;
             }
 
-            $name = $this->view->format->shorten($name, $this->_maxLength);
+            $name = $this->view->format->shorten($name, $this->maxLength);
         }
 
         if ($title !== null) {
@@ -311,24 +311,24 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
 
         $name = $this->_decorateBody($name);
 
-        $output = $this->html->link($url, $name, $this->_matchRequest)
-            //->shouldCheckAccess((bool)$this->_node)
-            ->setIcon($this->_icon)
-            ->setDisposition($this->_disposition)
-            ->setNote($this->_note)
+        $output = $this->html->link($url, $name, $this->matchRequest)
+            //->shouldCheckAccess((bool)$this->node)
+            ->setIcon($this->icon)
+            ->setDisposition($this->disposition)
+            ->setNote($this->note)
             ->setTitle($title)
             ->addAccessLocks($this->_accessLocks)
             ->isDisabled($this->_isDisabled);
 
-        if ($this->_node && $this->_record instanceof user\IAccessLock) {
-            switch ($this->_node) {
+        if ($this->node && $this->record instanceof user\IAccessLock) {
+            switch ($this->node) {
                 case 'edit':
                 case 'delete':
-                    $output->addAccessLock($this->_record->getActionLock($this->_node));
+                    $output->addAccessLock($this->record->getActionLock($this->node));
                     break;
 
                 default:
-                    $output->addAccessLock($this->_record->getActionLock('access'));
+                    $output->addAccessLock($this->record->getActionLock('access'));
                     break;
             }
         }
@@ -337,15 +337,15 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
         return $output;
     }
 
-    protected function _getRecordId()
+    protected function getRecordId(): string
     {
-        return $this->_record['id'];
+        return (string)$this->record['id'];
     }
 
-    protected function _getRecordName()
+    protected function getRecordName()
     {
-        if (isset($this->_record['name'])) {
-            return $this->_record['name'];
+        if (isset($this->record['name'])) {
+            return $this->record['name'];
         } else {
             return '???';
         }
@@ -360,7 +360,7 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
     {
     }
 
-    abstract protected function _getRecordUrl($id);
+    abstract protected function getRecordUri(string $id);
 
 
     /**

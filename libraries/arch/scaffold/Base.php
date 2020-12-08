@@ -173,7 +173,7 @@ abstract class Base implements IScaffold
         }
 
         if (method_exists($this, $method)) {
-            return new arch\scaffold\component\Generic($this, $activeName, $args);
+            return new arch\scaffold\Component\Generic($this, $activeName, $args);
         }
 
         $method = 'build'.$name.'Component';
@@ -237,7 +237,7 @@ abstract class Base implements IScaffold
             );
         }
 
-        return new arch\scaffold\navigation\Menu($this, $name, $id);
+        return new arch\scaffold\Navigation\Menu($this, $name, $id);
     }
 
 

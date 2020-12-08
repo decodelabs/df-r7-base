@@ -5,12 +5,10 @@
  */
 namespace df\arch\scaffold\Record;
 
-use df\opal;
-
-
 use df\arch\IRequest as DirectoryRequest;
 use df\arch\scaffold\IScaffold as Scaffold;
 use df\opal\record\IRecord as Record;
+use df\opal\query\ISelectQuery as SelectQuery;
 
 interface DataProvider extends Scaffold
 {
@@ -26,16 +24,24 @@ interface DataProvider extends Scaffold
     public function getRecordAdapter();
 
     // Record IO
-    public function newRecord(array $values=null);
+    public function newRecord(array $values=null): Record;
     public function getRecord();
     public function deleteRecord(Record $record, array $flags=[]);
 
+    // List IO
+    public function queryRecordList(string $mode, array $fields=null): SelectQuery;
+    public function extendRecordList(SelectQuery $query, string $mode): SelectQuery;
+    public function applyRecordListSearch(SelectQuery $query, ?string $search): SelectQuery;
+
     // Record field data
-    public function getRecordId($record=null);
-    public function getRecordName($record=null);
-    public function getRecordDescription($record=null);
-    public function getRecordUrl($record=null);
-    public function getRecordIcon($record=null): ?string;
+    public function getRecordId(): string;
+    public function identifyRecord($record): string;
+    public function getRecordName();
+    public function nameRecord($record);
+    public function getRecordDescription();
+    public function describeRecord($record);
+    public function getRecordIcon(): ?string;
+    public function iconifyRecord($record): ?string;
 
     // Record interaction
     public function canAddRecords(): bool;
@@ -47,17 +53,8 @@ interface DataProvider extends Scaffold
     public function getRecordDeleteFlags(): array;
 
     // URL locations
-    public function getRecordNodeUri($record, string $node, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]): DirectoryRequest;
-    public function getRecordParentUri($record): DirectoryRequest;
-
-
-
-
-
-    // List
-    public function queryRecordList($mode, array $fields=null);
-    public function extendRecordList(opal\query\ISelectQuery $query, $mode);
-    public function applyRecordListSearch(opal\query\ISelectQuery $query, $search);
-
-    public function renderRecordList($query=null, array $fields=null, $callback=null, $queryMode=null);
+    public function getRecordUri(): DirectoryRequest;
+    public function getRecordUriFor($record, ?string $node=null, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]): DirectoryRequest;
+    public function getRecordParentUri(): DirectoryRequest;
+    public function getRecordParentUriFor($record): DirectoryRequest;
 }

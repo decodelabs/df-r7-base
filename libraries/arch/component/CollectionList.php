@@ -17,19 +17,19 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dump
 {
     const DEFAULT_ERROR_MESSAGE = null;
 
-    protected $_collection;
-    protected $_errorMessage;
-    protected $_renderIfEmpty = null;
-    protected $_fields = [];
-    protected $_urlRedirect = null;
-    protected $_viewArg;
-    protected $_mode = 'get';
-    protected $_postEvent = 'paginate';
+    protected $collection;
+    protected $errorMessage;
+    protected $renderIfEmpty = null;
+    protected $fields = [];
+    protected $urlRedirect = null;
+    protected $viewArg;
+    protected $mode = 'get';
+    protected $postEvent = 'paginate';
 
     protected function init(array $fields=null, $collection=null)
     {
         if (static::DEFAULT_ERROR_MESSAGE !== null) {
-            $this->_errorMessage = $this->_(static::DEFAULT_ERROR_MESSAGE);
+            $this->errorMessage = $this->_(static::DEFAULT_ERROR_MESSAGE);
         }
 
         if ($collection) {
@@ -40,22 +40,22 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dump
             $this->setFields($fields);
         }
 
-        if ($this->_viewArg === null) {
+        if ($this->viewArg === null) {
             $parts = explode('\\', get_class($this));
-            $this->_viewArg = lcfirst((string)array_pop($parts));
+            $this->viewArg = lcfirst((string)array_pop($parts));
         }
     }
 
     // Collection
     public function setCollection($collection)
     {
-        $this->_collection = $collection;
+        $this->collection = $collection;
         return $this;
     }
 
     public function getCollection()
     {
-        return $this->_collection;
+        return $this->collection;
     }
 
     public function setMode(string $mode)
@@ -63,7 +63,7 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dump
         switch ($mode) {
             case 'post':
             case 'get':
-                $this->_mode = $mode;
+                $this->mode = $mode;
                 break;
 
             default:
@@ -78,40 +78,40 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dump
 
     public function getMode(): string
     {
-        return $this->_mode;
+        return $this->mode;
     }
 
     public function setPostEvent(string $event)
     {
-        $this->_postEvent = $event;
+        $this->postEvent = $event;
         return $this;
     }
 
     public function getPostEvent()
     {
-        return $this->_postEvent;
+        return $this->postEvent;
     }
 
     // Error
     public function setErrorMessage(string $message=null)
     {
-        $this->_errorMessage = $message;
+        $this->errorMessage = $message;
         return $this;
     }
 
     public function getErrorMessage()
     {
-        return $this->_errorMessage;
+        return $this->errorMessage;
     }
 
     public function shouldRenderIfEmpty(bool $flag=null)
     {
         if ($flag !== null) {
-            $this->_renderIfEmpty = $flag;
+            $this->renderIfEmpty = $flag;
             return $this;
         }
 
-        return $this->_renderIfEmpty;
+        return $this->renderIfEmpty;
     }
 
     // Fields
@@ -131,7 +131,7 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dump
             $value = true;
         }
 
-        if ($value === true && isset($this->_fields[$key]) && $this->_fields[$key] instanceof core\lang\ICallback) {
+        if ($value === true && isset($this->fields[$key]) && $this->fields[$key] instanceof core\lang\ICallback) {
             return $this;
         }
 
@@ -139,20 +139,20 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dump
             $value = core\lang\Callback::factory($value);
         }
 
-        $this->_fields[$key] = $value;
+        $this->fields[$key] = $value;
         return $this;
     }
 
     public function getFields()
     {
-        return $this->_fields;
+        return $this->fields;
     }
 
     public function hideField(...$keys)
     {
         foreach ($keys as $key) {
-            if (isset($this->_fields[$key])) {
-                $this->_fields[$key] = false;
+            if (isset($this->fields[$key])) {
+                $this->fields[$key] = false;
             }
         }
 
@@ -162,8 +162,8 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dump
     public function showField(...$keys)
     {
         foreach ($keys as $key) {
-            if (isset($this->_fields[$key]) && $this->_fields[$key] == false) {
-                $this->_fields[$key] = true;
+            if (isset($this->fields[$key]) && $this->fields[$key] == false) {
+                $this->fields[$key] = true;
             }
         }
 
@@ -172,38 +172,38 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dump
 
     public function isFieldVisible($key): bool
     {
-        return isset($this->_fields[$key])
-            && $this->_fields[$key] !== false;
+        return isset($this->fields[$key])
+            && $this->fields[$key] !== false;
     }
 
     public function addCustomField($key, $callback)
     {
-        $this->_fields[$key] = core\lang\Callback::factory($callback);
+        $this->fields[$key] = core\lang\Callback::factory($callback);
         return $this;
     }
 
     // Url redirect
     public function setUrlRedirect($redirect)
     {
-        $this->_urlRedirect = $redirect;
+        $this->urlRedirect = $redirect;
         return $this;
     }
 
     public function getUrlRedirect()
     {
-        return $this->_urlRedirect;
+        return $this->urlRedirect;
     }
 
     // View arg
     public function setViewArg($arg)
     {
-        $this->_viewArg = $arg;
+        $this->viewArg = $arg;
         return $this;
     }
 
     public function getViewArg()
     {
-        return $this->_viewArg;
+        return $this->viewArg;
     }
 
 
@@ -215,31 +215,31 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dump
 
     protected function _execute()
     {
-        if ($this->_collection === null) {
-            if ($this->_viewArg !== null
-            && $this->view->hasSlot($this->_viewArg)) {
-                $this->_collection = $this->view->getSlot($this->_viewArg);
+        if ($this->collection === null) {
+            if ($this->viewArg !== null
+            && $this->view->hasSlot($this->viewArg)) {
+                $this->collection = $this->view->getSlot($this->viewArg);
             }
         }
 
-        $output = $this->view->html->collectionList($this->_collection);
-        $output->setMode($this->_mode);
-        $output->setPostEvent($this->_postEvent);
+        $output = $this->view->html->collectionList($this->collection);
+        $output->setMode($this->mode);
+        $output->setPostEvent($this->postEvent);
         $context = $output->getRendererContext();
         $context->setComponent($this);
 
 
-        if ($this->_errorMessage !== null) {
-            $output->setErrorMessage($this->_errorMessage);
+        if ($this->errorMessage !== null) {
+            $output->setErrorMessage($this->errorMessage);
         } else {
             $output->setErrorMessage($this->_('This list is currently empty'));
         }
 
-        if ($this->_renderIfEmpty !== null) {
-            $output->shouldRenderIfEmpty($this->_renderIfEmpty);
+        if ($this->renderIfEmpty !== null) {
+            $output->shouldRenderIfEmpty($this->renderIfEmpty);
         }
 
-        foreach ($this->_fields as $key => $value) {
+        foreach ($this->fields as $key => $value) {
             if ($value === true) {
                 $func = 'add'.ucfirst($key).'Field';
 

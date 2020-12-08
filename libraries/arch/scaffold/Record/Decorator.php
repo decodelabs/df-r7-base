@@ -13,6 +13,7 @@ use df\arch\component\CollectionList as CollectionListComponent;
 use df\arch\component\RecordLink as RecordLinkComponent;
 
 use df\arch\node\Form as FormNode;
+use df\arch\node\IDelegate as Delegate;
 
 interface Decorator extends Scaffold
 {
@@ -20,17 +21,22 @@ interface Decorator extends Scaffold
     public function buildDeleteDynamicNode(): FormNode;
     public function buildDeleteSelectedDynamicNode(): FormNode;
 
-    // Link set generators
-    public function decorateRecordLink($link, $component);
-    public function getRecordOperativeLinks($record, $mode);
-    public function buildLinkComponent(array $args): RecordLinkComponent;
+    // Delegate builders
+    public function buildSelectorFormDelegate($state, $event, $id): Delegate;
+
+    // Component builders
+    public function buildDetailsComponent(array $args): Component;
+    public function buildListComponent(array $args): Component;
+    public function buildLinkComponent(array $args): Component;
 
     // List generators
     public function generateCollectionList(array $fields, ?iterable $collection=null): CollectionListComponent;
     public function generateAttributeList(array $fields, $record=true): AttributeListComponent;
+    public function renderRecordList($query=null, array $fields=null, $callback=null, ?string $queryMode=null);
 
-    // Component builders
-    public function buildDetailsComponent(array $args): Component;
+    // Link set generators
+    public function decorateRecordLink($link, $component);
+    public function getRecordOperativeLinks($record, $mode);
 
     // Fields
     public function autoDefineNameKeyField(string $fieldName, $list, string $mode, ?string $label=null);
