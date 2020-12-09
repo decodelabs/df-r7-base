@@ -32,13 +32,3 @@ interface IScaffold extends
 
     public function getNodeUri(string $node, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]): DirectoryRequest;
 }
-
-
-
-interface ISectionProviderScaffold extends IScaffold
-{
-    public function loadSectionNode();
-    public function buildSection($name, $builder, $linkBuilder=null);
-    public function getSectionItemCounts();
-    public function getDefaultSection(): string;
-}

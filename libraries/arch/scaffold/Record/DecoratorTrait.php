@@ -354,7 +354,7 @@ trait DecoratorTrait
         // Edit
         if ($this->canEditRecords()) {
             $output[] = $this->html->link(
-                    $this->getRecordNodeUri($record, 'edit', null, true),
+                    $this->getRecordUri($record, 'edit', null, true),
                     $this->_('Edit '.$this->getRecordItemName())
                 )
                 ->setIcon('edit')
@@ -369,14 +369,14 @@ trait DecoratorTrait
             if ($mode !== 'list') {
                 if (!isset($back)) {
                     $back = isset($this->request[$this->getRecordUrlKey()]) ?
-                        $this->getRecordParentUriFor($record) : null;
+                        $this->getRecordParentUri($record) : null;
                 }
 
                 $redirTo = $back;
             }
 
             $output[] = $this->html->link(
-                    $this->getRecordNodeUri(
+                    $this->getRecordUri(
                         $record,
                         'delete',
                         null,

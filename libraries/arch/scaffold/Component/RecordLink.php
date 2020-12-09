@@ -49,7 +49,7 @@ class RecordLink extends RecordLinkBase
 
     protected function getRecordUri(string $id)
     {
-        return $this->scaffold->getRecordUriFor($this->record);
+        return $this->scaffold->getRecordUri($this->record);
     }
 
     protected function _decorateBody($body)

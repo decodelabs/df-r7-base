@@ -10,8 +10,10 @@ use df\core;
 use df\arch;
 use df\aura;
 
-use df\arch\scaffold\Record\DataProvider as RecordDataProvider;
+use df\arch\node\INode as Node;
 use df\arch\IRequest as DirectoryRequest;
+use df\arch\scaffold\Record\DataProvider as RecordDataProvider;
+use df\arch\scaffold\Section\Provider as SectionProvider;
 
 use DecodeLabs\Exceptional;
 
@@ -137,7 +139,10 @@ abstract class Base implements IScaffold
                     }
                 }
 
-                if ($this instanceof ISectionProviderScaffold && ($node = $this->loadSectionNode())) {
+                if (
+                    $this instanceof SectionProvider &&
+                    ($node = $this->loadSectionNode())
+                ) {
                     return $node;
                 }
 
@@ -147,7 +152,7 @@ abstract class Base implements IScaffold
             }
         }
 
-        return $this->_generateNode([$this, $method]);
+        return $this->generateNode([$this, $method]);
     }
 
     public function onNodeDispatch(arch\node\INode $node)
@@ -312,14 +317,14 @@ abstract class Base implements IScaffold
     }
 
 
-    protected function _generateNode($callback)
+    protected function generateNode(callable $callback): Node
     {
         return (new arch\node\Base($this->context, function ($node) use ($callback) {
             if (null !== ($pre = $this->onNodeDispatch($node))) {
                 return $pre;
             }
 
-            return core\lang\Callback::factory($callback)->invoke();
+            return core\lang\Callback::call($callback);
         }))
             ->setDefaultAccess($this->getDefaultAccess())
             ->setAccessSignifiers(...$this->getAccessSignifiers());

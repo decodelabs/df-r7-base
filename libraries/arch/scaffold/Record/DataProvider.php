@@ -53,8 +53,6 @@ interface DataProvider extends Scaffold
     public function getRecordDeleteFlags(): array;
 
     // URL locations
-    public function getRecordUri(): DirectoryRequest;
-    public function getRecordUriFor($record, ?string $node=null, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]): DirectoryRequest;
-    public function getRecordParentUri(): DirectoryRequest;
-    public function getRecordParentUriFor($record): DirectoryRequest;
+    public function getRecordUri($record, ?string $node=null, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]): DirectoryRequest;
+    public function getRecordParentUri($record): DirectoryRequest;
 }

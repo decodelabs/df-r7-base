@@ -907,7 +907,7 @@ trait TWidget_NavigationEntryController
         }
 
         if ($entry instanceof \Generator) {
-            return $this->addEntries(...iterator_to_array($entry));
+            return $this->addEntries(...array_values(iterator_to_array($entry)));
         }
 
         if ($entry instanceof arch\navigation\IEntryListGenerator) {

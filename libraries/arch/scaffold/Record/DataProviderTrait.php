@@ -5,7 +5,7 @@
  */
 namespace df\arch\scaffold\Record;
 
-use df\arch\scaffold\ISectionProviderScaffold as SectionProviderScaffold;
+use df\arch\scaffold\Section\Provider as SectionProvider;
 
 use df\opal\record\IRecord as Record;
 use df\arch\IRequest as DirectoryRequest;
@@ -460,22 +460,10 @@ trait DataProviderTrait
 
 
     // URL locations
-    public function getRecordUri(): DirectoryRequest
-    {
-        return $this->getRecordUriFor($this->getRecord());
-    }
-
-
-    // DELETE
-    public function getRecordNodeUri($record, ?string $node=null, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]): DirectoryRequest
-    {
-        return $this->getRecordUriFor($record, $node, $query, $redirFrom, $redirTo, $propagationFilter);
-    }
-
-    public function getRecordUriFor($record, ?string $node=null, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]): DirectoryRequest
+    public function getRecordUri($record, ?string $node=null, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]): DirectoryRequest
     {
         if ($node === null) {
-            if ($this instanceof SectionProviderScaffold) {
+            if ($this instanceof SectionProvider) {
                 $node = $this->getDefaultSection();
             } else {
                 $node = 'details';
@@ -487,13 +475,17 @@ trait DataProviderTrait
         ], $redirFrom, $redirTo, $propagationFilter);
     }
 
-    public function getRecordParentUri(): DirectoryRequest
+    public function getRecordParentUri($record): DirectoryRequest
     {
-        return $this->uri->directoryRequest($this->getParentSectionRequest());
+        if (!empty($str = $this->getRecordParentUriString($record))) {
+            return $this->uri->directoryRequest($str);
+        }
+
+        return $this->getNodeUri('index');
     }
 
-    public function getRecordParentUriFor($record): DirectoryRequest
+    protected function getRecordParentUriString($record): string
     {
-        return $this->uri->directoryRequest($this->getParentSectionRequest());
+        return '';
     }
 }

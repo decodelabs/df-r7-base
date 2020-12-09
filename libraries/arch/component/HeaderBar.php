@@ -10,6 +10,8 @@ use df\core;
 use df\arch;
 use df\aura;
 
+use df\aura\html\widget\Menu as MenuWidget;
+
 use DecodeLabs\Tagged\Html;
 use DecodeLabs\Glitch\Dumpable;
 
@@ -110,7 +112,7 @@ abstract class HeaderBar extends Base implements Dumpable
 
         // Title
         if (empty($this->title)) {
-            $title = $this->_getDefaultTitle();
+            $title = $this->getDefaultTitle();
         } else {
             $title = $this->title;
         }
@@ -127,7 +129,7 @@ abstract class HeaderBar extends Base implements Dumpable
         // SubTitle
 
         if (empty($this->subTitle)) {
-            $subTitle = $this->_getDefaultSubTitle();
+            $subTitle = $this->getDefaultSubTitle();
         } else {
             $subTitle = $this->subTitle;
         }
@@ -137,7 +139,7 @@ abstract class HeaderBar extends Base implements Dumpable
         }
 
         // Selector area
-        if ($selectorArea = $this->_renderSelectorArea()) {
+        if ($selectorArea = $this->renderSelectorArea()) {
             $output[] = Html::{'div.w.selectorArea.floated'}([$selectorArea]);
         }
 
@@ -145,41 +147,41 @@ abstract class HeaderBar extends Base implements Dumpable
         // Primary
         $output[] = $primaryMenu = $this->html->menuBar()->addClass('primary');
 
-        $this->_addOperativeLinks($primaryMenu);
+        $this->addOperativeLinks($primaryMenu);
         $primaryMenu->addSpacer();
-        $this->_addSubOperativeLinks($primaryMenu);
+        $this->addSubOperativeLinks($primaryMenu);
         $primaryMenu->addSpacer();
-        $this->_addTransitiveLinks($primaryMenu);
+        $this->addTransitiveLinks($primaryMenu);
         $primaryMenu->addLink($this->html->backLink($this->backLinkRequest));
 
         // Secondary
         $output[] = $secondaryMenu = $this->html->menuBar()->addClass('secondary');
-        $this->_addSectionLinks($secondaryMenu);
+        $this->addSectionLinks($secondaryMenu);
 
         return Html::{'header.w.bar'}($output);
     }
 
 
-    protected function _getDefaultTitle()
+    protected function getDefaultTitle()
     {
     }
-    protected function _getDefaultSubTitle()
+    protected function getDefaultSubTitle()
     {
     }
 
-    protected function _addOperativeLinks($primaryMenu)
+    protected function addOperativeLinks(MenuWidget $primaryMenu): void
     {
     }
-    protected function _addSubOperativeLinks($primaryMenu)
+    protected function addSubOperativeLinks(MenuWidget $primaryMenu): void
     {
     }
-    protected function _addTransitiveLinks($primaryMenu)
+    protected function addTransitiveLinks(MenuWidget $primaryMenu): void
     {
     }
-    protected function _addSectionLinks($secondaryMenu)
+    protected function addSectionLinks(MenuWidget $secondaryMenu): void
     {
     }
-    protected function _renderSelectorArea()
+    protected function renderSelectorArea()
     {
     }
 

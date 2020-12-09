@@ -68,7 +68,7 @@ class DeleteForm extends DeleteFormBase
     protected function finalize()
     {
         return $this->complete(function () {
-            //return $this->uri->directoryRequest($this->scaffold->getRecordParentUriFor($this->scaffold->getRecord()));
+            //return $this->uri->directoryRequest($this->scaffold->getRecordParentUri($this->scaffold->getRecord()));
         });
     }
 }

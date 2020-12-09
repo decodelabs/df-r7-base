@@ -8,13 +8,14 @@ namespace df\arch\scaffold\Component;
 use df\arch\component\HeaderBar as HeaderBarBase;
 use df\arch\scaffold\IScaffold as Scaffold;
 use df\core\lang\Callback;
+use df\aura\html\widget\Menu as MenuWidget;
 
 class HeaderBar extends HeaderBarBase
 {
     protected $scaffold;
     protected $name;
 
-    protected $_subOperativeLinkBuilder;
+    protected $subOperativeLinkBuilder;
 
     public function __construct(Scaffold $scaffold, string $name, array $args=null)
     {
@@ -24,47 +25,51 @@ class HeaderBar extends HeaderBarBase
         $this->icon = $scaffold->getDirectoryIcon();
     }
 
-    protected function _addOperativeLinks($menu)
+    protected function addOperativeLinks(MenuWidget $menu): void
     {
-        $method = 'add'.$this->name.'OperativeLinks';
+        $method = 'generate'.$this->name.'OperativeLinks';
 
         if (method_exists($this->scaffold, $method)) {
-            $this->scaffold->{$method}($menu, $this);
+            $menu->addLinks($this->scaffold->{$method}());
         }
     }
 
-    protected function _addSubOperativeLinks($menu)
+    protected function addSubOperativeLinks(MenuWidget $menu): void
     {
-        $method = 'add'.$this->name.'SubOperativeLinks';
+        $method = 'generate'.$this->name.'SubOperativeLinks';
 
         if (method_exists($this->scaffold, $method)) {
-            $this->scaffold->{$method}($menu, $this);
+            $menu->addLinks($this->scaffold->{$method}());
         }
 
-        if ($this->_subOperativeLinkBuilder) {
-            $this->_subOperativeLinkBuilder->invoke($menu, $this->scaffold->view, $this->scaffold);
+        if ($this->subOperativeLinkBuilder) {
+            $this->subOperativeLinkBuilder->invoke($menu, $this->scaffold->view, $this->scaffold);
         }
     }
 
-    protected function _addTransitiveLinks($menu)
+    protected function addTransitiveLinks(MenuWidget $menu): void
     {
-        $method = 'add'.$this->name.'TransitiveLinks';
+        $method = 'generate'.$this->name.'TransitiveLinks';
 
         if (method_exists($this->scaffold, $method)) {
-            $this->scaffold->{$method}($menu, $this);
+            $menu->addLinks($this->scaffold->{$method}());
         }
     }
 
-    protected function _addSectionLinks($menu)
+    protected function addSectionLinks(MenuWidget $menu): void
     {
-        $method = 'add'.$this->name.'SectionLinks';
+        $method = 'generate'.$this->name.'SectionLinks';
 
         if (method_exists($this->scaffold, $method)) {
-            $this->scaffold->{$method}($menu, $this);
+            $menu->addLinks($this->scaffold->{$method}());
+        }
+
+        if (count($menu->getEntries()) == 1) {
+            $menu->clearEntries();
         }
     }
 
-    protected function _renderSelectorArea()
+    protected function renderSelectorArea()
     {
         $method = 'render'.$this->name.'SelectorArea';
 
@@ -79,12 +84,12 @@ class HeaderBar extends HeaderBarBase
             $builder = Callback::factory($builder);
         }
 
-        $this->_subOperativeLinkBuilder = $builder;
+        $this->subOperativeLinkBuilder = $builder;
         return $this;
     }
 
     public function getSubOperativeLinkBuilder()
     {
-        return $this->_subOperativeLinkBuilder;
+        return $this->subOperativeLinkBuilder;
     }
 }

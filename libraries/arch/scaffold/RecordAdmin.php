@@ -15,20 +15,20 @@ use df\arch\scaffold\Record\DataProvider as RecordDataProvider;
 use df\arch\scaffold\Record\DataProviderTrait as RecordDataProviderTrait;
 use df\arch\scaffold\Record\Decorator as RecordDecorator;
 use df\arch\scaffold\Record\DecoratorTrait as RecordDecoratorTrait;
+use df\arch\scaffold\Section\Provider as SectionProvider;
+use df\arch\scaffold\Section\ProviderTrait as SectionProviderTrait;
 
 use DecodeLabs\Glitch\Dumpable;
 
 abstract class RecordAdmin extends arch\scaffold\Base implements
     RecordDataProvider,
     RecordDecorator,
-
-    ISectionProviderScaffold,
+    SectionProvider,
     Dumpable
 {
     use RecordDataProviderTrait;
     use RecordDecoratorTrait;
-
-    use TScaffold_SectionProvider;
+    use SectionProviderTrait;
 
     use TScaffold_IndexHeaderBarProvider;
     use TScaffold_RecordIndexHeaderBarProvider;
