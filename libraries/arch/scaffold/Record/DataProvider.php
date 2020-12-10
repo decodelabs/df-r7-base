@@ -25,7 +25,9 @@ interface DataProvider extends Scaffold
 
     // Record IO
     public function newRecord(array $values=null): Record;
+    public function getRecordUrlId(): ?string;
     public function getRecord();
+    public function getActiveRow(): array;
     public function deleteRecord(Record $record, array $flags=[]);
 
     // List IO
@@ -45,6 +47,7 @@ interface DataProvider extends Scaffold
 
     // Record interaction
     public function canAddRecords(): bool;
+    public function canPreviewRecords(): bool;
     public function canEditRecords(): bool;
     public function canEditRecord($record): bool;
     public function canDeleteRecords(): bool;
@@ -55,4 +58,5 @@ interface DataProvider extends Scaffold
     // URL locations
     public function getRecordUri($record, ?string $node=null, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]): DirectoryRequest;
     public function getRecordParentUri($record): DirectoryRequest;
+    public function getRecordPreviewUri(array $record): ?DirectoryRequest;
 }

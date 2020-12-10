@@ -31,6 +31,7 @@ use df\neon\Color;
 use df\user\IPostalAddress as PostalAddress;
 
 use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Exceptional;
 
 use ArrayAccess;
@@ -347,49 +348,70 @@ trait DecoratorTrait
         return $link;
     }
 
-    public function getRecordOperativeLinks($record, $mode)
+
+
+    public function generateRecordOperativeLinks(array $record): iterable
     {
-        $output = [];
+        // Preview
+        yield 'preview' => $this->generateRecordPreviewLink($record);
 
         // Edit
-        if ($this->canEditRecords()) {
-            $output[] = $this->html->link(
-                    $this->getRecordUri($record, 'edit', null, true),
-                    $this->_('Edit '.$this->getRecordItemName())
-                )
-                ->setIcon('edit')
-                ->isDisabled(!$this->isRecordEditable($record));
-        }
+        yield 'edit' => $this->generateRecordEditLink($record);
 
         // Delete
-        if ($this->canDeleteRecords()) {
-            static $back;
-            $redirTo = null;
+        yield 'delete' => $this->generateRecordDeleteLink($record);
+    }
 
-            if ($mode !== 'list') {
-                if (!isset($back)) {
-                    $back = isset($this->request[$this->getRecordUrlKey()]) ?
-                        $this->getRecordParentUri($record) : null;
-                }
-
-                $redirTo = $back;
-            }
-
-            $output[] = $this->html->link(
-                    $this->getRecordUri(
-                        $record,
-                        'delete',
-                        null,
-                        true,
-                        $redirTo
-                    ),
-                    $this->_('Delete '.$this->getRecordItemName())
-                )
-                ->setIcon('delete')
-                ->isDisabled(!$this->isRecordDeleteable($record));
+    protected function generateRecordPreviewLink(array $record): ?Markup
+    {
+        if (!$this->canPreviewRecords()) {
+            return null;
         }
 
-        return $output;
+        $url = $this->getRecordPreviewUri($record);
+
+        return $this->html->link($url, $this->_('Preview %n%', [
+                '%n%' => $this->getRecordItemName()
+            ]))
+            ->setTarget('_blank')
+            ->setIcon('preview')
+            ->setDisposition('transitive')
+            ->isDisabled($url === null);
+    }
+
+    protected function generateRecordEditLink(array $record): ?Markup
+    {
+        if (!$this->canEditRecords()) {
+            return null;
+        }
+
+        return $this->html->link(
+                $this->getRecordUri($record, 'edit', null, true),
+                $this->_('Edit %n%', [
+                    '%n%' => $this->getRecordItemName()
+                ])
+            )
+            ->setIcon('edit')
+            ->isDisabled(!$this->isRecordEditable($record));
+    }
+
+    protected function generateRecordDeleteLink(array $record): ?Markup
+    {
+        if (!$this->canDeleteRecords()) {
+            return null;
+        }
+
+        $redirTo = isset($this->request[$this->getRecordUrlKey()]) ?
+            $this->getRecordParentUri($record) : null;
+
+        return $this->html->link(
+                $this->getRecordUri($record, 'delete', null, true, $redirTo),
+                $this->_('Delete %n%', [
+                    '%n%' => $this->getRecordItemName()
+                ])
+            )
+            ->setIcon('delete')
+            ->isDisabled(!$this->isRecordDeleteable($record));
     }
 
 
@@ -636,7 +658,7 @@ trait DecoratorTrait
     public function defineActionsField($list, $mode)
     {
         $list->addField('actions', function ($item) {
-            return $this->getRecordOperativeLinks($item, 'list');
+            yield from $this->generateRecordOperativeLinks($item);
         });
     }
 }

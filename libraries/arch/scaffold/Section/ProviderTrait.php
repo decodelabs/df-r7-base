@@ -228,7 +228,7 @@ trait ProviderTrait
     public function generateSectionOperativeLinks(): iterable
     {
         if ($this instanceof RecordDataProvider) {
-            yield from $this->getRecordOperativeLinks($this->getRecord(), 'sectionHeaderBar');
+            yield from $this->generateRecordOperativeLinks($this->getActiveRow());
         }
     }
 

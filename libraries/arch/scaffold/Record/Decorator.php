@@ -39,7 +39,7 @@ interface Decorator extends Scaffold
 
     // Link set generators
     public function decorateRecordLink($link, $component);
-    public function getRecordOperativeLinks($record, $mode);
+    public function generateRecordOperativeLinks(array $record): iterable;
 
     // Fields
     public function autoDefineNameKeyField(string $fieldName, $list, string $mode, ?string $label=null);

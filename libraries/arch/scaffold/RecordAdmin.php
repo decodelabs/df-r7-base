@@ -44,6 +44,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     const DEFAULT_SECTION = 'details';
 
     const CAN_ADD = true;
+    const CAN_PREVIEW = false;
     const CAN_EDIT = true;
     const CAN_DELETE = true;
     const CONFIRM_DELETE = true;

@@ -36,6 +36,7 @@ trait DataProviderTrait
     //const URL_KEY = null;
 
     //const CAN_ADD = true;
+    //const CAN_PREVIEW = false;
     //const CAN_EDIT = true;
     //const CAN_DELETE = true;
     //const CONFIRM_DELETE = true;
@@ -43,6 +44,7 @@ trait DataProviderTrait
     //const SEARCH_FIELDS = [];
 
     protected $record;
+    protected $row;
 
 
     // Key names
@@ -176,19 +178,35 @@ trait DataProviderTrait
         return $this->data->newRecord($this->getRecordAdapter(), $values);
     }
 
+    public function getRecordUrlId(): ?string
+    {
+        return $this->context->request->query[$this->getRecordUrlKey()];
+    }
+
     public function getRecord()
     {
         if ($this->record) {
             return $this->record;
         }
 
-        $key = $this->context->request->query[$this->getRecordUrlKey()];
-        $this->record = $this->loadRecord($key);
+        if (null === ($id = $this->getRecordUrlId())) {
+            throw Exceptional::{
+                'df/arch/scaffold/UnexpectedValue,df/arch/scaffold/NotFound'
+            }([
+                'message' => 'Record ID not provided in URL',
+                'http' => 404
+            ]);
+        }
+
+        $this->record = $this->loadRecord($id);
 
         if (!$this->record) {
             throw Exceptional::{
                 'df/arch/scaffold/UnexpectedValue,df/arch/scaffold/NotFound'
-            }('Unable to load scaffold record');
+            }([
+                'message' => 'Unable to load scaffold record',
+                'http' => 404
+            ]);
         }
 
         return $this->record;
@@ -199,6 +217,35 @@ trait DataProviderTrait
         return $this->data->fetchForAction(
             $this->getRecordAdapter(),
             $key
+        );
+    }
+
+    public function getActiveRow(): array
+    {
+        if ($this->row) {
+            return $this->row;
+        }
+
+        if (null === ($id = $this->getRecordUrlId())) {
+            throw Exceptional::{
+                'df/arch/scaffold/UnexpectedValue,df/arch/scaffold/NotFound'
+            }([
+                'message' => 'Record ID not provided in URL',
+                'http' => 404
+            ]);
+        }
+
+        $this->row = $this->loadActiveRow($id);
+        return $this->row;
+    }
+
+    protected function loadActiveRow(string $id): array
+    {
+        return $this->data->queryForAction(
+            $this->queryRecordList('row'),
+            function ($query) use ($id) {
+                $query->where($this->getRecordIdField(), '=', $id);
+            }
         );
     }
 
@@ -389,6 +436,15 @@ trait DataProviderTrait
         return false;
     }
 
+    public function canPreviewRecords(): bool
+    {
+        if (defined('static::CAN_PREVIEW')) {
+            return (bool)static::CAN_PREVIEW;
+        }
+
+        return false;
+    }
+
     public function canEditRecords(): bool
     {
         if (defined('static::CAN_EDIT')) {
@@ -477,15 +533,30 @@ trait DataProviderTrait
 
     public function getRecordParentUri($record): DirectoryRequest
     {
-        if (!empty($str = $this->getRecordParentUriString($record))) {
-            return $this->uri->directoryRequest($str);
+        if (empty($str = $this->getRecordParentUriString($record))) {
+            return $this->getNodeUri('index');
         }
 
-        return $this->getNodeUri('index');
+        return $this->uri->directoryRequest($str);
     }
 
-    protected function getRecordParentUriString($record): string
+    protected function getRecordParentUriString($record): ?string
     {
-        return '';
+        return null;
+    }
+
+
+    public function getRecordPreviewUri(array $record): ?DirectoryRequest
+    {
+        if (empty($str = $this->getRecordPreviewUriString($record))) {
+            return null;
+        }
+
+        return $this->uri->directoryRequest($str);
+    }
+
+    protected function getRecordPreviewUriString(array $record): ?string
+    {
+        return null;
     }
 }
