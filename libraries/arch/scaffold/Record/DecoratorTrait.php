@@ -370,9 +370,7 @@ trait DecoratorTrait
 
         $url = $this->getRecordPreviewUri($record);
 
-        return $this->html->link($url, $this->_('Preview %n%', [
-                '%n%' => $this->getRecordItemName()
-            ]))
+        return $this->html->link($url, $this->_('Preview'))
             ->setTarget('_blank')
             ->setIcon('preview')
             ->setDisposition('transitive')
