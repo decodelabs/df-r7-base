@@ -531,7 +531,7 @@ trait DataProviderTrait
         ], $redirFrom, $redirTo, $propagationFilter);
     }
 
-    public function getRecordParentUri($record): DirectoryRequest
+    public function getRecordParentUri(array $record): DirectoryRequest
     {
         if (empty($str = $this->getRecordParentUriString($record))) {
             return $this->getNodeUri('index');
@@ -540,7 +540,7 @@ trait DataProviderTrait
         return $this->uri->directoryRequest($str);
     }
 
-    protected function getRecordParentUriString($record): ?string
+    protected function getRecordParentUriString(array $record): ?string
     {
         return null;
     }

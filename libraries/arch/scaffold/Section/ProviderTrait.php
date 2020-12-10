@@ -187,7 +187,7 @@ trait ProviderTrait
                 ucfirst($this->getRecordItemName()).': ',
                 $this->getRecordDescription()
             ];
-            $backLink = $this->getRecordParentUri($this->getRecord());
+            $backLink = $this->getRecordParentUri($this->getActiveRow());
         } else {
             $icon = $this->getDirectoryIcon();
             $title = $this->getDirectoryTitle();
@@ -215,7 +215,7 @@ trait ProviderTrait
     protected function updateSectionBreadcrumbs($breadcrumbs, $record, $node)
     {
         if ($this instanceof RecordDataProvider) {
-            $link = $this->getRecordParentUri($record);
+            $link = $this->getRecordParentUri(/*$record*/ $this->getActiveRow());
         } else {
             $link = $this->getNodeUri('index');
         }

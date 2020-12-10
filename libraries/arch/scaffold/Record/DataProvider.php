@@ -57,6 +57,6 @@ interface DataProvider extends Scaffold
 
     // URL locations
     public function getRecordUri($record, ?string $node=null, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]): DirectoryRequest;
-    public function getRecordParentUri($record): DirectoryRequest;
+    public function getRecordParentUri(array $record): DirectoryRequest;
     public function getRecordPreviewUri(array $record): ?DirectoryRequest;
 }
