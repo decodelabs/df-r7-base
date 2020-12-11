@@ -77,14 +77,10 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         return $this->view;
     }
 
-    public function buildListNode($query=null, array $fields=null, $callback=null, $queryMode=null)
+    public function buildListNode($query=null, array $fields=null)
     {
-        if ($queryMode === null) {
-            $queryMode = $this->request->getNode();
-        }
-
         return $this->buildNode(
-            $this->renderRecordList($query, $fields, $callback, $queryMode)
+            $this->renderRecordList($query, $fields)
         );
     }
 
@@ -97,11 +93,9 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
 
 
     // Components
-    public function renderRecordList($query=null, array $fields=null, $callback=null, ?string $queryMode=null)
+    public function renderRecordList($query=null, array $fields=null)
     {
-        if ($queryMode === null) {
-            $queryMode = $this->request->getNode();
-        }
+        $queryMode = $this->request->getNode();
 
         if ($query instanceof opal\query\ISelectQuery) {
             $this->prepareRecordList($query, $queryMode);
@@ -134,10 +128,6 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         $list = $this->apex->component(ucfirst($keyName).'List', $fields)
             ->setCollection($query)
             ->setSlot('scaffold', $this);
-
-        if ($callback) {
-            core\lang\Callback::call($callback, $list, $searchBar);
-        }
 
         if ($query->hasSearch()) {
             $list->addCustomField('relevance', function ($list) {
