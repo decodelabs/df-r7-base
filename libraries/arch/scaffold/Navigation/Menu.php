@@ -6,7 +6,7 @@
 namespace df\arch\scaffold\Navigation;
 
 use df\arch\Context;
-use df\arch\scaffold\IScaffold as Scaffold;
+use df\arch\Scaffold;
 use df\arch\scaffold\Base as ScaffoldBase;
 use df\arch\navigation\menu\Base as MenuBase;
 

@@ -12,6 +12,8 @@ use df\user;
 use df\link;
 use df\aura;
 
+use df\arch\Scaffold;
+
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
 
@@ -261,7 +263,7 @@ class Context implements IContext, \Serializable, Dumpable
         }
     }
 
-    public function getScaffold(): arch\scaffold\IScaffold
+    public function getScaffold(): Scaffold
     {
         return arch\scaffold\Base::factory($this);
     }

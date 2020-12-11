@@ -6,7 +6,7 @@
 namespace df\arch\scaffold\Component;
 
 use df\arch\component\HeaderBar as HeaderBarBase;
-use df\arch\scaffold\IScaffold as Scaffold;
+use df\arch\Scaffold;
 use df\core\lang\Callback;
 use df\aura\html\widget\Menu as MenuWidget;
 

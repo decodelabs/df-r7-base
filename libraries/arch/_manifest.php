@@ -12,6 +12,8 @@ use df\user;
 use df\aura;
 use df\flow;
 
+use df\arch\Scaffold;
+
 use DecodeLabs\Tagged\MarkupProxy;
 
 // Exceptions
@@ -79,7 +81,7 @@ interface IContext extends core\IContext, IResponseForcer
     public function extractDirectoryLocation(string &$path): IRequest;
     public function extractThemeId(string &$path, bool $findDefault=false): ?string;
 
-    public function getScaffold(): arch\scaffold\IScaffold;
+    public function getScaffold(): Scaffold;
 }
 
 interface IRequestOrientedRunner extends core\IRunner

@@ -5,8 +5,8 @@
  */
 namespace df\arch\scaffold\Record;
 
+use df\arch\Scaffold;
 use df\arch\IComponent as Component;
-use df\arch\scaffold\IScaffold as Scaffold;
 
 use df\arch\component\AttributeList as AttributeListComponent;
 use df\arch\component\CollectionList as CollectionListComponent;

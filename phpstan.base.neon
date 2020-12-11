@@ -8,7 +8,7 @@ parameters:
         - */_templates/*.mail.php
 
     universalObjectCratesClasses:
-        - df\arch\scaffold\IScaffold
+        - df\arch\Scaffold
         - df\axis\IModel
         - df\axis\IUnit
         - df\core\IContext

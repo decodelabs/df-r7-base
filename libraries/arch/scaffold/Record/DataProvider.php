@@ -6,7 +6,7 @@
 namespace df\arch\scaffold\Record;
 
 use df\arch\IRequest as DirectoryRequest;
-use df\arch\scaffold\IScaffold as Scaffold;
+use df\arch\Scaffold;
 use df\opal\record\IRecord as Record;
 use df\opal\query\ISelectQuery as SelectQuery;
 

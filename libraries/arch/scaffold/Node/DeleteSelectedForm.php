@@ -5,7 +5,7 @@
  */
 namespace df\arch\scaffold\Node;
 
-use df\arch\scaffold\IScaffold as Scaffold;
+use df\arch\Scaffold;
 
 use DecodeLabs\Tagged\Html;
 

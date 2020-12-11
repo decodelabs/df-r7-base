@@ -30,6 +30,8 @@ use df\core\unit\Priority as PriorityUnit;
 use df\neon\Color;
 use df\user\IPostalAddress as PostalAddress;
 
+use df\axis\IUnit as Unit;
+
 use DecodeLabs\Tagged\Html;
 use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Exceptional;
@@ -192,6 +194,26 @@ trait DecoratorTrait
                 )
                 ->setIcon('delete')
         );
+    }
+
+
+
+    public function generateIndexOperativeLinks(): iterable
+    {
+        if (!$this->canAddRecords()) {
+            return;
+        }
+
+        $recordAdapter = $this->getRecordAdapter();
+
+        yield 'add' => $this->html->link(
+                $this->uri($this->getNodeUri('add'), true),
+                $this->_('Add '.$this->getRecordItemName())
+            )
+            ->setIcon('add')
+            ->chainIf($recordAdapter instanceof Unit, function ($link) use ($recordAdapter) {
+                $link->addAccessLock($recordAdapter->getEntityLocator()->toString().'#add');
+            });
     }
 
 

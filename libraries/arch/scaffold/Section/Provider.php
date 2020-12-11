@@ -6,7 +6,7 @@
 namespace df\arch\scaffold\Section;
 
 use df\arch\IComponent as Component;
-use df\arch\scaffold\IScaffold as Scaffold;
+use df\arch\Scaffold;
 use df\arch\node\INode as Node;
 use df\aura\view\IView as View;
 use df\arch\navigation\menu\IEntryList as MenuEntryList;
@@ -22,10 +22,6 @@ interface Provider extends Scaffold
     public function getDefaultSection(): string;
     public function getSectionManifest(): array;
     public function getSectionItemCounts(): array;
-
-    // Components
-    public function buildSectionHeaderBarComponent(array $args): Component;
-    public function renderSectionSelectorArea();
 
     // Link handlers
     public function generateSectionOperativeLinks(): iterable;

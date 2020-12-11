@@ -6,7 +6,7 @@
 namespace df\arch\scaffold\Node;
 
 use df\arch\node\DeleteForm as DeleteFormBase;
-use df\arch\scaffold\IScaffold as Scaffold;
+use df\arch\Scaffold;
 
 class DeleteForm extends DeleteFormBase
 {

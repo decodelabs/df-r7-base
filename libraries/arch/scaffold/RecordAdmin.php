@@ -11,27 +11,32 @@ use df\arch;
 use df\aura;
 use df\opal;
 
+use df\arch\scaffold\Index\Decorator as IndexDecorator;
+use df\arch\scaffold\Index\DecoratorTrait as IndexDecoratorTrait;
 use df\arch\scaffold\Record\DataProvider as RecordDataProvider;
 use df\arch\scaffold\Record\DataProviderTrait as RecordDataProviderTrait;
 use df\arch\scaffold\Record\Decorator as RecordDecorator;
 use df\arch\scaffold\Record\DecoratorTrait as RecordDecoratorTrait;
+use df\arch\scaffold\Section\Decorator as SectionDecorator;
+use df\arch\scaffold\Section\DecoratorTrait as SectionDecoratorTrait;
 use df\arch\scaffold\Section\Provider as SectionProvider;
 use df\arch\scaffold\Section\ProviderTrait as SectionProviderTrait;
 
 use DecodeLabs\Glitch\Dumpable;
 
 abstract class RecordAdmin extends arch\scaffold\Base implements
+    IndexDecorator,
     RecordDataProvider,
     RecordDecorator,
+    SectionDecorator,
     SectionProvider,
     Dumpable
 {
+    use IndexDecoratorTrait;
     use RecordDataProviderTrait;
     use RecordDecoratorTrait;
+    use SectionDecoratorTrait;
     use SectionProviderTrait;
-
-    use TScaffold_IndexHeaderBarProvider;
-    use TScaffold_RecordIndexHeaderBarProvider;
 
     const ADAPTER = null;
     const KEY_NAME = null;

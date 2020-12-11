@@ -5,17 +5,15 @@
  */
 namespace df\arch\scaffold;
 
-use df;
-use df\core;
-use df\arch;
-use df\aura;
-use df\opal;
+use df\arch\scaffold\Index\Decorator as IndexDecorator;
+use df\arch\scaffold\Index\DecoratorTrait as IndexDecoratorTrait;
 
-class AreaMenu extends Base
+class AreaMenu extends Base implements
+    IndexDecorator
 {
     const HEADER_BAR = true;
 
-    use TScaffold_IndexHeaderBarProvider;
+    use IndexDecoratorTrait;
 
     public function indexHtmlNode()
     {

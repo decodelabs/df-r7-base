@@ -11,7 +11,7 @@ use df\arch;
 use df\aura;
 
 use df\arch\component\Base as ComponentBase;
-use df\arch\scaffold\IScaffold as Scaffold;
+use df\arch\Scaffold;
 
 class Generic extends ComponentBase
 {

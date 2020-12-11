@@ -5,7 +5,7 @@
  */
 namespace df\arch\scaffold\Node\Form;
 
-use df\arch\scaffold\IScaffold as Scaffold;
+use df\arch\Scaffold;
 use df\arch\node\form\SelectorDelegate as SelectorDelegateBase;
 use df\arch\node\IFormState as FormState;
 use df\arch\node\IFormEventDescriptor as FormEventDescriptor;

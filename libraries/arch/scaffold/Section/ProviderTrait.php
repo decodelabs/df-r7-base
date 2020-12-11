@@ -6,7 +6,7 @@
 namespace df\arch\scaffold\Section;
 
 use df\arch\IComponent as Component;
-use df\arch\scaffold\IScaffold as Scaffold;
+use df\arch\Scaffold;
 use df\arch\scaffold\Record\DataProvider as RecordDataProvider;
 use df\arch\scaffold\Component\HeaderBar as ScaffoldHeaderBar;
 use df\arch\navigation\menu\IEntryList as MenuEntryList;
@@ -176,39 +176,6 @@ trait ProviderTrait
     }
 
 
-
-
-    // Components
-    public function buildSectionHeaderBarComponent(array $args): Component
-    {
-        if ($this instanceof RecordDataProvider) {
-            $icon = $this->getRecordIcon();
-            $title = [
-                ucfirst($this->getRecordItemName()).': ',
-                $this->getRecordDescription()
-            ];
-            $backLink = $this->getRecordParentUri($this->getActiveRow());
-        } else {
-            $icon = $this->getDirectoryIcon();
-            $title = $this->getDirectoryTitle();
-            $backLink = $this->getNodeUri('index');
-        }
-
-        return (new ScaffoldHeaderBar($this, 'section', $args))
-            ->setTitle($title)
-            ->setIcon($icon)
-            ->setBackLinkRequest($backLink);
-    }
-
-    public function renderSectionSelectorArea()
-    {
-        $node = $this->context->request->getNode();
-        $method = 'render'.ucfirst($node).'SectionSelectorArea';
-
-        if (method_exists($this, $method)) {
-            return $this->{$method}();
-        }
-    }
 
 
     // Link handlers

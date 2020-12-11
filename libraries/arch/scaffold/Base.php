@@ -10,6 +10,7 @@ use df\core;
 use df\arch;
 use df\aura;
 
+use df\arch\Scaffold;
 use df\arch\node\INode as Node;
 use df\arch\IRequest as DirectoryRequest;
 use df\arch\scaffold\Record\DataProvider as RecordDataProvider;
@@ -17,7 +18,7 @@ use df\arch\scaffold\Section\Provider as SectionProvider;
 
 use DecodeLabs\Exceptional;
 
-abstract class Base implements IScaffold
+abstract class Base implements Scaffold
 {
 
     //use core\TContextProxy;
@@ -38,7 +39,7 @@ abstract class Base implements IScaffold
 
     private $_directoryKeyName;
 
-    public static function factory(arch\IContext $context): IScaffold
+    public static function factory(arch\IContext $context): Scaffold
     {
         $registryKey = 'scaffold('.$context->location->getPath()->getDirname().')';
 
@@ -306,6 +307,15 @@ abstract class Base implements IScaffold
 
         return $this->uri->directoryRequest($output, $redirFrom, $redirTo);
     }
+
+    public function getIndexParentUri(): DirectoryRequest
+    {
+        return $this->uri->backRequest('../');
+    }
+
+
+
+
 
     protected function _normalizeFieldOutput($field, $value)
     {
