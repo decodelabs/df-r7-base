@@ -12,6 +12,8 @@ use df\arch;
 use df\aura;
 use df\flex;
 
+use df\arch\scaffold\Loader as ScaffoldLoader;
+
 use DecodeLabs\Exceptional;
 
 class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
@@ -247,7 +249,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
             $context = arch\Context::factory($request);
         }
 
-        return arch\scaffold\Base::factory($context);
+        return ScaffoldLoader::fromContext($context);
     }
 
     public function form($request)

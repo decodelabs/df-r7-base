@@ -13,6 +13,7 @@ use df\link;
 use df\aura;
 
 use df\arch\Scaffold;
+use df\arch\scaffold\Loader as ScaffoldLoader;
 
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
@@ -265,7 +266,7 @@ class Context implements IContext, \Serializable, Dumpable
 
     public function getScaffold(): Scaffold
     {
-        return arch\scaffold\Base::factory($this);
+        return ScaffoldLoader::fromContext($this);
     }
 
 

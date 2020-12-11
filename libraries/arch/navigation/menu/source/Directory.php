@@ -10,6 +10,8 @@ use df\core;
 use df\arch;
 use df\flex;
 
+use df\arch\scaffold\Loader as ScaffoldLoader;
+
 use DecodeLabs\Exceptional;
 
 class Directory extends Base implements arch\navigation\menu\IListableSource
@@ -71,7 +73,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource
             $contextRequest .= lcfirst($name);
             $context = new arch\Context(new arch\Request($contextRequest));
 
-            $scaffold = arch\scaffold\Base::factory($context);
+            $scaffold = ScaffoldLoader::fromContext($context);
             $scaffoldId = $baseId.'__scaffold';
             $menus[$scaffoldId] = $scaffold->loadMenu($name, $scaffoldId);
         } catch (arch\scaffold\Exception $e) {

@@ -7,7 +7,7 @@ namespace df\arch\scaffold\Navigation;
 
 use df\arch\Context;
 use df\arch\Scaffold;
-use df\arch\scaffold\Base as ScaffoldBase;
+use df\arch\scaffold\Loader as ScaffoldLoader;
 use df\arch\navigation\menu\Base as MenuBase;
 
 class Menu extends MenuBase
@@ -49,7 +49,7 @@ class Menu extends MenuBase
                 $this->context = Context::getCurrent();
             }
 
-            $this->scaffold = ScaffoldBase::factory($this->context);
+            $this->scaffold = ScaffoldLoader::fromContext($this->context);
         }
     }
 }

@@ -21,6 +21,7 @@ use df\axis\IUnit as Unit;
 use df\axis\ISchemaBasedStorageUnit as SchemaBasedStorageUnit;
 
 use df\flex\Text;
+use df\core\time\IDate as Date;
 
 use DecodeLabs\Tagged\Html;
 use DecodeLabs\Exceptional;
@@ -392,7 +393,16 @@ trait DataProviderTrait
             }
         }
 
-        return $this->_normalizeFieldOutput($key, $output);
+        return $this->normalizeFieldOutput($key, $output);
+    }
+
+    protected function normalizeFieldOutput(string $field, $value)
+    {
+        if ($value instanceof Date) {
+            return $this->format->dateTime($value, $value->hasTime() ? 'short' : 'medium');
+        }
+
+        return $value;
     }
 
     public function getRecordDescription()

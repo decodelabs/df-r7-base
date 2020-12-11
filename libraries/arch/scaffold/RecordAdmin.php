@@ -5,12 +5,6 @@
  */
 namespace df\arch\scaffold;
 
-use df;
-use df\core;
-use df\arch;
-use df\aura;
-use df\opal;
-
 use df\arch\scaffold\Index\Decorator as IndexDecorator;
 use df\arch\scaffold\Index\DecoratorTrait as IndexDecoratorTrait;
 use df\arch\scaffold\Record\DataProvider as RecordDataProvider;
@@ -22,9 +16,11 @@ use df\arch\scaffold\Section\DecoratorTrait as SectionDecoratorTrait;
 use df\arch\scaffold\Section\Provider as SectionProvider;
 use df\arch\scaffold\Section\ProviderTrait as SectionProviderTrait;
 
+use df\opal\query\ISelectQuery as SelectQuery;
+
 use DecodeLabs\Glitch\Dumpable;
 
-abstract class RecordAdmin extends arch\scaffold\Base implements
+abstract class RecordAdmin extends Generic implements
     IndexDecorator,
     RecordDataProvider,
     RecordDecorator,
@@ -67,33 +63,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     // Nodes
     public function indexHtmlNode()
     {
-        return $this->buildListNode();
-    }
-
-    public function buildNode($content)
-    {
-        $this->view = $this->apex->newWidgetView();
-
-        $this->view->content->push(
-            $this->apex->component('IndexHeaderBar'),
-            $content
-        );
-
-        return $this->view;
-    }
-
-    public function buildListNode($query=null, array $fields=null)
-    {
-        return $this->buildNode(
-            $this->renderRecordList($query, $fields)
-        );
-    }
-
-    public function renderDetailsSectionBody($record)
-    {
-        $keyName = $this->getRecordKeyName();
-        return $this->apex->component(ucfirst($keyName).'Details')
-            ->setRecord($record);
+        return $this->buildRecordListNode();
     }
 
 
@@ -102,7 +72,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     {
         $queryMode = $this->request->getNode();
 
-        if ($query instanceof opal\query\ISelectQuery) {
+        if ($query instanceof SelectQuery) {
             $this->prepareRecordList($query, $queryMode);
         } else {
             $extender = is_callable($query) ? $query : null;
@@ -163,7 +133,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
 
 
     // Helpers
-    public function getDirectoryKeyName()
+    public function getDirectoryKeyName(): string
     {
         return $this->getRecordKeyName();
     }

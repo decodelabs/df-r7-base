@@ -18,11 +18,17 @@ use df\arch\node\IDelegate as Delegate;
 use df\arch\node\IFormState as FormState;
 use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
 
+use df\aura\view\IView as View;
+
 interface Decorator extends Scaffold
 {
     // Node builders
+    public function buildRecordListNode(?callable $filter=null, array $fields=null): View;
     public function buildDeleteDynamicNode(): FormNode;
     public function buildDeleteSelectedDynamicNode(): FormNode;
+
+    // Section handlers
+    public function renderDetailsSectionBody($record);
 
     // Delegate builders
     public function buildSelectorFormDelegate(FormState $state, FormEventDescriptor $event, string $id): Delegate;
@@ -35,7 +41,7 @@ interface Decorator extends Scaffold
     // List generators
     public function generateCollectionList(array $fields, ?iterable $collection=null): CollectionListComponent;
     public function generateAttributeList(array $fields, $record=true): AttributeListComponent;
-    public function renderRecordList($query=null, array $fields=null);
+    public function renderRecordList($filter=null, array $fields=null);
 
     // Link set generators
     public function decorateRecordLink($link, $component);

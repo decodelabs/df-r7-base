@@ -29,7 +29,7 @@ trait DecoratorTrait
             $backLink = $this->getRecordParentUri($this->getActiveRow());
         } else {
             $icon = $this->getDirectoryIcon();
-            $title = $this->getDirectoryTitle();
+            $title = $this->renderDirectoryTitle();
             $backLink = $this->getNodeUri('index');
         }
 

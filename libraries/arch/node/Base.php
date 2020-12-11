@@ -11,6 +11,8 @@ use df\arch;
 use df\aura;
 use df\link;
 
+use df\arch\scaffold\Loader as ScaffoldLoader;
+
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
 
@@ -44,7 +46,7 @@ class Base implements INode, Dumpable
 
         if (!$class || $isDefault) {
             try {
-                $scaffold = arch\scaffold\Base::factory($context);
+                $scaffold = ScaffoldLoader::fromContext($context);
                 return $scaffold->loadNode();
             } catch (arch\scaffold\NotFoundException $e) {
             }

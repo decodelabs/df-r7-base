@@ -5,27 +5,38 @@
  */
 namespace df\arch\scaffold;
 
-use df;
-use df\core;
-use df\arch;
-use df\aura;
-
 use df\arch\Scaffold;
-use df\arch\node\INode as Node;
+use df\arch\IComponent as Component;
 use df\arch\IRequest as DirectoryRequest;
+use df\arch\IContext as Context;
+use df\arch\node\INode as Node;
+use df\arch\node\Base as BaseNode;
+use df\arch\node\IDelegate as Delegate;
 use df\arch\scaffold\Record\DataProvider as RecordDataProvider;
 use df\arch\scaffold\Section\Provider as SectionProvider;
+use df\arch\scaffold\Component\Generic as GenericScaffoldComponent;
+
+use df\core\TContextAware as ContextAwareTrait;
+use df\aura\view\Base as ViewBase;
+use df\aura\view\TView_CascadingHelperProvider as CascadingHelperProviderTrait;
+use df\arch\TDirectoryAccessLock as DirectoryAccessLockTrait;
+use df\arch\TOptionalDirectoryAccessLock as OptionalDirectoryAccessLockTrait;
+
+use df\arch\node\IFormState as FormState;
+use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
+use df\arch\navigation\menu\IMenu as Menu;
+use df\arch\scaffold\Navigation\Menu as ScaffoldMenu;
 
 use DecodeLabs\Exceptional;
 
-abstract class Base implements Scaffold
+abstract class Generic implements Scaffold
 {
 
     //use core\TContextProxy;
-    use core\TContextAware;
-    use aura\view\TView_CascadingHelperProvider;
-    use arch\TDirectoryAccessLock;
-    use arch\TOptionalDirectoryAccessLock;
+    use ContextAwareTrait;
+    use CascadingHelperProviderTrait;
+    use DirectoryAccessLockTrait;
+    use OptionalDirectoryAccessLockTrait;
 
     const TITLE = null;
     const ICON = null;
@@ -37,67 +48,167 @@ abstract class Base implements Scaffold
     const ACCESS_SIGNIFIERS = null;
     const NAME_KEY_FIELD_MAX_LENGTH = 40;
 
-    private $_directoryKeyName;
+    private $directoryKeyName;
 
-    public static function factory(arch\IContext $context): Scaffold
-    {
-        $registryKey = 'scaffold('.$context->location->getPath()->getDirname().')';
-
-        if ($output = $context->app->getRegistryObject($registryKey)) {
-            return $output;
-        }
-
-        $runMode = $context->getRunMode();
-        $class = self::getClassFor($context->location, $runMode);
-
-        if (!$class) {
-            throw Exceptional::NotFound(
-                'Scaffold could not be found for '.$context->location
-            );
-        }
-
-        $output = new $class($context);
-        $context->app->setRegistryObject($output);
-
-        return $output;
-    }
-
-    public static function getClassFor(arch\IRequest $request, $runMode='Http')
-    {
-        $runMode = ucfirst($runMode);
-        $parts = $request->getControllerParts();
-        $parts[] = $runMode.'Scaffold';
-        $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.implode('\\', $parts);
-
-        if (!class_exists($class)) {
-            $class = null;
-        }
-
-        return $class;
-    }
-
-    protected function __construct(arch\IContext $context)
+    public function __construct(Context $context)
     {
         $this->context = $context;
-        $this->view = aura\view\Base::factory($context->request->getType(), $this->context);
+        $this->view = ViewBase::factory($context->request->getType(), $this->context);
     }
 
+
+    // Registry
     public function getRegistryObjectKey(): string
     {
         return 'scaffold('.$this->context->location->getPath()->getDirname().')';
     }
 
+
+    // View
     public function getView()
     {
         return $this->view;
     }
 
-    public function getPropagatingQueryVars()
+
+
+
+    // Loaders
+    public function loadNode(): Node
+    {
+        $node = $this->context->request->getNode();
+        $method = lcfirst($node).$this->context->request->getType().'Node';
+
+        if (!method_exists($this, $method)) {
+            $method = lcfirst($node).'Node';
+
+            if (!method_exists($this, $method)) {
+                $method = 'build'.ucfirst($node).'DynamicNode';
+
+                if (method_exists($this, $method)) {
+                    $node = $this->{$method}();
+
+                    if ($node instanceof Node) {
+                        return $node;
+                    }
+                }
+
+                if (
+                    $this instanceof SectionProvider &&
+                    ($node = $this->loadSectionNode())
+                ) {
+                    return $node;
+                }
+
+                throw Exceptional::{'df/arch/node/NotFound,NotFound'}(
+                    'Scaffold at '.$this->context->location.' cannot provide node '.$node
+                );
+            }
+        }
+
+        return $this->generateNode([$this, $method]);
+    }
+
+    public function onNodeDispatch(Node $node)
+    {
+    }
+
+    public function loadComponent(string $name, array $args=null): Component
+    {
+        $keyName = $this->getDirectoryKeyName();
+        $origName = $name;
+
+        if (substr($name, 0, strlen($keyName)) == ucfirst($keyName)) {
+            $name = substr($name, strlen($keyName));
+        }
+
+        $method = 'generate'.$name.'Component';
+
+        if (!method_exists($this, $method) && $origName !== $name) {
+            $method = 'generate'.$origName.'Component';
+            $activeName = $origName;
+        } else {
+            $activeName = $name;
+        }
+
+        if (method_exists($this, $method)) {
+            return new GenericScaffoldComponent($this, $activeName, $args);
+        }
+
+        $method = 'build'.$name.'Component';
+
+        if (!method_exists($this, $method) && $origName !== $name) {
+            $method = 'build'.$origName.'Component';
+        }
+
+        if (method_exists($this, $method)) {
+            $output = $this->{$method}($args);
+
+            if (!$output instanceof Component) {
+                throw Exceptional::{'df/arch/component/NotFound,NotFound'}(
+                    'Scaffold at '.$this->context->location.' attempted but failed to provide component '.$origName
+                );
+            }
+
+            return $output;
+        }
+
+        throw Exceptional::{'df/arch/component/NotFound,NotFound'}(
+            'Scaffold at '.$this->context->location.' cannot provide component '.$origName
+        );
+    }
+
+    public function loadFormDelegate(string $name, FormState $state, FormEventDescriptor $event, string $id): Delegate
+    {
+        $keyName = $this->getDirectoryKeyName();
+        $origName = $name;
+
+        if (substr($name, 0, strlen($keyName)) == ucfirst($keyName)) {
+            $name = substr($name, strlen($keyName));
+        }
+
+        $method = 'build'.$name.'FormDelegate';
+
+        if (!method_exists($this, $method)) {
+            throw Exceptional::{'df/arch/node/NotFound,NotFound'}(
+                'Scaffold at '.$this->context->location.' cannot provide form delegate '.$origName
+            );
+        }
+
+        $output = $this->{$method}($state, $event, $id);
+
+        if (!$output instanceof Delegate) {
+            throw Exceptional::{'df/arch/node/NotFound,NotFound'}(
+                'Scaffold at '.$this->context->location.' attempted but failed to provide form delegate '.$origName
+            );
+        }
+
+        return $output;
+    }
+
+    public function loadMenu(string $name, $id): Menu
+    {
+        $method = 'generate'.ucfirst($name).'Menu';
+
+        if (!method_exists($this, $method)) {
+            throw Exceptional::{'df/arch/navigation/NotFound,NotFound'}(
+                'Scaffold at '.$this->context->location.' could not provider menu '.$name
+            );
+        }
+
+        return new ScaffoldMenu($this, $name, $id);
+    }
+
+
+
+
+    // Propagation
+    public function getPropagatingQueryVars(): array
     {
         return (array)static::PROPAGATE_IN_QUERY;
     }
 
-    protected function _buildQueryPropagationInputs(array $filter=[])
+    protected function buildQueryPropagationInputs(array $filter=[]): iterable
     {
         $output = [];
         $vars = array_merge(
@@ -120,135 +231,10 @@ abstract class Base implements Scaffold
     }
 
 
-    // Loaders
-    public function loadNode()
-    {
-        $node = $this->context->request->getNode();
-        $method = lcfirst($node).$this->context->request->getType().'Node';
-
-        if (!method_exists($this, $method)) {
-            $method = lcfirst($node).'Node';
-
-            if (!method_exists($this, $method)) {
-                $method = 'build'.ucfirst($node).'DynamicNode';
-
-                if (method_exists($this, $method)) {
-                    $node = $this->{$method}();
-
-                    if ($node instanceof arch\node\INode) {
-                        return $node;
-                    }
-                }
-
-                if (
-                    $this instanceof SectionProvider &&
-                    ($node = $this->loadSectionNode())
-                ) {
-                    return $node;
-                }
-
-                throw Exceptional::{'df/arch/node/NotFound,NotFound'}(
-                    'Scaffold at '.$this->context->location.' cannot provide node '.$node
-                );
-            }
-        }
-
-        return $this->generateNode([$this, $method]);
-    }
-
-    public function onNodeDispatch(arch\node\INode $node)
-    {
-    }
-
-    public function loadComponent($name, array $args=null)
-    {
-        $keyName = $this->getDirectoryKeyName();
-        $origName = $name;
-
-        if (substr($name, 0, strlen($keyName)) == ucfirst($keyName)) {
-            $name = substr($name, strlen($keyName));
-        }
-
-        $method = 'generate'.$name.'Component';
-
-        if (!method_exists($this, $method) && $origName !== $name) {
-            $method = 'generate'.$origName.'Component';
-            $activeName = $origName;
-        } else {
-            $activeName = $name;
-        }
-
-        if (method_exists($this, $method)) {
-            return new arch\scaffold\Component\Generic($this, $activeName, $args);
-        }
-
-        $method = 'build'.$name.'Component';
-
-        if (!method_exists($this, $method) && $origName !== $name) {
-            $method = 'build'.$origName.'Component';
-        }
-
-        if (method_exists($this, $method)) {
-            $output = $this->{$method}($args);
-
-            if (!$output instanceof arch\IComponent) {
-                throw Exceptional::{'df/arch/component/NotFound,NotFound'}(
-                    'Scaffold at '.$this->context->location.' attempted but failed to provide component '.$origName
-                );
-            }
-
-            return $output;
-        }
-
-        throw Exceptional::{'df/arch/component/NotFound,NotFound'}(
-            'Scaffold at '.$this->context->location.' cannot provide component '.$origName
-        );
-    }
-
-    public function loadFormDelegate($name, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, $id)
-    {
-        $keyName = $this->getDirectoryKeyName();
-        $origName = $name;
-
-        if (substr($name, 0, strlen($keyName)) == ucfirst($keyName)) {
-            $name = substr($name, strlen($keyName));
-        }
-
-        $method = 'build'.$name.'FormDelegate';
-
-        if (!method_exists($this, $method)) {
-            throw Exceptional::{'df/arch/node/NotFound,NotFound'}(
-                'Scaffold at '.$this->context->location.' cannot provide form delegate '.$origName
-            );
-        }
-
-        $output = $this->{$method}($state, $event, $id);
-
-        if (!$output instanceof arch\node\IDelegate) {
-            throw Exceptional::{'df/arch/node/NotFound,NotFound'}(
-                'Scaffold at '.$this->context->location.' attempted but failed to provide form delegate '.$origName
-            );
-        }
-
-        return $output;
-    }
-
-    public function loadMenu($name, $id)
-    {
-        $method = 'generate'.ucfirst($name).'Menu';
-
-        if (!method_exists($this, $method)) {
-            throw Exceptional::{'df/arch/navigation/NotFound,NotFound'}(
-                'Scaffold at '.$this->context->location.' could not provider menu '.$name
-            );
-        }
-
-        return new arch\scaffold\Navigation\Menu($this, $name, $id);
-    }
 
 
     // Directory
-    public function getDirectoryTitle()
+    public function renderDirectoryTitle()
     {
         if (static::TITLE) {
             return $this->_(static::TITLE);
@@ -257,7 +243,7 @@ abstract class Base implements Scaffold
         return $this->format->name($this->getDirectoryKeyName());
     }
 
-    public function getDirectoryIcon()
+    public function getDirectoryIcon(): ?string
     {
         if (static::ICON) {
             return static::ICON;
@@ -266,14 +252,14 @@ abstract class Base implements Scaffold
         return $this->getDirectoryKeyName();
     }
 
-    public function getDirectoryKeyName()
+    public function getDirectoryKeyName(): string
     {
-        if ($this->_directoryKeyName === null) {
+        if ($this->directoryKeyName === null) {
             $parts = $this->context->location->getControllerParts();
-            $this->_directoryKeyName = array_pop($parts);
+            $this->directoryKeyName = array_pop($parts);
         }
 
-        return $this->_directoryKeyName;
+        return $this->directoryKeyName;
     }
 
 
@@ -315,26 +301,14 @@ abstract class Base implements Scaffold
 
 
 
-
-
-    protected function _normalizeFieldOutput($field, $value)
-    {
-        if ($value instanceof core\time\IDate) {
-            return $this->format->dateTime($value, $value->hasTime() ? 'short' : 'medium');
-        }
-
-        return $value;
-    }
-
-
     protected function generateNode(callable $callback): Node
     {
-        return (new arch\node\Base($this->context, function ($node) use ($callback) {
+        return (new BaseNode($this->context, function ($node) use ($callback) {
             if (null !== ($pre = $this->onNodeDispatch($node))) {
                 return $pre;
             }
 
-            return core\lang\Callback::call($callback);
+            return $callback();
         }))
             ->setDefaultAccess($this->getDefaultAccess())
             ->setAccessSignifiers(...$this->getAccessSignifiers());

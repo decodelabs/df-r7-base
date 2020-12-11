@@ -12,6 +12,8 @@ use df\user;
 use df\aura;
 use df\link;
 
+use df\arch\scaffold\Loader as ScaffoldLoader;
+
 use DecodeLabs\Tagged\Html;
 use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Exceptional;
@@ -57,7 +59,7 @@ abstract class Base implements arch\IComponent
 
         if (!class_exists($class)) {
             try {
-                $scaffold = arch\scaffold\Base::factory($context);
+                $scaffold = ScaffoldLoader::fromContext($context);
                 return $scaffold->loadComponent($name, $args);
             } catch (arch\scaffold\Exception $e) {
             }

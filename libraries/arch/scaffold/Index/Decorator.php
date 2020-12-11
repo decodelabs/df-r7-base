@@ -14,6 +14,10 @@ use df\aura\html\widget\Menu as MenuWidget;
 
 interface Decorator extends Scaffold
 {
+    // Nodes
+    public function indexHtmlNode();
+    public function buildNode($content): View;
+
     // Components
     public function buildIndexHeaderBarComponent(array $args=[]): Component;
 }

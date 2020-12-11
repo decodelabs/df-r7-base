@@ -8,6 +8,7 @@ namespace df\arch\scaffold\Record;
 use df\arch\scaffold\Record\DataProvider;
 
 use df\arch\IComponent as Component;
+use df\aura\view\IView as View;
 use df\aura\view\IDeferredRenderable as DeferredRenderableView;
 
 use df\arch\component\AttributeList as AttributeListComponent;
@@ -45,6 +46,13 @@ trait DecoratorTrait
     //const LIST_FIELDS = [];
 
     // Node handlers
+    public function buildRecordListNode(?callable $filter=null, array $fields=null): View
+    {
+        return $this->buildNode(
+            $this->renderRecordList($filter, $fields)
+        );
+    }
+
     public function buildDeleteDynamicNode(): FormNode
     {
         if (!$this->canDeleteRecords()) {
@@ -65,6 +73,14 @@ trait DecoratorTrait
         }
 
         return new ScaffoldDeleteSelectedForm($this);
+    }
+
+
+    // Section handlers
+    public function renderDetailsSectionBody($record)
+    {
+        $keyName = $this->getRecordKeyName();
+        return $this->apex->component(ucfirst($keyName).'Details', null, $record);
     }
 
 
@@ -155,7 +171,7 @@ trait DecoratorTrait
 
         return $this->html->form($request)->setMethod('get')->push(
             $this->html->fieldSet()->addClass('scaffold search')->push(
-                $this->_buildQueryPropagationInputs($filter),
+                $this->buildQueryPropagationInputs($filter),
 
                 $this->html->searchTextbox('search', $search)
                     ->setPlaceholder('search'),

@@ -8,7 +8,7 @@ namespace df\arch\scaffold;
 use df\arch\scaffold\Index\Decorator as IndexDecorator;
 use df\arch\scaffold\Index\DecoratorTrait as IndexDecoratorTrait;
 
-class AreaMenu extends Base implements
+class AreaMenu extends Generic implements
     IndexDecorator
 {
     const HEADER_BAR = true;

@@ -13,6 +13,8 @@ use df\opal;
 use df\mesh;
 use df\link;
 
+use df\arch\scaffold\Loader as ScaffoldLoader;
+
 use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch;
 
@@ -105,7 +107,7 @@ trait TForm
 
             if (!class_exists($class)) {
                 try {
-                    $scaffold = arch\scaffold\Base::factory($context);
+                    $scaffold = ScaffoldLoader::fromContext($context);
                     return $this->_delegates[$id] = $scaffold->loadFormDelegate($name, $state, $this->event, $mainId);
                 } catch (\Throwable $e) {
                     core\logException($e);
