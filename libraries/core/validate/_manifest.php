@@ -682,6 +682,9 @@ interface IUrlField extends IField
 interface IVideoEmbedField extends IField
 {
 }
+interface IAudioEmbedField extends IField
+{
+}
 
 interface IWeightField extends IField, IStorageAwareField, IRecordManipulatorField
 {
