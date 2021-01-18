@@ -41,6 +41,9 @@ trait DataProviderTrait
     //const CAN_EDIT = true;
     //const CAN_DELETE = true;
     //const CONFIRM_DELETE = true;
+    //const DELETE_PERMANENT = true;
+    //const IS_PARENT = false;
+    //const IS_SHARED = false;
 
     //const SEARCH_FIELDS = [];
 
@@ -508,6 +511,15 @@ trait DataProviderTrait
         return true;
     }
 
+    public function areRecordDeletesPermanent(): bool
+    {
+        if (defined('static::DELETE_PERMANENT')) {
+            return (bool)static::DELETE_PERMANENT;
+        }
+
+        return true;
+    }
+
     public function recordDeleteRequiresConfirmation(): bool
     {
         if (defined('static::CONFIRM_DELETE')) {
@@ -520,6 +532,25 @@ trait DataProviderTrait
     public function getRecordDeleteFlags(): array
     {
         return [];
+    }
+
+
+    public function areRecordsParents(): bool
+    {
+        if (defined('static::IS_PARENT')) {
+            return (bool)static::IS_PARENT;
+        }
+
+        return false;
+    }
+
+    public function areRecordsShared(): bool
+    {
+        if (defined('static::IS_SHARED')) {
+            return (bool)static::IS_SHARED;
+        }
+
+        return false;
     }
 
 

@@ -11,7 +11,6 @@ use DecodeLabs\Tagged\Html;
 
 class DeleteSelectedForm extends AffectSelectedForm
 {
-    const IS_PERMANENT = true;
     const DEFAULT_EVENT = 'delete';
 
     public function __construct(Scaffold $scaffold)
@@ -20,23 +19,54 @@ class DeleteSelectedForm extends AffectSelectedForm
         parent::__construct($scaffold->getContext());
     }
 
+    protected function isPermanent(): bool
+    {
+        return $this->scaffold->areRecordDeletesPermanent();
+    }
+
+    protected function isShared(): bool
+    {
+        return $this->scaffold->areRecordsShared();
+    }
+
+    protected function isParent(): bool
+    {
+        return $this->scaffold->areRecordsParents();
+    }
+
     protected function requiresConfirmation(): bool
     {
         return $this->scaffold->recordDeleteRequiresConfirmation();
     }
 
-    protected function renderUi($fs)
+    protected function renderHeader($form)
     {
-        $fa = $fs->addField();
-        $fa->push(Html::{'p'}($this->getMainMessage()));
+        $form->push(Html::{'p'}($this->getMainMessage()));
 
-        if (static::IS_PERMANENT) {
-            $fa->push(
+        if ($this->isPermanent()) {
+            $form->push(
                 $this->html->flashMessage('CAUTION: This action is permanent!', 'warning')
                     ->setDescription('These items will be completely removed from the system and cannot be retrieved!')
             );
         }
 
+        if ($this->isParent()) {
+            $form->push(
+                $this->html->flashMessage('NOTE: These items may contains child records', 'info')
+                    ->setDescription('Some or all child records that are contained in this these items will also be deleted!')
+            );
+        }
+
+        if ($this->isShared()) {
+            $form->push(
+                $this->html->flashMessage('WARNING: These items may be shared with other items', 'error')
+                    ->setDescription('Deleting these items will remove them from all other related records that depend on them!')
+            );
+        }
+    }
+
+    protected function renderUi($fs)
+    {
         if ($this->requiresConfirmation()) {
             $this->createConfirmationUi($fs);
         }
@@ -72,9 +102,40 @@ class DeleteSelectedForm extends AffectSelectedForm
 
     protected function createConfirmationUi($fs)
     {
-        $fs->addField('Are you sure?')->addClass('negative')->push(
+        $fs->addField()->addClass(
+            $this->isShared() || $this->isParent() ?
+                'negative' : 'warning'
+        )->addStyles([
+            'font-size' => $this->isShared() ? '1.4em' : '1.2em'
+        ])->push(
             $this->html->checkbox('confirm', $this->values->confirm, [
-                    $this->html->icon('warning'), 'I confirm I understand the consequences of DELETING these items, permanently, everywhere'
+                    $this->html->icon('warning'), function () {
+                        yield 'I confirm I understand the consequences of ';
+                        yield Html::strong('DELETING');
+                        yield ' these ';
+
+                        if ($this->isShared()) {
+                            yield Html::{'strong > em'}('shared');
+                            yield ' ';
+                        }
+
+                        yield 'items';
+
+                        if ($this->isParent()) {
+                            yield ' and their ';
+                            yield Html::em('children');
+                        }
+
+                        if ($this->isPermanent()) {
+                            yield ', ';
+                            yield Html::strong('permanently');
+                        }
+
+                        if ($this->isShared()) {
+                            yield ', ';
+                            yield Html::{'strong > em'}('everywhere');
+                        }
+                    }
                 ])
                 ->isRequired(true)
         );

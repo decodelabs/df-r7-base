@@ -42,6 +42,7 @@ abstract class AffectSelectedForm extends Form
     protected function createUi()
     {
         $form = $this->content->addForm();
+        $this->renderHeader($form);
 
         $form->push(function () {
             $keyName = $this->scaffold->getRecordKeyName();
@@ -58,6 +59,10 @@ abstract class AffectSelectedForm extends Form
 
         $fs = $form->addFieldSet($this->_('With selected...'));
         $this->renderUi($fs);
+    }
+
+    protected function renderHeader($form)
+    {
     }
 
     protected function renderUi($fs)

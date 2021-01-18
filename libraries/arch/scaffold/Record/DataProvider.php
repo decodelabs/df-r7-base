@@ -52,8 +52,11 @@ interface DataProvider extends Scaffold
     public function canEditRecord($record): bool;
     public function canDeleteRecords(): bool;
     public function canDeleteRecord($record): bool;
+    public function areRecordDeletesPermanent(): bool;
     public function recordDeleteRequiresConfirmation(): bool;
     public function getRecordDeleteFlags(): array;
+    public function areRecordsParents(): bool;
+    public function areRecordsShared(): bool;
 
     // URL locations
     public function getRecordUri($record, ?string $node=null, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]): DirectoryRequest;

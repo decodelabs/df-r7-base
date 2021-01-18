@@ -25,7 +25,22 @@ class DeleteForm extends DeleteFormBase
 
     protected function getItemName()
     {
-        return $this->scaffold->getRecordItemName();
+        return ucfirst($this->scaffold->getRecordItemName());
+    }
+
+    protected function isPermanent(): bool
+    {
+        return $this->scaffold->areRecordDeletesPermanent();
+    }
+
+    protected function isShared(): bool
+    {
+        return $this->scaffold->areRecordsShared();
+    }
+
+    protected function isParent(): bool
+    {
+        return $this->scaffold->areRecordsParents();
     }
 
     protected function requiresConfirmation(): bool

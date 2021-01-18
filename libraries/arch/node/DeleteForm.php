@@ -17,6 +17,8 @@ abstract class DeleteForm extends Form
 {
     const ITEM_NAME = 'item';
     const IS_PERMANENT = true;
+    const IS_SHARED = false;
+    const IS_PARENT = false;
     const REQUIRE_CONFIRMATION = false;
 
     const DEFAULT_EVENT = 'delete';
@@ -24,6 +26,21 @@ abstract class DeleteForm extends Form
     protected function getItemName()
     {
         return static::ITEM_NAME;
+    }
+
+    protected function isPermanent(): bool
+    {
+        return static::IS_PERMANENT;
+    }
+
+    protected function isShared(): bool
+    {
+        return static::IS_SHARED;
+    }
+
+    protected function isParent(): bool
+    {
+        return static::IS_PARENT;
     }
 
     protected function requiresConfirmation(): bool
@@ -39,10 +56,24 @@ abstract class DeleteForm extends Form
 
         $fs->push(Html::{'p'}($this->getMainMessage()));
 
-        if (static::IS_PERMANENT) {
+        if ($this->isPermanent()) {
             $fs->push(
                 $this->html->flashMessage('CAUTION: This action is permanent!', 'warning')
                     ->setDescription('This '.$itemName.' will be completely removed from the system and cannot be retrieved!')
+            );
+        }
+
+        if ($this->isParent()) {
+            $fs->push(
+                $this->html->flashMessage('NOTE: This '.$itemName.' may contain child items', 'info')
+                    ->setDescription('Some or all child records that are contained in this '.$itemName.' will also be deleted!')
+            );
+        }
+
+        if ($this->isShared()) {
+            $fs->push(
+                $this->html->flashMessage('WARNING: This '.$itemName.' may be shared with other items', 'error')
+                    ->setDescription('Deleting this '.$itemName.' will remove it from all other related records that depend on it')
             );
         }
 
@@ -93,10 +124,40 @@ abstract class DeleteForm extends Form
 
     protected function createConfirmationUi($form)
     {
-        $form->addFieldSet('Delete confirmation')->addField('Are you sure?')->push(
+        $form->addFieldSet('Delete confirmation')->addField()->addClass(
+            $this->isShared() || $this->isParent() ?
+                'negative' : 'warning'
+        )->addStyles([
+            'font-size' => $this->isShared() ? '1.3em' : '1.15em'
+        ])->push(
             $this->html->checkbox('confirm', $this->values->confirm, [
-                    $this->html->icon('warning', 'I confirm I understand the consequences of DELETING this item, permanently, everywhere')
-                    ->addClass('negative')
+                    $this->html->icon('warning', function () {
+                        yield 'I confirm I understand the consequences of ';
+                        yield Html::strong('DELETING');
+                        yield ' this ';
+
+                        if ($this->isShared()) {
+                            yield Html::{'strong > em'}('shared');
+                            yield ' ';
+                        }
+
+                        yield $this->getItemName();
+
+                        if ($this->isParent()) {
+                            yield ' and its ';
+                            yield Html::em('children');
+                        }
+
+                        if ($this->isPermanent()) {
+                            yield ', ';
+                            yield Html::strong('permanently');
+                        }
+
+                        if ($this->isShared()) {
+                            yield ', ';
+                            yield Html::{'strong > em'}('EVERYWHERE');
+                        }
+                    })
                 ])
                 ->isRequired(true)
         );

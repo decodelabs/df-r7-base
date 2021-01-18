@@ -49,6 +49,9 @@ abstract class RecordAdmin extends Generic implements
     const CAN_EDIT = true;
     const CAN_DELETE = true;
     const CONFIRM_DELETE = true;
+    const DELETE_PERMANENT = true;
+    const IS_PARENT = false;
+    const IS_SHARED = false;
 
     const CAN_SEARCH = true;
     const CAN_SELECT = false;
