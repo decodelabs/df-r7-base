@@ -671,7 +671,15 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             $sendData &&
             $response->isStaticFile()
         ) {
-            $response->getHeaders()->set($this->_sendFileHeader, $response->getStaticFilePath());
+            $filePath = $response->getStaticFilePath();
+
+            // Relative URI for Litespeed
+            if ($this->_sendFileHeader === 'X-LiteSpeed-Location') {
+                $pathParts = explode('public_html', $filePath);
+                $filePath = array_pop($pathParts);
+            }
+
+            $response->getHeaders()->set($this->_sendFileHeader, $filePath);
             $sendData = false;
         }
 
