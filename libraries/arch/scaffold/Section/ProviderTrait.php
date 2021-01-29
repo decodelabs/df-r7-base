@@ -241,7 +241,7 @@ trait ProviderTrait
                 ->setId($node)
                 ->setIcon($set['icon'])
                 ->setWeight($node == 'details' ? 1 : $i * 10)
-                ->setDisposition('informative');
+                ->setDisposition($set['disposition'] ?? 'informative');
 
             if (isset($counts[$node])) {
                 $link->setNote($this->format->counterNote($counts[$node]));
