@@ -289,7 +289,7 @@ class File implements link\http\IUploadFile
 
         if (!is_uploaded_file($this->_tempPath)) {
             $inputNode->addError('uploadNotFound', $i18n->_(
-                'There was a problem finding the uploaded file in the temp location - please try again ('.$this->getErrorString().')'
+                'There was a problem finding the uploaded file in the temp location - please try again ('.$this->getErrorCode().': '.$this->getErrorString().')'
             ));
             return;
         }
