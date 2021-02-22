@@ -97,7 +97,7 @@ class Mailchimp3 extends Base
     }
 
 
-    public function subscribeUserToList(user\IClientDataObject $client, string $listId, array $manifest, array $groups=null, bool $replace=false): flow\mailingList\ISubscribeResult
+    public function subscribeUserToList(user\IClientDataObject $client, string $listId, array $manifest, array $groups=null, bool $replace=false, ?array $extraData=null): flow\mailingList\ISubscribeResult
     {
         $email = $client->getEmail();
         $merges = [];
@@ -137,7 +137,7 @@ class Mailchimp3 extends Base
             ->setManualInputUrl($manifest['url']);
 
         try {
-            $this->_mediator->ensureSubscription($listId, $client, $interests);
+            $this->_mediator->ensureSubscription($listId, $client, $interests, $extraData);
 
             $result
                 ->isSuccessful(true)

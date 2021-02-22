@@ -515,25 +515,25 @@ class Manager implements IManager, core\IShutdownAware
 
 
 
-    public function subscribeClientToPrimaryList($source, array $groups=null, bool $replace=false): flow\mailingList\ISubscribeResult
+    public function subscribeClientToPrimaryList($source, array $groups=null, bool $replace=false, ?array $extraData=null): flow\mailingList\ISubscribeResult
     {
         $client = user\Manager::getInstance()->getClient();
-        return $this->subscribeUserToPrimaryList($client, $source, $groups, $replace);
+        return $this->subscribeUserToPrimaryList($client, $source, $groups, $replace, $extraData);
     }
 
-    public function subscribeClientToList($source, $listId, array $groups=null, bool $replace=false): flow\mailingList\ISubscribeResult
+    public function subscribeClientToList($source, $listId, array $groups=null, bool $replace=false, ?array $extraData=null): flow\mailingList\ISubscribeResult
     {
         $client = user\Manager::getInstance()->getClient();
-        return $this->subscribeUserToList($client, $source, $listId, $groups, $replace);
+        return $this->subscribeUserToList($client, $source, $listId, $groups, $replace, $extraData);
     }
 
-    public function subscribeClientToGroups(array $compoundGroupIds, bool $replace=false): array
+    public function subscribeClientToGroups(array $compoundGroupIds, bool $replace=false, ?array $extraData=null): array
     {
         $client = user\Manager::getInstance()->getClient();
-        return $this->subscribeUserToGroups($client, $compoundGroupIds, $replace);
+        return $this->subscribeUserToGroups($client, $compoundGroupIds, $replace, $extraData);
     }
 
-    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $source, array $groups=null, bool $replace=false): flow\mailingList\ISubscribeResult
+    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $source, array $groups=null, bool $replace=false, ?array $extraData=null): flow\mailingList\ISubscribeResult
     {
         if (!$source = $this->getListSource($sourceId = $source)) {
             throw Exceptional::{'df/flow/mailingList/Api,flow/mailingList/NotFound'}(
@@ -547,10 +547,10 @@ class Manager implements IManager, core\IShutdownAware
             );
         }
 
-        return $this->subscribeUserToList($client, $source, $listId, $groups, $replace);
+        return $this->subscribeUserToList($client, $source, $listId, $groups, $replace, $extraData);
     }
 
-    public function subscribeUserToList(user\IClientDataObject $client, $source, $listId, array $groups=null, bool $replace=false): flow\mailingList\ISubscribeResult
+    public function subscribeUserToList(user\IClientDataObject $client, $source, $listId, array $groups=null, bool $replace=false, ?array $extraData=null): flow\mailingList\ISubscribeResult
     {
         if (!$source = $this->getListSource($sourceId = $source)) {
             throw Exceptional::{'df/flow/mailingList/Api,flow/mailingList/NotFound'}(
@@ -558,10 +558,10 @@ class Manager implements IManager, core\IShutdownAware
             );
         }
 
-        return $source->subscribeUserToList($client, $listId, $groups, $replace);
+        return $source->subscribeUserToList($client, $listId, $groups, $replace, $extraData);
     }
 
-    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, bool $replace=false): array
+    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, bool $replace=false, ?array $extraData=null): array
     {
         $manifest = $output = [];
 
@@ -572,7 +572,7 @@ class Manager implements IManager, core\IShutdownAware
 
         foreach ($manifest as $sourceId => $lists) {
             foreach ($lists as $listId => $groups) {
-                $output[$sourceId][$listId] = $this->subscribeUserToList($client, $sourceId, $listId, $groups, $replace);
+                $output[$sourceId][$listId] = $this->subscribeUserToList($client, $sourceId, $listId, $groups, $replace, $extraData);
             }
         }
 

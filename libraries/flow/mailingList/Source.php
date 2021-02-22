@@ -313,7 +313,7 @@ class Source implements ISource
 
 
 
-    public function subscribeUserToList(user\IClientDataObject $client, string $listId, array $groups=null, bool $replace=false): ISubscribeResult
+    public function subscribeUserToList(user\IClientDataObject $client, string $listId, array $groups=null, bool $replace=false, ?array $extraData=null): ISubscribeResult
     {
         $manifest = $this->getManifest();
 
@@ -324,14 +324,15 @@ class Source implements ISource
         }
 
         try {
-            $result = $this->_adapter->subscribeUserToList($client, $listId, $manifest[$listId], $groups, $replace);
+            $result = $this->_adapter->subscribeUserToList($client, $listId, $manifest[$listId], $groups, $replace, $extraData);
         } catch (\Throwable $e) {
             throw Exceptional::Api([
                 'message' => 'Adapter failed to subscribe user to list',
                 'previous' => $e,
                 'data' => [
                     'list' => $listId,
-                    'client' => $client
+                    'client' => $client,
+                    'extra' => $extraData
                 ]
             ]);
         }

@@ -33,7 +33,7 @@ interface ISource
     public function getGroupOptionsFor(?string $listId, bool $nested=false, bool $showSets=true): array;
     public function getGroupIdListFor(?string $listId): array;
 
-    public function subscribeUserToList(user\IClientDataObject $client, string $listId, array $groups=null, bool $replace=false): ISubscribeResult;
+    public function subscribeUserToList(user\IClientDataObject $client, string $listId, array $groups=null, bool $replace=false, ?array $extraData=null): ISubscribeResult;
 
     public function getClientManifest(): array;
     public function getClientSubscribedGroupsIn(?string $listId): array;
@@ -51,7 +51,7 @@ interface IAdapter
     public function canConnect(): bool;
     public function fetchManifest(): array;
 
-    public function subscribeUserToList(user\IClientDataObject $client, string $listId, array $manifest, array $groups=null, bool $replace=false): ISubscribeResult;
+    public function subscribeUserToList(user\IClientDataObject $client, string $listId, array $manifest, array $groups=null, bool $replace=false, ?array $extraData=null): ISubscribeResult;
     public function fetchClientManifest(array $manifest): array;
     public function refreshClientManifest(): void;
     public function updateListUserDetails(string $oldEmail, user\IClientDataObject $client, array $manifest);

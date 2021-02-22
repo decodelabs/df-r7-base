@@ -220,7 +220,7 @@ class Mediator implements IMediator
     }
 
 
-    public function ensureSubscription(string $listId, user\IClientDataObject $user, array $groups=[]): IDataObject
+    public function ensureSubscription(string $listId, user\IClientDataObject $user, array $groups=[], ?array $extraData=null): IDataObject
     {
         $input = [
             'email_address' => $email = $user->getEmail(),
@@ -249,6 +249,10 @@ class Mediator implements IMediator
             if (null !== ($language = $user->getLanguage())) {
                 $input['language'] = $language;
             }
+        }
+
+        foreach ($extraData ?? [] as $key => $value) {
+            $input['merge_fields'][strtoupper($key)] = $value;
         }
 
         $hash = md5($email);
