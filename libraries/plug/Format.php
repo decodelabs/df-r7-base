@@ -569,8 +569,16 @@ class Format implements core\ISharedHelper
 
     public function counterNote($counter)
     {
-        if ($counter) {
-            return '('.$this->number($counter).')';
+        if (!$counter) {
+            return null;
+        }
+
+        if ($counter > 9999) {
+            return round($counter / 1000).'k';
+        } elseif ($counter > 999) {
+            return round($counter / 1000, 1).'k';
+        } else {
+            return $this->number($counter);
         }
     }
 
