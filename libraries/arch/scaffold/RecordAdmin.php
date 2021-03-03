@@ -71,19 +71,13 @@ abstract class RecordAdmin extends Generic implements
 
 
     // Components
-    public function renderRecordList($query=null, array $fields=null)
+    public function renderRecordList(?callable $filter=null, array $fields=null)
     {
         $queryMode = $this->request->getNode();
+        $query = $this->queryRecordList($queryMode);
 
-        if ($query instanceof SelectQuery) {
-            $this->prepareRecordList($query, $queryMode);
-        } else {
-            $extender = is_callable($query) ? $query : null;
-            $query = $this->queryRecordList($queryMode);
-
-            if ($extender) {
-                $extender($query);
-            }
+        if ($filter) {
+            $filter($query);
         }
 
         if (static::CAN_SEARCH) {

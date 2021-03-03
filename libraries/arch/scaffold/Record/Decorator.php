@@ -41,7 +41,7 @@ interface Decorator extends Scaffold
     // List generators
     public function generateCollectionList(array $fields, ?iterable $collection=null): CollectionListComponent;
     public function generateAttributeList(array $fields, $record=true): AttributeListComponent;
-    public function renderRecordList($filter=null, array $fields=null);
+    public function renderRecordList(?callable $filter=null, array $fields=null);
 
     // Link set generators
     public function decorateRecordLink($link, $component);
