@@ -21,6 +21,7 @@ interface Provider extends Scaffold
     // Section info
     public function getDefaultSection(): string;
     public function getSectionManifest(): array;
+    public function isValidSection(string $section): bool;
     public function getSectionItemCounts(): array;
 
     // Link handlers

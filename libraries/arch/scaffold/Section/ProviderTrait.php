@@ -34,6 +34,20 @@ trait ProviderTrait
         $sections = $this->getSectionManifest();
 
         if (!isset($sections[$node])) {
+            if ($this->isValidSection($node)) {
+                $default = $this->getDefaultSection();
+
+                // Force redirect to details
+                if ($default !== $node) {
+                    $request = clone $this->context->request;
+                    $request->setNode($default);
+
+                    $this->context->forceResponse(
+                        $this->context->http->redirect($request)
+                    );
+                }
+            }
+
             return null;
         }
 
@@ -146,6 +160,27 @@ trait ProviderTrait
             return static::SECTIONS;
         } else {
             return ['details'];
+        }
+    }
+
+    public function isValidSection(string $section): bool
+    {
+        if (
+            defined('static::SECTIONS') &&
+            !empty(static::SECTIONS)
+        ) {
+            foreach (static::SECTIONS as $key => $value) {
+                if (
+                    (is_int($key) && $value === $section) ||
+                    $key === $section
+                ) {
+                    return true;
+                }
+            }
+
+            return false;
+        } else {
+            return $section === 'details';
         }
     }
 
