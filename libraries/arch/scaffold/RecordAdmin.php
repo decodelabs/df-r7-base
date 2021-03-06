@@ -11,6 +11,8 @@ use df\arch\scaffold\Record\DataProvider as RecordDataProvider;
 use df\arch\scaffold\Record\DataProviderTrait as RecordDataProviderTrait;
 use df\arch\scaffold\Record\Decorator as RecordDecorator;
 use df\arch\scaffold\Record\DecoratorTrait as RecordDecoratorTrait;
+use df\arch\scaffold\Record\FilterProvider as RecordFilterProvider;
+use df\arch\scaffold\Record\FilterProviderTrait as RecordFilterProviderTrait;
 use df\arch\scaffold\Section\Decorator as SectionDecorator;
 use df\arch\scaffold\Section\DecoratorTrait as SectionDecoratorTrait;
 use df\arch\scaffold\Section\Provider as SectionProvider;
@@ -24,6 +26,7 @@ abstract class RecordAdmin extends Generic implements
     IndexDecorator,
     RecordDataProvider,
     RecordDecorator,
+    RecordFilterProvider,
     SectionDecorator,
     SectionProvider,
     Dumpable
@@ -31,6 +34,7 @@ abstract class RecordAdmin extends Generic implements
     use IndexDecoratorTrait;
     use RecordDataProviderTrait;
     use RecordDecoratorTrait;
+    use RecordFilterProviderTrait;
     use SectionDecoratorTrait;
     use SectionProviderTrait;
 
@@ -88,6 +92,7 @@ abstract class RecordAdmin extends Generic implements
             }
         }
 
+        $this->applyRecordFilters($query);
         $query->paginateWith($this->request->query);
 
         $keyName = $this->getRecordKeyName();
