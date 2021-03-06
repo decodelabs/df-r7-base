@@ -67,6 +67,9 @@ trait FilterProviderTrait
             isset($this->request[$keyName]) && !isset($index[$keyName]) ?
                 $this->html->hidden($keyName, $this->getRecordId()) : null,
 
+            isset($this->request[$contextKey]) && !isset($index[$contextKey]) ?
+                $this->html->hidden($contextKey, $this->request[$contextKey]) : null,
+
             isset($this->request['od']) ?
                 $this->html->hidden('od', $this->request['od']) : null,
 
