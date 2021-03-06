@@ -44,15 +44,6 @@ trait FilterProviderTrait
         }
     }
 
-
-    /**
-     * Render selector area for main list
-     */
-    public function renderIndexSelectorArea()
-    {
-        return $this->renderRecordFilters();
-    }
-
     /**
      * Render filter groups
      */
@@ -71,7 +62,8 @@ trait FilterProviderTrait
             $index[$filter->getKey()] = $filter;
         }
 
-        return $this->html->form(null, 'get')->push(
+        $form = $this->html->form(null, 'get');
+        $form->addFieldSet()->addClass('scaffold filters')->push(
             isset($this->request[$keyName]) && !isset($index[$keyName]) ?
                 $this->html->hidden($keyName, $this->getRecordId()) : null,
 
@@ -81,7 +73,7 @@ trait FilterProviderTrait
             isset($this->request['search']) ?
                 $this->html->hidden('search', $this->request['search']) : null,
 
-            $this->html->field('Filter')->push(function () use ($filters, $contextKey) {
+            Html::{'div.inputs'}(function () use ($filters, $contextKey) {
                 foreach ($filters as $filter) {
                     $required = $filter->isRequired();
 
@@ -100,6 +92,8 @@ trait FilterProviderTrait
                 }
             })
         );
+
+        return $form;
     }
 
 

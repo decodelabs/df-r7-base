@@ -20,6 +20,7 @@ use df\arch\scaffold\Section\ProviderTrait as SectionProviderTrait;
 
 use df\opal\query\ISelectQuery as SelectQuery;
 
+use DecodeLabs\Tagged\Html;
 use DecodeLabs\Glitch\Dumpable;
 
 abstract class RecordAdmin extends Generic implements
@@ -75,7 +76,7 @@ abstract class RecordAdmin extends Generic implements
 
 
     // Components
-    public function renderRecordList(?callable $filter=null, array $fields=null)
+    public function renderRecordList(?callable $filter=null, array $fields=null, ?string $contextKey=null, bool $controls=true)
     {
         $queryMode = $this->request->getNode();
         $query = $this->queryRecordList($queryMode);
@@ -84,7 +85,7 @@ abstract class RecordAdmin extends Generic implements
             $filter($query);
         }
 
-        if (static::CAN_SEARCH) {
+        if (static::CAN_SEARCH && $controls) {
             $search = $this->request->getQueryTerm('search');
 
             if (strlen($search)) {
@@ -96,9 +97,10 @@ abstract class RecordAdmin extends Generic implements
         $query->paginateWith($this->request->query);
 
         $keyName = $this->getRecordKeyName();
-        $searchBar = $selectBar = null;
+        $searchBar = $filterBar = $selectBar = null;
 
-        if (static::CAN_SEARCH) {
+        // Search
+        if (static::CAN_SEARCH && $controls) {
             $searchBar = $this->apex->component('SearchBar');
         }
 
@@ -114,7 +116,11 @@ abstract class RecordAdmin extends Generic implements
             });
         }
 
-        if (static::CAN_SELECT) {
+        // Filters
+        $filterBar = $this->renderRecordFilters($contextKey);
+
+        // Select Bar
+        if (static::CAN_SELECT && $controls) {
             $selectBar = $this->apex->component('SelectBar');
 
             $list->addCustomField('select', function ($list) {
@@ -125,11 +131,13 @@ abstract class RecordAdmin extends Generic implements
             });
         }
 
-        return [
-            'searchBar' => $searchBar,
-            'selectBar' => $selectBar,
-            'collectionList' => $list
-        ];
+
+        yield Html::{'?div.scaffold.controls'}([
+            Html::{'?div.left'}([$searchBar, $selectBar]),
+            Html::{'?div.right'}($filterBar)
+        ]);
+
+        yield $list;
     }
 
 
