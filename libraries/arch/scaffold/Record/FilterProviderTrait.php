@@ -84,7 +84,9 @@ trait FilterProviderTrait
                         $required = true;
                     }
 
-                    yield $this->html->select(
+                    $type = $filter->isGrouped() ? 'groupedSelect' : 'select';
+
+                    yield $this->html->{$type}(
                             $filter->getKey(),
                             $filter->getValue(),
                             iterator_to_array($filter->getOptions())

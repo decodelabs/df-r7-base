@@ -20,6 +20,7 @@ class Filter implements Requirable
     protected $optionGenerator;
     protected $valueGenerator;
     protected $applicator;
+    protected $grouped = false;
 
     /**
      * Init with options
@@ -172,5 +173,23 @@ class Filter implements Requirable
         };
 
         $applicator($query, $value);
+    }
+
+
+    /**
+     * Set grouped
+     */
+    public function setGrouped(bool $grouped): Filter
+    {
+        $this->grouped = $grouped;
+        return $this;
+    }
+
+    /**
+     * Is grouped select
+     */
+    public function isGrouped(): bool
+    {
+        return $this->grouped;
     }
 }
