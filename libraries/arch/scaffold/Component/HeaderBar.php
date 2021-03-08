@@ -71,11 +71,7 @@ class HeaderBar extends HeaderBarBase
 
     protected function renderSelectorArea()
     {
-        $method = 'render'.$this->name.'SelectorArea';
-
-        if (method_exists($this->scaffold, $method)) {
-            return $this->scaffold->{$method}($this);
-        }
+        return $this->scaffold->renderRecordSwitchers();
     }
 
     public function setSubOperativeLinkBuilder($builder=null)

@@ -15,6 +15,7 @@ use DecodeLabs\Exceptional;
 trait FilterProviderTrait
 {
     protected $recordFilters = null;
+    protected $recordSwitchers = null;
 
     /**
      * Generate new filter object
@@ -35,6 +36,21 @@ trait FilterProviderTrait
 
 
     /**
+     * Generate new switcher filter object
+     */
+    public function newRecordSwitcher(
+        ?callable $optionGenerator=null
+    ): Filter {
+        return new Filter(
+            $this->getRecordKeyName(),
+            null,
+            $optionGenerator,
+            true
+        );
+    }
+
+
+    /**
      * Apply clauses to query
      */
     public function applyRecordFilters(SelectQuery $query, ?string $contextKey=null): void
@@ -47,6 +63,53 @@ trait FilterProviderTrait
             $filter->apply($query);
         }
     }
+
+
+    /**
+     * Render record switchers
+     */
+    public function renderRecordSwitchers(): ?Markup
+    {
+        $filters = $this->getRecordSwitchers();
+
+        if (empty($filters)) {
+            return null;
+        }
+
+        $keyName = $this->getRecordKeyName();
+
+        $form = $this->html->form(null, 'get');
+        $form->addFieldSet()->addClass('scaffold switcher')->push(
+            isset($this->request[$keyName]) && !isset($index[$keyName]) ?
+                $this->html->hidden($keyName, $this->getRecordId()) : null,
+
+            isset($this->request['od']) ?
+                $this->html->hidden('od', $this->request['od']) : null,
+
+            isset($this->request['search']) ?
+                $this->html->hidden('search', $this->request['search']) : null,
+
+            Html::label('Switch'),
+
+            Html::{'div.inputs'}(function () use ($filters) {
+                foreach ($filters as $filter) {
+                    $type = $filter->isGrouped() ? 'groupedSelect' : 'select';
+
+                    yield $this->html->{$type}(
+                            $filter->getKey(),
+                            $filter->getValue(),
+                            iterator_to_array($filter->getOptions())
+                        )
+                        ->isRequired(true)
+                        ->setNoSelectionLabel($filter->getLabel() ?? 'All');
+                }
+            })
+        );
+
+        return $form;
+    }
+
+
 
     /**
      * Render filter groups
@@ -63,12 +126,14 @@ trait FilterProviderTrait
         $index = [];
         $active = [];
 
-        foreach ($filters as $filter) {
-            if ($filter->isOverridden($contextKey)) {
+        foreach ($filters as $key => $filter) {
+            if (
+                $filter->isOverridden($contextKey) ||
+                $key === $contextKey
+            ) {
                 continue;
             }
 
-            $key = $filter->getKey();
             $index[$key] = $filter;
 
             if (
@@ -127,15 +192,15 @@ trait FilterProviderTrait
                             iterator_to_array($filter->getOptions())
                         )
                         ->isRequired($required)
-                        ->setNoSelectionLabel($filter->getLabel() ?? 'All')
-                        //->setAttribute('onchange', 'javascript:submit();')
-                        ;
+                        ->setNoSelectionLabel($filter->getLabel() ?? 'All');
                 }
             })
         );
 
         return $form;
     }
+
+
 
 
     /**
@@ -164,6 +229,37 @@ trait FilterProviderTrait
      * Generate filters for main list
      */
     protected function generateRecordFilters(): iterable
+    {
+        return [];
+    }
+
+
+    /**
+     * Get cached record switcher
+     */
+    protected function getRecordSwitchers(): array
+    {
+        if ($this->recordSwitchers === null) {
+            $this->recordSwitchers = [];
+
+            foreach ($this->generateRecordSwitchers() as $filter) {
+                if (!$filter->getValueGenerator()) {
+                    $filter->setValueGenerator(function () use ($filter) {
+                        return $this->request[$filter->getKey()];
+                    });
+                }
+
+                $this->recordSwitchers[$filter->getKey()] = $filter;
+            }
+        }
+
+        return $this->recordSwitchers;
+    }
+
+    /**
+     * Generate switcher filters for main list
+     */
+    protected function generateRecordSwitchers(): iterable
     {
         return [];
     }

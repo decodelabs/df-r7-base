@@ -38,14 +38,4 @@ trait DecoratorTrait
             ->setIcon($icon)
             ->setBackLinkRequest($backLink);
     }
-
-    public function renderSectionSelectorArea()
-    {
-        $node = $this->context->request->getNode();
-        $method = 'render'.ucfirst($node).'SectionSelectorArea';
-
-        if (method_exists($this, $method)) {
-            return $this->{$method}();
-        }
-    }
 }

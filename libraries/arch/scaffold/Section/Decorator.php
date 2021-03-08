@@ -16,5 +16,4 @@ interface Decorator extends Scaffold
 {
     // Components
     public function buildSectionHeaderBarComponent(array $args=[]): Component;
-    public function renderSectionSelectorArea();
 }
