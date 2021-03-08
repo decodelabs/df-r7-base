@@ -80,9 +80,6 @@ trait FilterProviderTrait
 
         $form = $this->html->form(null, 'get');
         $form->addFieldSet()->addClass('scaffold switcher')->push(
-            isset($this->request[$keyName]) && !isset($index[$keyName]) ?
-                $this->html->hidden($keyName, $this->getRecordId()) : null,
-
             isset($this->request['od']) ?
                 $this->html->hidden('od', $this->request['od']) : null,
 
