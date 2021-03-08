@@ -72,6 +72,10 @@ class HeaderBar extends HeaderBarBase
 
     protected function renderSelectorArea()
     {
+        if ($this->name !== 'section') {
+            return;
+        }
+
         $scaffold = $this->scaffold;
 
         if ($scaffold instanceof FilterProvider) {
