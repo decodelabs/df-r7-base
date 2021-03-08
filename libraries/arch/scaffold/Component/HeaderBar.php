@@ -72,7 +72,7 @@ class HeaderBar extends HeaderBarBase
 
     protected function renderSelectorArea()
     {
-        if ($this->name !== 'section') {
+        if ($this->name !== 'Section') {
             return;
         }
 
