@@ -131,4 +131,29 @@ trait FilterProviderTrait
     {
         return [];
     }
+
+
+    /**
+     * Merge record list filter fields
+     */
+    protected function mergeFilterListFields(?array $fields): ?array
+    {
+        if ($fields === null) {
+            $fields = [];
+        }
+
+        foreach ($this->getRecordFilters() as $filter) {
+            if (empty($innerFields = $filter->getListFields())) {
+                continue;
+            }
+
+            $fields = array_merge($innerFields, $fields);
+        }
+
+        if (empty($fields)) {
+            return null;
+        }
+
+        return $fields;
+    }
 }

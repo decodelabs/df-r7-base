@@ -104,10 +104,16 @@ abstract class RecordAdmin extends Generic implements
             $searchBar = $this->apex->component('SearchBar');
         }
 
+
+        // List
+        $fields = $this->mergeFilterListFields($fields);
+
         $list = $this->apex->component(ucfirst($keyName).'List', $fields)
             ->setCollection($query)
             ->setSlot('scaffold', $this);
 
+
+        // Relevance
         if ($query->hasSearch()) {
             $list->addCustomField('relevance', function ($list) {
                 $list->addFieldAtIndex(0, 'relevance', function ($record) {
