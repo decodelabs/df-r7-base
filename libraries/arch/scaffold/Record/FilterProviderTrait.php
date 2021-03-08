@@ -128,7 +128,8 @@ trait FilterProviderTrait
                         )
                         ->isRequired($required)
                         ->setNoSelectionLabel($filter->getLabel() ?? 'All')
-                        ->setAttribute('onchange', 'javascript:submit();');
+                        //->setAttribute('onchange', 'javascript:submit();')
+                        ;
                 }
             })
         );
