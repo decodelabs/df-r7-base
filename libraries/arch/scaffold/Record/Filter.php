@@ -21,6 +21,7 @@ class Filter implements Requirable
     protected $valueGenerator;
     protected $applicator;
     protected $grouped = false;
+    protected $listFieldModifier;
 
     /**
      * Init with options
@@ -191,5 +192,41 @@ class Filter implements Requirable
     public function isGrouped(): bool
     {
         return $this->grouped;
+    }
+
+
+    /**
+     * Set field modifier
+     */
+    public function setListFieldModifier(?callable $fieldModifier): Filter
+    {
+        $this->listFieldModifier = $fieldModifier;
+        return $this;
+    }
+
+    /**
+     * Get field modifier
+     */
+    public function getListFieldModifier(): ?callable
+    {
+        return $this->listFieldModifier;
+    }
+
+    /**
+     * Get list fields
+     */
+    public function getListFields(): ?array
+    {
+        if (!$this->listFieldModifier) {
+            return null;
+        }
+
+        $output = ($this->listFieldModifier)($this->getValue());
+
+        if (!is_array($output)) {
+            return null;
+        }
+
+        return $output;
     }
 }
