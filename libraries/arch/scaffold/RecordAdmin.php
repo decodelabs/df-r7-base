@@ -93,7 +93,7 @@ abstract class RecordAdmin extends Generic implements
             }
         }
 
-        $this->applyRecordFilters($query);
+        $this->applyRecordFilters($query, $contextKey);
         $query->paginateWith($this->request->query);
 
         $keyName = $this->getRecordKeyName();
@@ -106,7 +106,7 @@ abstract class RecordAdmin extends Generic implements
 
 
         // List
-        $fields = $this->mergeFilterListFields($fields);
+        $fields = $this->mergeFilterListFields($fields, $contextKey);
 
         $list = $this->apex->component(ucfirst($keyName).'List', $fields)
             ->setCollection($query)

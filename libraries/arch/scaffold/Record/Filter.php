@@ -26,6 +26,7 @@ class Filter implements Requirable
     protected $applicator;
     protected $grouped = false;
     protected $listFieldModifier;
+    protected $overrideContextKeys = [];
 
     /**
      * Init with options
@@ -239,5 +240,36 @@ class Filter implements Requirable
         }
 
         return $output;
+    }
+
+
+
+    /**
+     * Set override context keys
+     */
+    public function setOverrideContextKeys(string ...$contextKeys): Filter
+    {
+        $this->overrideContextKeys = $contextKeys;
+        return $this;
+    }
+
+    /**
+     * Get override context keys
+     */
+    public function getOverrideContextKeys(): array
+    {
+        return $this->overrideContextKeys;
+    }
+
+    /**
+     * Has override context key
+     */
+    public function isOverridden(?string $contextKey): bool
+    {
+        if ($contextKey === null) {
+            return false;
+        }
+
+        return in_array($contextKey, $this->overrideContextKeys);
     }
 }

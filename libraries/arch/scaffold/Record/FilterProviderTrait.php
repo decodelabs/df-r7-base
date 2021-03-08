@@ -37,9 +37,13 @@ trait FilterProviderTrait
     /**
      * Apply clauses to query
      */
-    public function applyRecordFilters(SelectQuery $query): void
+    public function applyRecordFilters(SelectQuery $query, ?string $contextKey=null): void
     {
         foreach ($this->getRecordFilters() as $filter) {
+            if ($filter->isOverridden($contextKey)) {
+                continue;
+            }
+
             $filter->apply($query);
         }
     }
@@ -60,6 +64,10 @@ trait FilterProviderTrait
         $active = [];
 
         foreach ($filters as $filter) {
+            if ($filter->isOverridden($contextKey)) {
+                continue;
+            }
+
             $key = $filter->getKey();
             $index[$key] = $filter;
 
@@ -70,6 +78,10 @@ trait FilterProviderTrait
             ) {
                 $active[$key] = $filter;
             }
+        }
+
+        if (empty($index)) {
+            return null;
         }
 
         if (!empty($active)) {
@@ -99,8 +111,8 @@ trait FilterProviderTrait
                 $this->html->link($request, 'Filter')
                     ->setIcon('cross'),
 
-            Html::{'div.inputs'}(function () use ($filters, $contextKey) {
-                foreach ($filters as $filter) {
+            Html::{'div.inputs'}(function () use ($index, $contextKey) {
+                foreach ($index as $filter) {
                     $required = $filter->isRequired();
 
                     if ($filter->getKey() === $contextKey) {
@@ -159,14 +171,17 @@ trait FilterProviderTrait
     /**
      * Merge record list filter fields
      */
-    protected function mergeFilterListFields(?array $fields): ?array
+    protected function mergeFilterListFields(?array $fields, ?string $contextKey=null): ?array
     {
         if ($fields === null) {
             $fields = [];
         }
 
         foreach ($this->getRecordFilters() as $filter) {
-            if (empty($innerFields = $filter->getListFields())) {
+            if (
+                $filter->isOverridden($contextKey) ||
+                empty($innerFields = $filter->getListFields())
+            ) {
                 continue;
             }
 
