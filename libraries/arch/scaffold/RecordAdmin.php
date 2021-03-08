@@ -93,7 +93,10 @@ abstract class RecordAdmin extends Generic implements
             }
         }
 
-        $this->applyRecordFilters($query, $contextKey);
+        if ($controls) {
+            $this->applyRecordFilters($query, $contextKey);
+        }
+
         $query->paginateWith($this->request->query);
 
         $keyName = $this->getRecordKeyName();
@@ -106,7 +109,9 @@ abstract class RecordAdmin extends Generic implements
 
 
         // List
-        $fields = $this->mergeFilterListFields($fields, $contextKey);
+        if ($controls) {
+            $fields = $this->mergeFilterListFields($fields, $contextKey);
+        }
 
         $list = $this->apex->component(ucfirst($keyName).'List', $fields)
             ->setCollection($query)
@@ -123,7 +128,9 @@ abstract class RecordAdmin extends Generic implements
         }
 
         // Filters
-        $filterBar = $this->renderRecordFilters($contextKey);
+        if ($controls) {
+            $filterBar = $this->renderRecordFilters($contextKey);
+        }
 
         // Select Bar
         if (static::CAN_SELECT && $controls) {
@@ -138,10 +145,12 @@ abstract class RecordAdmin extends Generic implements
         }
 
 
-        yield Html::{'?div.scaffold.controls'}([
-            Html::{'?div.left'}([$searchBar, $selectBar]),
-            Html::{'?div.right'}($filterBar)
-        ]);
+        if ($controls) {
+            yield Html::{'?div.scaffold.controls'}([
+                Html::{'?div.left'}([$searchBar, $selectBar]),
+                Html::{'?div.right'}($filterBar)
+            ]);
+        }
 
         yield $list;
     }
