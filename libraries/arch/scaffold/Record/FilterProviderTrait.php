@@ -60,13 +60,15 @@ trait FilterProviderTrait
         $active = [];
 
         foreach ($filters as $filter) {
-            $index[$filter->getKey()] = $filter;
+            $key = $filter->getKey();
+            $index[$key] = $filter;
 
             if (
                 !$filter->isRequired() &&
-                null !== ($value = $filter->getValue())
+                null !== ($value = $filter->getValue()) &&
+                $key !== $contextKey
             ) {
-                $active[$filter->getKey()] = $filter;
+                $active[$key] = $filter;
             }
         }
 
