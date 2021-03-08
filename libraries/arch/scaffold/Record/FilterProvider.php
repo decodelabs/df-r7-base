@@ -20,6 +20,12 @@ interface FilterProvider extends DataProvider
         bool $required=false
     ): Filter;
 
+    public function newRecordSwitcher(
+        ?callable $optionGenerator=null
+    ): Filter;
+
     public function applyRecordFilters(SelectQuery $query): void;
+
+    public function renderRecordSwitchers(): ?Markup;
     public function renderRecordFilters(?string $contextKey=null): ?Markup;
 }

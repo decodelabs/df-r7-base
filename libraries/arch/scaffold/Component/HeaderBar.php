@@ -7,6 +7,7 @@ namespace df\arch\scaffold\Component;
 
 use df\arch\component\HeaderBar as HeaderBarBase;
 use df\arch\Scaffold;
+use df\arch\scaffold\Record\FilterProvider;
 use df\core\lang\Callback;
 use df\aura\html\widget\Menu as MenuWidget;
 
@@ -71,7 +72,11 @@ class HeaderBar extends HeaderBarBase
 
     protected function renderSelectorArea()
     {
-        return $this->scaffold->renderRecordSwitchers();
+        $scaffold = $this->scaffold;
+
+        if ($scaffold instanceof FilterProvider) {
+            return $this->scaffold->renderRecordSwitchers();
+        }
     }
 
     public function setSubOperativeLinkBuilder($builder=null)
