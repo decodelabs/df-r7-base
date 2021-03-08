@@ -57,9 +57,25 @@ trait FilterProviderTrait
 
         $keyName = $this->getRecordKeyName();
         $index = [];
+        $active = [];
 
         foreach ($filters as $filter) {
             $index[$filter->getKey()] = $filter;
+
+            if (
+                !$filter->isRequired() &&
+                null !== ($value = $filter->getValue())
+            ) {
+                $active[$filter->getKey()] = $filter;
+            }
+        }
+
+        if (!empty($active)) {
+            $request = clone $this->context->request;
+
+            foreach ($active as $key => $filter) {
+                unset($request->query->{$key});
+            }
         }
 
         $form = $this->html->form(null, 'get');
@@ -75,6 +91,11 @@ trait FilterProviderTrait
 
             isset($this->request['search']) ?
                 $this->html->hidden('search', $this->request['search']) : null,
+
+            empty($active) ?
+                Html::label('Filter') :
+                $this->html->link($request, 'Filter')
+                    ->setIcon('cross'),
 
             Html::{'div.inputs'}(function () use ($filters, $contextKey) {
                 foreach ($filters as $filter) {

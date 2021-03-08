@@ -18,7 +18,11 @@ class Filter implements Requirable
     protected $key;
     protected $label;
     protected $optionGenerator;
+
     protected $valueGenerator;
+    protected $value;
+    protected $valueGenerated = false;
+
     protected $applicator;
     protected $grouped = false;
     protected $listFieldModifier;
@@ -133,11 +137,18 @@ class Filter implements Requirable
      */
     public function getValue()
     {
+        if ($this->valueGenerated) {
+            return $this->value;
+        }
+
         if (!$this->valueGenerator) {
             return null;
         }
 
-        return ($this->valueGenerator)();
+        $this->value = ($this->valueGenerator)();
+        $this->valueGenerated = true;
+
+        return $this->value;
     }
 
 
