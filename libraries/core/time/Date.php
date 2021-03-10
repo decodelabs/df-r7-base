@@ -200,6 +200,12 @@ class Date implements IDate, Dumpable
     }
 
 
+    public function getRaw(): DateTime
+    {
+        return $this->_date;
+    }
+
+
     // Serialize
     public function serialize()
     {

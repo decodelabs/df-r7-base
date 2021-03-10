@@ -8,6 +8,8 @@ namespace df\core\time;
 use df;
 use df\core;
 
+use DateTime;
+
 interface IDate extends \Serializable, core\IStringProvider
 {
     const SHORT = \IntlDateFormatter::SHORT;
@@ -32,6 +34,9 @@ interface IDate extends \Serializable, core\IStringProvider
     // Creation
     public static function fromLocaleString($string, $timezone=true, $size=self::SHORT, $locale=true);
     public static function factory($date, $timezone=null);
+
+    // IO
+    public function getRaw(): DateTime;
 
     // Time
     public function enableTime();
