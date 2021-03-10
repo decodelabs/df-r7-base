@@ -170,7 +170,7 @@ trait FilterProviderTrait
             isset($this->request['search']) ?
                 $this->html->hidden('search', $this->request['search']) : null,
 
-            $request !== null ?
+            $request === null ?
                 Html::label('Filter') :
                 $this->html->link($request, 'Filter')
                     ->setIcon('cross'),
