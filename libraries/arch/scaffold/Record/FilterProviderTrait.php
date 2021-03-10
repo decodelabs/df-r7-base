@@ -152,6 +152,8 @@ trait FilterProviderTrait
             foreach ($active as $key => $filter) {
                 unset($request->query->{$key});
             }
+        } else {
+            $request = null;
         }
 
         $form = $this->html->form(null, 'get');
@@ -168,7 +170,7 @@ trait FilterProviderTrait
             isset($this->request['search']) ?
                 $this->html->hidden('search', $this->request['search']) : null,
 
-            empty($active) ?
+            $request !== null ?
                 Html::label('Filter') :
                 $this->html->link($request, 'Filter')
                     ->setIcon('cross'),
