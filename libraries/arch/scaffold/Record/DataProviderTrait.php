@@ -567,9 +567,9 @@ trait DataProviderTrait
             }
         }
 
-        return $this->getNodeUri($node, [
+        return $this->getNodeUri($node, array_merge($query ?? [], [
             $this->getRecordUrlKey() => $this->identifyRecord($record)
-        ], $redirFrom, $redirTo, $propagationFilter);
+        ]), $redirFrom, $redirTo, $propagationFilter);
     }
 
     public function getRecordParentUri(array $record): DirectoryRequest
