@@ -68,7 +68,7 @@ trait FilterProviderTrait
     /**
      * Render record switchers
      */
-    public function renderRecordSwitchers(?iterable $filters=null): ?Markup
+    public function renderRecordSwitchers(?iterable $filters=null, ?string $label=null): ?Markup
     {
         if ($filters === null) {
             $filters = $this->getRecordSwitchers();
@@ -106,7 +106,7 @@ trait FilterProviderTrait
                 }
             },
 
-            Html::label('Switch'),
+            Html::label($label ?? 'Switch'),
 
             Html::{'div.inputs'}(function () use ($index) {
                 foreach ($index as $filter) {

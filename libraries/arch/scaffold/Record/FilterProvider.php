@@ -26,6 +26,6 @@ interface FilterProvider extends DataProvider
 
     public function applyRecordFilters(SelectQuery $query): void;
 
-    public function renderRecordSwitchers(?iterable $filters=null): ?Markup;
+    public function renderRecordSwitchers(?iterable $filters=null, ?string $label=null): ?Markup;
     public function renderRecordFilters(?string $contextKey=null, ?iterable $filters=null): ?Markup;
 }
