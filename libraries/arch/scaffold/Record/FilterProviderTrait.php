@@ -85,10 +85,11 @@ trait FilterProviderTrait
         }
 
         $keyName = $this->getRecordKeyName();
+        $queryValue = $this->request[$keyName];
 
         $form = $this->html->form(null, 'get');
         $form->addFieldSet()->addClass('scaffold switcher')->push(
-            isset($this->request[$keyName]) && !isset($index[$keyName]) ?
+            isset($queryValue) && !isset($index[$keyName]) ?
                 $this->html->hidden($keyName, $this->getRecordId()) : null,
 
             function () use ($keyName, $index) {
@@ -177,9 +178,11 @@ trait FilterProviderTrait
             $request = null;
         }
 
+        $queryValue = $this->request[$keyName];
+
         $form = $this->html->form(null, 'get');
         $form->addFieldSet()->addClass('scaffold filters')->push(
-            isset($this->request[$keyName]) && !isset($index[$keyName]) ?
+            isset($queryValue) && !isset($index[$keyName]) ?
                 $this->html->hidden($keyName, $this->getRecordId()) : null,
 
             isset($this->request[$contextKey]) && !isset($index[$contextKey]) ?
