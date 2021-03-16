@@ -78,17 +78,24 @@ trait FilterProviderTrait
             return null;
         }
 
+        $index = [];
+
+        foreach ($filters as $filter) {
+            $index[$filter->getKey()] = $filter;
+        }
+
         $keyName = $this->getRecordKeyName();
 
         $form = $this->html->form(null, 'get');
         $form->addFieldSet()->addClass('scaffold switcher')->push(
-            isset($this->request[$keyName]) && !isset($filters[$keyName]) ?
+            isset($this->request[$keyName]) && !isset($index[$keyName]) ?
                 $this->html->hidden($keyName, $this->getRecordId()) : null,
 
-            function () use ($keyName) {
+            function () use ($keyName, $index) {
                 foreach ($this->request->query as $key => $var) {
                     if (
                         $key === $keyName ||
+                        isset($index[$key]) ||
                         in_array($key, ['pg', 'of', 'lm'])
                     ) {
                         continue;
@@ -100,8 +107,8 @@ trait FilterProviderTrait
 
             Html::label('Switch'),
 
-            Html::{'div.inputs'}(function () use ($filters) {
-                foreach ($filters as $filter) {
+            Html::{'div.inputs'}(function () use ($index) {
+                foreach ($index as $filter) {
                     $type = $filter->isGrouped() ? 'groupedSelect' : 'select';
 
                     yield $this->html->{$type}(
