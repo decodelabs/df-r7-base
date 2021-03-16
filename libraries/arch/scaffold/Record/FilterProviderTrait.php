@@ -89,7 +89,7 @@ trait FilterProviderTrait
 
         $form = $this->html->form(null, 'get');
         $form->addFieldSet()->addClass('scaffold switcher')->push(
-            isset($queryValue) && !isset($index[$keyName]) ?
+            (!empty($queryValue) && !isset($index[$keyName])) ?
                 $this->html->hidden($keyName, $this->getRecordId()) : null,
 
             function () use ($keyName, $index) {
@@ -145,7 +145,9 @@ trait FilterProviderTrait
         $index = [];
         $active = [];
 
-        foreach ($filters as $key => $filter) {
+        foreach ($filters as $filter) {
+            $key = $filter->getKey();
+
             if (
                 $filter->isOverridden($contextKey) ||
                 $key === $contextKey
@@ -182,7 +184,7 @@ trait FilterProviderTrait
 
         $form = $this->html->form(null, 'get');
         $form->addFieldSet()->addClass('scaffold filters')->push(
-            isset($queryValue) && !isset($index[$keyName]) ?
+            !empty($queryValue) && !isset($index[$keyName]) ?
                 $this->html->hidden($keyName, $this->getRecordId()) : null,
 
             isset($this->request[$contextKey]) && !isset($index[$contextKey]) ?
