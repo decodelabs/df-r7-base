@@ -85,11 +85,18 @@ trait FilterProviderTrait
             isset($this->request[$keyName]) && !isset($filters[$keyName]) ?
                 $this->html->hidden($keyName, $this->getRecordId()) : null,
 
-            isset($this->request['od']) ?
-                $this->html->hidden('od', $this->request['od']) : null,
+            function () use ($keyName) {
+                foreach ($this->request->query as $key => $var) {
+                    if (
+                        $key === $keyName ||
+                        in_array($key, ['pg', 'of', 'lm'])
+                    ) {
+                        continue;
+                    }
 
-            isset($this->request['search']) ?
-                $this->html->hidden('search', $this->request['search']) : null,
+                    yield $this->html->hidden($key, $var);
+                }
+            },
 
             Html::label('Switch'),
 
