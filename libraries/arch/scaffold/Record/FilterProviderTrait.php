@@ -68,9 +68,11 @@ trait FilterProviderTrait
     /**
      * Render record switchers
      */
-    public function renderRecordSwitchers(): ?Markup
+    public function renderRecordSwitchers(?iterable $filters=null): ?Markup
     {
-        $filters = $this->getRecordSwitchers();
+        if ($filters === null) {
+            $filters = $this->getRecordSwitchers();
+        }
 
         if (empty($filters)) {
             return null;
@@ -114,9 +116,11 @@ trait FilterProviderTrait
     /**
      * Render filter groups
      */
-    public function renderRecordFilters(?string $contextKey=null): ?Markup
+    public function renderRecordFilters(?string $contextKey=null, ?iterable $filters=null): ?Markup
     {
-        $filters = $this->getRecordFilters();
+        if ($filters === null) {
+            $filters = $this->getRecordFilters();
+        }
 
         if (empty($filters)) {
             return null;
