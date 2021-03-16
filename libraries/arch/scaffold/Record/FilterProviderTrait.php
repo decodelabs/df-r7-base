@@ -172,9 +172,17 @@ trait FilterProviderTrait
 
         if (!empty($active)) {
             $request = clone $this->context->request;
+            $found = false;
 
             foreach ($active as $key => $filter) {
-                unset($request->query->{$key});
+                if (isset($request->query->{$key})) {
+                    $found = true;
+                    unset($request->query->{$key});
+                }
+            }
+
+            if (!$found) {
+                $request = null;
             }
         } else {
             $request = null;
