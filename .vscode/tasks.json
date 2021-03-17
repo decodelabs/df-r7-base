@@ -5,7 +5,7 @@
     "tasks": [{
         "label": "nucleus.phpstan",
         "type": "shell",
-        "command": "ssh -t $USERNAME@172.16.230.20 \"cd $PWD; ./vendor/bin/phpstan --memory-limit=2G analyze\"",
+        "command": "./vendor/bin/phpstan --memory-limit=1G analyze",
         "problemMatcher": []
     }]
 }
