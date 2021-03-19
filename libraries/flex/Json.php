@@ -82,7 +82,10 @@ class Json implements IJson
         }
 
         if (!is_array($data)) {
-            if (method_exists($data, '__toString')) {
+            if (
+                is_object($data) &&
+                method_exists($data, '__toString')
+            ) {
                 return (string)$data;
             }
 

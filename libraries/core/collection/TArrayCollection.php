@@ -121,14 +121,7 @@ trait TArrayCollection_ValueContainerSortable
         uasort($this->_collection, function (core\IValueContainer $a, core\IValueContainer $b) {
             $a = $a->getValue();
             $b = $b->getValue();
-
-            if ($a < $b) {
-                return -1;
-            } elseif ($a === $b) {
-                return 0;
-            } else {
-                return 1;
-            }
+            return $a <=> $b;
         });
     }
 
@@ -137,14 +130,7 @@ trait TArrayCollection_ValueContainerSortable
         uasort($this->_collection, function (core\IValueContainer $b, core\IValueContainer $a) {
             $a = $a->getValue();
             $b = $b->getValue();
-
-            if ($a < $b) {
-                return -1;
-            } elseif ($a === $b) {
-                return 0;
-            } else {
-                return 1;
-            }
+            return $a <=> $b;
         });
     }
 }

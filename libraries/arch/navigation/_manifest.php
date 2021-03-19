@@ -194,7 +194,7 @@ trait TEntryList
     protected function _sortEntries()
     {
         usort($this->_entries, function ($a, $b) {
-            return $a->getWeight() > $b->getWeight();
+            return $a->getWeight() <=> $b->getWeight();
         });
     }
 

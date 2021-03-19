@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\fire;
 
-class Manager implements IManager {
-
+class Manager implements IManager
+{
     use core\TManager;
 
     const REGISTRY_PREFIX = 'manager://fire';
@@ -18,31 +18,35 @@ class Manager implements IManager {
     protected $_categories = null;
     protected $_blocks = null;
 
-    public function getConfig(): Config {
+    public function getConfig(): Config
+    {
         return Config::getInstance();
     }
 
-    public function getCategories(): array {
+    public function getCategories(): array
+    {
         $this->_loadCategories();
         return $this->_categories;
     }
 
-    public function getCategory(?string $name): ?ICategory {
-        if($name === null) {
+    public function getCategory(?string $name): ?ICategory
+    {
+        if ($name === null) {
             return null;
         }
 
         $this->_loadCategories();
 
-        if(!isset($this->_categories[$name])) {
+        if (!isset($this->_categories[$name])) {
             return null;
         }
 
         return $this->_categories[$name];
     }
 
-    protected function _loadCategories(): void {
-        if($this->_categories !== null) {
+    protected function _loadCategories(): void
+    {
+        if ($this->_categories !== null) {
             return;
         }
 
@@ -55,18 +59,18 @@ class Manager implements IManager {
         $this->_categories = [];
         $blockIndex = [];
 
-        foreach(df\Launchpad::$loader->lookupClassList('fire/category') as $name => $class) {
+        foreach (df\Launchpad::$loader->lookupClassList('fire/category') as $name => $class) {
             try {
                 $category = fire\category\Base::factory($name);
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 continue;
             }
 
             $this->_categories[$name] = $category;
             $blockIndex[$category->getName()] = [];
 
-            foreach($category->getDefaultBlockTypes() as $blockName) {
-                if(!isset($this->_blocks[$blockName])) {
+            foreach ($category->getDefaultBlockTypes() as $blockName) {
+                if (!isset($this->_blocks[$blockName])) {
                     continue;
                 }
 
@@ -76,9 +80,9 @@ class Manager implements IManager {
 
 
         // Index the blocks into sets
-        foreach($this->_blocks as $block) {
-            foreach($block->getDefaultCategories() as $catName) {
-                if(!isset($this->_categories[$catName])) {
+        foreach ($this->_blocks as $block) {
+            foreach ($block->getDefaultCategories() as $catName) {
+                if (!isset($this->_categories[$catName])) {
                     continue;
                 }
 
@@ -90,17 +94,17 @@ class Manager implements IManager {
         // Update index with config data
         $config = $this->getConfig();
 
-        foreach($config->getCategoryAugmentations() as $catName => $blockSet) {
-            if(!isset($this->_categories[$catName])) {
+        foreach ($config->getCategoryAugmentations() as $catName => $blockSet) {
+            if (!isset($this->_categories[$catName])) {
                 continue;
             }
 
-            foreach($blockSet as $blockName => $enabled) {
-                if(!isset($this->_blocks[$blockName])) {
+            foreach ($blockSet as $blockName => $enabled) {
+                if (!isset($this->_blocks[$blockName])) {
                     continue;
                 }
 
-                if($enabled) {
+                if ($enabled) {
                     $blockIndex[$catName][$blockName] = $this->_blocks[$blockName];
                 } else {
                     unset($blockIndex[$catName][$blockName]);
@@ -110,10 +114,10 @@ class Manager implements IManager {
 
 
         // Add the block index to the categories
-        foreach($blockIndex as $catName => $blockSet) {
+        foreach ($blockIndex as $catName => $blockSet) {
             $category = $this->_categories[$catName];
 
-            foreach($blockSet as $blockName => $block) {
+            foreach ($blockSet as $blockName => $block) {
                 $category->addBlock($block);
             }
         }
@@ -121,22 +125,25 @@ class Manager implements IManager {
 
 
 
-// Blocks
-    public function isBlockAvailable(string $name): bool {
+    // Blocks
+    public function isBlockAvailable(string $name): bool
+    {
         $this->_loadBlocks();
         return isset($this->_blocks[ucfirst($name)]);
     }
 
-    public function getAllBlocks(): array {
+    public function getAllBlocks(): array
+    {
         $this->_loadBlocks();
         return $this->_blocks;
     }
 
-    public function getAllBlockNames(): array {
+    public function getAllBlockNames(): array
+    {
         $output = [];
 
-        foreach($this->getAllBlocks() as $block) {
-            if($block->isHidden()) {
+        foreach ($this->getAllBlocks() as $block) {
+            if ($block->isHidden()) {
                 continue;
             }
 
@@ -146,11 +153,12 @@ class Manager implements IManager {
         return $output;
     }
 
-    public function getAllBlockNamesByFormat(): array {
+    public function getAllBlockNamesByFormat(): array
+    {
         $output = [];
 
-        foreach($this->getAllBlocks() as $block) {
-            if($block->isHidden()) {
+        foreach ($this->getAllBlocks() as $block) {
+            if ($block->isHidden()) {
                 continue;
             }
 
@@ -159,17 +167,18 @@ class Manager implements IManager {
 
         $formatWeights = fire\category\Base::getFormatWeights();
 
-        uksort($output, function($a, $b) use($formatWeights) {
-            return ($formatWeights[$a] ?? 0) < ($formatWeights[$b] ?? 0);
+        uksort($output, function ($a, $b) use ($formatWeights) {
+            return ($formatWeights[$a] ?? 0) <=> ($formatWeights[$b] ?? 0);
         });
 
         return $output;
     }
 
-    public function getCategoryBlocks(string $category): array {
+    public function getCategoryBlocks(string $category): array
+    {
         $this->_loadCategories();
 
-        if(!isset($this->_categories[$category])) {
+        if (!isset($this->_categories[$category])) {
             return [];
         }
 
@@ -177,8 +186,8 @@ class Manager implements IManager {
         $category = $this->_categories[$category];
         $output = [];
 
-        foreach($category->getBlocks() as $blockName) {
-            if(!isset($this->_blocks[$blockName])) {
+        foreach ($category->getBlocks() as $blockName) {
+            if (!isset($this->_blocks[$blockName])) {
                 continue;
             }
 
@@ -189,11 +198,12 @@ class Manager implements IManager {
         return $output;
     }
 
-    public function getCategoryBlockNames(string $category): array {
+    public function getCategoryBlockNames(string $category): array
+    {
         $output = [];
 
-        foreach($this->getCategoryBlocks($category) as $block) {
-            if($block->isHidden()) {
+        foreach ($this->getCategoryBlocks($category) as $block) {
+            if ($block->isHidden()) {
                 continue;
             }
 
@@ -203,25 +213,26 @@ class Manager implements IManager {
         return $output;
     }
 
-    public function getCategoryBlockNamesByFormat(string $category): array {
+    public function getCategoryBlockNamesByFormat(string $category): array
+    {
         $output = [];
 
-        foreach($this->getCategoryBlocks($category) as $block) {
-            if($block->isHidden()) {
+        foreach ($this->getCategoryBlocks($category) as $block) {
+            if ($block->isHidden()) {
                 continue;
             }
 
             $output[$block->getFormat()][$block->getName()] = $block->getDisplayName();
         }
 
-        if($category = $this->getCategory($category)) {
+        if ($category = $this->getCategory($category)) {
             $formatWeights = $category->getFormatWeights();
         } else {
             $formatWeights = fire\category\Base::getFormatWeights();
         }
 
-        uksort($output, function($a, $b) use($formatWeights) {
-            return ($formatWeights[$a] ?? 0) < ($formatWeights[$b] ?? 0);
+        uksort($output, function ($a, $b) use ($formatWeights) {
+            return ($formatWeights[$b] ?? 0) <=> ($formatWeights[$a] ?? 0);
         });
 
         return $output;
@@ -229,8 +240,9 @@ class Manager implements IManager {
 
 
 
-    protected function _loadBlocks() {
-        if($this->_blocks !== null) {
+    protected function _loadBlocks()
+    {
+        if ($this->_blocks !== null) {
             return;
         }
 
@@ -238,10 +250,10 @@ class Manager implements IManager {
 
         $this->_blocks = [];
 
-        foreach(df\Launchpad::$loader->lookupClassList('fire/block') as $name => $class) {
+        foreach (df\Launchpad::$loader->lookupClassList('fire/block') as $name => $class) {
             try {
                 $block = fire\block\Base::factory($name);
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 continue;
             }
 

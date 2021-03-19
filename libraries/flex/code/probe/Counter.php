@@ -148,7 +148,7 @@ class Counter implements flex\code\IProbe, core\lang\IAcceptTypeProcessor, \Arra
     public function sortByLines()
     {
         uasort($this->_types, function ($a, $b) {
-            return $a->lines < $b->lines;
+            return $b->lines <=> $a->lines;
         });
 
         return $this;

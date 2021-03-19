@@ -225,10 +225,16 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
 
         $flags = 0;
 
-        if ($options['schemeRequired'] ?? false) {
+        if (
+            ($options['schemeRequired'] ?? false) &&
+            defined('FILTER_FLAG_SCHEME_REQUIRED')
+        ) {
             $flags |= FILTER_FLAG_SCHEME_REQUIRED;
         }
-        if ($options['hostRequired'] ?? false) {
+        if (
+            ($options['hostRequired'] ?? false) &&
+            defined('FILTER_FLAG_HOST_REQUIRED')
+        ) {
             $flags |= FILTER_FLAG_HOST_REQUIRED;
         }
         if ($options['pathRequired'] ?? false) {

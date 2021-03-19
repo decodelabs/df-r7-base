@@ -12,8 +12,9 @@ use df\flex;
 
 use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
-use DecodeLabs\Atlas\EventLoop;
-use DecodeLabs\Atlas\EventLoop\Select as SelectLoop;
+
+use DecodeLabs\Eventful\Dispatcher as EventDispatcher;
+use DecodeLabs\Eventful\Factory as EventFactory;
 
 use DecodeLabs\Systemic;
 use DecodeLabs\Exceptional;
@@ -203,7 +204,7 @@ abstract class Base implements IDaemon
 
     private function _runForked()
     {
-        $this->events = Atlas::newEventLoop();
+        $this->events = EventFactory::newDispatcher();
         $this->process->setTitle(df\Launchpad::$app->getName().' - '.$this->getName());
 
         $pidPath = $this->getPidFilePath();
@@ -240,7 +241,7 @@ abstract class Base implements IDaemon
         $this->_setup();
 
         $this->_setupDefaultEvents($this->events);
-        $pauseEvents = $this->_setupDefaultEvents(Atlas::newEventLoop(), true);
+        $pauseEvents = $this->_setupDefaultEvents(EventFactory::newDispatcher(), true);
 
         while (true) {
             if ($this->_isStopping) {
@@ -278,7 +279,7 @@ abstract class Base implements IDaemon
         }
     }
 
-    protected function _setupDefaultEvents(EventLoop $events, $pauseEvents=false)
+    protected function _setupDefaultEvents(EventDispatcher $events, $pauseEvents=false)
     {
         $events
             ->setCycleHandler(function () use ($pauseEvents) {

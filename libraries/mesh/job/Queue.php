@@ -445,7 +445,7 @@ class Queue implements IQueue
     protected function _sortJobs()
     {
         uasort($this->_jobs, function ($jobA, $jobB) {
-            return $jobA->getDependencyScore() > $jobB->getDependencyScore();
+            return $jobA->getDependencyScore() <=> $jobB->getDependencyScore();
         });
     }
 }

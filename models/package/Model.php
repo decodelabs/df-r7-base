@@ -97,7 +97,7 @@ class Model extends axis\Model
                 return -1;
             }
 
-            return $a['name'] > $b['name'];
+            return $a['name'] <=> $b['name'];
         });
 
         return $installed;

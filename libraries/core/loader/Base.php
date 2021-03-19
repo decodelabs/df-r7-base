@@ -358,7 +358,7 @@ class Base implements core\ILoader
         $this->_loadPackageList($packages);
 
         uasort($this->_packages, function ($a, $b) {
-            return $a->priority < $b->priority;
+            return $b->priority <=> $a->priority;
         });
 
         foreach ($this->_packages as $package) {

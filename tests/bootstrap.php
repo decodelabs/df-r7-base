@@ -27,3 +27,5 @@ if ($hasAppFile) {
 if (class_exists($appClass)) {
     df\Launchpad::$loader->loadPackages(array_keys($appClass::PACKAGES));
 }
+
+error_reporting(false);

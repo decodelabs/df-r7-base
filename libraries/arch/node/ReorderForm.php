@@ -132,7 +132,7 @@ abstract class ReorderForm extends Form
         $weights = $this->values->weights->toArray();
 
         uasort($weights, function ($a, $b) {
-            return $a >= $b;
+            return $a <=> $b;
         });
 
         $weights = array_flip(array_keys($weights));
