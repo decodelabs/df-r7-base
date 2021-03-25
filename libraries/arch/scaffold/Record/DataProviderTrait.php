@@ -264,10 +264,19 @@ trait DataProviderTrait
     // List IO
     public function queryRecordList(string $mode, array $fields=null): SelectQuery
     {
+        if ($fields === null) {
+            $fields = $this->getDefaultRecordQueryFields();
+        }
+
         $output = $this->getRecordAdapter()->select($fields);
         $this->prepareRecordList($output, $mode);
 
         return $output;
+    }
+
+    protected function getDefaultRecordQueryFields(): ?array
+    {
+        return null;
     }
 
     public function extendRecordList(SelectQuery $query, string $mode): SelectQuery
