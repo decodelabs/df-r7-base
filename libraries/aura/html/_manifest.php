@@ -11,7 +11,7 @@ use df\aura;
 use df\flex;
 
 use DecodeLabs\Tagged\Markup;
-use DecodeLabs\Tagged\Builder\Tag as TagInterface;
+use DecodeLabs\Elementary\Tag as TagInterface;
 use DecodeLabs\Tagged\Html;
 use DecodeLabs\Tagged\Html\Tag;
 

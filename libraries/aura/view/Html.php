@@ -12,7 +12,7 @@ use df\arch;
 use df\flow;
 
 use DecodeLabs\Tagged\Html as Tagged;
-use DecodeLabs\Tagged\Builder\StyleBlock;
+use DecodeLabs\Elementary\Style\Sheet as StyleSheet;
 
 use DecodeLabs\Glitch\Dumpable;
 
@@ -490,7 +490,7 @@ class Html extends Base implements IHtmlView, Dumpable
     public function getStyles()
     {
         if (!$this->_styles) {
-            $this->_styles = new StyleBlock();
+            $this->_styles = new StyleSheet();
         }
 
         return $this->_styles;

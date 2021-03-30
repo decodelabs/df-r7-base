@@ -11,7 +11,7 @@ use df\aura;
 use df\flex;
 
 use DecodeLabs\Tagged\Html;
-use DecodeLabs\Tagged\Builder\StyleList;
+use DecodeLabs\Elementary\Style\Collection as StyleList;
 
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;

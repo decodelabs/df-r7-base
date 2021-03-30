@@ -14,7 +14,7 @@ use df\flow;
 
 use df\arch\Scaffold;
 
-use DecodeLabs\Tagged\MarkupProxy;
+use DecodeLabs\Tagged\Markup\Proxy as MarkupProxy;
 
 // Exceptions
 interface IForcedResponse
