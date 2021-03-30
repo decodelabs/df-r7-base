@@ -12,3 +12,6 @@ parameters:
     excludes_analyse:
         - libraries/core/archive/Rar.php
         - libraries/core/archive/Snappy.php
+
+    parallel:
+        processTimeout: 300.0
