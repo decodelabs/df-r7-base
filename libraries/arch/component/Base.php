@@ -15,7 +15,7 @@ use df\link;
 use df\arch\scaffold\Loader as ScaffoldLoader;
 
 use DecodeLabs\Tagged as Html;
-use DecodeLabs\Tagged\Markup;
+use DecodeLabs\Elementary\Markup;
 use DecodeLabs\Exceptional;
 
 abstract class Base implements arch\IComponent
