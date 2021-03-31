@@ -13,7 +13,7 @@ use df\flex;
 use df\spur;
 use df\flow;
 
-use DecodeLabs\Tagged\Html as Tagged;
+use DecodeLabs\Tagged;
 use DecodeLabs\Tagged\Buffer;
 use DecodeLabs\Chirp\Parser as Chirp;
 

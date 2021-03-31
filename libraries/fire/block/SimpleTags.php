@@ -12,7 +12,7 @@ use df\arch;
 use df\flex;
 use df\aura;
 
-use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged as Html;
 use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
 
