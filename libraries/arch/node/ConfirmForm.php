@@ -11,7 +11,7 @@ use df\arch;
 use df\aura;
 use df\flex;
 
-use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged as Html;
 
 abstract class ConfirmForm extends Form
 {

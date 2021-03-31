@@ -11,7 +11,7 @@ use df\aura;
 use df\arch;
 
 use DecodeLabs\Tagged\Markup;
-use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged as Html;
 use DecodeLabs\Tagged\Html\Element;
 
 class RendererContext implements aura\html\widget\IRendererContext

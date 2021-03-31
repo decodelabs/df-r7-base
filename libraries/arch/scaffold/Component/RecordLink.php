@@ -13,7 +13,7 @@ use df\aura;
 use df\arch\component\RecordLink as RecordLinkBase;
 use df\arch\scaffold\Record\DataProvider as RecordDataProviderScaffold;
 
-use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged as Html;
 
 class RecordLink extends RecordLinkBase
 {

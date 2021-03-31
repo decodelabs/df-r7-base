@@ -12,6 +12,7 @@
         "symfony/polyfill-mbstring": "~1.7",
 
         "decodelabs/exceptional": "^0.3",
+        "decodelabs/exemplar": "^0.1",
         "decodelabs/glitch": "^0.17",
         "decodelabs/veneer": "^0.7",
         "decodelabs/systemic": "^0.7",

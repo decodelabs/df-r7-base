@@ -20,7 +20,7 @@ use df\arch\scaffold\Section\ProviderTrait as SectionProviderTrait;
 
 use df\opal\query\ISelectQuery as SelectQuery;
 
-use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged as Html;
 use DecodeLabs\Glitch\Dumpable;
 
 abstract class RecordAdmin extends Generic implements

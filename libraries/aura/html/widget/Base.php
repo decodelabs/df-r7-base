@@ -11,7 +11,7 @@ use df\aura;
 use df\arch;
 use df\flex;
 
-use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged as Html;
 
 use DecodeLabs\Exceptional;
 

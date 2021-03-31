@@ -14,7 +14,7 @@ use df\link;
 
 use df\arch\scaffold\Loader as ScaffoldLoader;
 
-use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged as Html;
 use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Exceptional;
 

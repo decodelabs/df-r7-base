@@ -12,10 +12,10 @@ use df\flex;
 use df\arch;
 use df\aura;
 
-use DecodeLabs\Tagged\Xml\Element as XmlElement;
-use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
-use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
-use DecodeLabs\Tagged\Xml\SerializableTrait as XmlSerializableTrait;
+use DecodeLabs\Exemplar\Element as XmlElement;
+use DecodeLabs\Exemplar\Writer as XmlWriter;
+use DecodeLabs\Exemplar\Serializable as XmlSerializable;
+use DecodeLabs\Exemplar\SerializableTrait as XmlSerializableTrait;
 
 use DecodeLabs\Exceptional;
 

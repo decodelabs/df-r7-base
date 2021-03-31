@@ -23,7 +23,7 @@ use df\axis\ISchemaBasedStorageUnit as SchemaBasedStorageUnit;
 use df\flex\Text;
 use df\core\time\IDate as Date;
 
-use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged as Html;
 use DecodeLabs\Exceptional;
 
 trait DataProviderTrait

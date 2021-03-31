@@ -33,7 +33,7 @@ use df\user\IPostalAddress as PostalAddress;
 
 use df\axis\IUnit as Unit;
 
-use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged as Html;
 use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Exceptional;
 

@@ -13,7 +13,7 @@ use df\arch;
 use df\apex;
 use df\flex;
 
-use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
+use DecodeLabs\Exemplar\Serializable as XmlSerializable;
 
 // Manager
 interface IManager extends core\IManager

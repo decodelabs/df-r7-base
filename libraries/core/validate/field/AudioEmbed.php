@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\spur;
 
-use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged as Html;
 use DecodeLabs\Tagged\Html\Embed;
 
 class AudioEmbed extends Base implements core\validate\IAudioEmbedField

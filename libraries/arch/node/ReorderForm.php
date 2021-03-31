@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\aura;
 
-use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged as Html;
 
 abstract class ReorderForm extends Form
 {

@@ -15,7 +15,7 @@ use df\mesh;
 use df\opal\query\ISelectQuery as SelectQuery;
 use df\arch\IComponent as Component;
 
-use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged as Html;
 use DecodeLabs\Exceptional;
 
 abstract class SelectorDelegate extends Delegate implements

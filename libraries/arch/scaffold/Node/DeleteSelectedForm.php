@@ -7,7 +7,7 @@ namespace df\arch\scaffold\Node;
 
 use df\arch\Scaffold;
 
-use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged as Html;
 
 class DeleteSelectedForm extends AffectSelectedForm
 {

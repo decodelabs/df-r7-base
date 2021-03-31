@@ -10,7 +10,7 @@ use df\core;
 use df\aura;
 use df\flex;
 
-use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged as Html;
 use DecodeLabs\Elementary\Style\Collection as StyleList;
 
 use DecodeLabs\Glitch\Dumpable;

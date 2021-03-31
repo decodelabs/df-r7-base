@@ -10,7 +10,7 @@ use df\core;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged as Html;
 
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;

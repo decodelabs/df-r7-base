@@ -12,10 +12,11 @@ use df\flex;
 use df\aura;
 use df\arch;
 
-use DecodeLabs\Tagged\Xml\Element as XmlElement;
-use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
-use DecodeLabs\Tagged\Xml\Serializable as XmlSerializable;
-use DecodeLabs\Tagged\Xml\SerializableTrait as XmlSerializableTrait;
+use DecodeLabs\Exemplar\Consumer as XmlConsumer;
+use DecodeLabs\Exemplar\Element as XmlElement;
+use DecodeLabs\Exemplar\Writer as XmlWriter;
+use DecodeLabs\Exemplar\Serializable as XmlSerializable;
+use DecodeLabs\Exemplar\SerializableTrait as XmlSerializableTrait;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Exceptional;
@@ -31,7 +32,7 @@ abstract class Base implements fire\IBlock
 
     protected $_isNested = false;
 
-    public static function fromXmlElement(XmlElement $element)
+    public static function fromXmlElement(XmlElement $element): XmlConsumer
     {
         if (null === ($type = $element->getAttribute('type'))) {
             throw Exceptional::UnexpectedValue(

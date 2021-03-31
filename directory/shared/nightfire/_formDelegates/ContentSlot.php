@@ -12,7 +12,7 @@ use df\fire;
 use df\arch;
 use df\aura;
 
-use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged as Html;
 
 class ContentSlot extends arch\node\form\Delegate implements
     arch\node\IInlineFieldRenderableDelegate,

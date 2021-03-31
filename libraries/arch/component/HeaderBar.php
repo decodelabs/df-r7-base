@@ -12,7 +12,7 @@ use df\aura;
 
 use df\aura\html\widget\Menu as MenuWidget;
 
-use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged as Html;
 use DecodeLabs\Glitch\Dumpable;
 
 abstract class HeaderBar extends Base implements Dumpable

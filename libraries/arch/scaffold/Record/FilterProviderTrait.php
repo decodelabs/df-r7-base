@@ -8,7 +8,7 @@ namespace df\arch\scaffold\Record;
 use df\arch\scaffold\Record\Filter;
 use df\opal\query\ISelectQuery as SelectQuery;
 
-use DecodeLabs\Tagged\Html;
+use DecodeLabs\Tagged as Html;
 use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Exceptional;
 

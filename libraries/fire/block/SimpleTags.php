@@ -13,8 +13,8 @@ use df\flex;
 use df\aura;
 
 use DecodeLabs\Tagged\Html;
-use DecodeLabs\Tagged\Xml\Element as XmlElement;
-use DecodeLabs\Tagged\Xml\Writer as XmlWriter;
+use DecodeLabs\Exemplar\Element as XmlElement;
+use DecodeLabs\Exemplar\Writer as XmlWriter;
 
 class SimpleTags extends Base
 {

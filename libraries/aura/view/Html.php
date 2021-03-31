@@ -11,7 +11,7 @@ use df\aura;
 use df\arch;
 use df\flow;
 
-use DecodeLabs\Tagged\Html as Tagged;
+use DecodeLabs\Tagged;
 use DecodeLabs\Elementary\Style\Sheet as StyleSheet;
 
 use DecodeLabs\Glitch\Dumpable;
