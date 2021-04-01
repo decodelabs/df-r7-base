@@ -72,11 +72,6 @@ class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProv
 
 
     // Legend
-    public function withLegendBody()
-    {
-        return new aura\html\widget\util\ElementContentWrapper($this, $this->_legendBody);
-    }
-
     public function setLegendBody(aura\html\IElementContent $body)
     {
         if (!$body->getParentRenderContext()) {

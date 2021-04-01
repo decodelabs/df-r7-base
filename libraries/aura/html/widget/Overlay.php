@@ -74,11 +74,6 @@ class Overlay extends Container implements IWidgetShortcutProvider
 
 
     // Title
-    public function withTitleBody()
-    {
-        return new aura\html\widget\util\ElementContentWrapper($this, $this->_titleBody);
-    }
-
     public function setTitleBody(aura\html\IElementContent $body)
     {
         if (!$body->getParentRenderContext()) {

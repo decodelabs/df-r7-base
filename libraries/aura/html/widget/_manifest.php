@@ -11,10 +11,6 @@ use df\aura;
 use df\arch;
 use df\user;
 
-interface IElementContentWrapper extends \ArrayAccess, \Countable
-{
-}
-
 interface IRendererContext extends core\collection\IMappedCollection
 {
     public function setComponent(?arch\IComponent $component);
@@ -85,7 +81,6 @@ interface IWidgetProxy
 
 interface IBodyContentAwareWidget extends IWidget
 {
-    public function withBody();
     public function setBody($body);
     public function getBody();
     public function hasBody();
@@ -273,7 +268,6 @@ interface IFormWidget extends IFormOrientedWidget
 
 interface IFieldSetWidget extends IFormOrientedWidget
 {
-    public function withLegendBody();
     public function setLegendBody(aura\html\IElementContent $body);
     public function getLegendBody();
 
@@ -337,7 +331,6 @@ interface ILabelWidget extends IFormOrientedWidget, IBodyContentAwareWidget
 
 interface IFieldWidget extends IFormOrientedWidget
 {
-    public function withLabelBody();
     public function setLabelBody(aura\html\IElementContent $labelBody);
     public function getLabelBody();
 }

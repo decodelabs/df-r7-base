@@ -164,11 +164,6 @@ class Field extends Container implements IFormOrientedWidget
 
 
     // Label body
-    public function withLabelBody()
-    {
-        return new aura\html\widget\util\ElementContentWrapper($this, $this->_label->getBody());
-    }
-
     public function setLabelBody(aura\html\IElementContent $labelBody)
     {
         $this->_label->setBody();

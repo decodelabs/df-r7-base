@@ -96,11 +96,6 @@ trait TWidget_BodyContentAware
 {
     protected $_body;
 
-    public function withBody()
-    {
-        return new aura\html\widget\util\ElementContentWrapper($this, $this->_body);
-    }
-
     public function setBody($body)
     {
         if (!$body instanceof aura\html\IElementContent) {
