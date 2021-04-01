@@ -11,7 +11,7 @@ use df\aura;
 use df\flow;
 use df\arch;
 
-use DecodeLabs\Tagged\Html\Mail\Generator;
+use DecodeLabs\Tagged\Mail\Generator;
 use DecodeLabs\Exceptional;
 
 class Mail extends flow\mail\Message implements ILayoutView

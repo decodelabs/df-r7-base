@@ -13,7 +13,7 @@ use df\flex;
 use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Elementary\Tag as TagInterface;
 use DecodeLabs\Tagged as Html;
-use DecodeLabs\Tagged\Html\Tag;
+use DecodeLabs\Tagged\Tag;
 
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
