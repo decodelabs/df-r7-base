@@ -182,7 +182,7 @@ class Descriptor implements IDescriptor
 
         if ($this->_fileName !== null) {
             $this->getContentType();
-            $ext = Typify::suggestExtension($this->_contentType);
+            $ext = Typify::getExtensionFor($this->_contentType);
 
             if ($ext === 'jpeg') {
                 $ext = 'jpg';
@@ -190,6 +190,7 @@ class Descriptor implements IDescriptor
 
             $path = new core\uri\Path($this->_fileName);
             $origExt = strtolower($path->getExtension());
+
 
             if ($origExt === 'jpeg') {
                 $origExt = 'jpg';
