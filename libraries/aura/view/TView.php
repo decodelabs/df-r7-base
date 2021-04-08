@@ -13,7 +13,7 @@ use df\flex;
 use df\link;
 use df\flow;
 
-use DecodeLabs\Atlas;
+use DecodeLabs\Typify;
 use DecodeLabs\Exceptional;
 
 trait TView_RenderTargetProvider
@@ -403,7 +403,7 @@ trait TView_Response
 
     public function getContentType()
     {
-        return Atlas::$mime->detect($this->_type);
+        return Typify::detect($this->_type);
     }
 }
 

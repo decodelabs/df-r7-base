@@ -8,7 +8,7 @@ namespace df\core\lang;
 use df;
 use df\core;
 
-use DecodeLabs\Atlas;
+use DecodeLabs\Typify;
 
 interface ICallback
 {
@@ -263,7 +263,7 @@ trait TAcceptTypeProcessor
             }
 
             if ($type[0] == '.') {
-                $type = Atlas::$mime->detect($type);
+                $type = Typify::detect($type);
             }
 
             if (false === strpos($type, '/')) {
@@ -295,7 +295,7 @@ trait TAcceptTypeProcessor
             }
 
             if ($type[0] == '.') {
-                $type = Atlas::$mime->detect($type);
+                $type = Typify::detect($type);
             }
 
             @list($category, $name) = explode('/', $type, 2);

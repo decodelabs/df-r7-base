@@ -13,6 +13,7 @@ use df\arch;
 use df\halo;
 
 use DecodeLabs\Atlas;
+use DecodeLabs\Typify;
 use DecodeLabs\Glitch;
 use DecodeLabs\Exceptional;
 
@@ -592,7 +593,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         if (!$response instanceof link\http\IResponse) {
             $response = new link\http\response\Stream(
                 (string)$response,
-                Atlas::$mime->detect(strtolower($this->_context->request->getType()))
+                Typify::detect(strtolower($this->_context->request->getType()))
             );
 
             //$response->getHeaders()->setCacheExpiration(60);

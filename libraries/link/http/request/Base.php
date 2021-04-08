@@ -13,6 +13,7 @@ use df\flex;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Atlas\Channel;
+use DecodeLabs\Typify;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
@@ -659,7 +660,7 @@ class Base implements link\http\IRequest, Dumpable
                 $headers->set('Content-Length', $this->_bodyData->getSize());
 
                 if (!$headers->has('Content-Type')) {
-                    $headers->set('Content-Type', Atlas::$mime->detect($this->_bodyData->getPath()));
+                    $headers->set('Content-Type', Typify::detect($this->_bodyData->getPath()));
                 }
             } else {
                 $headers->set('Content-Length', strlen($this->_bodyData));

@@ -10,6 +10,7 @@ use df\core;
 use df\link;
 
 use DecodeLabs\Atlas;
+use DecodeLabs\Typify;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Exceptional;
@@ -54,7 +55,7 @@ class File implements link\http\IUploadFile
         $top = array_pop($parts);
 
         if ($this->_extension !== null && ($top == 'octet-stream' || empty($top))) {
-            $this->_type = Atlas::$mime->detect($this->_extension);
+            $this->_type = Typify::detect($this->_extension);
         }
 
         $this->_tempPath = $data['tmp_name'];

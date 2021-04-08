@@ -12,6 +12,7 @@ use df\link;
 use df\flex;
 
 use DecodeLabs\Atlas;
+use DecodeLabs\Typify;
 
 class Descriptor implements IDescriptor
 {
@@ -181,7 +182,7 @@ class Descriptor implements IDescriptor
 
         if ($this->_fileName !== null) {
             $this->getContentType();
-            $ext = Atlas::$mime->suggestExtension($this->_contentType);
+            $ext = Typify::suggestExtension($this->_contentType);
 
             if ($ext === 'jpeg') {
                 $ext = 'jpg';
@@ -347,11 +348,11 @@ class Descriptor implements IDescriptor
                 }
             } else {
                 $url = new link\http\Url($this->_location);
-                $this->_contentType = Atlas::$mime->detect($url->path->getExtension());
+                $this->_contentType = Typify::detect($url->path->getExtension());
             }
 
             if ($this->_contentType === null && $this->_fileName) {
-                $this->_contentType = Atlas::$mime->detect($this->_fileName);
+                $this->_contentType = Typify::detect($this->_fileName);
             }
 
             if (substr($this->_contentType, 0, 6) !== 'image/') {

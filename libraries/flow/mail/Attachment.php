@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\flow;
 
-use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
+use DecodeLabs\Typify;
 
 class Attachment implements IAttachment
 {
@@ -66,6 +66,6 @@ class Attachment implements IAttachment
 
     public function getContentType(): string
     {
-        return Atlas::$mime->detect($this->_file->getPath());
+        return Typify::detect($this->_file->getPath());
     }
 }

@@ -13,7 +13,7 @@ use df\neon;
 use df\flex;
 use df\opal;
 
-use DecodeLabs\Atlas;
+use DecodeLabs\Typify;
 use DecodeLabs\Exceptional;
 
 class Model extends axis\Model
@@ -314,7 +314,7 @@ class Model extends axis\Model
         }
 
         if (!$fileData->has('contentType')) {
-            $fileData->contentType = Atlas::$mime->detect($filePath);
+            $fileData->contentType = Typify::detect($filePath);
         }
 
         if (!$fileData->has('creationDate')) {
