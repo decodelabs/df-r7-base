@@ -31,7 +31,7 @@ class TaskGenerateEntry extends arch\node\Task
         }
 
 
-        $mainFile = Atlas::$fs->file($appPath.'/entry/'.$envId.'.php');
+        $mainFile = Atlas::file($appPath.'/entry/'.$envId.'.php');
 
         if (!$mainFile->exists()) {
             $mainFile->putContents(
@@ -42,7 +42,7 @@ class TaskGenerateEntry extends arch\node\Task
         }
 
 
-        $file = Atlas::$fs->createFile(
+        $file = Atlas::createFile(
             $appPath.'/entry/'.$envId,
 
             '#!'.$phpPath."\n".

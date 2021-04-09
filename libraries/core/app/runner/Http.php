@@ -12,7 +12,7 @@ use df\flow;
 use df\arch;
 use df\halo;
 
-use DecodeLabs\Atlas;
+use DecodeLabs\Deliverance;
 use DecodeLabs\Typify;
 use DecodeLabs\Glitch;
 use DecodeLabs\Exceptional;
@@ -689,7 +689,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
                 $response->getHeaders()->send();
             }
         } else {
-            $stream = Atlas::openStream('php://output', 'a+');
+            $stream = Deliverance::openStream('php://output', 'a+');
             set_time_limit(0);
 
             if ($response instanceof link\http\IGeneratorResponse) {

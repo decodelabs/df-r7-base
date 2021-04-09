@@ -9,7 +9,6 @@ use df;
 use df\core;
 use df\neon;
 
-use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 
 // Interfaces

@@ -10,8 +10,8 @@ use df\core;
 use df\flex;
 
 use DecodeLabs\Atlas\File;
-use DecodeLabs\Atlas\DataReceiver;
-use DecodeLabs\Atlas\DataSender;
+use DecodeLabs\Deliverance\DataReceiver;
+use DecodeLabs\Deliverance\DataSender;
 
 interface IReader extends core\IArrayProvider, \Iterator
 {

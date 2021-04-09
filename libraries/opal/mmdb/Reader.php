@@ -29,7 +29,7 @@ class Reader implements IReader
     public function __construct($file)
     {
         if (is_string($file)) {
-            $file = Atlas::$fs->file($file, Mode::READ_ONLY);
+            $file = Atlas::file($file, Mode::READ_ONLY);
         } elseif (!$file instanceof File) {
             throw Exceptional::InvalidArgument(
                 'MMDB file could not be found'

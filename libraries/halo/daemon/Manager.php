@@ -57,7 +57,7 @@ class Manager implements IManager
         }
 
         if ($launch) {
-            Atlas::$fs->createDir(dirname($path));
+            Atlas::createDir(dirname($path));
             touch($path);
             $taskManager = arch\node\task\Manager::getInstance();
 

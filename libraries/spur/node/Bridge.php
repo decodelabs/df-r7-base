@@ -34,7 +34,7 @@ class Bridge implements IBridge
 
     public function npmInstall(string $name, ?Session $session=null)
     {
-        Atlas::$fs->createDir($this->_nodePath);
+        Atlas::createDir($this->_nodePath);
 
         $result = Systemic::$process->newLauncher('npm', [
                 '--loglevel=error',
@@ -59,13 +59,13 @@ class Bridge implements IBridge
 
     public function execute($path, $data)
     {
-        Atlas::$fs->createDir($this->_nodePath);
+        Atlas::createDir($this->_nodePath);
         Glitch::incomplete($path);
     }
 
     public function evaluate($js, $data=null)
     {
-        Atlas::$fs->createDir($this->_nodePath);
+        Atlas::createDir($this->_nodePath);
 
         $payload = flex\Json::toString([
             'js' => $js,
@@ -73,7 +73,7 @@ class Bridge implements IBridge
         ]);
 
         if (!is_file($this->_nodePath.'/evaluate.js')) {
-            Atlas::$fs->copyFile(__DIR__.'/evaluate.js', $this->_nodePath.'/evaluate.js');
+            Atlas::copyFile(__DIR__.'/evaluate.js', $this->_nodePath.'/evaluate.js');
         }
 
         $bin = Systemic::$os->which('node');

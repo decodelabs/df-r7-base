@@ -37,12 +37,12 @@ class Reader implements IReader
     public static function openFile($path): Reader
     {
         ini_set('auto_detect_line_endings', true);
-        return new self(Atlas::$fs->file($path, Mode::READ_ONLY));
+        return new self(Atlas::file($path, Mode::READ_ONLY));
     }
 
     public static function openString(string $string): Reader
     {
-        return new self(Atlas::$fs->createMemoryFile($string));
+        return new self(Atlas::createMemoryFile($string));
     }
 
     public function __construct(File $channel)

@@ -143,7 +143,7 @@ class File implements link\http\IUploadFile
             );
         }
 
-        return Atlas::$fs->file($this->_destinationPath);
+        return Atlas::file($this->_destinationPath);
     }
 
 
@@ -200,7 +200,7 @@ class File implements link\http\IUploadFile
             return $this;
         }
 
-        $destination = Atlas::$fs->createDir((string)$destination)->getPath();
+        $destination = Atlas::createDir((string)$destination)->getPath();
         $fullPath = rtrim($destination, '/').'/'.$this->getBaseName();
         $i18n = core\i18n\Manager::getInstance();
 

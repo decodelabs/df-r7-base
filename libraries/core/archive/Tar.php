@@ -31,7 +31,7 @@ class Tar extends Base
         $archive->extractTo($destination);
 
         if ($isGz && $tarFile !== null) {
-            Atlas::$fs->deleteFile($tarFile);
+            Atlas::deleteFile($tarFile);
         }
 
         if ($flattenRoot) {

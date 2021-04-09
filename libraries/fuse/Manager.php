@@ -55,7 +55,7 @@ class Manager implements IManager
         if (!isset(self::$_depCache[$id])) {
             $this->ensureDependenciesFor($theme);
             $path = self::getManifestCachePath().'/'.$id;
-            self::$_depCache[$id] = unserialize(Atlas::$fs->getContents($path));
+            self::$_depCache[$id] = unserialize(Atlas::getContents($path));
         }
 
         return self::$_depCache[$id];
@@ -75,7 +75,7 @@ class Manager implements IManager
         self::$_depCache[$id] = $output;
 
         $path = self::getManifestCachePath().'/'.$id;
-        Atlas::$fs->createFile($path, serialize($output));
+        Atlas::createFile($path, serialize($output));
     }
 
 
@@ -97,7 +97,7 @@ class Manager implements IManager
             $swallow = false;
 
             if (!is_dir($vendorPath)) {
-                Atlas::$fs->deleteDir(dirname($path));
+                Atlas::deleteDir(dirname($path));
                 $swallow = true;
             }
 
@@ -105,8 +105,8 @@ class Manager implements IManager
                 $time = filemtime($path);
 
                 if ($time < time() - (30 * 60 * 60)) {
-                    $depContent = Atlas::$fs->getContents($path);
-                    Atlas::$fs->deleteFile($path);
+                    $depContent = Atlas::getContents($path);
+                    Atlas::deleteFile($path);
                     unset(self::$_depCache[$id]);
                 }
             } else {

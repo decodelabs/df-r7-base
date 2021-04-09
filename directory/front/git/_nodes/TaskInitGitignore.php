@@ -29,7 +29,7 @@ class TaskInitGitignore extends arch\node\Task
 
         Cli::{'yellow'}('Copying default .gitignore: ');
 
-        Atlas::$fs->copyFile(__DIR__.'/default.gitignore', $path.'/.gitignore')
+        Atlas::copyFile(__DIR__.'/default.gitignore', $path.'/.gitignore')
             ->setPermissions(0777);
 
         Cli::success('done');

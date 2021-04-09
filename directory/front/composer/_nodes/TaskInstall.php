@@ -19,7 +19,7 @@ class TaskInstall extends arch\node\Task
 {
     public function execute()
     {
-        $file = Atlas::$fs->file($this->app->path.'/composer.json');
+        $file = Atlas::file($this->app->path.'/composer.json');
 
         if (!$file->exists()) {
             $this->runChild('composer/init?no-update');

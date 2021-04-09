@@ -10,9 +10,9 @@ use df\core;
 use df\flex;
 
 use DecodeLabs\Atlas;
-use DecodeLabs\Atlas\DataReceiver;
-use DecodeLabs\Atlas\DataSender;
 use DecodeLabs\Atlas\Mode;
+use DecodeLabs\Deliverance\DataReceiver;
+use DecodeLabs\Deliverance\DataSender;
 use DecodeLabs\Exceptional;
 
 class Builder implements IBuilder
@@ -29,7 +29,7 @@ class Builder implements IBuilder
     {
         return (new self($generator))
             ->setDataReceiver(
-                Atlas::$fs->file($path, Mode::READ_WRITE_TRUNCATE)
+                Atlas::file($path, Mode::READ_WRITE_TRUNCATE)
             );
     }
 
@@ -37,7 +37,7 @@ class Builder implements IBuilder
     {
         return (new self($generator))
             ->setDataReceiver(
-                Atlas::$fs->newMemoryFile()
+                Atlas::newMemoryFile()
             );
     }
 

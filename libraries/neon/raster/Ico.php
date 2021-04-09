@@ -26,7 +26,7 @@ class Ico implements IIcoGenerator
 
     public function addImage($file, int ...$sizes)
     {
-        $file = Atlas::$fs->file($file);
+        $file = Atlas::file($file);
 
         if (!$file->exists()) {
             throw Exceptional::NotFound(
@@ -76,7 +76,7 @@ class Ico implements IIcoGenerator
 
     public function save($file): File
     {
-        return Atlas::$fs->createFile($file, $this->generate());
+        return Atlas::createFile($file, $this->generate());
     }
 
     public function generate(): string

@@ -46,7 +46,7 @@ class Sqlite extends Base_Pdo
             }
 
             $database .= '.db';
-            Atlas::$fs->createDir(dirname($database));
+            Atlas::createDir(dirname($database));
         }
 
         return 'sqlite:'.$database;

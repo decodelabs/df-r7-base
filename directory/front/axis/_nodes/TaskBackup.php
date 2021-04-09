@@ -41,7 +41,7 @@ class TaskBackup extends arch\node\Task
         $this->_manifest['timestamp'] = time();
         $backupId = 'axis-'.date('YmdHis');
         $this->_path = $this->app->getSharedDataPath().'/backup/'.$backupId;
-        Atlas::$fs->createDir($this->_path);
+        Atlas::createDir($this->_path);
 
         $progressBar = Cli::newProgressBar(0, count($units), 0);
         $count = 0;
@@ -64,12 +64,12 @@ class TaskBackup extends arch\node\Task
         $phar->buildFromDirectory($this->_path);
         Cli::success('done');
 
-        Atlas::$fs->deleteDir($this->_path);
+        Atlas::deleteDir($this->_path);
     }
 
     public function handleException(\Throwable $e)
     {
-        Atlas::$fs->deleteDir($this->_path);
+        Atlas::deleteDir($this->_path);
         parent::handleException($e);
     }
 

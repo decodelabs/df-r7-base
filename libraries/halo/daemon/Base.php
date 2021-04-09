@@ -12,6 +12,7 @@ use df\flex;
 
 use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
+use DecodeLabs\Deliverance;
 
 use DecodeLabs\Eventful\Dispatcher as EventDispatcher;
 use DecodeLabs\Eventful\Factory as EventFactory;
@@ -154,7 +155,7 @@ abstract class Base implements IDaemon
         $this->process = Systemic::$process->getCurrent();
 
         $basePath = df\Launchpad::$app->getLocalDataPath().'/daemons/'.flex\Text::formatFileName($this->getName());
-        Atlas::$fs->createDir(dirname($basePath));
+        Atlas::createDir(dirname($basePath));
 
         $this->_startTime = time();
         $this->_statusPath = $basePath.'.status';
@@ -165,10 +166,10 @@ abstract class Base implements IDaemon
 
 
         if (static::TEST_MODE) {
-            $broker = Atlas::newCliBroker();
+            $broker = Deliverance::newCliBroker();
         } else {
-            $broker = Atlas::newBroker()
-                ->addOutputReceiver(Atlas::$fs->file($basePath.'.log', 'w'));
+            $broker = Deliverance::newBroker()
+                ->addOutputReceiver(Atlas::file($basePath.'.log', 'w'));
         }
 
         Cli::setSession(
@@ -267,11 +268,11 @@ abstract class Base implements IDaemon
         $this->_teardown();
 
         if ($pidPath) {
-            Atlas::$fs->deleteFile($pidPath);
+            Atlas::deleteFile($pidPath);
         }
 
         if (static::REPORT_STATUS) {
-            Atlas::$fs->deleteFile($this->_statusPath);
+            Atlas::deleteFile($this->_statusPath);
         }
 
         if ($this->_isRestarting) {
@@ -339,7 +340,7 @@ abstract class Base implements IDaemon
             return;
         }
 
-        Atlas::$fs->createDir(dirname($this->_statusPath));
+        Atlas::createDir(dirname($this->_statusPath));
 
         $state = 'running';
 

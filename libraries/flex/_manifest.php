@@ -9,7 +9,6 @@ use df;
 use df\core;
 use df\flex;
 
-use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 
 interface IEncoding

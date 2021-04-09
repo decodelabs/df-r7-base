@@ -26,7 +26,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
         $this->ensureDfSource();
 
         $path = $this->app->getLocalDataPath().'/sass/'.$this->app->envMode;
-        $this->_dir = Atlas::$fs->dir($path);
+        $this->_dir = Atlas::dir($path);
 
         if (!$this->_dir->exists()) {
             return;

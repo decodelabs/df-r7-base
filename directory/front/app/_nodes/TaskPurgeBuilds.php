@@ -26,7 +26,7 @@ class TaskPurgeBuilds extends arch\node\Task
         Cli::{'yellow'}('Purging old build folders: ');
 
         $appPath = df\Launchpad::$app->path;
-        $buildDir = Atlas::$fs->dir($appPath.'/data/local/build');
+        $buildDir = Atlas::dir($appPath.'/data/local/build');
         $all = isset($this->request['all']);
         $active = $this->filter['?active']->guid();
 

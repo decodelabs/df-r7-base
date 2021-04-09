@@ -109,9 +109,9 @@ class Ignore
 
             if ($match) {
                 if ($isDir) {
-                    yield $path => Atlas::$fs->dir($entry->getPathname());
+                    yield $path => Atlas::dir($entry->getPathname());
                 } else {
-                    yield $path => Atlas::$fs->file($entry->getPathname());
+                    yield $path => Atlas::file($entry->getPathname());
                 }
             }
         }

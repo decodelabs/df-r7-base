@@ -47,7 +47,7 @@ class TaskPurgeLargeFiles extends arch\node\Task
             }
 
             Cli::{'.brightMagenta'}($version['fileName'].' - '.$this->format->fileSize($version['fileSize']));
-            Atlas::$fs->deleteFile($path);
+            Atlas::deleteFile($path);
 
             $total += $version['fileSize'];
         }

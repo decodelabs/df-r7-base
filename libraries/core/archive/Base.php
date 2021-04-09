@@ -94,7 +94,7 @@ abstract class Base implements IArchive
             $destination = dirname($file);
         }
 
-        Atlas::$fs->createDir($destination);
+        Atlas::createDir($destination);
         return $destination;
     }
 
@@ -120,7 +120,7 @@ abstract class Base implements IArchive
             $destFile = dirname($file).'/'.$this->_getDecompressFileName($file, $extension);
         }
 
-        Atlas::$fs->createDir(dirname($destFile));
+        Atlas::createDir(dirname($destFile));
         return $destFile;
     }
 
@@ -140,7 +140,7 @@ abstract class Base implements IArchive
 
     protected function _flattenRoot(string $destination): void
     {
-        $dir = Atlas::$fs->dir($destination);
+        $dir = Atlas::dir($destination);
         $dirName = null;
 
         foreach ($dir->scan() as $item) {

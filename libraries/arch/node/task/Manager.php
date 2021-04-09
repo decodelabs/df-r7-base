@@ -16,7 +16,7 @@ use DecodeLabs\Systemic;
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
 use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Terminus\Session;
-use DecodeLabs\Atlas;
+use DecodeLabs\Deliverance;
 use DecodeLabs\Exceptional;
 
 class Manager implements arch\node\ITaskManager
@@ -81,7 +81,7 @@ class Manager implements arch\node\ITaskManager
         if (df\Launchpad::$runner instanceof core\app\runner\Task) {
             $session = Cli::getSession();
             $oldBroker = $session->getBroker();
-            $session->setBroker(Atlas::newBroker());
+            $session->setBroker(Deliverance::newBroker());
 
             $this->invoke($request);
             $session->setBroker($oldBroker);

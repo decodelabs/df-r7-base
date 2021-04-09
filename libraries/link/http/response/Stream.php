@@ -11,7 +11,7 @@ use df\link;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
-use DecodeLabs\Atlas\Channel;
+use DecodeLabs\Deliverance\Channel;
 
 class Stream extends Base implements link\http\IAdaptiveStreamResponse
 {
@@ -50,7 +50,7 @@ class Stream extends Base implements link\http\IAdaptiveStreamResponse
         if ($content instanceof Channel) {
             $this->setContentFileStream($content);
         } elseif (!$this->_content) {
-            $this->_content = Atlas::$fs->createMemoryFile($content);
+            $this->_content = Atlas::createMemoryFile($content);
         } else {
             $this->_content->write($content);
         }

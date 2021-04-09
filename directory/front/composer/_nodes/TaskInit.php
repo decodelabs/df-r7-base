@@ -20,7 +20,7 @@ class TaskInit extends arch\node\Task
     {
         $this->ensureDfSource();
 
-        $file = Atlas::$fs->file($this->app->path.'/composer.json');
+        $file = Atlas::file($this->app->path.'/composer.json');
 
         if ($file->exists()) {
             if (!isset($this->request['no-update'])) {

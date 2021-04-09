@@ -34,7 +34,7 @@ class File extends Base implements link\http\IFileResponse
 
     public function setFile($file, $checkPath=true)
     {
-        $file = Atlas::$fs->file($file);
+        $file = Atlas::file($file);
 
         if ($checkPath && !$file->exists()) {
             throw Exceptional::NotFound(

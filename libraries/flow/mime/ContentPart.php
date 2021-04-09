@@ -10,7 +10,6 @@ use df\core;
 use df\flow;
 use df\flex;
 
-use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 
 use DecodeLabs\Glitch\Dumpable;

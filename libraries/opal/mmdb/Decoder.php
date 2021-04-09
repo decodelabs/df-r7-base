@@ -9,7 +9,6 @@ use df;
 use df\core;
 use df\opal;
 
-use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Exceptional;
 

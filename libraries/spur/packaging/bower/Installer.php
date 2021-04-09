@@ -26,7 +26,7 @@ class Installer implements IInstaller
     public function __construct(Session $session=null)
     {
         $installPath = fuse\Manager::getAssetPath();
-        $this->_installDir = Atlas::$fs->dir($installPath);
+        $this->_installDir = Atlas::dir($installPath);
         $this->_cachePath = '/tmp/decode-framework/bower';
         $this->_mutex = Atlas::newMutex('bower', $this->_cachePath);
         $this->setCliSession($session);
@@ -540,7 +540,7 @@ class Installer implements IInstaller
             }
 
             if ($file->getMTime() < $time) {
-                Atlas::$fs->deleteFile($file->getPathname());
+                Atlas::deleteFile($file->getPathname());
             }
         }
 
@@ -559,11 +559,11 @@ class Installer implements IInstaller
                     $sourcePath, (string)$destination, true
                 );
             } catch (\Throwable $e) {
-                Atlas::$fs->deleteFile($sourcePath);
+                Atlas::deleteFile($sourcePath);
                 throw $e;
             }
         } elseif (is_dir($sourcePath)) {
-            Atlas::$fs->copyDir($sourcePath, $destination);
+            Atlas::copyDir($sourcePath, $destination);
         } else {
             throw Exceptional::Runtime(
                 'Unable to locate fetched package source in cache: '.$package->cacheFileName
@@ -581,7 +581,7 @@ class Installer implements IInstaller
             ]
         );
 
-        //Atlas::$fs->deleteFile($sourcePath);
+        //Atlas::deleteFile($sourcePath);
     }
 
     protected function _filterFiles($destination)

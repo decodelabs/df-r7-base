@@ -9,8 +9,7 @@ use df;
 use df\core;
 use df\link;
 
-use DecodeLabs\Atlas;
-use DecodeLabs\Atlas\Channel;
+use DecodeLabs\Deliverance\Channel;
 use DecodeLabs\Exceptional;
 
 class Options implements link\http\IRequestOptions

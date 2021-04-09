@@ -21,7 +21,7 @@ class Local extends Base implements ILocalDataHandler
     public function publishFile($fileId, $oldVersionId, $newVersionId, $filePath, $fileName)
     {
         $destination = $this->getFilePath($fileId, $newVersionId);
-        Atlas::$fs->copyFile($filePath, $destination);
+        Atlas::copyFile($filePath, $destination);
 
         return $this;
     }
@@ -68,7 +68,7 @@ class Local extends Base implements ILocalDataHandler
     public function purgeVersion($fileId, $versionId, $isActive)
     {
         $path = $this->getFilePath($fileId, $versionId);
-        Atlas::$fs->deleteFile($path);
+        Atlas::deleteFile($path);
 
         return $this;
     }
@@ -77,7 +77,7 @@ class Local extends Base implements ILocalDataHandler
     {
         $storageKey = $this->_getStorageKey($fileId);
         $path = df\Launchpad::$app->getSharedDataPath().'/media/'.$storageKey.'/'.$fileId;
-        $dir = Atlas::$fs->dir($path);
+        $dir = Atlas::dir($path);
         $parent = $dir->getParent();
         $dir->delete();
 
@@ -90,7 +90,7 @@ class Local extends Base implements ILocalDataHandler
 
     public function hashFile($fileId, $versionId, $isActive)
     {
-        $file = Atlas::$fs->file($this->getFilePath($fileId, $versionId));
+        $file = Atlas::file($this->getFilePath($fileId, $versionId));
 
         if (!$file->exists()) {
             return null;

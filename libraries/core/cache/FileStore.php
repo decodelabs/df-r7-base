@@ -31,7 +31,7 @@ abstract class FileStore implements IFileStore
         ];
 
         foreach ($dirs as $path) {
-            $dir = Atlas::$fs->dir($path);
+            $dir = Atlas::dir($path);
 
             if (!$dir->exists()) {
                 continue;
@@ -58,7 +58,7 @@ abstract class FileStore implements IFileStore
         ];
 
         foreach ($dirs as $path) {
-            Atlas::$fs->deleteDir($path);
+            Atlas::deleteDir($path);
         }
     }
 
@@ -71,7 +71,7 @@ abstract class FileStore implements IFileStore
         }
 
         $path .= '/filestore/'.flex\Text::formatFileName($this->getCacheId());
-        $this->_dir = Atlas::$fs->createDir($path);
+        $this->_dir = Atlas::createDir($path);
     }
 
     public function getCacheStats(): array

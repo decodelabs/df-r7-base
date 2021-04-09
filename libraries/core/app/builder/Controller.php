@@ -39,7 +39,7 @@ class Controller implements IController
         $this->_shouldCompile = !df\Launchpad::$app->isDevelopment();
 
         $this->_runPath = df\Launchpad::$app->getLocalDataPath().'/run';
-        $this->_destination = Atlas::$fs->dir(df\Launchpad::$app->getLocalDataPath().'/build/'.$this->_id);
+        $this->_destination = Atlas::dir(df\Launchpad::$app->getLocalDataPath().'/build/'.$this->_id);
     }
 
     public function getBuildId(): string
@@ -91,7 +91,7 @@ class Controller implements IController
         // Copy packages
         foreach (array_reverse($packages) as $package) {
             yield $package->name;
-            $packageDir = Atlas::$fs->dir($package->path);
+            $packageDir = Atlas::dir($package->path);
 
             if ($libDir = $packageDir->getExistingDir('libraries')) {
                 $libDir->mergeInto($destinationPath);
@@ -117,7 +117,7 @@ class Controller implements IController
 
         // Copy app folder
         yield 'app';
-        $appDir = Atlas::$fs->dir($appPackage->path);
+        $appDir = Atlas::dir($appPackage->path);
 
         foreach ($appDir->scanDirs() as $name => $dir) {
             if (!in_array($name, self::APP_EXPORT)) {
@@ -144,7 +144,7 @@ class Controller implements IController
 
 
         // Generate run file
-        Atlas::$fs->createFile(
+        Atlas::createFile(
             $destinationPath.'/Run.php',
             '<?php'."\n".
             'namespace df;'."\n".
@@ -157,13 +157,13 @@ class Controller implements IController
 
     public function activateBuild()
     {
-        Atlas::$fs->deleteDir($this->_runPath.'/backup');
+        Atlas::deleteDir($this->_runPath.'/backup');
 
         if (is_dir($this->_runPath.'/active')) {
-            Atlas::$fs->renameDir($this->_runPath.'/active', 'backup');
+            Atlas::renameDir($this->_runPath.'/active', 'backup');
         }
 
         $this->_destination->moveTo($this->_runPath, 'active');
-        Atlas::$fs->deleteDir($this->_runPath.'/backup');
+        Atlas::deleteDir($this->_runPath.'/backup');
     }
 }

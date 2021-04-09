@@ -32,7 +32,7 @@ class FileSystem implements spur\packaging\bower\IResolver
         $package->cacheFileName = $package->name.'-'.md5($package->url).$extension;
         $package->version = time();
 
-        Atlas::$fs->copyFile($package->url, $cachePath.'/packages/'.$package->cacheFileName);
+        Atlas::copyFile($package->url, $cachePath.'/packages/'.$package->cacheFileName);
         return true;
     }
 

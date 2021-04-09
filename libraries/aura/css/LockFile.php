@@ -99,7 +99,7 @@ class LockFile
 
     public function getRemainingTime()
     {
-        $file = Atlas::$fs->file($this->_path.'/'.$this->_fileName);
+        $file = Atlas::file($this->_path.'/'.$this->_fileName);
         $file->clearStatCache();
 
         if (!$file->exists()) {
@@ -135,7 +135,7 @@ class LockFile
             );
         }
 
-        Atlas::$fs->createFile(
+        Atlas::createFile(
             $this->_path.'/'.$this->_fileName,
             time().':'.$this->_timeout
         );
@@ -146,7 +146,7 @@ class LockFile
 
     public function unlock()
     {
-        Atlas::$fs->deleteFile($this->_path.'/'.$this->_fileName);
+        Atlas::deleteFile($this->_path.'/'.$this->_fileName);
         $this->_isLocked = false;
         return $this;
     }

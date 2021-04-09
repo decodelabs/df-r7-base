@@ -167,7 +167,7 @@ class SassBridge implements ISassBridge
         }
 
         $lockFile->lock();
-        Atlas::$fs->createDir($this->_workDir.'/'.$this->_key);
+        Atlas::createDir($this->_workDir.'/'.$this->_key);
 
         $error = null;
 
@@ -178,7 +178,7 @@ class SassBridge implements ISassBridge
         }
 
         $lockFile->unlock();
-        Atlas::$fs->deleteDir($this->_workDir.'/'.$this->_key);
+        Atlas::deleteDir($this->_workDir.'/'.$this->_key);
 
         if ($error) {
             throw $error;
@@ -413,7 +413,7 @@ class SassBridge implements ISassBridge
         ];
 
         foreach ($files as $fileName) {
-            Atlas::$fs->copyFile($this->_workDir.'/'.$this->_key.'/'.$fileName, $this->_workDir.'/'.$fileName);
+            Atlas::copyFile($this->_workDir.'/'.$this->_key.'/'.$fileName, $this->_workDir.'/'.$fileName);
         }
 
         return;

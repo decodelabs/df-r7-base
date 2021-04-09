@@ -21,12 +21,12 @@ class TaskClearBuild extends arch\node\Task
         $appPath = $this->app->path;
         $envId = $this->app->envId;
 
-        Atlas::$fs->deleteFile($appPath.'/data/local/run/active/Run.php');
+        Atlas::deleteFile($appPath.'/data/local/run/active/Run.php');
 
         $this->runChild('app/purge-builds?all');
-        Atlas::$fs->deleteDir($appPath.'/data/local/run/');
+        Atlas::deleteDir($appPath.'/data/local/run/');
 
-        Atlas::$fs->deleteFile($appPath.'/entry/'.$envId.'.testing.php');
-        Atlas::$fs->deleteFile($appPath.'/entry/'.$envId.'.production.php');
+        Atlas::deleteFile($appPath.'/entry/'.$envId.'.testing.php');
+        Atlas::deleteFile($appPath.'/entry/'.$envId.'.production.php');
     }
 }

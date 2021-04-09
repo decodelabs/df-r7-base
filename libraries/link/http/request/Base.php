@@ -12,7 +12,7 @@ use df\flex;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
-use DecodeLabs\Atlas\Channel;
+use DecodeLabs\Deliverance\Channel;
 use DecodeLabs\Typify;
 
 use DecodeLabs\Glitch;
@@ -179,7 +179,7 @@ class Base implements link\http\IRequest, Dumpable
 
 
         if ($this->method === 'post') {
-            $this->_bodyData = Atlas::$fs->newMemoryFile('input');
+            $this->_bodyData = Atlas::newMemoryFile('input');
 
             $this->_postData = core\lang\Future::factory(function () {
                 $payload = $this->getBodyDataString();
@@ -491,7 +491,7 @@ class Base implements link\http\IRequest, Dumpable
         }
 
         if (is_string($body)) {
-            $body = Atlas::$fs->createMemoryFile($body);
+            $body = Atlas::createMemoryFile($body);
             $body->setPosition(0);
         }
 
@@ -521,7 +521,7 @@ class Base implements link\http\IRequest, Dumpable
             return $this->_bodyData;
         }
 
-        return Atlas::$fs->createTempFile($this->getBodyDataString());
+        return Atlas::createTempFile($this->getBodyDataString());
     }
 
     public function hasBodyData()

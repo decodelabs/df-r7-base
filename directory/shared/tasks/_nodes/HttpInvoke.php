@@ -12,7 +12,7 @@ use df\arch;
 use df\halo;
 
 use DecodeLabs\Terminus as Cli;
-use DecodeLabs\Atlas;
+use DecodeLabs\Deliverance;
 
 class HttpInvoke extends arch\node\Base
 {
@@ -43,7 +43,7 @@ class HttpInvoke extends arch\node\Base
                 $invoke['request'],
                 Cli::newSession(
                     Cli::newRequest([]),
-                    Atlas::newBroker()->addOutputReceiver($generator)
+                    Deliverance::newBroker()->addOutputReceiver($generator)
                 ),
                 null,
                 false,

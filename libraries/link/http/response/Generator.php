@@ -9,9 +9,9 @@ use df;
 use df\core;
 use df\link;
 
-use DecodeLabs\Atlas\DataReceiver;
-use DecodeLabs\Atlas\DataReceiverTrait;
-use DecodeLabs\Atlas\DataSender;
+use DecodeLabs\Deliverance\DataReceiver;
+use DecodeLabs\Deliverance\DataReceiverTrait;
+use DecodeLabs\Deliverance\DataSender;
 use DecodeLabs\Exceptional;
 
 class Generator extends Base implements link\http\IGeneratorResponse

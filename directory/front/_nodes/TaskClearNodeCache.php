@@ -18,13 +18,13 @@ class TaskClearNodeCache extends arch\node\Task implements arch\node\IBuildTaskN
     public function execute()
     {
         Cli::{'yellow'}('Clearing node cache: ');
-        $dir = Atlas::$fs->dir($this->app->getLocalDataPath().'/node');
+        $dir = Atlas::dir($this->app->getLocalDataPath().'/node');
 
         if ($dir->exists()) {
             $dir->moveTo($this->app->getLocalDataPath().'/node-old', 'node-'.time());
         }
 
-        Atlas::$fs->deleteDir($this->app->getLocalDataPath().'/node-old');
+        Atlas::deleteDir($this->app->getLocalDataPath().'/node-old');
         Cli::success('done');
     }
 }

@@ -24,8 +24,8 @@ class TaskLaunchQueued extends arch\node\Task
 
     protected function _beforeDispatch()
     {
-        $this->_outputReceiver = Atlas::$fs->newMemoryFile();
-        $this->_errorReceiver = Atlas::$fs->newMemoryFile();
+        $this->_outputReceiver = Atlas::newMemoryFile();
+        $this->_errorReceiver = Atlas::newMemoryFile();
 
         Cli::getSession()->getBroker()
             ->addOutputReceiver($this->_outputReceiver)

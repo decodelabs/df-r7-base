@@ -12,8 +12,8 @@ use df\arch;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
-use DecodeLabs\Atlas\DataReceiver;
-use DecodeLabs\Atlas\Channel;
+use DecodeLabs\Deliverance\DataReceiver;
+use DecodeLabs\Deliverance\Channel;
 use DecodeLabs\Exceptional;
 
 interface IUrl extends
@@ -347,7 +347,7 @@ trait TStringResponse
 
     public function getContentFileStream()
     {
-        return Atlas::$fs->createTempFile($this->getContent());
+        return Atlas::createTempFile($this->getContent());
     }
 
     public function getContentLength()

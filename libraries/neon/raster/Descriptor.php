@@ -119,7 +119,7 @@ class Descriptor implements IDescriptor
         $isTransformable = !in_array($type, ['image/svg+xml', 'image/gif']);
 
         if ($this->_isSourceLocal && !$isTransformable) {
-            $file = Atlas::$fs->file($this->_sourceLocation);
+            $file = Atlas::file($this->_sourceLocation);
         } elseif (!$file = $fileStore->get($key, $lifetime)) {
             $download = null;
 
@@ -162,7 +162,7 @@ class Descriptor implements IDescriptor
                 $image->transform($transformation)->apply();
                 $fileStore->set($key, $image->toString(90));
             } else {
-                $fileStore->set($key, Atlas::$fs->file($this->_location));
+                $fileStore->set($key, Atlas::file($this->_location));
             }
 
             $file = $fileStore->get($key);

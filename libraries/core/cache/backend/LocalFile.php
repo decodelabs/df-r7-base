@@ -37,8 +37,8 @@ class LocalFile implements core\cache\IBackend
         $path1 = df\Launchpad::$app->getSharedDataPath().'/cache/';
         $path2 = df\Launchpad::$app->getLocalDataPath().'/cache/';
 
-        Atlas::$fs->emptyOut($path1);
-        Atlas::$fs->emptyOut($path2);
+        Atlas::emptyOut($path1);
+        Atlas::emptyOut($path2);
     }
 
     public static function prune(core\collection\ITree $options)
@@ -53,7 +53,7 @@ class LocalFile implements core\cache\IBackend
         $output = 0;
 
         foreach ($paths as $basePath) {
-            $baseDir = Atlas::$fs->dir($basePath);
+            $baseDir = Atlas::dir($basePath);
 
             foreach ($baseDir->scanDirs() as $dirName => $dir) {
                 foreach ($dir->scanFiles() as $fileName => $file) {
@@ -90,7 +90,7 @@ class LocalFile implements core\cache\IBackend
         }
 
         $path .= '/cache/'.flex\Text::formatFileName($cache->getCacheId());
-        $this->_dir = Atlas::$fs->createDir($path);
+        $this->_dir = Atlas::createDir($path);
         $options;
     }
 

@@ -86,10 +86,10 @@ js;
             'settings' => $this->settings
         ]);
 
-        Atlas::$fs->createFile($cssPath, $output['css']);
+        Atlas::createFile($cssPath, $output['css']);
 
         if (isset($output['map'])) {
-            Atlas::$fs->createFile(
+            Atlas::createFile(
                 $cssPath.'.map',
                 flex\Json::toString($output['map'], \JSON_UNESCAPED_SLASHES)
             );

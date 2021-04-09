@@ -26,7 +26,7 @@ class Json implements IJson
 
     public static function toFile($path, $data, int $flags=0): File
     {
-        return Atlas::$fs->createFile((string)$path, self::toString($data, $flags));
+        return Atlas::createFile((string)$path, self::toString($data, $flags));
     }
 
 
@@ -39,7 +39,7 @@ class Json implements IJson
 
     public static function fromFile($path)
     {
-        return self::fromString(Atlas::$fs->getContents((string)$path));
+        return self::fromString(Atlas::getContents((string)$path));
     }
 
     public static function stringToTree(?string $data): core\collection\ITree

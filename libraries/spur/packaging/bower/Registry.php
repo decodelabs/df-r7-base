@@ -37,7 +37,7 @@ class Registry implements IRegistry
             if ((time() - filemtime($path) < $timeout)) {
                 return flex\Json::fileToTree($path);
             } else {
-                Atlas::$fs->deleteFile($path);
+                Atlas::deleteFile($path);
             }
         }
 

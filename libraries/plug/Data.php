@@ -13,7 +13,6 @@ use df\opal;
 use df\flex;
 use df\mesh;
 
-use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 
 use DecodeLabs\Exceptional;

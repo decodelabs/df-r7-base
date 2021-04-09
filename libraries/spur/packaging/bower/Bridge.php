@@ -59,8 +59,8 @@ class Bridge implements IBridge
             'directory' => $this->_installPath
         ]);
 
-        Atlas::$fs->createFile($this->_execPath.'/bower.json', $json1);
-        Atlas::$fs->createFile($this->_execPath.'/.bowerrc', $json2);
+        Atlas::createFile($this->_execPath.'/bower.json', $json1);
+        Atlas::createFile($this->_execPath.'/.bowerrc', $json2);
 
         return $this;
     }

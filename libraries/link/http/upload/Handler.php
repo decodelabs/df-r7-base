@@ -35,7 +35,7 @@ class Handler implements link\http\IUploadHandler
             $path .= '/upload/'.flex\Guid::uuid1();
         }
 
-        return Atlas::$fs->createDir($path);
+        return Atlas::createDir($path);
     }
 
     public static function purgeUploadTemp(): void
@@ -47,7 +47,7 @@ class Handler implements link\http\IUploadHandler
         $path .= '/upload/';
 
 
-        foreach (Atlas::$fs->scanDirs($path) as $name => $dir) {
+        foreach (Atlas::scanDirs($path) as $name => $dir) {
             try {
                 $guid = flex\Guid::factory($name);
             } catch (\Throwable $e) {

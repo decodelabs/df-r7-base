@@ -98,7 +98,7 @@ class Github implements spur\packaging\bower\IResolver
     {
         $path = $cachePath.'/tags/github-'.str_replace('/', '-', $repoName).'.json';
 
-        if (!Atlas::$fs->hasFileChangedIn($path, self::TAG_TIMEOUT)) {
+        if (!Atlas::hasFileChangedIn($path, self::TAG_TIMEOUT)) {
             $tags = $this->_mediator->getRepositoryTags($repoName);
             $tags = $this->_sortTags($tags);
 

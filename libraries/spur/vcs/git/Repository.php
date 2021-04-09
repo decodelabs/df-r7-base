@@ -51,7 +51,7 @@ class Repository implements ILocalRepository
 
     public static function createClone($repoUrl, $path, $isBare=false)
     {
-        Atlas::$fs->createDir(dirname($path));
+        Atlas::createDir(dirname($path));
 
         if (!is_writable(dirname($path))) {
             throw Exceptional::Runtime(

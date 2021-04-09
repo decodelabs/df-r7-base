@@ -269,7 +269,7 @@ abstract class Config implements IConfig, Dumpable
 
         $values = $this->values->toArray();
         $content = '<?php'."\n".'return '.core\collection\Util::exportArray($values).';';
-        Atlas::$fs->createFile($savePath, $content);
+        Atlas::createFile($savePath, $content);
     }
 
     private function _getBasePath()

@@ -21,8 +21,8 @@ class TaskPurgeDependencies extends arch\node\Task
     {
         Cli::{'yellow'}('Purging theme dependencies: ');
 
-        Atlas::$fs->deleteDir(fuse\Manager::getAssetPath());
-        Atlas::$fs->deleteDir(fuse\Manager::getManifestCachePath());
+        Atlas::deleteDir(fuse\Manager::getAssetPath());
+        Atlas::deleteDir(fuse\Manager::getManifestCachePath());
 
         Cli::success('done');
     }

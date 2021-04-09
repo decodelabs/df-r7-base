@@ -116,7 +116,7 @@ abstract class Base implements link\http\IResponse
 
     public function getContentFileStream()
     {
-        return Atlas::$fs->createTempFile($this->getContent());
+        return Atlas::createTempFile($this->getContent());
     }
 
     public function onDispatchComplete()

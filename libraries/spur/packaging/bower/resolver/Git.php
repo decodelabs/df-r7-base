@@ -98,7 +98,7 @@ class Git implements spur\packaging\bower\IResolver
     {
         $path = $cachePath.'/tags/git-'.flex\Text::formatFileName($package->url).'.json';
 
-        if (!Atlas::$fs->hasFileChangedIn($path, self::TAG_TIMEOUT)) {
+        if (!Atlas::hasFileChangedIn($path, self::TAG_TIMEOUT)) {
             $tags = $this->_remote->getTags();
             $tags = $this->_sortTags($tags);
 
