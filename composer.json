@@ -20,6 +20,7 @@
         "decodelabs/exemplar": "^0.2",
         "decodelabs/gadgets": "^0.7",
         "decodelabs/glitch": "^0.17",
+        "decodelabs/spectrum": "^0.1",
         "decodelabs/systemic": "^0.8",
         "decodelabs/tagged": "^0.11.2",
         "decodelabs/terminus": "^0.7",
