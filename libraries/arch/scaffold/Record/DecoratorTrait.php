@@ -28,7 +28,6 @@ use df\arch\node\IFormState as FormState;
 use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
 
 use df\core\unit\Priority as PriorityUnit;
-use df\neon\Color;
 use df\user\IPostalAddress as PostalAddress;
 
 use df\axis\IUnit as Unit;
@@ -36,6 +35,7 @@ use df\axis\IUnit as Unit;
 use DecodeLabs\Tagged as Html;
 use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Spectrum\Color;
 
 use ArrayAccess;
 use Throwable;
@@ -641,7 +641,7 @@ trait DecoratorTrait
     {
         $list->addField('color', function ($item, $context) {
             try {
-                $color = Color::factory($item['color']);
+                $color = Color::create($item['color']);
             } catch (Throwable $e) {
                 return $item['color'];
             }

@@ -10,11 +10,11 @@ use df\core;
 use df\aura;
 use df\arch;
 use df\spur;
-use df\neon;
 use df\fuse;
 
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Spectrum\Color;
 
 class Base implements ITheme, Dumpable
 {
@@ -284,7 +284,7 @@ class Base implements ITheme, Dumpable
 
     public function getApplicationColor()
     {
-        return neon\Color::factory(static::APPLICATION_COLOR);
+        return Color::create(static::APPLICATION_COLOR);
     }
 
     public function mapIcon($name)

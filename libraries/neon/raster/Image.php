@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\neon;
 
+use DecodeLabs\Spectrum\Color;
 use DecodeLabs\Glitch;
 use DecodeLabs\Exceptional;
 
@@ -624,7 +625,7 @@ class Image implements IImage
             $color = $default;
         }
 
-        return neon\Color::factory($color);
+        return Color::create($color);
     }
 
 

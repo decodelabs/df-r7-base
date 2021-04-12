@@ -13,6 +13,7 @@ use df\flex;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Typify;
+use DecodeLabs\Spectrum\Color;
 
 class Descriptor implements IDescriptor
 {
@@ -150,7 +151,7 @@ class Descriptor implements IDescriptor
                 try {
                     $image = Image::loadFile($this->_location);
                 } catch (FormatException $e) {
-                    $image = Image::newCanvas(100, 100, neon\Color::factory('black'));
+                    $image = Image::newCanvas(100, 100, Color::create('black'));
                 }
 
                 if (!$isAlphaType && $transformation->isAlphaRequired()) {

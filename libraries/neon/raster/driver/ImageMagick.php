@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\neon;
 
+use DecodeLabs\Spectrum\Color;
 use DecodeLabs\Exceptional;
 
 class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, neon\raster\IImageFilterDriver
@@ -78,10 +79,10 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
         return $this;
     }
 
-    public function loadCanvas($width, $height, neon\IColor $color=null)
+    public function loadCanvas($width, $height, Color $color=null)
     {
         if ($color === null) {
-            $color = new neon\Color(0, 0, 0, 0);
+            $color = new Color(0, 0, 0, 0);
         }
 
         $color->setMode('rgb');
@@ -149,7 +150,7 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
         return $this;
     }
 
-    public function rotate(core\unit\IAngle $angle, neon\IColor $background=null)
+    public function rotate(core\unit\IAngle $angle, Color $background=null)
     {
         if ($background === null) {
             $background = new \ImagickPixel('none');
@@ -204,7 +205,7 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
         return $this;
     }
 
-    public function colorize(neon\IColor $color, float $alpha)
+    public function colorize(Color $color, float $alpha)
     {
         $this->_pointer->colorizeImage($color->toCssString(), $alpha / 100, true);
         return $this;

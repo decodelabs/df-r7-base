@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\aura;
 use df\arch;
-use df\neon;
 
+use DecodeLabs\Spectrum\Color;
 use DecodeLabs\Glitch\Dumpable;
 
 class ColorPicker extends Base implements IDataEntryWidget, Dumpable
@@ -47,7 +47,7 @@ class ColorPicker extends Base implements IDataEntryWidget, Dumpable
 
         if (!empty($value)) {
             try {
-                $value = neon\Color::factory($value)->toHexString();
+                $value = Color::create($value)->toHexString();
             } catch (\Throwable $e) {
             }
         }

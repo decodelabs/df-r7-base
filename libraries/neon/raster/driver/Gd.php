@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\neon;
 
+use DecodeLabs\Spectrum\Color;
 use DecodeLabs\Exceptional;
 
 class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\raster\IImageFilterDriver
@@ -114,10 +115,10 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         return $this;
     }
 
-    public function loadCanvas($width, $height, neon\IColor $color=null)
+    public function loadCanvas($width, $height, Color $color=null)
     {
         if ($color === null) {
-            $color = new neon\Color(0, 0, 0, 0);
+            $color = new Color(0, 0, 0, 0);
         }
 
         if (false === ($pointer = imageCreateTrueColor($width, $height))) {
@@ -262,7 +263,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         return $this;
     }
 
-    public function rotate(core\unit\IAngle $angle, neon\IColor $background=null)
+    public function rotate(core\unit\IAngle $angle, Color $background=null)
     {
         if ($background === null) {
             $background = imageColorAllocateAlpha($this->_pointer, 0, 0, 0, 127);
@@ -383,7 +384,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         return $this;
     }
 
-    public function colorize(neon\IColor $color, float $alpha)
+    public function colorize(Color $color, float $alpha)
     {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
@@ -492,7 +493,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
     // Drawing
     /*
     public function rectangleFill($x, $y, $width, $height, $color, $alpha=1) {
-        $color = neon\Color::factory($color);
+        $color = Color::create($color);
 
         imageFilledRectangle(
             $this->_pointer,
@@ -571,7 +572,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
 
             $rows = $end - $start;
 
-            $stepColor = new neon\Color(
+            $stepColor = new Color(
                 ($endColor->getRed() - $startColor->getRed()) / $rows,
                 ($endColor->getGreen() - $startColor->getGreen()) / $rows,
                 ($endColor->getBlue() - $startColor->getBlue()) / $rows

@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\neon;
 
+use DecodeLabs\Spectrum\Color;
 use DecodeLabs\Atlas\File;
 
 // Interfaces
@@ -105,7 +106,7 @@ interface IDriver
 
     public function loadFile($file);
     public function loadString($string);
-    public function loadCanvas($width, $height, neon\IColor $color=null);
+    public function loadCanvas($width, $height, Color $color=null);
 
     public function getWidth();
     public function getHeight();
@@ -122,7 +123,7 @@ interface IImageManipulationDriver extends IDriver
     public function resize(int $width, int $height);
     public function crop(int $x, int $y, int $width, int $height);
     public function composite(IDriver $image, $x, $y);
-    public function rotate(core\unit\IAngle $angle, neon\IColor $background=null);
+    public function rotate(core\unit\IAngle $angle, Color $background=null);
 }
 
 interface IImageFilterDriver extends IDriver
@@ -130,7 +131,7 @@ interface IImageFilterDriver extends IDriver
     public function brightness(float $brightness);
     public function contrast(float $contrast);
     public function greyscale();
-    public function colorize(neon\IColor $color, float $alpha);
+    public function colorize(Color $color, float $alpha);
     public function invert();
     public function detectEdges();
     public function emboss();

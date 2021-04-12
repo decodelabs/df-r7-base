@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\neon;
 
+use DecodeLabs\Spectrum\Color as SpectrumColor;
+
 class Color extends Base implements core\validate\IColorField
 {
 
@@ -27,7 +29,7 @@ class Color extends Base implements core\validate\IColorField
 
         // Validate
         try {
-            $value = neon\Color::factory($value);
+            $value = SpectrumColor::create($value);
         } catch (\Throwable $e) {
             $this->addError('invalid', $this->validator->_(
                 'Please enter a valid color, eg. #45C34A'
