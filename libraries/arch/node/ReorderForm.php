@@ -10,6 +10,7 @@ use df\core;
 use df\arch;
 use df\aura;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Tagged as Html;
 
 abstract class ReorderForm extends Form
@@ -154,7 +155,7 @@ abstract class ReorderForm extends Form
         if ($this->values->isValid()) {
             if ($message = $this->getFlashMessage()) {
                 $this->comms->flash(
-                    $this->format->id($this->getItemName()).'.reorder',
+                    Dictum::id($this->getItemName()).'.reorder',
                     $message,
                     'success'
                 );

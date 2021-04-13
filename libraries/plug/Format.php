@@ -449,11 +449,6 @@ class Format implements core\ISharedHelper
         return flex\Text::formatConsonants($text);
     }
 
-    public function id($id)
-    {
-        return flex\Text::formatId($id);
-    }
-
     public function constant($const)
     {
         return flex\Text::formatConstant($const);
