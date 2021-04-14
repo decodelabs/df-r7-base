@@ -11,6 +11,7 @@ use df\opal;
 use df\mesh;
 use df\flex;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
 
@@ -524,7 +525,7 @@ class SourceManager implements ISourceManager, Dumpable
     public function generateAlias()
     {
         do {
-            $alias = flex\Text::numericToAlpha($this->_genCounter++);
+            $alias = Dictum::numericToAlpha($this->_genCounter++);
         } while (isset($this->_aliases[$alias]));
 
         return $alias;

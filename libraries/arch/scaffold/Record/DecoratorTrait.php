@@ -36,6 +36,7 @@ use DecodeLabs\Tagged as Html;
 use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Spectrum\Color;
+use DecodeLabs\Dictum;
 
 use ArrayAccess;
 use Throwable;
@@ -457,7 +458,7 @@ trait DecoratorTrait
     public function autoDefineNameKeyField(string $fieldName, $list, string $mode, ?string $label=null)
     {
         if ($label === null) {
-            $label = $this->format->name($fieldName);
+            $label = Dictum::name($fieldName);
         }
 
         $list->addField($fieldName, $label, function ($item) use ($mode, $fieldName) {

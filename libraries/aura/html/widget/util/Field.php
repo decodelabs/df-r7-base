@@ -10,6 +10,7 @@ use df\core;
 use df\aura;
 use df\flex;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Glitch\Dumpable;
 
 class Field implements aura\html\widget\IField, Dumpable
@@ -50,7 +51,7 @@ class Field implements aura\html\widget\IField, Dumpable
     public function addLabel(string $key, string $label=null)
     {
         if (empty($label)) {
-            $label = flex\Text::formatLabel($key);
+            $label = Dictum::label($key);
         }
 
         $this->labels[$key] = $label;

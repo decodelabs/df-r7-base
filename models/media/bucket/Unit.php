@@ -10,6 +10,8 @@ use df\core;
 use df\apex;
 use df\axis;
 
+use DecodeLabs\Dictum;
+
 class Unit extends axis\unit\Table
 {
     const ORDERABLE_FIELDS = [
@@ -34,14 +36,14 @@ class Unit extends axis\unit\Table
             $value = [];
         }
 
-        $slug = $this->context->format->slug($slug);
+        $slug = Dictum::slug($slug);
         $query = $this->fetch()->where('slug', '=', $slug);
 
         if (!$output = $query->toRow()) {
             $values['slug'] = $slug;
 
             if (!isset($values['name'])) {
-                $values['name'] = $this->context->format->name($slug);
+                $values['name'] = Dictum::name($slug);
             }
 
             $output = $this->newRecord($values)->save();

@@ -10,6 +10,7 @@ use df\core;
 use df\halo;
 use df\flex;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Systemic;
 use DecodeLabs\Systemic\Process\Managed as ManagedProcess;
@@ -252,7 +253,7 @@ class Daemon extends Base
                 $value = (new core\time\Date($value))->localeFormat();
             }
 
-            Cli::info(flex\Text::formatName($key).': '.$value);
+            Cli::info(Dictum::name($key).': '.$value);
         }
     }
 

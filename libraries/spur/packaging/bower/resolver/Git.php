@@ -11,6 +11,7 @@ use df\spur;
 use df\link;
 use df\flex;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Atlas;
 
 class Git implements spur\packaging\bower\IResolver
@@ -96,7 +97,7 @@ class Git implements spur\packaging\bower\IResolver
 
     protected function _fetchTags(spur\packaging\bower\Package $package, $cachePath)
     {
-        $path = $cachePath.'/tags/git-'.flex\Text::formatFileName($package->url).'.json';
+        $path = $cachePath.'/tags/git-'.Dictum::fileName($package->url).'.json';
 
         if (!Atlas::hasFileChangedIn($path, self::TAG_TIMEOUT)) {
             $tags = $this->_remote->getTags();

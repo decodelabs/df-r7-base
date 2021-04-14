@@ -12,6 +12,7 @@ use df\flex;
 
 use df\arch\scaffold\Loader as ScaffoldLoader;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 
 class Directory extends Base implements arch\navigation\menu\IListableSource
@@ -262,7 +263,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource
             $area = ltrim((string)array_shift($parts), arch\Request::AREA_MARKER);
 
             if (!isset($output[$area])) {
-                $output[$area] = flex\Text::formatName($area);
+                $output[$area] = Dictum::name($area);
             }
         }
 

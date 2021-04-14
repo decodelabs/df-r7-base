@@ -8,8 +8,8 @@ namespace df\link;
 use df\link\Ip;
 use df\core\IStringProvider;
 use df\core\TStringProvider;
-use df\flex\Text;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
 
@@ -107,17 +107,17 @@ class IpRange implements IStringProvider, Dumpable
                     if ($netmask == 0) {
                         $range = 0;
                     } else {
-                        $range = Text::baseConvert($range, 10, 2, 128);
+                        $range = Dictum::baseConvert($range, 10, 2, 128);
                         $range = str_pad(substr($range, 0, $netmask), 128, '0', STR_PAD_RIGHT);
-                        $range = Text::baseConvert($range, 2, 10);
+                        $range = Dictum::baseConvert($range, 2, 10);
                     }
                 }
             }
 
-            $this->start = Text::baseConvert($range, 10, 16, 32);
-            $this->end = Text::baseConvert($range, 10, 2, 128);
+            $this->start = Dictum::baseConvert($range, 10, 16, 32);
+            $this->end = Dictum::baseConvert($range, 10, 2, 128);
             $this->end = str_pad(substr($this->end, 0, (int)$netmask), 128, '1', STR_PAD_RIGHT);
-            $this->end = Text::baseConvert($this->end, 2, 16, 32);
+            $this->end = Dictum::baseConvert($this->end, 2, 16, 32);
         } else {
             if (false !== strpos($range, '*')) {
                 // Wildcards

@@ -14,7 +14,7 @@ use df\flex;
 use df\mesh;
 
 use DecodeLabs\Atlas\File;
-
+use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 
 class Data implements core\ISharedHelper, opal\query\IEntryPoint
@@ -314,11 +314,6 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
         }
 
         return $output;
-    }
-
-    public function stringToBoolean($string)
-    {
-        return flex\Text::stringToBoolean($string);
     }
 
 

@@ -27,6 +27,7 @@ use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
 use df\arch\navigation\menu\IMenu as Menu;
 use df\arch\scaffold\Navigation\Menu as ScaffoldMenu;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 
 abstract class Generic implements Scaffold
@@ -240,7 +241,7 @@ abstract class Generic implements Scaffold
             return $this->_(static::TITLE);
         }
 
-        return $this->format->name($this->getDirectoryKeyName());
+        return Dictum::name($this->getDirectoryKeyName());
     }
 
     public function getDirectoryIcon(): ?string

@@ -12,6 +12,7 @@ use df\arch;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Terminus as Cli;
 
 class TaskSetMaster extends arch\node\Task
@@ -31,7 +32,7 @@ class TaskSetMaster extends arch\node\Task
             $current = null;
         }
 
-        $check = $this->format->stringToBoolean($this->request['check'], true);
+        $check = Dictum::toBoolean($this->request['check'], true);
 
         if ($current && (!$check || Cli::confirm('Use current: '.opal\rdbms\Dsn::factory($current)->getDisplayString(true), true))) {
             if (!$check) {

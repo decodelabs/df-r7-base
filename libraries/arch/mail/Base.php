@@ -10,6 +10,7 @@ use df\core;
 use df\arch;
 use df\aura;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 
 abstract class Base extends aura\view\Mail implements arch\IMail
@@ -64,7 +65,7 @@ abstract class Base extends aura\view\Mail implements arch\IMail
         }
 
         if (empty($output)) {
-            $output = $this->context->format->name($this->getName());
+            $output = Dictum::name($this->getName());
         }
 
         return $output;

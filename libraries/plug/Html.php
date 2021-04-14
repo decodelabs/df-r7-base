@@ -16,7 +16,7 @@ use df\flow;
 use DecodeLabs\Tagged;
 use DecodeLabs\Tagged\Buffer;
 use DecodeLabs\Chirp\Parser as Chirp;
-
+use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 
 class Html implements arch\IDirectoryHelper
@@ -43,7 +43,7 @@ class Html implements arch\IDirectoryHelper
         }
 
         if ($length !== null) {
-            $output = $this->context->format->shorten($output, $length);
+            $output = Dictum::shorten($output, $length);
         }
 
         return Tagged::raw($output);
@@ -172,7 +172,7 @@ class Html implements arch\IDirectoryHelper
             return $string;
         }
 
-        $newString = flex\Text::shorten($string, $length);
+        $newString = Dictum::shorten($string, $length);
         return Tagged::{'abbr'}($newString)->setTitle($string);
     }
 

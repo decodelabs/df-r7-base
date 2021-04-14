@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
 
@@ -39,7 +40,7 @@ class Guid implements IGuid, Dumpable
     {
         $bytes = static::factory($id)->getBytes();
         $hex = bin2hex($bytes);
-        return flex\Text::baseConvert($hex, 16, 62);
+        return Dictum::baseConvert($hex, 16, 62);
     }
 
     public static function unshorten(string $id): string
@@ -53,7 +54,7 @@ class Guid implements IGuid, Dumpable
 
         // Short
         if ($length >= 20 && $length <= 22) {
-            $hex = flex\Text::baseConvert($id, 62, 16);
+            $hex = Dictum::baseConvert($id, 62, 16);
             $hex = str_pad($hex, 32, '0', \STR_PAD_LEFT);
             return (string)flex\Guid::factory($hex);
         }

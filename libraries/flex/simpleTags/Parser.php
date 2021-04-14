@@ -11,8 +11,10 @@ use df\flex;
 use df\aura;
 use df\arch;
 
-class Parser implements flex\IInlineHtmlProducer {
+use DecodeLabs\Dictum;
 
+class Parser implements flex\IInlineHtmlProducer
+{
     use flex\TParser;
 
     const TAG_LIST = [
@@ -37,23 +39,26 @@ class Parser implements flex\IInlineHtmlProducer {
 
     protected $_extended = false;
 
-    public function __construct(?string $source, bool $extended=false) {
+    public function __construct(?string $source, bool $extended=false)
+    {
         $this->source = (string)$source;
         $this->_extended = $extended;
     }
 
 
-// Translate
-    public function toHtml() {
-        if(null === ($text = $this->_prepareSource($this->_extended))) {
+    // Translate
+    public function toHtml()
+    {
+        if (null === ($text = $this->_prepareSource($this->_extended))) {
             return null;
         }
 
         return $this->_blockify($text, $this->_extended);
     }
 
-    public function toInlineHtml() {
-        if(null === ($text = $this->_prepareSource(false))) {
+    public function toInlineHtml()
+    {
+        if (null === ($text = $this->_prepareSource(false))) {
             return null;
         }
 
@@ -61,22 +66,23 @@ class Parser implements flex\IInlineHtmlProducer {
     }
 
 
-// Preare source
-    protected function _prepareSource(bool $extended) {
-        $text = new flex\Text(trim($this->source));
+    // Preare source
+    protected function _prepareSource(bool $extended)
+    {
+        $text = trim($this->source);
 
-        if($text->isEmpty()) {
+        if (!strlen($text)) {
             return null;
         }
 
         $tags = [];
 
-        foreach(self::TAG_LIST as $tag) {
+        foreach (self::TAG_LIST as $tag) {
             $tags[] = '<'.$tag.'>';
         }
 
-        if($extended) {
-            foreach(self::EXTENDED_TAG_LIST as $tag) {
+        if ($extended) {
+            foreach (self::EXTENDED_TAG_LIST as $tag) {
                 $tags[] = '<'.$tag.'>';
             }
         }
@@ -84,42 +90,41 @@ class Parser implements flex\IInlineHtmlProducer {
         $context = arch\Context::getCurrent();
 
         // Strip tags
-        $text->stripTags(implode('', $tags));
-
+        $text = strip_tags($text, implode('', $tags));
 
         // Sort out spaces
-        if(!$extended) {
-            $text
-                ->regexReplace('/(\s) /', '$1&nbsp;')
-                ->regexReplace('/ (\s)/', '&nbsp;$1');
+        if (!$extended) {
+            $text = preg_replace('/(\s) /', '$1&nbsp;', $text);
+            $text = preg_replace('/ (\s)/', '&nbsp;$1', $text);
         }
 
         // Urls
-        $text->regexReplace('/ (href|src)\=\"([^\"]+)\"/', function($matches) use($context) {
+        $text = preg_replace_callback('/ (href|src)\=\"([^\"]+)\"/', function ($matches) use ($context) {
             return ' '.$matches[1].'="'.htmlspecialchars((string)$context->uri->__invoke($matches[2])).'"';
-        });
+        }, $text);
 
-        return $text->toString();
+        return $text;
     }
 
 
-// Extended blockify
-    protected function _blockify(string $text, bool $extended=true): string {
-        if(!strlen(trim($text))) {
+    // Extended blockify
+    protected function _blockify(string $text, bool $extended=true): string
+    {
+        if (!strlen(trim($text))) {
             return '';
         }
 
         $text = rtrim($text)."\n";
         $preTags = [];
 
-        if($extended && strpos($text, '<pre') !== false) {
+        if ($extended && strpos($text, '<pre') !== false) {
             $parts = explode('</pre>', $text);
             $last = array_pop($parts);
             $text = '';
             $i = 0;
 
-            foreach($parts as $part) {
-                if(false === ($start = strpos($part, '<pre'))) {
+            foreach ($parts as $part) {
+                if (false === ($start = strpos($part, '<pre'))) {
                     $text .= $part;
                     continue;
                 }
@@ -133,7 +138,7 @@ class Parser implements flex\IInlineHtmlProducer {
             $text .= $last;
         }
 
-        if($extended) {
+        if ($extended) {
             $blockReg = '(?:'.implode('|', self::EXTENDED_TAG_LIST).')';
         } else {
             $blockReg = '(?:p)';
@@ -141,38 +146,31 @@ class Parser implements flex\IInlineHtmlProducer {
 
         $containerReg = '(?:'.implode('|', self::CONTAINER_TAG_LIST).')';
 
-        $parts = (new flex\Text($text))
+        // Double <br>s
+        $text = preg_replace('|<br\s*/?>\s*<br\s*/?>|', "\n\n", $text);
 
-            // Double <br>s
-            ->regexReplace('|<br\s*/?>\s*<br\s*/?>|', "\n\n")
+        // Line break around block elements
+        $text = preg_replace('!(<'.$blockReg.'[\s/>])!', "\n\n".'$1', $text);
+        $text = preg_replace('!(</'.$blockReg.'>)!', '$1'."\n\n", $text);
 
-            // Line break around block elements
-            ->regexReplace('!(<'.$blockReg.'[\s/>])!', "\n\n".'$1')
-            ->regexReplace('!(</'.$blockReg.'>)!', '$1'."\n\n")
+        // Standardise new lines
+        $text = str_replace(["\r\n", "\r"], "\n", $text);
+        $text = preg_replace("/\n\n+/", "\n\n", $text);
 
-            // Standardise new lines
-            ->replace(["\r\n", "\r"], "\n")
-            ->regexReplace("/\n\n+/", "\n\n")
-
-            // Split
-            ->regexSplit('/\n\s*\n/', -1, \PREG_SPLIT_NO_EMPTY);
-
+        // Split
+        $parts = preg_split('/\n\s*\n/', $text, -1, \PREG_SPLIT_NO_EMPTY);
         $text = '';
 
-        foreach($parts as $part) {
+        foreach ($parts as $part) {
             $part = trim($part);
 
-            if($extended && !preg_match('!</?'.$containerReg.'[^>]*>!', $part)) {
-                $part = (new flex\Text($part))
-
-                    // Sort out spaces
-                    ->regexReplace('/(\s) /', '$1&nbsp;')
-                    ->regexReplace('/ (\s)/', '&nbsp;$1')
-
-                    ->toString();
+            if ($extended && !preg_match('!</?'.$containerReg.'[^>]*>!', $part)) {
+                // Sort out spaces
+                $part = preg_replace('/(\s) /', '$1&nbsp;', $part);
+                $part = preg_replace('/ (\s)/', '&nbsp;$1', $part);
             }
 
-            if(!preg_match('!</?'.$blockReg.'[^>]*>!', $part)) {
+            if (!preg_match('!</?'.$blockReg.'[^>]*>!', $part)) {
                 $part = '<p>'.$part.'</p>';
             }
 
@@ -180,26 +178,24 @@ class Parser implements flex\IInlineHtmlProducer {
         }
 
 
-        $text = (new flex\Text($text))
 
-            // Remove empties
-            ->regexReplace('|<p>\s*</p>|', '')
+        // Remove empties
+        $text = preg_replace('|<p>\s*</p>|', '', $text);
 
-            // Normalize blocks;
-            ->regexReplace('!<p>\s*(</?'.$blockReg.'[^>]*>)!', '$1')
-            ->regexReplace('!(</?'.$blockReg.'[^>]*>)\s*</p>!', '$1')
+        // Normalize blocks;
+        $text = preg_replace('!<p>\s*(</?'.$blockReg.'[^>]*>)!', '$1', $text);
+        $text = preg_replace('!(</?'.$blockReg.'[^>]*>)\s*</p>!', '$1', $text);
 
-            // Normalize <br>s
-            ->replace(['<br>', '<br/>'], '<br />')
-            ->regexReplace('|(?<!<br />)\s*\n|', "<br />\n")
-            ->regexReplace('!(</?'.$blockReg.'[^>]*>)\s*<br />!', '$1')
-            ->regexReplace('!<br />(\s*</?(?:p|li|div|dl|dd|dt|th|pre|td|ul|ol)[^>]*>)!', '$1')
-            ->regexReplace("|\n</p>$|", '</p>')
+        // Normalize <br>s
+        $text = str_replace(['<br>', '<br/>'], '<br />', $text);
+        $text = preg_replace('|(?<!<br />)\s*\n|', "<br />\n", $text);
+        $text = preg_replace('!(</?'.$blockReg.'[^>]*>)\s*<br />!', '$1', $text);
+        $text = preg_replace('!<br />(\s*</?(?:p|li|div|dl|dd|dt|th|pre|td|ul|ol)[^>]*>)!', '$1', $text);
+        $text = preg_replace("|\n</p>$|", '</p>', $text);
 
-            ->toString();
 
         // Replace pres
-        if($extended && !empty($preTags)) {
+        if ($extended && !empty($preTags)) {
             $text = str_replace(array_keys($preTags), array_values($preTags), $text);
         }
 

@@ -11,6 +11,8 @@ use df\aura;
 use df\arch;
 use df\flex;
 
+use DecodeLabs\Dictum;
+
 class EventButton extends Button
 {
     const PRIMARY_TAG = 'button.btn.event';
@@ -26,7 +28,7 @@ class EventButton extends Button
         $event = $this->getEvent();
 
         if ($this->_body->isEmpty()) {
-            $this->_body->push(flex\Text::formatName($event));
+            $this->_body->push(Dictum::name($event));
         }
 
         $parts = explode('(', $event);

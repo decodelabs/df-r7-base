@@ -13,6 +13,7 @@ use df\link;
 
 use df\arch\scaffold\Loader as ScaffoldLoader;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
 
@@ -370,7 +371,7 @@ class Base implements INode, Dumpable
 
         $name = (string)array_pop($parts);
         $parts = array_slice($parts, 3, -1);
-        $parts[] = $this->format->nodeSlug(substr($name, 4));
+        $parts[] = Dictum::actionSlug(substr($name, 4));
 
         yield new arch\navigation\SitemapEntry(
             $this->uri('~'.implode('/', $parts)),

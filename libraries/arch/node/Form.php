@@ -12,6 +12,7 @@ use df\aura;
 use df\flex;
 use df\link;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 
 abstract class Form extends Base implements IFormNode
@@ -312,7 +313,7 @@ abstract class Form extends Base implements IFormNode
         $classes[] = $this->request->getNode();
 
         $this->content->addClasses(array_map(function ($value) {
-            return $this->format->slug($value);
+            return Dictum::slug($value);
         }, $classes));
 
         $this->content->addClass('form');
@@ -597,7 +598,7 @@ abstract class Form extends Base implements IFormNode
 
     public function elementId(string $name): string
     {
-        return flex\Text::formatSlug($name);
+        return Dictum::slug($name);
     }
 
 

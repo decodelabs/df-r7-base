@@ -10,8 +10,10 @@ use df\core;
 use df\opal;
 use df\flex;
 
-class Slug extends Base implements core\validate\ISlugField {
+use DecodeLabs\Dictum;
 
+class Slug extends Base implements core\validate\ISlugField
+{
     use core\validate\TStorageAwareField;
     use core\validate\TRecordManipulatorField;
     use opal\query\TFilterConsumer;
@@ -29,9 +31,10 @@ class Slug extends Base implements core\validate\ISlugField {
 
 
 
-// Options
-    public function allowPathFormat(bool $flag=null) {
-        if($flag !== null) {
+    // Options
+    public function allowPathFormat(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_allowPathFormat = $flag;
             return $this;
         }
@@ -39,8 +42,9 @@ class Slug extends Base implements core\validate\ISlugField {
         return $this->_allowPathFormat;
     }
 
-    public function allowAreaMarker(bool $flag=null) {
-        if($flag !== null) {
+    public function allowAreaMarker(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_allowAreaMarker = $flag;
             return $this;
         }
@@ -48,8 +52,9 @@ class Slug extends Base implements core\validate\ISlugField {
         return $this->_allowAreaMarker;
     }
 
-    public function allowRoot(bool $flag=null) {
-        if($flag !== null) {
+    public function allowRoot(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_allowRoot = $flag;
             return $this;
         }
@@ -57,11 +62,12 @@ class Slug extends Base implements core\validate\ISlugField {
         return $this->_allowRoot;
     }
 
-    public function setDefaultValueField($field, $sanitizer=false) {
+    public function setDefaultValueField($field, $sanitizer=false)
+    {
         $this->_defaultValueField = $field;
 
-        if($sanitizer !== null) {
-            if($sanitizer !== false) {
+        if ($sanitizer !== null) {
+            if ($sanitizer !== false) {
                 $sanitizer = core\lang\Callback::factory($sanitizer);
             }
 
@@ -71,12 +77,14 @@ class Slug extends Base implements core\validate\ISlugField {
         return $this;
     }
 
-    public function getDefaultValueField() {
+    public function getDefaultValueField()
+    {
         return $this->_defaultValueField;
     }
 
-    public function shouldGenerateIfEmpty(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldGenerateIfEmpty(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_generateIfEmpty = $flag;
             return $this;
         }
@@ -84,8 +92,9 @@ class Slug extends Base implements core\validate\ISlugField {
         return $this->_generateIfEmpty;
     }
 
-    public function shouldRenameOnConflict(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldRenameOnConflict(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_renameOnConflict = $flag;
             return $this;
         }
@@ -95,12 +104,13 @@ class Slug extends Base implements core\validate\ISlugField {
 
 
 
-// Validate
-    public function validate() {
+    // Validate
+    public function validate()
+    {
         // Sanitize
         $value = $this->_sanitizeValue($this->data->getValue(), false);
 
-        if(!empty($value)) {
+        if (!empty($value)) {
             $value = $this->_sanitizeSlugValue($value);
         }
 
@@ -110,13 +120,13 @@ class Slug extends Base implements core\validate\ISlugField {
 
 
         // Validate
-        if(false !== strpos($value, '/') && !$this->_allowPathFormat) {
+        if (false !== strpos($value, '/') && !$this->_allowPathFormat) {
             $this->addError('invalid', $this->validator->_(
                 'Path type slugs are not allowed here'
             ));
         }
 
-        if($this->_allowPathFormat && substr($value, -1) == '/' && strlen($value) > 1) {
+        if ($this->_allowPathFormat && substr($value, -1) == '/' && strlen($value) > 1) {
             $this->addError('required', $this->validator->_(
                 'You must enter a full path slug'
             ));
@@ -124,14 +134,14 @@ class Slug extends Base implements core\validate\ISlugField {
             return null;
         }
 
-        if($value == '/' && !$this->_allowRoot) {
+        if ($value == '/' && !$this->_allowRoot) {
             $this->addError('invalid', $this->validator->_(
                 'Root slug is not allowed here'
             ));
         }
 
 
-        if(!$length = $this->_checkRequired($value)) {
+        if (!$length = $this->_checkRequired($value)) {
             return null;
         }
 
@@ -149,29 +159,30 @@ class Slug extends Base implements core\validate\ISlugField {
         return $value;
     }
 
-    protected function _sanitizeSlugValue($value) {
+    protected function _sanitizeSlugValue($value)
+    {
         $value = trim($value);
 
-        if(empty($value) && $this->_defaultValueField) {
+        if (empty($value) && $this->_defaultValueField) {
             $data = $this->validator->getCurrentData();
 
-            if($data->has($this->_defaultValueField)) {
+            if ($data->has($this->_defaultValueField)) {
                 $value = trim($data[$this->_defaultValueField]);
 
-                if($this->_defaultValueSanitizer) {
+                if ($this->_defaultValueSanitizer) {
                     $value = $this->_defaultValueSanitizer->invoke($value, $this);
                 }
             }
         }
 
-        if(empty($value) && $this->_generateIfEmpty) {
+        if (empty($value) && $this->_generateIfEmpty) {
             $value = flex\Generator::random();
         }
 
-        if($this->_allowPathFormat) {
-            $value = flex\Text::formatPathSlug($value, $this->_allowAreaMarker ? '~' : null);
+        if ($this->_allowPathFormat) {
+            $value = Dictum::pathSlug($value, $this->_allowAreaMarker ? '~' : null);
         } else {
-            $value = flex\Text::formatSlug($value);
+            $value = Dictum::slug($value);
         }
 
         return $value;

@@ -10,6 +10,7 @@ use df\core;
 use df\halo;
 use df\flex;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Systemic;
 use DecodeLabs\Terminus\Session;
 use DecodeLabs\Exceptional;
@@ -93,7 +94,7 @@ class Remote implements IRemote
         $pid = null;
 
         if ($daemon::REPORT_STATUS) {
-            $path = df\Launchpad::$app->getLocalDataPath().'/daemons/'.flex\Text::formatFileName($name).'.status';
+            $path = df\Launchpad::$app->getLocalDataPath().'/daemons/'.Dictum::fileName($name).'.status';
 
             if (!is_file($path)) {
                 return $this;

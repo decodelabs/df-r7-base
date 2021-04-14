@@ -14,6 +14,7 @@ use df\axis;
 use df\neon;
 use df\link;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 
 class Media implements arch\IDirectoryHelper
@@ -215,7 +216,7 @@ class Media implements arch\IDirectoryHelper
                 $namePath = core\uri\Path::factory($fileName);
 
                 $fileName = (string)$namePath->setFileName(
-                    $namePath->getFileName().' '.$this->context->format->filename($transformation)
+                    $namePath->getFileName().' '.Dictum::filename($transformation)
                 );
             }
 

@@ -12,6 +12,7 @@ use df\user;
 use df\link;
 use df\flex;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Glitch\Dumpable;
 
 class Request extends core\uri\Url implements IRequest, Dumpable
@@ -264,7 +265,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
         }
 
         $node = trim($node, '/');
-        $node = flex\Text::formatNodeSlug($node);
+        $node = Dictum::actionSlug($node);
         $this->getPath()->setFileName($node);
         return $this;
     }

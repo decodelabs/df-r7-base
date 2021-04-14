@@ -12,6 +12,7 @@ use df\flex;
 use df\flow;
 use df\link;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 
 class Filter implements arch\IDirectoryHelper, \ArrayAccess
@@ -293,7 +294,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
             return $value;
         }
 
-        if (empty($output = flex\Text::formatSlug($value))) {
+        if (empty($output = Dictum::slug($value))) {
             $output = null;
         }
 

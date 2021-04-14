@@ -11,6 +11,7 @@ use df\arch;
 use df\aura;
 use df\flex;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Tagged as Html;
 
 abstract class ConfirmForm extends Form
@@ -85,7 +86,7 @@ abstract class ConfirmForm extends Form
         if ($this->values->isValid()) {
             if ($message = $this->getFlashMessage()) {
                 $this->comms->flash(
-                    flex\Text::formatId($this->getItemName()).'.confirm',
+                    Dictum::id($this->getItemName()).'.confirm',
                     $message,
                     'success'
                 );

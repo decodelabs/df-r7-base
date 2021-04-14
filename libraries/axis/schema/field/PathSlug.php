@@ -11,6 +11,7 @@ use df\axis;
 use df\opal;
 use df\flex;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 
 class PathSlug extends Base implements
@@ -64,7 +65,7 @@ class PathSlug extends Base implements
             return null;
         }
 
-        $output = flex\Text::formatPathSlug($value);
+        $output = Dictum::pathSlug($value);
 
         if ($output == '/') {
             $output = '';

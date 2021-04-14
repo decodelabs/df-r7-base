@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Exceptional;
@@ -70,7 +71,7 @@ abstract class FileStore implements IFileStore
             $path = df\Launchpad::$app->getLocalDataPath();
         }
 
-        $path .= '/filestore/'.flex\Text::formatFileName($this->getCacheId());
+        $path .= '/filestore/'.Dictum::fileName($this->getCacheId());
         $this->_dir = Atlas::createDir($path);
     }
 
@@ -241,10 +242,10 @@ abstract class FileStore implements IFileStore
 
     protected static function _normalizeKey($key): string
     {
-        return flex\Text::factory($key)
-            ->translitToAscii()
+        return Dictum::text($key)
+            ->toAscii()
             ->replace(' ', '-')
-            ->regexReplace('/[\/\\?%*:|"<>]/', '_')
-            ->toString();
+            ->regexReplace('[\/\\?%*:|"<>]', '_')
+            ->__toString();
     }
 }

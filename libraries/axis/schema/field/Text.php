@@ -11,19 +11,22 @@ use df\axis;
 use df\opal;
 use df\flex;
 
+use DecodeLabs\Dictum;
+
 class Text extends Base implements
     axis\schema\ILengthRestrictedField,
     opal\schema\ILargeByteSizeRestrictedField,
-    opal\schema\ICharacterSetAwareField {
-
+    opal\schema\ICharacterSetAwareField
+{
     use axis\schema\TLengthRestrictedField;
     use opal\schema\TField_LargeByteSizeRestricted;
     use opal\schema\TField_CharacterSetAware;
 
     protected $_case = flex\ICase::NONE;
 
-    protected function _init($length=null, $case=flex\ICase::NONE) {
-        if(is_string($length)) {
+    protected function _init($length=null, $case=flex\ICase::NONE)
+    {
+        if (is_string($length)) {
             $this->setExponentSize($length);
         } else {
             $this->setLength($length);
@@ -32,10 +35,11 @@ class Text extends Base implements
         $this->setCase($case);
     }
 
-    public function setCase($case) {
-        $case = flex\Text::normalizeCaseFlag($case);
+    public function setCase($case)
+    {
+        $case = flex\TextCase::normalizeCaseFlag($case);
 
-        if($case != $this->_case) {
+        if ($case != $this->_case) {
             $this->_hasChanged = true;
         }
 
@@ -43,42 +47,47 @@ class Text extends Base implements
         return $this;
     }
 
-    public function getCase() {
+    public function getCase()
+    {
         return $this->_case;
     }
 
 
-    public function compareValues($value1, $value2) {
-        return flex\Text::compare($value1, $value2);
+    public function compareValues($value1, $value2)
+    {
+        return Dictum::compare($value1, $value2);
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
-        if($value !== null) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    {
+        if ($value !== null) {
             $value = (string)$value;
 
-            if($this->_case != flex\ICase::NONE) {
-                $value = flex\Text::applyCase($value, $this->_case, $this->_characterSet);
+            if ($this->_case != flex\ICase::NONE) {
+                $value = flex\TextCase::apply($value, $this->_case, $this->_characterSet);
             }
         }
 
         return $value;
     }
 
-    public function getSearchFieldType() {
+    public function getSearchFieldType()
+    {
         return 'string';
     }
 
-// Primitive
-    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        if($this->_exponentSize !== null) {
+    // Primitive
+    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
+    {
+        if ($this->_exponentSize !== null) {
             $output = new opal\schema\Primitive_Text($this, $this->_exponentSize);
-        } else if($this->_isConstantLength) {
+        } elseif ($this->_isConstantLength) {
             $output = new opal\schema\Primitive_Char($this, $this->_length);
         } else {
             $output = new opal\schema\Primitive_Varchar($this, $this->_length);
         }
 
-        if($this->_characterSet !== null) {
+        if ($this->_characterSet !== null) {
             $output->setCharacterSet($this->_characterSet);
         }
 
@@ -86,21 +95,23 @@ class Text extends Base implements
     }
 
 
-// Ext. serialize
-    protected function _importStorageArray(array $data) {
+    // Ext. serialize
+    protected function _importStorageArray(array $data)
+    {
         $this->_setBaseStorageArray($data);
         $this->_setLengthRestrictedStorageArray($data);
         $this->_setLargeByteSizeRestrictedStorageArray($data);
         $this->_setCharacterSetStorageArray($data);
 
-        if(isset($data['cas'])) {
+        if (isset($data['cas'])) {
             $this->_case = $data['cas'];
         } else {
             $this->_case = flex\ICase::NONE;
         }
     }
 
-    public function toStorageArray() {
+    public function toStorageArray()
+    {
         $output = array_merge(
             $this->_getBaseStorageArray(),
             $this->_getLengthRestrictedStorageArray(),
@@ -108,7 +119,7 @@ class Text extends Base implements
             $this->_getCharacterSetStorageArray()
         );
 
-        if($this->_case !== flex\ICase::NONE) {
+        if ($this->_case !== flex\ICase::NONE) {
             $output['cas'] = $this->_case;
         }
 

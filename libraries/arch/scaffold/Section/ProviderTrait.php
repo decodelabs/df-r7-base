@@ -16,6 +16,8 @@ use df\aura\view\content\WidgetContentProvider;
 use df\aura\html\widget\Menu as MenuWidget;
 use df\core\lang\Callback;
 
+use DecodeLabs\Dictum;
+
 use Throwable;
 
 trait ProviderTrait
@@ -137,7 +139,7 @@ trait ProviderTrait
                 }
 
                 if (!isset($value['name'])) {
-                    $value['name'] = $this->format->name($key);
+                    $value['name'] = Dictum::name($key);
                 } else {
                     $value['name'] = $this->_($value['name']);
                 }

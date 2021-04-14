@@ -12,6 +12,7 @@ use df\aura;
 use df\user;
 use df\opal;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Glitch\Dumpable;
 
 abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy, Dumpable
@@ -302,7 +303,7 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
                 $title = $name;
             }
 
-            $name = $this->view->format->shorten($name, $this->maxLength);
+            $name = Dictum::shorten($name, $this->maxLength);
         }
 
         if ($title !== null) {

@@ -12,6 +12,7 @@ use df\arch;
 use df\user;
 use df\flex;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 
 trait TWidget
@@ -740,7 +741,7 @@ trait TWidget_GroupedSelectionInput
             $label = $key;
 
             if (preg_match('/^[a-z][a-zA-Z0-9]+$/', $key)) {
-                $label = flex\Text::formatLabel($key);
+                $label = Dictum::label($key);
             }
 
             $this->setGroupName($key, $label);
@@ -1268,7 +1269,7 @@ trait TWidget_MappedList
         }
 
         if ($name === null) {
-            $name = flex\Text::formatLabel($key);
+            $name = Dictum::label($key);
         }
 
         if ($renderer === null) {

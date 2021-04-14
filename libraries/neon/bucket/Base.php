@@ -10,6 +10,8 @@ use df\core;
 use df\neon;
 use df\flex;
 
+use DecodeLabs\Dictum;
+
 class Base implements IBucket
 {
     use core\lang\TAcceptTypeProcessor;
@@ -47,7 +49,7 @@ class Base implements IBucket
             return $name;
         }
 
-        $class = 'df\\neon\\bucket\\'.flex\Text::formatId($name);
+        $class = 'df\\neon\\bucket\\'.Dictum::id($name);
 
         if (!class_exists($class)) {
             $class = __CLASS__;
@@ -69,7 +71,7 @@ class Base implements IBucket
 
     public function getDisplayName(): string
     {
-        return flex\Text::formatName($this->getName());
+        return Dictum::name($this->getName());
     }
 
 

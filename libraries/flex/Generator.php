@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Dictum\Text;
+
 abstract class Generator implements IGenerator
 {
     public static function random($minLength=6, $maxLength=14, $additionalChars=null)
@@ -16,7 +18,7 @@ abstract class Generator implements IGenerator
         $characters = new Text('abcdefghijklmnopqrstuvwxyz');
 
         if ($additionalChars !== null) {
-            $characters->push($additionalChars);
+            $characters->append($additionalChars);
         }
 
         return self::_generateRandom($characters, $minLength, $maxLength);
@@ -28,7 +30,7 @@ abstract class Generator implements IGenerator
         return self::_generateRandom($characters, $minLength, $maxLength);
     }
 
-    private static function _generateRandom(IText $characters, $minLength, $maxLength)
+    private static function _generateRandom(Text $characters, $minLength, $maxLength)
     {
         if (!is_int($minLength)) {
             $minLength = 4;
@@ -44,7 +46,7 @@ abstract class Generator implements IGenerator
 
         mt_srand((int)(microtime(true) * 1000000));
 
-        $output = new Text('', flex\IEncoding::UTF_8);
+        $output = '';
         $length = mt_rand($minLength, $maxLength);
         $count = count($characters);
 
@@ -59,7 +61,7 @@ abstract class Generator implements IGenerator
                 $nextChar = mt_rand(0, 9);
             }
 
-            $output->push($nextChar);
+            $output .= $nextChar;
         }
 
         return (string)$output;

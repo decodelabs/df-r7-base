@@ -7,8 +7,8 @@ namespace df\link;
 
 use df\core\IStringProvider;
 use df\link\IpRange;
-use df\flex\Text;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
 
@@ -199,12 +199,12 @@ class Ip implements IStringProvider, Dumpable
     // Base conversion
     public function getV6Decimal(): string
     {
-        return Text::baseConvert($this->getV6Hex(), 16, 10);
+        return Dictum::baseConvert($this->getV6Hex(), 16, 10);
     }
 
     public function getV4Decimal(): string
     {
-        return Text::baseConvert($this->getV4Hex(), 16, 10);
+        return Dictum::baseConvert($this->getV4Hex(), 16, 10);
     }
 
 

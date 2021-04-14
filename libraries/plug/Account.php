@@ -15,6 +15,8 @@ use df\flow;
 use df\opal;
 use df\flex;
 
+use DecodeLabs\Dictum;
+
 class Account extends arch\Helper
 {
     public function generatePassword(): string
@@ -60,7 +62,7 @@ class Account extends arch\Helper
     public function create(string $fullName, ?string $nickName, string $email, string $password): opal\record\IRecord
     {
         if ($nickName === null) {
-            $nickName = $this->format->firstName($fullName);
+            $nickName = Dictum::firstName($fullName);
         }
 
         $client = $this->data->user->client->newRecord([

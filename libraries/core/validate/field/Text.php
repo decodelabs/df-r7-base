@@ -10,6 +10,8 @@ use df\core;
 use df\opal;
 use df\flex;
 
+use DecodeLabs\Dictum;
+
 class Text extends Base implements core\validate\ITextField
 {
     use core\validate\TStorageAwareField;
@@ -152,7 +154,7 @@ class Text extends Base implements core\validate\ITextField
         $this->_validateMaxLength($value, $length);
 
         if ($this->_minWords !== null || $this->_maxWords !== null) {
-            $wordCount = flex\Text::countWords($value);
+            $wordCount = Dictum::countWords($value);
 
             if ($this->_minWords !== null && $wordCount < $this->_minWords) {
                 $this->addError('minWords', $this->validator->_(

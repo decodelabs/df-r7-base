@@ -12,6 +12,7 @@ use df\fire;
 use df\opal;
 use df\flex;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 
 class ContentBlock extends Base
@@ -115,7 +116,7 @@ class ContentBlock extends Base
             return false;
         }
 
-        return flex\Text::compare(
+        return Dictum::compare(
             $value1->toXmlString(true),
             $value2->toXmlString(true)
         );

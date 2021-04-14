@@ -11,6 +11,8 @@ use df\arch;
 use df\aura;
 use df\flex;
 
+use DecodeLabs\Dictum;
+
 class Delegate implements arch\node\IDelegate
 {
     use core\TContextAware;
@@ -194,7 +196,7 @@ class Delegate implements arch\node\IDelegate
 
     public function elementId(string $name): string
     {
-        return flex\Text::formatSlug($this->getDelegateId().'-'.$name);
+        return Dictum::slug($this->getDelegateId().'-'.$name);
     }
 
 

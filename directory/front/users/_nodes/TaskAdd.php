@@ -11,6 +11,7 @@ use df\apex;
 use df\arch;
 use df\flow;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Terminus as Cli;
 
 class TaskAdd extends arch\node\Task
@@ -52,7 +53,7 @@ class TaskAdd extends arch\node\Task
                     ->setMaxLength(255);
         });
 
-        $nickName = $this->format->firstName($this->_client['fullName']);
+        $nickName = Dictum::firstName($this->_client['fullName']);
 
         $this->_client->nickName = $this->_askFor('Nickname', function ($answer) {
             return $this->data->newValidator()

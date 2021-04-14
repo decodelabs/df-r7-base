@@ -13,6 +13,7 @@ use df\flex;
 use df\link;
 use df\flow;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Typify;
 use DecodeLabs\Exceptional;
 
@@ -492,7 +493,7 @@ trait TView_Layout
             $this->_layout = null;
             $this->_useLayout = false;
         } else {
-            $this->_layout = ucfirst(flex\Text::formatId($layout));
+            $this->_layout = ucfirst(Dictum::id($layout));
         }
 
         return $this;

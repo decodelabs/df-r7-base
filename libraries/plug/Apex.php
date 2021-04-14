@@ -14,6 +14,7 @@ use df\flex;
 
 use df\arch\scaffold\Loader as ScaffoldLoader;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 
 class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
@@ -191,7 +192,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
             $requestParts[] = substr($name, 4);
 
             array_walk($requestParts, function (&$value) {
-                $value = flex\Text::formatNodeSlug($value);
+                $value = Dictum::actionSlug($value);
             });
 
             yield arch\Request::factory('~'.implode('/', $requestParts));

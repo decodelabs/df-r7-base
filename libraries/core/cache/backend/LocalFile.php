@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Atlas;
 use DecodeLabs\Glitch;
 use DecodeLabs\Terminus\Session;
@@ -89,7 +90,7 @@ class LocalFile implements core\cache\IBackend
             $path = df\Launchpad::$app->getLocalDataPath();
         }
 
-        $path .= '/cache/'.flex\Text::formatFileName($cache->getCacheId());
+        $path .= '/cache/'.Dictum::fileName($cache->getCacheId());
         $this->_dir = Atlas::createDir($path);
         $options;
     }
@@ -257,6 +258,6 @@ class LocalFile implements core\cache\IBackend
 
     protected static function _normalizeKey($key)
     {
-        return flex\Text::formatFileName($key);
+        return Dictum::fileName($key);
     }
 }

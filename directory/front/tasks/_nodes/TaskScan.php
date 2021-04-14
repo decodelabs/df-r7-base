@@ -10,6 +10,7 @@ use df\core;
 use df\apex;
 use df\arch;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Terminus as Cli;
 
 class TaskScan extends arch\node\Task
@@ -66,7 +67,7 @@ class TaskScan extends arch\node\Task
                 $keyParts[0] = '~'.$keyParts[0];
             }
 
-            $request = (string)arch\Request::factory(implode('/', $keyParts).'/'.$this->format->nodeSlug(substr($basename, 4)))->getPath();
+            $request = (string)arch\Request::factory(implode('/', $keyParts).'/'.Dictum::actionSlug(substr($basename, 4)))->getPath();
 
             $schedules[$request] = [
                 'schedule' => $schedule,

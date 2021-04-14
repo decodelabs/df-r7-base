@@ -17,7 +17,7 @@ use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
 use DecodeLabs\Exemplar\Serializable as XmlSerializable;
 use DecodeLabs\Exemplar\SerializableTrait as XmlSerializableTrait;
-
+use DecodeLabs\Dictum;
 use DecodeLabs\Glitch;
 use DecodeLabs\Exceptional;
 
@@ -84,7 +84,7 @@ abstract class Base implements fire\IBlock
 
     public function getDisplayName(): string
     {
-        return flex\Text::formatName($this->getName());
+        return Dictum::name($this->getName());
     }
 
     public function getVersion(): int

@@ -10,9 +10,12 @@ use df\core;
 use df\apex;
 use df\axis;
 
-class FixNames extends axis\fortify\Base {
+use DecodeLabs\Dictum;
 
-    protected function execute() {
+class FixNames extends axis\fortify\Base
+{
+    protected function execute()
+    {
         $count = 0;
         $list = $this->_unit->fetch()
             ->where('fullName', 'begins', ' ')
@@ -21,14 +24,14 @@ class FixNames extends axis\fortify\Base {
             ->orWhere('nickName', '=', ' ')
             ->isUnbuffered(true);
 
-        foreach($list as $client) {
+        foreach ($list as $client) {
             $client['fullName'] = trim($client['fullName']);
 
-            if(!strlen(trim($client['fullName']))) {
-                $client['fullName'] = $this->format->firstName($client['fullName']);
+            if (!strlen(trim($client['nickName']))) {
+                $client['nickName'] = Dictum::firstName($client['fullName']);
             }
 
-            if($client->hasChanged()) {
+            if ($client->hasChanged()) {
                 $client->shouldBypassHooks(true);
                 $client->save();
                 $count++;

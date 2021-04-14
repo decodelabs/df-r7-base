@@ -10,6 +10,7 @@ use df\core;
 use df\opal;
 use df\flex;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
@@ -118,7 +119,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
             );
         }
 
-        return flex\Text::numericToAlpha($this->_keyIndex++);
+        return Dictum::numericToAlpha($this->_keyIndex++);
     }
 
     public function setKeyIndex($index)

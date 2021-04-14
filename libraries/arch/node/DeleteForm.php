@@ -11,6 +11,7 @@ use df\arch;
 use df\aura;
 use df\flex;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Tagged as Html;
 
 abstract class DeleteForm extends Form
@@ -190,7 +191,7 @@ abstract class DeleteForm extends Form
         if ($this->values->isValid()) {
             if ($message = $this->getFlashMessage()) {
                 $this->comms->flash(
-                    flex\Text::formatId($this->getItemName()).'.deleted',
+                    Dictum::id($this->getItemName()).'.deleted',
                     $message,
                     'success'
                 );

@@ -10,6 +10,7 @@ use df\core;
 use df\arch;
 use df\flex;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 
 class Base implements IMenu, \Serializable
@@ -201,10 +202,10 @@ class Base implements IMenu, \Serializable
     public function getDisplayName(): string
     {
         $parts = explode('_', $this->_id->getPath()->getLast());
-        $output = flex\Text::formatName(array_shift($parts));
+        $output = Dictum::name(array_shift($parts));
 
         if (!empty($parts)) {
-            $output .= ' ('.flex\Text::formatName(array_shift($parts)).')';
+            $output .= ' ('.Dictum::name(array_shift($parts)).')';
         }
 
         return $output;

@@ -11,6 +11,7 @@ use df\arch;
 use df\aura;
 
 use DecodeLabs\Tagged as Html;
+use DecodeLabs\Dictum;
 
 use DecodeLabs\Glitch\Dumpable;
 
@@ -172,7 +173,7 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Dumpa
                 if (is_string($value)) {
                     $title = $value;
                 } elseif ($key != '--') {
-                    $title = $this->view->format->name(substr($key, 2));
+                    $title = Dictum::name(substr($key, 2));
                 } else {
                     $title = null;
                 }

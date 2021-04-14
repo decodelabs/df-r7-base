@@ -20,9 +20,9 @@ use df\opal\record\IPrimaryKeySetProvider as PrimaryKeySetProvider;
 use df\axis\IUnit as Unit;
 use df\axis\ISchemaBasedStorageUnit as SchemaBasedStorageUnit;
 
-use df\flex\Text;
 use df\core\time\IDate as Date;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Tagged as Html;
 use DecodeLabs\Exceptional;
 
@@ -138,7 +138,7 @@ trait DataProviderTrait
             return static::ITEM_NAME;
         }
 
-        return strtolower(Text::formatName($this->getRecordKeyName()));
+        return strtolower(Dictum::name($this->getRecordKeyName()));
     }
 
 

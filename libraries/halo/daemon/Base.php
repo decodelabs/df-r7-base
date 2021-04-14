@@ -17,6 +17,7 @@ use DecodeLabs\Deliverance;
 use DecodeLabs\Eventful\Dispatcher as EventDispatcher;
 use DecodeLabs\Eventful\Factory as EventFactory;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Systemic;
 use DecodeLabs\Exceptional;
 
@@ -154,7 +155,7 @@ abstract class Base implements IDaemon
         $this->context = new core\SharedContext();
         $this->process = Systemic::$process->getCurrent();
 
-        $basePath = df\Launchpad::$app->getLocalDataPath().'/daemons/'.flex\Text::formatFileName($this->getName());
+        $basePath = df\Launchpad::$app->getLocalDataPath().'/daemons/'.Dictum::fileName($this->getName());
         Atlas::createDir(dirname($basePath));
 
         $this->_startTime = time();
@@ -316,7 +317,7 @@ abstract class Base implements IDaemon
 
     public function getPidFilePath()
     {
-        return df\Launchpad::$app->getLocalDataPath().'/daemons/'.flex\Text::formatFileName($this->getName()).'.pid';
+        return df\Launchpad::$app->getLocalDataPath().'/daemons/'.Dictum::fileName($this->getName()).'.pid';
     }
 
     protected function _setup()

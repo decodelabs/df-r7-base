@@ -13,6 +13,7 @@ use df\neon;
 use df\flex;
 use df\opal;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Typify;
 use DecodeLabs\Exceptional;
 
@@ -445,7 +446,7 @@ class Model extends axis\Model
             ->where('owner', '=', $userId)
             ->whereCorrelation('bucket', 'in', 'id')
                 ->from($this->bucket, 'bucket')
-                ->where('slug', '=', $this->context->format->slug($bucket))
+                ->where('slug', '=', Dictum::slug($bucket))
                 ->endCorrelation()
             ->where('bucket', '!=', null)
             ->toRow();
@@ -461,7 +462,7 @@ class Model extends axis\Model
                 ->endJoin()
             ->whereCorrelation('file.bucket', 'in', 'id')
                 ->from($this->bucket, 'bucket')
-                ->where('slug', '=', $this->context->format->slug($bucket))
+                ->where('slug', '=', Dictum::slug($bucket))
                 ->endCorrelation()
             ->where('file.bucket', '!=', null)
             ->where('owner', '=', $userId)

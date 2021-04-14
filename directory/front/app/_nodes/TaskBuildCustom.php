@@ -11,6 +11,7 @@ use df\apex;
 use df\arch;
 use df\halo;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Terminus as Cli;
 
 class TaskBuildCustom extends arch\node\Task
@@ -85,7 +86,7 @@ class TaskBuildCustom extends arch\node\Task
                 $keyParts[0] = '~'.$keyParts[0];
             }
 
-            yield arch\Request::factory(implode('/', $keyParts).'/'.$this->format->nodeSlug(substr($basename, 4)))->getPath();
+            yield arch\Request::factory(implode('/', $keyParts).'/'.Dictum::actionSlug(substr($basename, 4)))->getPath();
         }
     }
 }
