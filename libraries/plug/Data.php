@@ -422,4 +422,17 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
     {
         return bin2hex($this->hash($message, $salt));
     }
+
+
+
+    // Guid
+    public function shortenGuid(string $id): string
+    {
+        return flex\Guid::shorten($id);
+    }
+
+    public function unshortenGuid(string $id): string
+    {
+        return flex\Guid::unshorten($id);
+    }
 }

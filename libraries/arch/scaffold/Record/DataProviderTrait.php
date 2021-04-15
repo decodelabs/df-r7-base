@@ -411,7 +411,7 @@ trait DataProviderTrait
     protected function normalizeFieldOutput(string $field, $value)
     {
         if ($value instanceof Date) {
-            return $this->format->dateTime($value, $value->hasTime() ? 'short' : 'medium');
+            return Html::$time->locale($value, $value->hasTime() ? 'short' : 'medium', 'short');
         }
 
         return $value;

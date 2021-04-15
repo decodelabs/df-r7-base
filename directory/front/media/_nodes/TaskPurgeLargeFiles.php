@@ -11,6 +11,7 @@ use df\apex;
 use df\arch;
 use df\neon;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
 
@@ -46,13 +47,13 @@ class TaskPurgeLargeFiles extends arch\node\Task
                 continue;
             }
 
-            Cli::{'.brightMagenta'}($version['fileName'].' - '.$this->format->fileSize($version['fileSize']));
+            Cli::{'.brightMagenta'}($version['fileName'].' - '.Dictum::$number->fileSize($version['fileSize']));
             Atlas::deleteFile($path);
 
             $total += $version['fileSize'];
         }
 
-        Cli::success('Purged '.$this->format->fileSize($total).' in total');
+        Cli::success('Purged '.Dictum::$number->fileSize($total).' in total');
     }
 
     protected function _getLimit(): ?int

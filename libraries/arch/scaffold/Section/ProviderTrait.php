@@ -281,7 +281,7 @@ trait ProviderTrait
                 ->setDisposition($set['disposition'] ?? 'informative');
 
             if (isset($counts[$node])) {
-                $link->setNote($this->format->counterNote($counts[$node]));
+                $link->setNote(Dictum::$number->counter($counts[$node]));
             }
 
             $entryList->addEntry($link);

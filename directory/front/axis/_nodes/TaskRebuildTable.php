@@ -12,6 +12,7 @@ use df\arch;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Exceptional;
 
@@ -184,7 +185,7 @@ class TaskRebuildTable extends arch\node\Task
 
         Cli::newLine();
         Cli::{'yellow'}('Renaming tables: ');
-        $currentTable->rename($currentTableName.axis\IUnitOptions::BACKUP_SUFFIX.$this->format->customDate('now', 'Ymd_his'));
+        $currentTable->rename($currentTableName.axis\IUnitOptions::BACKUP_SUFFIX.Dictum::$time->format('now', 'Ymd_his'));
         $newTable->rename($currentTableName);
         Cli::success('done');
 

@@ -13,6 +13,7 @@ use df\link;
 use df\spur;
 use df\flex;
 
+use DecodeLabs\Dictum;
 use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
 use DecodeLabs\Exceptional;
@@ -128,7 +129,7 @@ class TaskMedia extends arch\node\Task
                     }
                 } else {
                     $file = Atlas::$http->saveResponse($response, $path);
-                    Cli::success($this->format->fileSize($file->getSize()));
+                    Cli::success(Dictum::$number->fileSize($file->getSize()));
                 }
             }, function ($total, $downloaded) use ($progressBar) {
                 $progressBar->advance($downloaded);

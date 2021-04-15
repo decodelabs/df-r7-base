@@ -10,6 +10,8 @@ use df\core;
 use df\aura;
 use df\arch;
 
+use DecodeLabs\Dictum;
+
 class StarRating extends Base
 {
     const PRIMARY_TAG = 'div.starRating';
@@ -30,7 +32,7 @@ class StarRating extends Base
         $tag = $this->getTag();
         $tag->setDataAttribute('value', $this->_value);
         $tag->setDataAttribute('max', $this->_max);
-        $tag->setTitle($this->_context->format->number($this->_value));
+        $tag->setTitle(Dictum::$number->format($this->_value));
 
         $stars = [];
 
