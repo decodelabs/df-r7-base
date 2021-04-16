@@ -26,6 +26,7 @@ if ($hasAppFile) {
 
 if (class_exists($appClass)) {
     df\Launchpad::$loader->loadPackages(array_keys($appClass::PACKAGES));
+    $appClass::setupVeneerBindings();
 }
 
 error_reporting(false);
