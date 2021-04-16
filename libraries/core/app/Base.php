@@ -237,11 +237,11 @@ PHP;
 
         df\Launchpad::$loader->loadPackages($packages);
 
-        $this->setup();
+        $this->setupVeneerBindings();
     }
 
 
-    protected function setup(): void
+    public static function setupVeneerBindings(): void
     {
     }
 
