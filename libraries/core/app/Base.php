@@ -236,6 +236,13 @@ PHP;
         }
 
         df\Launchpad::$loader->loadPackages($packages);
+
+        $this->setup();
+    }
+
+
+    protected function setup(): void
+    {
     }
 
 
