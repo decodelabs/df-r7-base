@@ -155,11 +155,11 @@ class Handler implements IHandler
                         break;
 
                     case 'joinDate':
-                        $output[$attribute] = Dictum::$time->format(Disciple::getRegistrationDate(), core\time\Date::DBDATE);
+                        $output[$attribute] = Dictum::$time->format(Disciple::getRegistrationDate(), core\time\Date::DBDATE, 'UTC');
                         break;
 
                     case 'loginDate':
-                        $output[$attribute] = Dictum::$time->format(Disciple::getLastLoginDate(), core\time\Date::DB);
+                        $output[$attribute] = Dictum::$time->format(Disciple::getLastLoginDate(), core\time\Date::DB, 'UTC');
                         break;
 
                     case 'isLoggedIn':

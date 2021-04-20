@@ -137,8 +137,8 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
             'em' => $this->_email,
             'fn' => $this->_fullName,
             'nn' => $this->_nickName,
-            'jd' => Dictum::$time->format($this->_joinDate, core\time\Date::DBDATE),
-            'ld' => Dictum::$time->format($this->_loginDate, core\time\Date::DB),
+            'jd' => Dictum::$time->format($this->_joinDate, core\time\Date::DBDATE, 'UTC'),
+            'ld' => Dictum::$time->format($this->_loginDate, core\time\Date::DB, 'UTC'),
             'cn' => $this->_country,
             'ln' => $this->_language,
             'tz' => $this->_timezone,
@@ -159,11 +159,11 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
         $this->_nickName = $data['nn'];
 
         if ($data['jd']) {
-            $this->_joinDate = new core\time\Date($data['jd']);
+            $this->_joinDate = new DateTime($data['jd']);
         }
 
         if ($data['ld']) {
-            $this->_loginDate = new core\time\Date($data['ld']);
+            $this->_loginDate = new DateTime($data['ld']);
         }
 
         $this->_country = $data['cn'];
@@ -210,20 +210,12 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
 
     public function getRegistrationDate(): ?DateTime
     {
-        if (!$this->_joinDate) {
-            return null;
-        }
-
-        return $this->_joinDate->getRaw();
+        return $this->_joinDate;
     }
 
     public function getLastLoginDate(): ?DateTime
     {
-        if (!$this->_loginDate) {
-            return null;
-        }
-
-        return $this->_loginDate->getRaw();
+        return $this->_loginDate;
     }
 
     public function getLanguage(): ?string
@@ -334,8 +326,8 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
         $this->_fullName = $clientData->getFullName();
         $this->_nickName = $clientData->getNickName();
         $this->_authState = $clientData->getStatus();
-        $this->_joinDate = core\time\Date::normalize($clientData->getRegistrationDate());
-        $this->_loginDate = core\time\Date::normalize($clientData->getLastLoginDate());
+        $this->_joinDate = $clientData->getRegistrationDate();
+        $this->_loginDate = $clientData->getLastLoginDate();
         $this->_language = $clientData->getLanguage();
         $this->_country = $clientData->getCountry();
         $this->_timezone = $clientData->getTimezone();

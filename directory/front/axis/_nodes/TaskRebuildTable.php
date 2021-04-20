@@ -185,7 +185,7 @@ class TaskRebuildTable extends arch\node\Task
 
         Cli::newLine();
         Cli::{'yellow'}('Renaming tables: ');
-        $currentTable->rename($currentTableName.axis\IUnitOptions::BACKUP_SUFFIX.Dictum::$time->format('now', 'Ymd_his'));
+        $currentTable->rename($currentTableName.axis\IUnitOptions::BACKUP_SUFFIX.Dictum::$time->format('now', 'Ymd_his', 'UTC'));
         $newTable->rename($currentTableName);
         Cli::success('done');
 
