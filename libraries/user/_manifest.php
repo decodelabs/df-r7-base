@@ -11,6 +11,7 @@ use df\user;
 use df\opal;
 use df\mesh;
 
+use DecodeLabs\Disciple\Profile as DiscipleProfile;
 use DecodeLabs\Exceptional;
 
 // Constants
@@ -64,27 +65,15 @@ interface IUserModel
     public function removeClientOptions($id, $keys);
 }
 
-interface IClientDataObject extends \ArrayAccess
+interface IClientDataObject extends DiscipleProfile, \ArrayAccess
 {
-    public function getId(): ?string;
-    public function getEmail();
-    public function getFullName();
-    public function getNickName();
-    public function getFirstName();
-    public function getSurname();
     public function getStatus();
-    public function getJoinDate();
-    public function getLoginDate();
-    public function getLanguage();
-    public function getCountry();
-    public function getTimezone();
     public function getGroupIds();
-    public function getSignifiers();
 }
 
 trait TNameExtractor
 {
-    public function getFirstName()
+    public function getFirstName(): ?string
     {
         static $titles = ['mr', 'mrs', 'miss', 'ms', 'mx', 'master', 'maid', 'madam', 'dr'];
         $fullName = trim($this->getFullName());
@@ -101,7 +90,7 @@ trait TNameExtractor
         return ucfirst($output);
     }
 
-    public function getSurname()
+    public function getSurname(): ?string
     {
         $parts = explode(' ', $this->getFullName());
         return array_pop($parts);

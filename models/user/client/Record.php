@@ -11,6 +11,8 @@ use df\axis;
 use df\opal;
 use df\user;
 
+use DateTime;
+
 class Record extends opal\record\Base implements user\IActiveClientDataObject
 {
     const BROADCAST_HOOK_EVENTS = true;
@@ -79,17 +81,17 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject
         return $this['id'];
     }
 
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this['email'];
     }
 
-    public function getFullName()
+    public function getFullName(): ?string
     {
         return $this['fullName'];
     }
 
-    public function getNickName()
+    public function getNickName(): ?string
     {
         return $this['nickName'];
     }
@@ -99,27 +101,35 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject
         return $this['status'];
     }
 
-    public function getJoinDate()
+    public function getRegistrationDate(): ?DateTime
     {
-        return $this['joinDate'];
+        if (!$date = $this['joinDate']) {
+            return null;
+        }
+
+        return $date->getRaw();
     }
 
-    public function getLoginDate()
+    public function getLastLoginDate(): ?DateTime
     {
-        return $this['loginDate'];
+        if (!$date = $this['loginDate']) {
+            return null;
+        }
+
+        return $date->getRaw();
     }
 
-    public function getLanguage()
+    public function getLanguage(): ?string
     {
         return $this['language'];
     }
 
-    public function getCountry()
+    public function getCountry(): ?string
     {
         return $this['country'];
     }
 
-    public function getTimezone()
+    public function getTimezone(): ?string
     {
         if ($this['timezone'] === 'Asia/Yangon') {
             $this['timezone'] = 'Asia/Rangoon';
@@ -133,7 +143,7 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject
         return $this['#groups'];
     }
 
-    public function getSignifiers()
+    public function getSignifiers(): array
     {
         if (!$id = $this['id']) {
             return [];

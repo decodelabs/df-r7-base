@@ -12,6 +12,8 @@ use df\link;
 use df\mesh;
 use df\flex;
 
+use DateTime;
+use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 
 class Client implements IClient, \Serializable, mesh\entity\IEntity
@@ -135,8 +137,8 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
             'em' => $this->_email,
             'fn' => $this->_fullName,
             'nn' => $this->_nickName,
-            'jd' => $this->_joinDate ? $this->_joinDate->format(core\time\Date::DBDATE) : null,
-            'ld' => $this->_loginDate ? (string)$this->_loginDate : null,
+            'jd' => Dictum::$time->format($this->_joinDate, core\time\Date::DBDATE),
+            'ld' => Dictum::$time->format($this->_loginDate, core\time\Date::DB),
             'cn' => $this->_country,
             'ln' => $this->_language,
             'tz' => $this->_timezone,
@@ -186,17 +188,17 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
         return $this->_id;
     }
 
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->_email;
     }
 
-    public function getFullName()
+    public function getFullName(): ?string
     {
         return $this->_fullName;
     }
 
-    public function getNickName()
+    public function getNickName(): ?string
     {
         return $this->_nickName;
     }
@@ -206,27 +208,35 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
         return $this->_authState;
     }
 
-    public function getJoinDate()
+    public function getRegistrationDate(): ?DateTime
     {
-        return $this->_joinDate;
+        if (!$this->_joinDate) {
+            return null;
+        }
+
+        return $this->_joinDate->getRaw();
     }
 
-    public function getLoginDate()
+    public function getLastLoginDate(): ?DateTime
     {
-        return $this->_loginDate;
+        if (!$this->_loginDate) {
+            return null;
+        }
+
+        return $this->_loginDate->getRaw();
     }
 
-    public function getLanguage()
+    public function getLanguage(): ?string
     {
         return $this->_language;
     }
 
-    public function getCountry()
+    public function getCountry(): ?string
     {
         return $this->_country;
     }
 
-    public function getTimezone()
+    public function getTimezone(): ?string
     {
         return $this->_timezone;
     }
@@ -236,7 +246,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
         return $this->_groupIds;
     }
 
-    public function getSignifiers()
+    public function getSignifiers(): array
     {
         return $this->_signifiers;
     }
@@ -324,8 +334,8 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
         $this->_fullName = $clientData->getFullName();
         $this->_nickName = $clientData->getNickName();
         $this->_authState = $clientData->getStatus();
-        $this->_joinDate = $clientData->getJoinDate();
-        $this->_loginDate = $clientData->getLoginDate();
+        $this->_joinDate = core\time\Date::normalize($clientData->getRegistrationDate());
+        $this->_loginDate = core\time\Date::normalize($clientData->getLastLoginDate());
         $this->_language = $clientData->getLanguage();
         $this->_country = $clientData->getCountry();
         $this->_timezone = $clientData->getTimezone();

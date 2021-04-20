@@ -12,6 +12,8 @@ use df\aura;
 use df\user;
 use df\mint;
 
+use DecodeLabs\Dictum;
+use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
 
 class Handler implements IHandler
@@ -147,29 +149,21 @@ class Handler implements IHandler
             if (isset($this->_userAttributes[$attribute])) {
                 $output[$attribute] = $this->_userAttributes[$attribute];
             } else {
-                $client = user\Manager::getInstance()->getClient();
-
                 switch ($attribute) {
                     case 'id':
-                        $output[$attribute] = $client->getId();
+                        $output[$attribute] = Disciple::getId();
                         break;
 
                     case 'joinDate':
-                        $date = $client->getJoinDate();
-                        $output[$attribute] = $date ? $date->format(core\time\Date::DBDATE) : null;
+                        $output[$attribute] = Dictum::$time->format(Disciple::getRegistrationDate(), core\time\Date::DBDATE);
                         break;
 
                     case 'loginDate':
-                        $date = $client->getLoginDate();
-                        $output[$attribute] = $date ? $date->format(core\time\Date::DB) : null;
+                        $output[$attribute] = Dictum::$time->format(Disciple::getLastLoginDate(), core\time\Date::DB);
                         break;
 
                     case 'isLoggedIn':
-                        $output[$attribute] = $client->isLoggedIn() ? 'true' : 'false';
-                        break;
-
-                    case 'status':
-                        $output[$attribute] = $client->stateIdToName($client->getStatus());
+                        $output[$attribute] = Disciple::isLoggedIn() ? 'true' : 'false';
                         break;
                 }
             }

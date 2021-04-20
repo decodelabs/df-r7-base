@@ -9,6 +9,9 @@ use df;
 use df\core;
 use df\flex;
 
+use df\user\DiscipleAdapter;
+
+use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
 
 abstract class Base implements core\IApp
@@ -237,9 +240,14 @@ PHP;
 
         df\Launchpad::$loader->loadPackages($packages);
 
+        $this->setup3rdParty();
         $this->setupVeneerBindings();
     }
 
+    public static function setup3rdParty(): void
+    {
+        Disciple::setAdapter(new DiscipleAdapter());
+    }
 
     public static function setupVeneerBindings(): void
     {
