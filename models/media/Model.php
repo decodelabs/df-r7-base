@@ -13,6 +13,7 @@ use df\neon;
 use df\flex;
 use df\opal;
 
+use DecodeLabs\Disciple;
 use DecodeLabs\Dictum;
 use DecodeLabs\Typify;
 use DecodeLabs\Exceptional;
@@ -89,7 +90,7 @@ class Model extends axis\Model
         $file = null;
 
         if ($onePerUser) {
-            $owner = $fileData->get('owner', $this->context->user->client->getId());
+            $owner = $fileData->get('owner', Disciple::getId());
 
             if ($owner !== null) {
                 $file = $this->file->fetch()
@@ -306,8 +307,8 @@ class Model extends axis\Model
     {
         $fileData = core\collection\Tree::factory($fileData);
 
-        if (!$fileData->has('owner') && $this->context->user->isLoggedIn()) {
-            $fileData->owner = $this->context->user->client->getId();
+        if (!$fileData->has('owner') && Disciple::isLoggedIn()) {
+            $fileData->owner = Disciple::getId();
         }
 
         if (!$fileData->has('fileName')) {

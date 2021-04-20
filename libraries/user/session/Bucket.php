@@ -128,7 +128,7 @@ class Bucket implements user\session\IBucket, Dumpable
         $manager = user\Manager::getInstance();
 
         if ($manager->isLoggedIn()) {
-            $this->clearForUser($manager->client->getId());
+            $this->clearForUser($manager->getId());
         } else {
             $this->clear();
         }

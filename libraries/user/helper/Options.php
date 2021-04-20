@@ -25,7 +25,7 @@ class Options extends Base implements
     {
         if ($this->manager->isLoggedIn()) {
             return $this->manager->getUserModel()->fetchClientOptions(
-                $this->manager->client->getId()
+                $this->manager->getId()
             );
         }
 
@@ -45,7 +45,7 @@ class Options extends Base implements
 
         if ($this->manager->isLoggedIn()) {
             $this->manager->getUserModel()->updateClientOptions(
-                $this->manager->client->getId(),
+                $this->manager->getId(),
                 [$key => $value]
             );
         }
@@ -88,7 +88,7 @@ class Options extends Base implements
 
         if ($this->manager->isLoggedIn()) {
             $this->manager->getUserModel()->removeClientOptions(
-                $this->manager->client->getId(),
+                $this->manager->getId(),
                 $keys
             );
         }
@@ -104,7 +104,7 @@ class Options extends Base implements
 
         if ($this->manager->isLoggedIn()) {
             $this->manager->getUserModel()->updateClientOptions(
-                $this->manager->client->getId(),
+                $this->manager->getId(),
                 $options
             );
         }

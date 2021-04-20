@@ -12,6 +12,7 @@ use df\axis;
 use df\user;
 use df\opal;
 
+use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
 
 class RegisterLocal extends axis\procedure\Record
@@ -20,7 +21,7 @@ class RegisterLocal extends axis\procedure\Record
 
     protected function _prepare()
     {
-        if ($this->context->user->isLoggedIn()) {
+        if (Disciple::isLoggedIn()) {
             throw Exceptional::Unauthorized(
                 'Already logged in'
             );

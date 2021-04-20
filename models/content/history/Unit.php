@@ -12,6 +12,7 @@ use df\axis;
 use df\opal;
 use df\mesh;
 
+use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
 
 class Unit extends axis\unit\Table
@@ -48,7 +49,7 @@ class Unit extends axis\unit\Table
         }
 
         $history = $this->newRecord([
-            'user' => $userId ?? $this->context->user->client->getId(),
+            'user' => $userId ?? Disciple::getId(),
             'description' => $description,
             'action' => $action
         ]);

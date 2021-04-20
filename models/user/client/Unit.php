@@ -12,6 +12,8 @@ use df\opal;
 use df\user;
 use df\flex;
 
+use DecodeLabs\Disciple;
+
 class Unit extends axis\unit\Table
 {
     const NAME_FIELD = 'fullName';
@@ -77,12 +79,12 @@ class Unit extends axis\unit\Table
 
     public function fetchActive()
     {
-        if (!$this->context->user->isLoggedIn()) {
+        if (!Disciple::isLoggedIn()) {
             return null;
         }
 
         return $this->fetch()
-            ->where('id', '=', $this->context->user->client->getId())
+            ->where('id', '=', Disciple::getId())
             ->toRow();
     }
 

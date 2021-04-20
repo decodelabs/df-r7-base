@@ -11,6 +11,8 @@ use df\plug;
 use df\arch;
 use df\link;
 
+use DecodeLabs\Disciple;
+
 class Avatar implements arch\IDirectoryHelper
 {
     use arch\TDirectoryHelper;
@@ -19,7 +21,7 @@ class Avatar implements arch\IDirectoryHelper
 
     public function getClientAvatarUrl($size=null)
     {
-        return $this->getAvatarUrl($this->context->user->client->getId(), $size);
+        return $this->getAvatarUrl(Disciple::getId(), $size);
     }
 
     public function getAvatarUrl($userId, $size=null)

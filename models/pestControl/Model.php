@@ -12,6 +12,8 @@ use df\axis;
 use df\arch;
 use df\link;
 
+use DecodeLabs\Disciple;
+
 class Model extends axis\Model
 {
     const PURGE_THRESHOLD = '1 month';
@@ -156,8 +158,8 @@ class Model extends axis\Model
         $user = null;
 
         try {
-            $user = $this->context->user->isLoggedIn() ?
-                $this->context->user->client->getId() :
+            $user = Disciple::isLoggedIn() ?
+                Disciple::getId() :
                 null;
         } catch (\Throwable $e) {
         }

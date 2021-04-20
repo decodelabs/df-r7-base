@@ -5,11 +5,14 @@ namespace df\apex\models\user\auth;
 use df\core;
 use df\axis;
 
-class Unit extends axis\unit\Table {
+use DecodeLabs\Disciple;
 
+class Unit extends axis\unit\Table
+{
     const BROADCAST_HOOK_EVENTS = false;
 
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addField('user', 'ManyToOne', 'client', 'authDomains');
         $schema->addField('adapter', 'Text', 32);
         $schema->addField('identity', 'Text', 255);
@@ -21,13 +24,14 @@ class Unit extends axis\unit\Table {
         $schema->addIndex('identity');
     }
 
-    public function fetchLocalClientAdapter() {
-        if(!$this->context->user->isLoggedIn()) {
+    public function fetchLocalClientAdapter()
+    {
+        if (!Disciple::isLoggedIn()) {
             return null;
         }
 
         return $this->fetch()
-            ->where('user', '=', $this->context->user->client->getId())
+            ->where('user', '=', Disciple::getId())
             ->where('adapter', '=', 'Local')
             ->toRow();
     }

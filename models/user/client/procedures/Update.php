@@ -10,22 +10,21 @@ use df\core;
 use df\apex;
 use df\axis;
 
+use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
 
 class Update extends axis\procedure\Record
 {
     protected function _getRecord()
     {
-        $userManager = $this->user;
-
-        if (!$userManager->isLoggedIn()) {
+        if (!Disciple::isLoggedIn()) {
             throw Exceptional::Unauthorized(
                 'Cannot edit guests'
             );
         }
 
         $record = $this->_unit->fetch()
-            ->where('id', '=', $userManager->client->getId())
+            ->where('id', '=', Disciple::getId())
             ->toRow();
 
         if (!$record) {
@@ -99,7 +98,7 @@ class Update extends axis\procedure\Record
                 $auth->save();
             }
 
-            if ($this->record['id'] == $this->user->client->getId()) {
+            if ($this->record['id'] == Disciple::getId()) {
                 $this->user->importClientData($this->record);
             }
         }
