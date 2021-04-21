@@ -20,5 +20,7 @@ interface IController
     public function getDestination(): Dir;
 
     public function createBuild(): \Generator;
-    public function activateBuild();
+    public function copyCurrentBuild(): void;
+    public function activateBuild(): void;
+    public function deactivatePreviousBuild(): void;
 }

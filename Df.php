@@ -101,6 +101,7 @@ class Launchpad
         chdir($appPath.'/entry');
 
         // Check for compiled version
+        $previousPath = $appPath.'/data/local/run/previous/Run.php';
         $activePath = $appPath.'/data/local/run/active/Run.php';
 
         $sourceMode = isset($_SERVER['argv']) && (
@@ -109,8 +110,12 @@ class Launchpad
             in_array('app/update', $_SERVER['argv'])
         );
 
-        if (file_exists($activePath) && !$sourceMode) {
-            require $activePath;
+        if (!$sourceMode) {
+            if (file_exists($previousPath)) {
+                require $previousPath;
+            } elseif (file_exists($activePath)) {
+                require $activePath;
+            }
         }
 
         self::ensureCompileConstants();

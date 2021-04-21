@@ -84,8 +84,14 @@ class TaskBuild extends arch\node\Task
             // Late build tasks
             $this->runChild('./build-custom?after='.$buildId, false);
 
+            // Copy current build
+            $controller->copyCurrentBuild();
+
             // Move to run path
             $controller->activateBuild();
+
+            // Deactivate previous
+            $controller->deactivatePreviousBuild();
         } else {
             // Late build tasks
             $this->runChild('./build-custom?after', false);

@@ -155,7 +155,19 @@ class Controller implements IController
         );
     }
 
-    public function activateBuild()
+    public function copyCurrentBuild(): void
+    {
+        if (!is_dir($this->_runPath.'/active')) {
+            return;
+        }
+
+        Atlas::deleteDir($this->_runPath.'/previous-prep');
+        Atlas::copyDir($this->_runPath.'/active', $this->_runPath.'/previous-prep');
+        Atlas::deleteDir($this->_runPath.'/previous');
+        Atlas::renameDir($this->_runPath.'/previous-prep', 'previous');
+    }
+
+    public function activateBuild(): void
     {
         Atlas::deleteDir($this->_runPath.'/backup');
 
@@ -165,5 +177,14 @@ class Controller implements IController
 
         $this->_destination->moveTo($this->_runPath, 'active');
         Atlas::deleteDir($this->_runPath.'/backup');
+    }
+
+    public function deactivatePreviousBuild(): void
+    {
+        if (!is_dir($this->_runPath.'/previous')) {
+            return;
+        }
+
+        Atlas::renameFile($this->_runPath.'/previous/Run.php', 'Run.php.bak');
     }
 }
