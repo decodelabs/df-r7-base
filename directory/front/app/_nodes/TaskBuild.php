@@ -85,13 +85,36 @@ class TaskBuild extends arch\node\Task
             $this->runChild('./build-custom?after='.$buildId, false);
 
             // Copy current build
+            Cli::{'yellow'}('Copying current build: ');
             $controller->copyCurrentBuild();
+            Cli::success('done');
+
+            Cli::{'yellow'}('Waiting for transition: ');
+            $progress = Cli::newSpinner('brightBlue');
+            $tick = 100000;
+            $sleep = 10000000;
+
+            while ($sleep > 0) {
+                $progress->advance();
+                usleep($tick);
+                $sleep -= $tick;
+            }
+
+            $progress->complete('done');
+
 
             // Move to run path
+            Cli::{'yellow'}('Activating new build: ');
             $controller->activateBuild();
+            Cli::success('done');
 
             // Deactivate previous
+            Cli::{'yellow'}('Deactivating old build: ');
             $controller->deactivatePreviousBuild();
+            Cli::success('done');
+
+            Cli::newLine();
+            Cli::newLine();
         } else {
             // Late build tasks
             $this->runChild('./build-custom?after', false);
