@@ -1,4 +1,7 @@
-<script>
+<?php
+use DecodeLabs\Tagged as Html;
+
+echo Html::script(Html::raw('
 if(window.XMLHttpRequest) {
     var xhr = new XMLHttpRequest();
 
@@ -11,28 +14,26 @@ if(window.XMLHttpRequest) {
         }
     };
     xhr.onload = function() {
-        $('#continue').removeClass('disabled');
+        $("#continue").removeClass("disabled");
     };
 
-    xhr.open("GET", "<?php echo $this->uri('~/tasks/invoke.stream?token='.$token); ?>", true);
+    xhr.open("GET", "'.$this->uri('~/tasks/invoke.stream?token='.$token).'", true);
     xhr.send("Making request...");
 }
-</script>
+'));
 
-<?php
 echo $this->html->flashMessage($this->_(
     'Do not browse away from this page while the task is processing otherwise you will not be able to track progress'
 ), 'warning');
-?>
 
-<samp class="terminal-output" id="divProgress"></samp>
+echo Html::{'samp.terminal-output#divProgress'}();
 
-<div style="display: block;">
-<?php
-echo $this->html->backLink($this['redirect'], true, $this->_('Continue'))
-    ->setIcon('back')
-    ->setDisposition('informative')
-    ->addClass('disabled')
-    ->setId('continue');
-?>
-</div>
+echo Html::div(function () {
+    echo $this->html->backLink($this['redirect'], true, $this->_('Continue'))
+        ->setIcon('back')
+        ->setDisposition('informative')
+        ->addClass('disabled')
+        ->setId('continue');
+}, [
+    'style' => ['display' => 'block']
+]);
