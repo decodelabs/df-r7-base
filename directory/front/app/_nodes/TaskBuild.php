@@ -90,17 +90,10 @@ class TaskBuild extends arch\node\Task
             Cli::success('done');
 
             Cli::{'yellow'}('Waiting for transition: ');
-            $progress = Cli::newSpinner('brightBlue');
-            $tick = 100000;
-            $sleep = 10000000;
 
-            while ($sleep > 0) {
-                $progress->advance();
-                usleep($tick);
-                $sleep -= $tick;
-            }
-
-            $progress->complete('done');
+            Cli::newSpinner('brightBlue')
+                ->waitFor(10)
+                ->complete('done');
 
 
             // Move to run path

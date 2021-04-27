@@ -141,17 +141,10 @@ class TaskSpool extends arch\node\Task
         $sleeps = [0.5, 1, 2, 3];
         $check = null;
         $progress = Cli::newSpinner();
-        $tick = 100000;
-        $second = 1000000;
 
         do {
-            $sleep = array_shift($sleeps) * $second;
-
-            while ($sleep > 0) {
-                $progress->advance();
-                usleep($tick);
-                $sleep -= $tick;
-            }
+            $sleep = array_shift($sleeps);
+            $progress->waitFor($sleep);
 
             $check = $this->data->task->queue->select('id', 'request', 'status')
                 ->where('id', '=', $taskId)
