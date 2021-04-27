@@ -165,6 +165,8 @@ class Controller implements IController
         Atlas::copyDir($this->_runPath.'/active', $this->_runPath.'/previous-prep');
         Atlas::deleteDir($this->_runPath.'/previous');
         Atlas::renameDir($this->_runPath.'/previous-prep', 'previous');
+
+        $this->clearCache();
     }
 
     public function activateBuild(): void
@@ -176,6 +178,8 @@ class Controller implements IController
         }
 
         $this->_destination->moveTo($this->_runPath, 'active');
+
+        $this->clearCache();
         Atlas::deleteDir($this->_runPath.'/backup');
     }
 
@@ -186,5 +190,15 @@ class Controller implements IController
         }
 
         Atlas::renameFile($this->_runPath.'/previous/Run.php', 'Run.php.bak');
+        $this->clearCache();
+    }
+
+    protected function clearCache()
+    {
+        clearstatcache(true);
+
+        if (function_exists('opcache_reset')) {
+            opcache_reset();
+        }
     }
 }
