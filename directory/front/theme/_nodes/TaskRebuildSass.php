@@ -42,6 +42,12 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
         }
 
 
+        $runPath = df\Launchpad::$app->getLocalDataPath().'/run';
+        clearstatcache(true);
+        $activeExists = is_file($runPath.'/active/Run.php');
+        $active2Exists = is_file($runPath.'/active2/Run.php');
+
+
         // Build sass
         foreach ($this->_dir->scanFiles(function ($fileName) {
             return core\uri\Path::extractExtension($fileName) == 'json';
@@ -53,9 +59,26 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             $shortPath = $this->normalizeSassPath($sassPath);
             $activePath = null;
 
-            if ($buildId && strpos($shortPath, 'app://data/local/run/active/') === 0) {
+            if ($buildId) {
+                if (
+                    strpos($shortPath, 'app://data/local/run/active/') === 0 &&
+                    $activeExists
+                ) {
+                    $sassPath = str_replace('/data/local/run/active/', '/data/local/run/active2/', $sassPath);
+                } elseif (
+                    strpos($shortPath, 'app://data/local/run/active2/') === 0 &&
+                    $active2Exists
+                ) {
+                    $sassPath = str_replace('/data/local/run/active2/', '/data/local/run/active/', $sassPath);
+                }
+
                 $activePath = $sassPath;
-                $sassPath = str_replace('/data/local/run/active/', '/data/local/build/'.$buildId.'/', $sassPath);
+                $sassPath = str_replace([
+                    '/data/local/run/active/',
+                    '/data/local/run/active2/'
+                ], '/data/local/build/'.$buildId.'/', $sassPath);
+
+                $shortPath = $this->normalizeSassPath($sassPath);
             }
 
 
@@ -95,7 +118,12 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
 
         $shortPath = $this->normalizeSassPath($activePath);
 
-        if (!$delete && $hasBuild && strpos($shortPath, 'app://data/local/run/active/') !== 0) {
+        if (
+            !$delete &&
+            $hasBuild &&
+            strpos($shortPath, 'app://data/local/run/active/') !== 0 &&
+            strpos($shortPath, 'app://data/local/run/active2/') !== 0
+        ) {
             $delete = true;
             $why = 'generics not required';
         }
