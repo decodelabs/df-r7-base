@@ -101,9 +101,6 @@ class Launchpad
         chdir($appPath.'/entry');
 
         // Check for compiled version
-        $previousPath = $appPath.'/data/local/run/previous/Run.php';
-        $activePath = $appPath.'/data/local/run/active/Run.php';
-
         $sourceMode = isset($_SERVER['argv']) && (
             in_array('--df-source', $_SERVER['argv']) ||
             in_array('app/build', $_SERVER['argv']) ||
@@ -111,10 +108,13 @@ class Launchpad
         );
 
         if (!$sourceMode) {
-            if (file_exists($previousPath)) {
-                require $previousPath;
-            } elseif (file_exists($activePath)) {
+            $activePath = $appPath.'/data/local/run/active/Run.php';
+            $active2Path = $appPath.'/data/local/run/active2/Run.php';
+
+            if (file_exists($activePath)) {
                 require $activePath;
+            } elseif (file_exists($active2Path)) {
+                require $active2Path;
             }
         }
 

@@ -145,56 +145,58 @@ class Controller implements IController
 
         // Generate run file
         Atlas::createFile(
-            $destinationPath.'/Run.php',
+            $destinationPath.'/Run.php.bak',
             '<?php'."\n".
             'namespace df;'."\n".
             'const COMPILE_TIMESTAMP = '.time().';'."\n".
             'const COMPILE_BUILD_ID = \''.$this->getBuildId().'\';'."\n".
-            'const COMPILE_ROOT_PATH = \''.$this->_runPath.'/active\';'."\n".
+            'const COMPILE_ROOT_PATH = __DIR__;'."\n".
             'const COMPILE_ENV_MODE = \''.df\Launchpad::$app->envMode.'\';'
         );
     }
 
-    public function copyCurrentBuild(): void
-    {
-        if (!is_dir($this->_runPath.'/active')) {
-            return;
-        }
-
-        Atlas::deleteDir($this->_runPath.'/previous-prep');
-        Atlas::copyDir($this->_runPath.'/active', $this->_runPath.'/previous-prep');
-        Atlas::deleteDir($this->_runPath.'/previous');
-        Atlas::renameDir($this->_runPath.'/previous-prep', 'previous');
-
-        $this->clearCache();
-    }
-
     public function activateBuild(): void
     {
+        Atlas::deleteDir($this->_runPath.'/previous');
         Atlas::deleteDir($this->_runPath.'/backup');
+        clearstatcache(true);
 
-        if (is_dir($this->_runPath.'/active')) {
-            Atlas::renameDir($this->_runPath.'/active', 'backup');
+        $activeExists = is_file($this->_runPath.'/active/Run.php');
+        $active2Exists = is_file($this->_runPath.'/active2/Run.php');
+
+        if ($activeExists && $active2Exists) {
+            Atlas::renameFile($this->_runPath.'/active2/Run.php', 'Run.php.bak');
+            $active2Exists = false;
+            clearstatcache(true);
         }
 
-        $this->_destination->moveTo($this->_runPath, 'active');
-
-        $this->clearCache();
-        Atlas::deleteDir($this->_runPath.'/backup');
-    }
-
-    public function deactivatePreviousBuild(): void
-    {
-        if (!is_dir($this->_runPath.'/previous')) {
-            return;
+        if ($activeExists) {
+            $current = 'active';
+            $target = 'active2';
+        } elseif ($active2Exists) {
+            $current = 'active2';
+            $target = 'active';
+        } else {
+            $current = null;
+            $target = 'active';
         }
 
-        Atlas::renameFile($this->_runPath.'/previous/Run.php', 'Run.php.bak');
-        $this->clearCache();
-    }
 
-    protected function clearCache()
-    {
+        if (is_dir($this->_runPath.'/'.$target)) {
+            Atlas::renameDir($this->_runPath.'/'.$target, 'backup');
+        }
+
+        $this->_destination->moveTo($this->_runPath, $target);
+        sleep(1);
+
+        Atlas::renameFile($this->_runPath.'/'.$target.'/Run.php.bak', 'Run.php');
+
+        if ($current !== null) {
+            Atlas::renameFile($this->_runPath.'/'.$current.'/Run.php', 'Run.php.bak');
+        }
+
+        Atlas::deleteDir($this->_runPath.'/backup');
+
         clearstatcache(true);
 
         if (function_exists('opcache_reset')) {
