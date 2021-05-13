@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\theme\facet;
 
 use df;
@@ -16,6 +17,7 @@ class GoogleTagManager extends Base
     protected $_id;
     protected $_devAuth = null;
     protected $_devEnv = null;
+    protected $_checkCookies = null;
 
     public function __construct(array $config)
     {
@@ -23,6 +25,7 @@ class GoogleTagManager extends Base
         $this->_id = $config['id'] ?? null;
         $this->_devAuth = $config['devAuth'] ?? null;
         $this->_devEnv = $config['devEnv'] ?? null;
+        $this->_checkCookies = $config['cookies'] ?? null;
     }
 
     public function setId(string $id)
@@ -66,7 +69,10 @@ class GoogleTagManager extends Base
     {
         if (
             !$this->_checkEnvironment() ||
-            !$view->consent->has('statistics', 'marketing')
+            (
+                $this->_checkCookies !== null &&
+                !$view->consent->has('statistics', $this->_checkCookies)
+            )
         ) {
             return;
         }
