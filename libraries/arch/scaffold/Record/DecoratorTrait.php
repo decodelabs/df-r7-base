@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\scaffold\Record;
 
 use df\arch\scaffold\Record\DataProvider;
@@ -599,6 +600,17 @@ trait DecoratorTrait
             }
 
             return $this->html->booleanIcon($item['isLive']);
+        });
+    }
+
+    public function defineLiveField($list, $mode)
+    {
+        $list->addField('live', $this->_('Live'), function ($item, $context) {
+            if (!$item['live']) {
+                $context->getRowTag()->addClass('disabled');
+            }
+
+            return $this->html->booleanIcon($item['live']);
         });
     }
 
