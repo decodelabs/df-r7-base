@@ -14,7 +14,7 @@ use df\user\DiscipleAdapter;
 
 use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
-use Decode\R7\Legacy;
+use DecodeLabs\R7\Legacy;
 use DecodeLabs\Veneer;
 
 abstract class Base implements core\IApp
