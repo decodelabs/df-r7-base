@@ -45,6 +45,11 @@
         "stripe/stripe-php": "^6.38",
         "xenolope/quahog": "^2.1"
     },
+    "autoload": {
+        "psr-4": {
+            "DecodeLabs\\R7\\": "provider/"
+        }
+    },
     "autoload-dev": {
         "psr-4": {
             "DecodeLabs\\PHPStan\\": "phpstan/"

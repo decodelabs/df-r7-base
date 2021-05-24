@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\app;
 
 use df;
@@ -13,14 +14,16 @@ use df\user\DiscipleAdapter;
 
 use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
+use Decode\R7\Legacy;
+use DecodeLabs\Veneer;
 
 abstract class Base implements core\IApp
 {
-    const NAME = 'My application';
-    const UNIQUE_PREFIX = '123';
-    const PASS_KEY = 'temp-pass-key';
+    public const NAME = 'My application';
+    public const UNIQUE_PREFIX = '123';
+    public const PASS_KEY = 'temp-pass-key';
 
-    const PACKAGES = [
+    public const PACKAGES = [
         'webCore' => true
     ];
 
@@ -240,17 +243,23 @@ PHP;
 
         df\Launchpad::$loader->loadPackages($packages);
 
-        $this->setup3rdParty();
-        $this->setupVeneerBindings();
+        $this->setup();
     }
 
-    public static function setup3rdParty(): void
+    public static function setup(): void
+    {
+        static::setup3rdParty();
+        static::setupVeneerBindings();
+    }
+
+    protected static function setup3rdParty(): void
     {
         Disciple::setAdapter(new DiscipleAdapter());
     }
 
-    public static function setupVeneerBindings(): void
+    protected static function setupVeneerBindings(): void
     {
+        Veneer::register(Legacy\Helper::class, Legacy::class);
     }
 
 
