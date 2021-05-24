@@ -252,12 +252,12 @@ PHP;
         static::setupVeneerBindings();
     }
 
-    protected static function setup3rdParty(): void
+    public static function setup3rdParty(): void
     {
         Disciple::setAdapter(new DiscipleAdapter());
     }
 
-    protected static function setupVeneerBindings(): void
+    public static function setupVeneerBindings(): void
     {
         Veneer::register(Legacy\Helper::class, Legacy::class);
     }
