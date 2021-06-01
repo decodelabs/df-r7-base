@@ -479,7 +479,7 @@ class Helper
      *
      * @param mixed $block
      */
-    public function normalizeBlock($block): Block
+    public function normalizeBlock($block): ?Block
     {
         return $this->getContext()->nightfire->normalizeBlock($block);
     }
