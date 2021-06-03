@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\schema\field;
 
 use df;
@@ -13,24 +14,27 @@ use df\opal;
 class Number extends Base implements
     opal\schema\IByteSizeRestrictedField,
     opal\schema\INumericField,
-    opal\schema\IFloatingPointNumericField {
-
+    opal\schema\IFloatingPointNumericField
+{
     use opal\schema\TField_ByteSizeRestricted;
     //use opal\schema\TField_Numeric;
     use opal\schema\TField_FloatingPointNumeric;
 
     protected $_isFixedPoint = false;
 
-    protected function _initAsInteger($size=null) {
+    protected function _initAsInteger($size=null)
+    {
         $this->setByteSize($size);
     }
 
-    protected function _initAsUInteger($size=null) {
+    protected function _initAsUInteger($size=null)
+    {
         $this->setByteSize($size);
         $this->isUnsigned(true);
     }
 
-    protected function _initAsFilled($precision=6) {
+    protected function _initAsFilled($precision=6)
+    {
         $this->setPrecision($precision);
         $this->setScale(0);
         $this->isFixedPoint(true);
@@ -38,56 +42,65 @@ class Number extends Base implements
         $this->shouldZerofill(true);
     }
 
-    protected function _initAsFloat($precision=null, $scale=null) {
+    protected function _initAsFloat($precision=null, $scale=null)
+    {
         $this->setPrecision($precision);
         $this->setScale($scale);
     }
 
-    protected function _initAsUFloat($precision=null, $scale=null) {
+    protected function _initAsUFloat($precision=null, $scale=null)
+    {
         $this->setPrecision($precision);
         $this->setScale($scale);
         $this->isUnsigned(true);
     }
 
-    protected function _initAsDecimal($precision=null, $scale=null) {
+    protected function _initAsDecimal($precision=null, $scale=null)
+    {
         $this->setPrecision($precision);
         $this->setScale($scale);
         $this->isFixedPoint(true);
     }
 
-    protected function _initAsUDecimal($precision=null, $scale=null) {
+    protected function _initAsUDecimal($precision=null, $scale=null)
+    {
         $this->setPrecision($precision);
         $this->setScale($scale);
         $this->isFixedPoint(true);
         $this->isUnsigned(true);
     }
 
-    protected function _initAsCurrency() {
+    protected function _initAsCurrency()
+    {
         $this->setPrecision(24);
         $this->setScale(4);
         $this->isFixedPoint(true);
     }
 
-    protected function _initAsPercentage($scale=4) {
+    protected function _initAsPercentage($scale=4)
+    {
         $this->setScale($scale);
         $this->setPrecision($this->_scale + 3);
         $this->isFixedPoint(true);
         $this->isUnsigned(true);
     }
 
-    protected function _initAsLatLong() {
+    protected function _initAsLatLong()
+    {
         $this->setPrecision(10);
         $this->setScale(6);
     }
 
-    protected function _init($size=null) {
+    protected function _init($size=null)
+    {
         $this->setByteSize($size);
     }
 
 
-    public function isFixedPoint(bool $flag=null) {
-        if($flag !== null) {
-            if($flag != $this->_isFixedPoint) {
+    public function isFixedPoint(bool $flag=null)
+    {
+        if ($flag !== null) {
+            if ($flag != $this->_isFixedPoint) {
                 $this->_hasChanged = true;
             }
 
@@ -99,25 +112,27 @@ class Number extends Base implements
     }
 
 
-// Values
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
-        if($value !== null) {
-            if($this->_isFixedPoint) {
-                $value = number_format($value, $this->_scale, '.', '');
-            } else if($this->_zerofill) {
+    // Values
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    {
+        if ($value !== null) {
+            if ($this->_isFixedPoint) {
+                //$value = number_format($value, $this->_scale, '.', '');
+            } elseif ($this->_zerofill) {
                 $value = (string)$value;
-            } else if($this->_byteSize) {
+            } elseif ($this->_byteSize) {
                 $value = (int)$value;
             } else {
-                $value = (double)$value;
+                $value = (float)$value;
             }
         }
 
         return $value;
     }
 
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
-        if(isset($row[$key])) {
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    {
+        if (isset($row[$key])) {
             $output = $row[$key];
         } else {
             $output = null;//$this->_defaultValue;
@@ -126,21 +141,23 @@ class Number extends Base implements
         return $this->sanitizeValue($output, $forRecord);
     }
 
-    public function getNominalValue() {
+    public function getNominalValue()
+    {
         return 0;
     }
 
-    public function compareValues($value1, $value2) {
+    public function compareValues($value1, $value2)
+    {
         $value1 = $this->sanitizeValue($value1);
         $value2 = $this->sanitizeValue($value2);
 
-        if($value1 === null) {
+        if ($value1 === null) {
             return $value2 === null;
-        } else if($value2 === null) {
+        } elseif ($value2 === null) {
             return false;
         }
 
-        if($this->_byteSize || $this->_isFixedPoint || $this->_zerofill) {
+        if ($this->_byteSize || $this->_isFixedPoint || $this->_zerofill) {
             return $value1 === $value2;
         } else {
             // TODO: Use precision setting to define comparison value
@@ -148,29 +165,31 @@ class Number extends Base implements
         }
     }
 
-    public function getSearchFieldType() {
-        if($this->_byteSize) {
+    public function getSearchFieldType()
+    {
+        if ($this->_byteSize) {
             return 'integer';
         } else {
             return 'float';
         }
     }
 
-// Primitive
-    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        if($this->_byteSize) {
+    // Primitive
+    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
+    {
+        if ($this->_byteSize) {
             $output = new opal\schema\Primitive_Integer($this, $this->_byteSize);
-        } else if($this->_isFixedPoint) {
+        } elseif ($this->_isFixedPoint) {
             $output = new opal\schema\Primitive_Decimal($this, $this->_precision, $this->_scale);
         } else {
             $output = new opal\schema\Primitive_Float($this, $this->_precision, $this->_scale);
         }
 
-        if($this->_isUnsigned) {
+        if ($this->_isUnsigned) {
             $output->isUnsigned(true);
         }
 
-        if($this->_zerofill) {
+        if ($this->_zerofill) {
             $output->shouldZerofill(true);
         }
 
@@ -178,27 +197,29 @@ class Number extends Base implements
     }
 
 
-// Ext. serialize
-    protected function _importStorageArray(array $data) {
+    // Ext. serialize
+    protected function _importStorageArray(array $data)
+    {
         $this->_setBaseStorageArray($data);
         $this->_setByteSizeRestrictedStorageArray($data);
         $this->_setFloatingPointNumericStorageArray($data);
 
-        if(isset($data['fpt'])) {
+        if (isset($data['fpt'])) {
             $this->_isFixedPoint = $data['fpt'];
         } else {
             $this->_isFixedPoint = false;
         }
     }
 
-    public function toStorageArray() {
+    public function toStorageArray()
+    {
         $output = array_merge(
             $this->_getBaseStorageArray(),
             $this->_getByteSizeRestrictedStorageArray(),
             $this->_getFloatingPointNumericStorageArray()
         );
 
-        if($this->_isFixedPoint) {
+        if ($this->_isFixedPoint) {
             $output['fpt'] = true;
         }
 
