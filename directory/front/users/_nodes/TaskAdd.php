@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\users\_nodes;
 
 use df;
@@ -106,6 +107,8 @@ class TaskAdd extends arch\node\Task
                     });
         }, $this->i18n->timezones->suggestForCountry($this->_client['country']));
 
+
+        $this->_client->save();
 
         $selectedGroups = isset($this->request['groups']) ?
             $this->request->query->groups->toArray() : null;
