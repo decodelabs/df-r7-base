@@ -301,6 +301,19 @@ class Helper
     }
 
     /**
+     * Normalize duration
+     *
+     * @param string|Stringable|int|Duration|DateInterval|null $duration
+     */
+    public function normalizeDuration($duration): Duration
+    {
+        /**
+         * @var Duration
+         */
+        return Duration::factory($duration);
+    }
+
+    /**
      * Prepare internal date
      *
      * @param string|Stringable|int|Date|DateTime|null $date
