@@ -470,8 +470,20 @@ class Helper
         );
     }
 
+
     /**
      * Apply query for action
+     *
+     * @param SelectQuery<array<string, mixed>> $query
+     * @return array<string, mixed>
+     */
+    public function queryForAction(SelectQuery $query, ?callable $chain=null): array
+    {
+        return $this->getContext()->data->queryForAction($query, $chain);
+    }
+
+    /**
+     * Apply query for action with primary clause
      *
      * @param SelectQuery<array<string, mixed>> $query
      * @param mixed $primary
