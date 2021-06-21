@@ -51,6 +51,7 @@ use DateInterval;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Systemic\Process;
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
+use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Terminus\Session as TerminusSession;
 
 use Stringable;
@@ -573,5 +574,24 @@ class Helper
     public function getCurrencyNames(): array
     {
         return $this->getContext()->i18n->numbers->getCurrencyList();
+    }
+
+
+
+
+    /**
+     * Render simpleTags
+     */
+    public function simpleTags(?string $text, bool $extended=false): ?Markup
+    {
+        return $this->getContext()->html->simpleTags($text, $extended);
+    }
+
+    /**
+     * Render inline simpleTags
+     */
+    public function inlineSimpleTags(?string $text): ?Markup
+    {
+        return $this->getContext()->html->inlineSimpleTags($text);
     }
 }
