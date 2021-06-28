@@ -43,6 +43,9 @@ use df\opal\query\ISelectQuery as SelectQuery;
 use df\opal\record\IRecord as Record;
 use df\opal\record\IPartial as Partial;
 
+use df\user\Manager as UserManager;
+use df\user\IClientDataObject as ClientObject;
+
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use DateTime;
@@ -389,6 +392,27 @@ class Helper
             $duration, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit
         );
     }
+
+
+
+
+    /**
+     * Get user manager
+     */
+    public function getUserManager(): UserManager
+    {
+        return $this->getContext()->user;
+    }
+
+    /**
+     * Get user client data object
+     */
+    public function getClient(): ClientObject
+    {
+        return $this->getContext()->user->client;
+    }
+
+
 
 
 
