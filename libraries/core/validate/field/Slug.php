@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\validate\field;
 
 use df;
@@ -180,7 +181,7 @@ class Slug extends Base implements core\validate\ISlugField
         }
 
         if ($this->_allowPathFormat) {
-            $value = Dictum::pathSlug($value, $this->_allowAreaMarker ? '~' : null);
+            $value = Dictum::pathSlug($value, $this->_allowAreaMarker ? '~' : '');
         } else {
             $value = Dictum::slug($value);
         }
