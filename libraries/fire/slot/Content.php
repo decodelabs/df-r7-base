@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\fire\slot;
 
 use df;
@@ -188,6 +189,20 @@ class Content implements fire\ISlotContent
         $this->blocks = new core\collection\Queue();
 
         if ($element->getTagName() != 'slot') {
+            if ($element->getTagName() === 'block') {
+                try {
+                    $block = fire\block\Base::fromXml($element);
+                } catch (fire\block\NotFoundException $e) {
+                    $block = new fire\block\Error();
+                    $block->setError($e);
+                    $block->setType($element['type']);
+                    $block->setData($element->getFirstCDataSection());
+                }
+
+                $this->addBlock($block);
+                return;
+            }
+
             throw Exceptional::UnexpectedValue(
                 'Slot content object expected slot xml element - found '.$element->getTagName()
             );
