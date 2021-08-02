@@ -38,6 +38,7 @@ use df\core\time\Date;
 use df\core\time\Duration;
 
 use df\fire\IBlock as Block;
+use df\fire\ISlotContent as Slot;
 
 use df\opal\query\ISelectQuery as SelectQuery;
 use df\opal\record\IRecord as Record;
@@ -534,6 +535,15 @@ class Helper
         return $this->getContext()->nightfire->normalizeBlock($block);
     }
 
+    /**
+     * Normalize slot
+     *
+     * @param mixed $slot
+     */
+    public function normalizeSlot($slot): ?Slot
+    {
+        return $this->getContext()->nightfire->normalizeSlot($slot);
+    }
 
 
 
