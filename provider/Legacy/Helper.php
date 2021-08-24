@@ -429,6 +429,25 @@ class Helper
     }
 
 
+    /**
+     * Shorten Guid
+     *
+     * @param string|Guid $guid
+     */
+    public function shortenGuid($guid): string
+    {
+        return Guid::shorten((string)$guid);
+    }
+
+    /**
+     * Unshorten Guid
+     */
+    public function unshortenGuid(string $id): string
+    {
+        return Guid::unshorten($id);
+    }
+
+
 
     /**
      * Load table unit from ID
