@@ -599,6 +599,17 @@ class Helper
     }
 
 
+    /**
+     * Render prepared email
+     *
+     * @param array<string, mixed>|null $slots
+     */
+    public function renderMail(string $path, ?array $slots=null, bool $forceSend=false): string
+    {
+        return $this->prepareMail($path, $slots, $forceSend)->getBodyHtml();
+    }
+
+
 
     /**
      * Launch a foreground task
