@@ -19,6 +19,7 @@ use df\axis\IUnit as Unit;
 use df\axis\unit\Cache as CacheUnit;
 use df\axis\unit\Table as TableUnit;
 use df\axis\unit\Enum as EnumUnit;
+use df\axis\unit\Config as ConfigUnit;
 
 use df\core\collection\Tree;
 use df\flex\Guid;
@@ -458,6 +459,17 @@ class Helper
     {
         /**
          * @var CacheUnit
+         */
+        return Model::loadUnitFromId($id);
+    }
+
+    /**
+     * Load config unit from ID
+     */
+    public function getConfig(string $id): ConfigUnit
+    {
+        /**
+         * @var ConfigUnit
          */
         return Model::loadUnitFromId($id);
     }
