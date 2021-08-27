@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\http;
 
 use df;
@@ -61,12 +62,11 @@ class Url extends core\uri\Url implements IUrl
             if ($map) {
                 $domain = $map->domain;
 
-                if ($map->area != '*') {
+                if (
+                    $map->isWild &&
+                    $map->area != '*'
+                ) {
                     $wildArea = $map->area;
-
-                    if ($wildArea == '*') {
-                        $wildArea = $area;
-                    }
 
                     $sub = $request->query[$wildArea];
                     unset($request->query->{$wildArea});

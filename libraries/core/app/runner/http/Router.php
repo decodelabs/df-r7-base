@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\app\runner\http;
 
 use df;
@@ -14,7 +15,7 @@ use DecodeLabs\Exceptional;
 
 class Router implements core\IRegistryObject
 {
-    const REGISTRY_KEY = 'httpRouter';
+    public const REGISTRY_KEY = 'httpRouter';
 
     protected $_mapIn = [];
     protected $_mapOut = [];
