@@ -227,6 +227,20 @@ class Helper
         return $http->getCookie($key);
     }
 
+    /**
+     * Remove cookie
+     */
+    public function removeCookie(string $key): void
+    {
+        try {
+            $http = $this->getContext()->http;
+        } catch (Throwable $e) {
+            return;
+        }
+
+        $http->removeCookie($key);
+    }
+
 
 
 
