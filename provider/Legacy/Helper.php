@@ -253,7 +253,7 @@ class Helper
             return [];
         }
 
-        $http->getCookies();
+        return $http->getCookies();
     }
 
 
