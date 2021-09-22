@@ -245,12 +245,12 @@ class Helper
     /**
      * Get cookies
      */
-    public function getCookies(): array
+    public function getCookies(): Tree
     {
         try {
             $http = $this->getContext()->http;
         } catch (Throwable $e) {
-            return [];
+            return new Tree();
         }
 
         return $http->getCookies();
