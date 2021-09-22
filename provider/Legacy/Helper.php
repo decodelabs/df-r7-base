@@ -242,6 +242,21 @@ class Helper
     }
 
 
+    /**
+     * Get cookies
+     */
+    public function getCookies(): array
+    {
+        try {
+            $http = $this->getContext()->http;
+        } catch (Throwable $e) {
+            return [];
+        }
+
+        $http->getCookies();
+    }
+
+
 
 
     /**
