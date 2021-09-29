@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\scaffold;
 
 use df\arch\Scaffold;
@@ -32,22 +33,21 @@ use DecodeLabs\Exceptional;
 
 abstract class Generic implements Scaffold
 {
-
     //use core\TContextProxy;
     use ContextAwareTrait;
     use CascadingHelperProviderTrait;
     use DirectoryAccessLockTrait;
     use OptionalDirectoryAccessLockTrait;
 
-    const TITLE = null;
-    const ICON = null;
+    public const TITLE = null;
+    public const ICON = null;
 
-    const CHECK_ACCESS = true;
-    const DEFAULT_ACCESS = null;
+    public const CHECK_ACCESS = true;
+    public const DEFAULT_ACCESS = null;
 
-    const PROPAGATE_IN_QUERY = [];
-    const ACCESS_SIGNIFIERS = null;
-    const NAME_KEY_FIELD_MAX_LENGTH = 40;
+    public const PROPAGATE_IN_QUERY = [];
+    public const ACCESS_SIGNIFIERS = null;
+    public const NAME_KEY_FIELD_MAX_LENGTH = 40;
 
     private $directoryKeyName;
 
@@ -278,10 +278,6 @@ abstract class Generic implements Scaffold
             }
         }
 
-        if ($query !== null) {
-            $outQuery->import($query);
-        }
-
         foreach ($propagate as $var) {
             if (!in_array($var, $propagationFilter) && isset($this->request->query->{$var})) {
                 $outQuery->{$var} = $this->request->query[$var];
@@ -290,6 +286,10 @@ abstract class Generic implements Scaffold
 
         foreach ($propagationFilter as $var) {
             unset($outQuery->{$var});
+        }
+
+        if ($query !== null) {
+            $outQuery->import($query);
         }
 
         return $this->uri->directoryRequest($output, $redirFrom, $redirTo);
