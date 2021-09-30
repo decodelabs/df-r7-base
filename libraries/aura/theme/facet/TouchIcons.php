@@ -14,17 +14,13 @@ class TouchIcons extends Base
 {
     public function afterHtmlViewRender(aura\view\IHtmlView $view)
     {
-        if ($view->context->location->isArea('front')) {
-            $theme = $view->getTheme();
-        } else {
-            $theme = aura\theme\Base::factory('~front');
-        }
+        $theme = $view->getTheme();
 
         if (!$theme->getApplicationImagePath()) {
             return;
         }
 
-        $current = $view->getTheme()->getId();
+        $current = $theme->getId();
 
         $view
             // Chrome android
