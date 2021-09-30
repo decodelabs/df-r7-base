@@ -24,7 +24,7 @@ class TouchIcons extends Base
             return;
         }
 
-        $current = $view->getTheme();
+        $current = $view->getTheme()->getName();
 
         $view
             // Chrome android
