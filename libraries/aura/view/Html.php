@@ -1004,7 +1004,7 @@ class Html extends Base implements IHtmlView, Dumpable
     {
         if (in_array(strtolower($key), self::META_HTTP)) {
             $nameKey = 'http-equiv';
-        } elseif (strpos($key, ':') === 0) {
+        } elseif (strpos($key, ':') !== false) {
             $nameKey = 'property';
         } else {
             $nameKey = 'name';
