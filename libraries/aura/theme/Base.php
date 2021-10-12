@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\theme;
 
 use df;
@@ -18,15 +19,15 @@ use DecodeLabs\Spectrum\Color;
 
 class Base implements ITheme, Dumpable
 {
-    const APPLICATION_IMAGE = null;//'app.png';
-    const APPLICATION_COLOR = 'white';
+    public const APPLICATION_IMAGE = null;//'app.png';
+    public const APPLICATION_COLOR = 'white';
 
-    const FACETS = [];
-    const DEFAULT_FACETS = ['analytics', 'touchIcons'];
+    public const FACETS = [];
+    public const DEFAULT_FACETS = ['analytics', 'touchIcons'];
 
-    const DEPENDENCIES = [];
+    public const DEPENDENCIES = [];
 
-    const DEFAULT_CONTENT_CONTAINER_NAME = 'main';
+    public const DEFAULT_CONTENT_CONTAINER_NAME = 'main';
 
     protected $_id;
     protected $_iconMap = null;
@@ -253,8 +254,45 @@ class Base implements ITheme, Dumpable
             $view->setMeta('og:title', $view->getFullTitle());
         }
 
-        if (!$view->hasMeta('og:description') && $view->hasMeta('description')) {
+        if (
+            !$view->hasMeta('og:description') &&
+            $view->hasMeta('description')
+        ) {
             $view->setMeta('og:description', $view->getMeta('description'));
+        }
+
+        if (
+            !$view->hasMeta('og:url') &&
+            (null !== ($canonical = $view->getCanonical()))
+        ) {
+            $view->setMeta('og:url', $canonical);
+        }
+
+        if (!$view->hasMeta('og:locale')) {
+            $view->setMeta('og:locale', 'en_US');
+        }
+
+        if (!$view->hasMeta('og:type')) {
+            $view->setMeta('og:type', 'website');
+        }
+
+        if (!$view->hasMeta('og:site_name')) {
+            $view->setMeta('og:site_name', df\Launchpad::$app->getName());
+        }
+
+
+        if (!$view->hasMeta('twitter:card')) {
+            if ($view->hasMeta('og:image')) {
+                $view
+                    ->setMeta('twitter:card', 'summary_large_image')
+                    ->setMeta('twitter:image', $view->getMeta('og:image'));
+            } else {
+                $view->setMeta('twitter:card', 'summary');
+            }
+        }
+
+        if (!$view->hasMeta('twitter:title')) {
+            $view->setMeta('twitter:title', $view->getTitle());
         }
     }
 
