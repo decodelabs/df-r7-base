@@ -294,6 +294,13 @@ class Base implements ITheme, Dumpable
         if (!$view->hasMeta('twitter:title')) {
             $view->setMeta('twitter:title', $view->getTitle());
         }
+
+        if (
+            !$view->hasMeta('twitter:description') &&
+            $view->hasMeta('description')
+        ) {
+            $view->setMeta('twitter:description', $view->getMeta('description'));
+        }
     }
 
 
