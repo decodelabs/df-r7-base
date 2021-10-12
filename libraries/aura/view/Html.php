@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\view;
 
 use df;
@@ -21,11 +22,11 @@ class Html extends Base implements IHtmlView, Dumpable
     use TView_Response;
     use TView_Layout;
 
-    const DEFAULT_TITLE = '*untitled';
-    const DEFAULT_LAYOUT = 'Default';
+    public const DEFAULT_TITLE = '*untitled';
+    public const DEFAULT_LAYOUT = 'Default';
 
-    const META_PRIORITY = ['x-ua-compatible', 'content-type'];
-    const META_HTTP = [
+    public const META_PRIORITY = ['x-ua-compatible', 'content-type'];
+    public const META_HTTP = [
         'allow', 'alternates', 'bulletin-date', 'bulletin-text', 'cache-control', 'content-base',
         'content-disposition', 'content-encoding', 'content-language', 'content-length', 'content-location',
         'content-md5', 'content-range', 'content-script-type', 'content-style-type', 'content-type',
@@ -1001,13 +1002,10 @@ class Html extends Base implements IHtmlView, Dumpable
 
     protected function _metaToString($key, $value)
     {
-        $prefix = null;
-
         if (in_array(strtolower($key), self::META_HTTP)) {
             $nameKey = 'http-equiv';
-        } elseif (strpos($key, 'og:') === 0) {
+        } elseif (strpos($key, ':') === 0) {
             $nameKey = 'property';
-            $prefix = 'og: http://ogp.me/ns#';
         } else {
             $nameKey = 'name';
         }
@@ -1018,10 +1016,6 @@ class Html extends Base implements IHtmlView, Dumpable
             $output->setAttributes($value);
         } else {
             $output->setAttribute('content', $value);
-        }
-
-        if ($prefix) {
-            $output->setAttribute('prefix', $prefix);
         }
 
         return (string)$output;
