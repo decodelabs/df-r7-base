@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\plug;
 
 use df;
@@ -127,7 +128,7 @@ class Media implements arch\IDirectoryHelper
 
     public function serveDownload($fileId, $versionId, $isActive, $contentType, $fileName, $embed=false)
     {
-        $filePath = $this->_getDownloadFileLocation($fileId, $versionId, $isActive);
+        $filePath = $this->getDownloadFileLocation($fileId, $versionId, $isActive);
         $isUrl = $filePath instanceof link\http\IUrl;
 
         if ($isUrl) {
@@ -191,7 +192,7 @@ class Media implements arch\IDirectoryHelper
     public function serveImage($fileId, $versionId, $isActive, $contentType, $fileName=null, $transformation=null, $modificationDate=null)
     {
         try {
-            $filePath = $this->_getDownloadFileLocation($fileId, $versionId, $isActive);
+            $filePath = $this->getDownloadFileLocation($fileId, $versionId, $isActive);
         } catch (core\fs\NotFoundException $e) {
             if (!df\Launchpad::$app->isProduction()) {
                 return $this->serveFallbackImage($contentType, $fileName, $transformation);
@@ -278,7 +279,7 @@ class Media implements arch\IDirectoryHelper
 
     public function getImageFilePath($fileId, $versionId, $isActive, $contentType, $transformation=null, $modificationDate=null)
     {
-        $filePath = $this->_getDownloadFileLocation($fileId, $versionId, $isActive);
+        $filePath = $this->getDownloadFileLocation($fileId, $versionId, $isActive);
 
         $descriptor = new neon\raster\Descriptor($filePath, $contentType);
         $descriptor->applyTransformation($transformation, core\time\Date::normalize($modificationDate));
@@ -291,7 +292,7 @@ class Media implements arch\IDirectoryHelper
         return $this->context->html->image($this->getImageUrl($fileId, $transformation), $alt, $width, $height);
     }
 
-    protected function _getDownloadFileLocation($fileId, $versionId, $isActive)
+    public function getDownloadFileLocation($fileId, $versionId, $isActive)
     {
         $handler = $this->_model->getMediaHandler();
 
