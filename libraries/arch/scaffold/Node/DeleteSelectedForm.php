@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\scaffold\Node;
 
 use df\arch\Scaffold;
@@ -11,7 +12,7 @@ use DecodeLabs\Tagged as Html;
 
 class DeleteSelectedForm extends AffectSelectedForm
 {
-    const DEFAULT_EVENT = 'delete';
+    public const DEFAULT_EVENT = 'delete';
 
     public function __construct(Scaffold $scaffold)
     {
@@ -185,9 +186,22 @@ class DeleteSelectedForm extends AffectSelectedForm
 
     protected function apply()
     {
+        $flags = $this->scaffold->getRecordDeleteFlags();
+        $validator = $this->data->newValidator();
+
+        foreach ($flags as $key => $label) {
+            $validator->addField($key, 'boolean');
+        }
+
+        $validator->validate($this->values);
+
+        foreach ($flags as $key => $label) {
+            $flags[$key] = $validator[$key];
+        }
+
         foreach ($this->fetchSelectedRecords() as $item) {
             if ($this->scaffold->canDeleteRecord($item)) {
-                $item->delete();
+                $this->scaffold->deleteRecord($item, $flags);
             }
         }
     }
