@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\css;
 
 use df;
@@ -21,12 +22,8 @@ use DecodeLabs\Glitch;
 
 class SassBridge implements ISassBridge
 {
-    const DEFAULT_PROCESSOR_OPTIONS = [
-        'autoprefixer' => [
-            'browsers' => [
-                'defaults'
-            ]
-        ]
+    public const DEFAULT_PROCESSOR_OPTIONS = [
+        'autoprefixer' => []
     ];
 
     public $context;

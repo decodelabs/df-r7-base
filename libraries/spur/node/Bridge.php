@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\node;
 
 use df;
@@ -66,10 +67,12 @@ class Bridge implements IBridge
     public function evaluate($js, $data=null)
     {
         Atlas::createDir($this->_nodePath);
+        $delineator = '---'.flex\Guid::comb().'---';
 
         $payload = flex\Json::toString([
             'js' => $js,
-            'data' => $data
+            'data' => $data,
+            'delineator' => $delineator
         ]);
 
         if (!is_file($this->_nodePath.'/evaluate.js')) {
@@ -101,6 +104,8 @@ class Bridge implements IBridge
             }
         }
 
+        $parts = explode($delineator, $output);
+        $output = array_pop($parts);
         $output = flex\Json::fromString($output);
         return $output['result'];
     }
