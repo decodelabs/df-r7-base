@@ -16,7 +16,6 @@ use DecodeLabs\Veneer\Stub\Generator;
 
 class TaskVeneerStub extends arch\node\Task
 {
-
     public function execute()
     {
         // Get bindings
@@ -30,9 +29,15 @@ class TaskVeneerStub extends arch\node\Task
         Cli::prepareArguments();
 
         // Ask for binding name
+        Cli::newLine();
+        foreach ($bindings as $proxyClass => $binding) {
+            Cli::{'>.yellow'}($proxyClass);
+        }
+        Cli::newLine();
+
         if (null === ($bindingName = Cli::getArgument('binding'))) {
             $bindingName = Cli::newQuestion('Which binding do you want to stub?')
-                ->setOptions(...array_keys($bindings))
+                //->setOptions(...array_keys($bindings))
                 ->prompt();
         }
 
