@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\query;
 
 use df;
@@ -1644,6 +1645,8 @@ trait TQuery_WhereClauseFactory
                 true
             )
         );
+
+        return $this;
     }
 
     public function whereCorrelation($field, $operator, $keyField)
