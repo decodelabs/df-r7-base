@@ -36,17 +36,18 @@ class Cookie implements user\session\IPerpetuator
         if ($cookies->has(self::JOIN_NAME)) {
             try {
                 $key = hex2bin($cookies->get(self::JOIN_NAME));
-            } catch (\ErrorException $e) {
-                $cookie = $cookies->get(self::JOIN_NAME);
+                $this->_inputId = $this->_consumeJoinKey($key);
+            } catch (\Throwable $e) {
+                //$cookie = $cookies->get(self::JOIN_NAME);
                 $cookies->remove(self::JOIN_NAME);
 
+                /*
                 throw Exceptional::UnexpectedValue([
                     'message' => 'Invalid join cookie: "'.$cookie.'"',
                     'previous' => $e
                 ]);
+                */
             }
-
-            $this->_inputId = $this->_consumeJoinKey($key);
         }
 
         if ($this->_inputId === null && $cookies->has(self::SESSION_NAME)) {
