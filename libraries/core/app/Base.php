@@ -10,7 +10,7 @@ use df;
 use df\core;
 use df\flex;
 
-use df\user\DiscipleAdapter;
+use df\user\Disciple\Adapter as DiscipleAdapter;
 
 use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
