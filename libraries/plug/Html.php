@@ -131,7 +131,7 @@ class Html implements arch\IDirectoryHelper
                 return Metamorph::tweet($body);
 
             case 'plaintext':
-                return Metamorph::{'plainText.html'}($body);
+                return Metamorph::text($body);
 
             case 'rawhtml':
             case 'html':
