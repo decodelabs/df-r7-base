@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\plug;
 
 use df;
@@ -18,6 +19,7 @@ use DecodeLabs\Tagged\Buffer;
 use DecodeLabs\Chirp\Parser as Chirp;
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Metamorph;
 
 class Html implements arch\IDirectoryHelper
 {
@@ -64,18 +66,6 @@ class Html implements arch\IDirectoryHelper
         $output = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5);
         $output = str_replace("\r\n", "\n", $output);
         return $output;
-    }
-
-    public function plainText($text)
-    {
-        if (empty($text) && $text !== '0') {
-            return null;
-        }
-
-        $text = Tagged::esc($text);
-        $text = str_replace("\n", "\n".'<br />', $text);
-
-        return Tagged::raw($text);
     }
 
     public function markdown($text)
@@ -128,23 +118,6 @@ class Html implements arch\IDirectoryHelper
         return $output;
     }
 
-    public function tweet($text)
-    {
-        if (!class_exists(Chirp::class)) {
-            throw Exceptional::Implementation(
-                'Chirp library is not available'
-            );
-        }
-
-        $output = (new Chirp())->parse($text);
-
-        if ($output !== null) {
-            $output = Tagged::raw($output);
-        }
-
-        return $output;
-    }
-
     public function convert($body, $format='SimpleTags')
     {
         switch (strtolower($format)) {
@@ -155,10 +128,10 @@ class Html implements arch\IDirectoryHelper
                 return $this->inlineSimpleTags($body);
 
             case 'tweet':
-                return $this->tweet($body);
+                return Metamorph::tweet($body);
 
             case 'plaintext':
-                return $this->plainText($body);
+                return Metamorph::{'plainText.html'}($body);
 
             case 'rawhtml':
             case 'html':
