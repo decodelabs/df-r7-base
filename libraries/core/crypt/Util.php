@@ -3,17 +3,21 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\crypt;
 
 use df\core;
 
-abstract class Util implements IUtil
+abstract class Util
 {
-    const PBKDF2_ALGORITHM = 'sha256';
-    const PBKDF2_KEY_LENGTH = 32;
+    public const PBKDF2_ALGORITHM = 'sha256';
+    public const PBKDF2_KEY_LENGTH = 32;
 
-    public static function passwordHash($password, $salt, $iterations=1000)
-    {
+    public static function passwordHash(
+        $password,
+        $salt,
+        $iterations=1000
+    ) {
         $hashLength = strlen(hash(self::PBKDF2_ALGORITHM, '', true));
         $keyBlocks = ceil(self::PBKDF2_KEY_LENGTH / $hashLength);
         $derivedKey = '';

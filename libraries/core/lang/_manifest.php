@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\lang;
 
 use df;
@@ -12,8 +13,8 @@ use DecodeLabs\Typify;
 
 interface ICallback
 {
-    const DIRECT = 1;
-    const REFLECTION = 2;
+    public const DIRECT = 1;
+    public const REFLECTION = 2;
 
     public static function getCallableId(callable $callable);
 
@@ -141,96 +142,6 @@ interface IFuture extends core\IValueContainer
 {
     public function __invoke();
 }
-
-
-// Promise
-interface IPromise
-{
-
-// Factories
-    public static function call($action, $canceller=null);
-    public static function defer($action, $canceller=null);
-    public static function fulfilled($value);
-    public static function rejected($value);
-
-    // Aggregate factories
-    public static function all($promises);
-    public static function deferAll($promises);
-    public static function some($count, $promises);
-    public static function deferSome($count, $promises);
-    public static function any($promises);
-    public static function deferAny($promises);
-    public static function each($promises, $onFulfill=null, $onReject=null);
-    public static function deferEach($promises, $onFulfill=null, $onReject=null);
-
-    // Action
-    public function setAction($action);
-    public function getAction();
-    public function hasAction();
-    public function begin($value=null);
-    public function beginThis($value=null);
-    public function beginThisError(\Throwable $e);
-    public function hasBegun();
-    public function hasBegunThis();
-    public function isPending();
-
-    // Canceller
-    public function setCanceller($canceller);
-    public function getCanceller();
-    public function hasCanceller();
-    public function cancel();
-    public function cancelThis();
-    public function forceCancel();
-    public function forceCancelThis();
-    public function isCancelled();
-
-    // Error handlers
-    public function onError(...$callbacks);
-    public function addErrorHandlers(array $handlers);
-    public function addErrorHandler($callback);
-    public function getErrorHandlers();
-    public function clearErrorHandlers();
-
-    // Parent
-    public function setParent(IPromise $promise=null);
-    public function getParent();
-    public function hasParent();
-    public function getDependants();
-    public function getRoot();
-
-    // Events
-    public function on($event, $callback);
-    public function hasEventHandler($name);
-    public function getEventHandler($name);
-    public function removeEventHandler($name);
-    public function emit($event, array $values=null);
-    public function emitThis($event, array $values=null);
-
-    // Progress
-    public function setProgress($progress, $total=null);
-    public function setProgressThis($progress, $total=null);
-    public function onProgress($progress);
-    public function getProgressCallback();
-
-    // Chaining
-    public function then($action, ...$errorHandlers);
-    public function also($action, ...$errorHandlers);
-    public function otherwise(...$errorHandlers);
-    public function always($action);
-
-    // Completion
-    public function deliver($value);
-    public function deliverError(\Throwable $error);
-    public function hasDelivered();
-    public function hasError();
-    public function isFulfilled();
-    public function isRejected();
-
-    // Sync
-    public function sync();
-}
-
-
 
 
 

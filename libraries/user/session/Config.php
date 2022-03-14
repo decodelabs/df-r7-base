@@ -3,15 +3,18 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\user\session;
 
 use df;
 use df\core;
 use df\user;
 
+use DecodeLabs\Coercion;
+
 class Config extends core\Config
 {
-    const ID = 'Session';
+    public const ID = 'Session';
 
     public function getDefaultValues(): array
     {
@@ -33,7 +36,7 @@ class Config extends core\Config
     // GC
     public function getGcProbability(): int
     {
-        return (int)core\math\Util::clampInt(
+        return (int)Coercion::clampInt(
             $this->values->gc->get('probability', 3),
             1, 10
         );
@@ -47,7 +50,7 @@ class Config extends core\Config
 
     public function getTransitionProbability(): int
     {
-        return (int)core\math\Util::clampInt(
+        return (int)Coercion::clampInt(
             $this->values->transitions->get('probability', 10),
             2, 15
         );
@@ -55,7 +58,7 @@ class Config extends core\Config
 
     public function getTransitionLifeTime(): int
     {
-        return (int)core\math\Util::clampInt(
+        return (int)Coercion::clampInt(
             $this->values->transitions->get('lifeTime', 30),
             10, 60
         );
@@ -63,7 +66,7 @@ class Config extends core\Config
 
     public function getTransitionCooloff(): int
     {
-        return (int)core\math\Util::clampInt(
+        return (int)Coercion::clampInt(
             $this->values->transitions->get('cooloff', 20),
             10, 60
         );

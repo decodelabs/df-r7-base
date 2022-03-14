@@ -12,6 +12,7 @@
         "symfony/polyfill-mbstring": "~1.7",
 
         "decodelabs/atlas": "^0.9",
+        "decodelabs/coercion": "^0.1.3",
         "decodelabs/collections": "^0.6.1",
         "decodelabs/deliverance": "^0.1",
         "decodelabs/dictum": "^0.3",

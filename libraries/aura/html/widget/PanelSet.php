@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget;
 
 use df;
@@ -10,25 +11,28 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class PanelSet extends Base {
+use DecodeLabs\Coercion;
 
-    const PRIMARY_TAG = 'div.list.panels';
+class PanelSet extends Base
+{
+    public const PRIMARY_TAG = 'div.list.panels';
 
     protected $_panels = [];
 
-    protected function _render() {
-        if(empty($this->_panels)) {
+    protected function _render()
+    {
+        if (empty($this->_panels)) {
             return '';
         }
 
         $cells = [];
 
-        foreach($this->_panels as $id => $panel) {
+        foreach ($this->_panels as $id => $panel) {
             $cellTag = new aura\html\Tag('article', [
                 'class' => 'w panel field-'.$id,
             ]);
 
-            if($width = $panel->getWidth()) {
+            if ($width = $panel->getWidth()) {
                 $cellTag->setStyle('flex-basis', $width.'%');
             }
 
@@ -41,13 +45,14 @@ class PanelSet extends Base {
 
 
 
-    public function addPanel($a, $b=null, $c=null) {
-        if($c !== null) {
+    public function addPanel($a, $b=null, $c=null)
+    {
+        if ($c !== null) {
             $id = $a;
             $width = $b;
             $content = $c;
-        } else if($b !== null) {
-            if(is_numeric($a)) {
+        } elseif ($b !== null) {
+            if (is_numeric($a)) {
                 $id = null;
                 $width = $a;
             } else {
@@ -71,7 +76,8 @@ class PanelSet extends Base {
         return $this;
     }
 
-    public function removePanel(string $id) {
+    public function removePanel(string $id)
+    {
         unset($this->_panels[$id]);
         return $this;
     }
@@ -80,48 +86,55 @@ class PanelSet extends Base {
 
 
 // Panel
-class PanelSet_Panel {
-
+class PanelSet_Panel
+{
     protected $_id;
     protected $_width;
     protected $_body;
 
-    public function __construct(?string $id) {
-        if($id === null) {
+    public function __construct(?string $id)
+    {
+        if ($id === null) {
             $id = 'panel'.uniqid();
         }
 
         $this->setId($id);
     }
 
-    public function setId(string $id) {
+    public function setId(string $id)
+    {
         $this->_id = $id;
         return $this;
     }
 
-    public function getId(): string {
+    public function getId(): string
+    {
         return $this->_id;
     }
 
-    public function setWidth($width) {
-        if(substr($width, -1) == '%') {
+    public function setWidth($width)
+    {
+        if (substr($width, -1) == '%') {
             $width = substr($width, 0, -1);
         }
 
-        $this->_width = core\math\Util::clampFloat($width, 0.1, 100);
+        $this->_width = Coercion::clampFloat($width, 0.1, 100);
         return $this;
     }
 
-    public function getWidth(): ?float {
+    public function getWidth(): ?float
+    {
         return $this->_width;
     }
 
-    public function setBody($body) {
+    public function setBody($body)
+    {
         $this->_body = $body;
         return $this;
     }
 
-    public function getBody() {
+    public function getBody()
+    {
         return $this->_body;
     }
 }
