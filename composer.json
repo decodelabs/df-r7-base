@@ -65,6 +65,6 @@
     "prefer-stable": true,
     "scripts": {
         "analyze": "phpstan analyze",
-        "clear-cache": "phpstan clear-result-cache"
+        "clear-phpstan": "phpstan clear-result-cache"
     }
 }
