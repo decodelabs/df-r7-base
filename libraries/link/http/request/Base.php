@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\http\request;
 
 use df;
@@ -24,16 +25,16 @@ class Base implements link\http\IRequest, Dumpable
     use core\TStringProvider;
     use core\lang\TChainable;
 
-    const GET     = 'get';
-    const POST    = 'post';
-    const PUT     = 'put';
-    const PATCH   = 'patch';
-    const HEAD    = 'head';
-    const DELETE  = 'delete';
-    const TRACE   = 'trace';
-    const OPTIONS = 'options';
-    const CONNECT = 'connect';
-    const MERGE   = 'merge';
+    public const GET     = 'get';
+    public const POST    = 'post';
+    public const PUT     = 'put';
+    public const PATCH   = 'patch';
+    public const HEAD    = 'head';
+    public const DELETE  = 'delete';
+    public const TRACE   = 'trace';
+    public const OPTIONS = 'options';
+    public const CONNECT = 'connect';
+    public const MERGE   = 'merge';
 
     public $url;
     public $method = self::GET;
@@ -164,6 +165,7 @@ class Base implements link\http\IRequest, Dumpable
 
             $parts = explode(',', rtrim($ips, ','));
 
+            /** @var array $parts */
             while (!empty($parts)) {
                 $ip = trim(array_shift($parts));
 

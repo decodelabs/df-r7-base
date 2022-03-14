@@ -9,7 +9,7 @@ parameters:
         - libraries
         - models
 
-    excludes_analyse:
+    excludePaths:
         - libraries/core/archive/Rar.php
         - libraries/core/archive/Snappy.php
 

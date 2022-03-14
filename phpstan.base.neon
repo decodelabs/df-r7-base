@@ -2,7 +2,7 @@ parameters:
     level: 1
     inferPrivatePropertyTypeFromConstructor: true
 
-    excludes_analyse:
+    excludePaths:
         - */_templates/*.html.php
         - */_templates/*.xml.php
         - */_templates/*.mail.php

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\node;
 
 use df;
@@ -150,14 +151,15 @@ trait TForm
 
     public function getDelegate(string $id): IDelegate
     {
-        $id = explode('.', trim($id, ' .'));
+        $id = trim($id, ' .');
 
-        if (empty($id)) {
+        if (!strlen($id)) {
             throw Exceptional::{'df/arch/node/Delegate,InvalidArgument'}(
                 'Empty delegate id detected'
             );
         }
 
+        $id = explode('.', $id);
         $top = array_shift($id);
 
         if (!isset($this->_delegates[$top])) {
@@ -177,12 +179,13 @@ trait TForm
 
     public function hasDelegate(string $id): bool
     {
-        $id = explode('.', trim($id, ' .'));
+        $id = trim($id, ' .');
 
-        if (empty($id)) {
+        if (!strlen($id)) {
             return false;
         }
 
+        $id = explode('.', $id);
         $top = array_shift($id);
 
         if (!isset($this->_delegates[$top])) {
@@ -200,14 +203,15 @@ trait TForm
 
     public function unloadDelegate(string $id)
     {
-        $id = explode('.', trim($id, ' .'));
+        $id = trim($id, ' .');
 
-        if (empty($id)) {
+        if (!strlen($id)) {
             throw Exceptional::{'df/arch/node/Delegate,InvalidArgument'}(
                 'Empty delegate id detected'
             );
         }
 
+        $id = explode('.', $id);
         $top = array_shift($id);
 
         if (!isset($this->_delegates[$top])) {
@@ -683,8 +687,7 @@ trait TForm_SelectorDelegate
 
 trait TForm_ValueListSelectorDelegate
 {
-
-// Selected
+    // Selected
     public function isSelected(?string $id): bool
     {
         if ($id === null) {

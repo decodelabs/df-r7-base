@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\native;
 
 use df;
@@ -630,7 +631,7 @@ class ArrayManipulator implements IArrayManipulator
     // Distinct
     public function applyDistinct()
     {
-        if (empty($this->_rows) || empty($orderDirectives)) {
+        if (empty($this->_rows)) {
             return $this;
         }
 

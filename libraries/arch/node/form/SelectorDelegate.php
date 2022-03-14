@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\node\form;
 
 use df;
@@ -28,14 +29,14 @@ abstract class SelectorDelegate extends Delegate implements
     use arch\node\TForm_ValueListSelectorDelegate;
     use arch\node\TForm_DependentDelegate;
 
-    const DEFAULT_MODES = [
+    public const DEFAULT_MODES = [
         'select' => 'createOverlaySelectorUi',
         'create' => 'createOverlayCreateUi',
         'details' => 'createInlineDetailsUi'
     ];
 
-    const ONE_LIST_THRESHOLD = 70;
-    const MANY_LIST_THRESHOLD = 20;
+    public const ONE_LIST_THRESHOLD = 70;
+    public const MANY_LIST_THRESHOLD = 20;
 
     protected $_searchMessage = null;
     protected $_searchPlaceholder = null;
@@ -337,6 +338,7 @@ abstract class SelectorDelegate extends Delegate implements
                     Html::raw('</div>')
                 );
             } else {
+                /** @var array $tempList */
                 $tempList = $selected;
                 $count = count($selected);
                 $displayList = [];
