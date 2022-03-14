@@ -40,7 +40,7 @@
         "phpstan/extension-installer": "^1.0",
 
         "decodelabs/phpstan-decodelabs": "^0.5",
-        "decodelabs/chirp": "^0.6",
+        "decodelabs/chirp": "^0.7",
 
         "auth0/auth0-php": "^7.6",
         "stripe/stripe-php": "^6.38",
