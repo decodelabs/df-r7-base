@@ -36,38 +36,6 @@ class Html implements arch\IDirectoryHelper
         return Tagged::el((string)$name, $content, $attributes);
     }
 
-    public function previewText($html, $length=null)
-    {
-        $output = $this->toText($html);
-
-        if ($output === null) {
-            return null;
-        }
-
-        if ($length !== null) {
-            $output = Dictum::shorten($output, $length);
-        }
-
-        return Tagged::raw($output);
-    }
-
-    public function toText($html)
-    {
-        if (is_string($html)) {
-            $html = new aura\html\ElementString($html);
-        }
-
-        $html = aura\html\ElementContent::normalize($html);
-
-        if (!strlen($html)) {
-            return null;
-        }
-
-        $output = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5);
-        $output = str_replace("\r\n", "\n", $output);
-        return $output;
-    }
-
     public function markdown($text)
     {
         if (!strlen($text)) {
