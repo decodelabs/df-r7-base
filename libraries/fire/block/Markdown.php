@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\fire\block;
 
 use df;
@@ -12,13 +13,14 @@ use df\arch;
 use df\flex;
 use df\aura;
 
+use DecodeLabs\Metamorph;
 use DecodeLabs\Tagged as Html;
 use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
 
 class Markdown extends Base
 {
-    const DEFAULT_CATEGORIES = ['Description'];
+    public const DEFAULT_CATEGORIES = ['Description'];
 
     protected $_body;
 
@@ -74,7 +76,7 @@ class Markdown extends Base
     {
         $view = $this->getView();
 
-        return Html::{'div.block'}($view->html->markdown($this->_body))
+        return Html::{'div.block'}(Metamorph::{'markdown.safe'}($this->_body))
             ->setDataAttribute('type', $this->getName());
     }
 
@@ -82,7 +84,7 @@ class Markdown extends Base
     // Form
     public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate
     {
-        return new class($this, ...func_get_args()) extends Base_Delegate {
+        return new class ($this, ...func_get_args()) extends Base_Delegate {
             protected function setDefaultValues()
             {
                 $this->values->body = $this->_block->getBody();

@@ -36,34 +36,6 @@ class Html implements arch\IDirectoryHelper
         return Tagged::el((string)$name, $content, $attributes);
     }
 
-    public function markdown($text)
-    {
-        if (!strlen($text)) {
-            return null;
-        }
-
-        if (!class_exists(\Parsedown::class)) {
-            throw Exceptional::Implementation(
-                'Parsedown library is not available'
-            );
-        }
-
-        $parser = new \Parsedown();
-        //$parser->setSafeMode(true);
-        $output = $parser->text($text);
-
-        if ($output === null) {
-            return null;
-        }
-
-        $output = preg_replace_callback('/ (href|src)\=\"([^\"]+)\"/', function ($matches) {
-            return ' '.$matches[1].'="'.$this->context->uri->__invoke(html_entity_decode($matches[2])).'"';
-        }, $output);
-
-        $output = Tagged::raw($output);
-        return $output;
-    }
-
     public function simpleTags(?string $text, bool $extended=false)
     {
         $output = (new flex\simpleTags\Parser($text, $extended))->toHtml();
