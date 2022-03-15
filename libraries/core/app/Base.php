@@ -14,6 +14,7 @@ use df\user\Disciple\Adapter as DiscipleAdapter;
 
 use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Metamorph;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Veneer;
 
@@ -255,6 +256,14 @@ PHP;
     public static function setup3rdParty(): void
     {
         Disciple::setAdapter(new DiscipleAdapter());
+
+        Metamorph::setUrlResolver(function (string $url): string {
+            try {
+                return (string)Legacy::uri($url);
+            } catch (\Throwable $e) {
+                return $url;
+            }
+        });
     }
 
     public static function setupVeneerBindings(): void
