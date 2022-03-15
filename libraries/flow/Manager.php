@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flow;
 
 use df;
@@ -12,15 +13,16 @@ use df\user;
 use df\flex;
 use df\axis;
 
+use DecodeLabs\Metamorph;
 use DecodeLabs\Exceptional;
 
 class Manager implements IManager, core\IShutdownAware
 {
     use core\TManager;
 
-    const REGISTRY_PREFIX = 'manager://flow';
-    const SESSION_NAMESPACE = 'flow';
-    const FLASH_SESSION_KEY = 'flashQueue';
+    public const REGISTRY_PREFIX = 'manager://flow';
+    public const SESSION_NAMESPACE = 'flow';
+    public const FLASH_SESSION_KEY = 'flashQueue';
 
     protected $_flashQueue;
     protected $_isFlashQueueProcessed = false;
@@ -188,7 +190,7 @@ class Manager implements IManager, core\IShutdownAware
 
                 /*
                 // Turn this on when it works properly :)
-                $bodyText = $context->html->toText($bodyHtml);
+                $bodyText = Metamorph::htmlToText($bodyHtml);
                 $message->setBodyText($bodyText);
                 */
             }

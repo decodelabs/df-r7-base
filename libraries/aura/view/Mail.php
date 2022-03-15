@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\view;
 
 use df;
@@ -11,6 +12,7 @@ use df\aura;
 use df\flow;
 use df\arch;
 
+use DecodeLabs\Metamorph;
 use DecodeLabs\Tagged\Mail\Generator;
 use DecodeLabs\Exceptional;
 
@@ -19,7 +21,7 @@ class Mail extends flow\mail\Message implements ILayoutView
     use TView;
     use TView_Layout;
 
-    const DEFAULT_LAYOUT = 'Default';
+    public const DEFAULT_LAYOUT = 'Default';
 
     public $generator;
 
@@ -97,7 +99,7 @@ class Mail extends flow\mail\Message implements ILayoutView
         /*
         if(!$this->_textMode && $this->_bodyText === null) {
             // Turn this on when it works properly :)
-            $this->setBodyText($this->context->html->toText($content));
+            $this->setBodyText(Metamorph::htmlToText($content));
         }
         */
 

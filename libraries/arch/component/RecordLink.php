@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\component;
 
 use df;
@@ -13,6 +14,7 @@ use df\user;
 use df\opal;
 
 use DecodeLabs\Dictum;
+use DecodeLabs\Metamorph;
 use DecodeLabs\Glitch\Dumpable;
 
 abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy, Dumpable
@@ -21,7 +23,7 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
     use core\constraint\TDisableable;
     use core\constraint\TNullable;
 
-    const DEFAULT_MISSING_MESSAGE = 'not found';
+    public const DEFAULT_MISSING_MESSAGE = 'not found';
 
     protected $icon = 'item';
     protected $disposition = 'transitive';
@@ -307,7 +309,7 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
         }
 
         if ($title !== null) {
-            $title = $this->html->toText($title);
+            $title = Metamorph::htmlToText($title);
         }
 
         $name = $this->_decorateBody($name);
