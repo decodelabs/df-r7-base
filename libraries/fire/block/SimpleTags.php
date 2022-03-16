@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\fire\block;
 
 use df;
@@ -12,13 +13,14 @@ use df\arch;
 use df\flex;
 use df\aura;
 
+use DecodeLabs\Metamorph;
 use DecodeLabs\Tagged as Html;
 use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
 
 class SimpleTags extends Base
 {
-    const DEFAULT_CATEGORIES = ['Description'];
+    public const DEFAULT_CATEGORIES = ['Description'];
 
     protected $_body;
 
@@ -74,17 +76,19 @@ class SimpleTags extends Base
     // Render
     public function render()
     {
-        $view = $this->getView();
-
-        return Html::{'div.block'}($view->html->simpleTags($this->_body, true))
-            ->setDataAttribute('type', $this->getName());
+        return Html::{'div.block'}(
+            Metamorph::{'idiom.extended'}($this->_body),
+            [
+                'data-type' => $this->getName()
+            ]
+        );
     }
 
 
     // Form
     public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate
     {
-        return new class($this, ...func_get_args()) extends Base_Delegate {
+        return new class ($this, ...func_get_args()) extends Base_Delegate {
             protected function setDefaultValues()
             {
                 $this->values->body = $this->_block->getBody();

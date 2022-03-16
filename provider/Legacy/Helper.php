@@ -680,23 +680,4 @@ class Helper
     {
         return $this->getContext()->i18n->numbers->getCurrencyList();
     }
-
-
-
-
-    /**
-     * Render simpleTags
-     */
-    public function simpleTags(?string $text, bool $extended=false): ?Markup
-    {
-        return $this->getContext()->html->simpleTags($text, $extended);
-    }
-
-    /**
-     * Render inline simpleTags
-     */
-    public function inlineSimpleTags(?string $text): ?Markup
-    {
-        return $this->getContext()->html->inlineSimpleTags($text);
-    }
 }

@@ -36,36 +36,16 @@ class Html implements arch\IDirectoryHelper
         return Tagged::el((string)$name, $content, $attributes);
     }
 
-    public function simpleTags(?string $text, bool $extended=false)
-    {
-        $output = (new flex\simpleTags\Parser($text, $extended))->toHtml();
-
-        if ($output !== null) {
-            $output = Tagged::raw($output);
-        }
-
-        return $output;
-    }
-
-    public function inlineSimpleTags(?string $text)
-    {
-        $output = (new flex\simpleTags\Parser($text))->toInlineHtml();
-
-        if ($output !== null) {
-            $output = Tagged::raw($output);
-        }
-
-        return $output;
-    }
-
     public function convert($body, $format='SimpleTags')
     {
         switch (strtolower($format)) {
             case 'simpletags':
-                return $this->simpleTags($body);
+                return Metamorph::idiom($body);
 
             case 'inlinesimpletags':
-                return $this->inlineSimpleTags($body);
+                return Metamorph::idiom($body, [
+                    'inline' => true
+                ]);
 
             case 'tweet':
                 return Metamorph::tweet($body);
