@@ -56,8 +56,7 @@ class Nightfire implements arch\IDirectoryHelper
         $output = $this->renderBlock($block);
 
         return Metamorph::htmlToText($output, [
-            'maxLength' => $length,
-            'wrap' => true
+            'maxLength' => $length
         ]);
     }
 
@@ -98,8 +97,7 @@ class Nightfire implements arch\IDirectoryHelper
         $output = $this->renderSlot($slot);
 
         return Metamorph::htmlToText($output, [
-            'maxLength' => $length,
-            'wrap' => true
+            'maxLength' => $length
         ]);
     }
 
