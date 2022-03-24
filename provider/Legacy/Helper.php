@@ -48,6 +48,8 @@ use df\opal\record\IPartial as Partial;
 use df\user\Manager as UserManager;
 use df\user\IClientDataObject as ClientObject;
 
+use df\Launchpad;
+
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use DateTime;
@@ -65,9 +67,18 @@ use Throwable;
 class Helper
 {
     /**
+     * Get compile timestamp
+     */
+    public function getCompileTimestamp(): ?int
+    {
+        return df\Launchpad::$compileTimestamp;
+    }
+
+
+    /**
      * Get current arch context
      */
-    protected function getContext(): Context
+    public function getContext(): Context
     {
         /**
          * @var Context
