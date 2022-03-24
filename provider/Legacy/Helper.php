@@ -459,6 +459,15 @@ class Helper
 
 
     /**
+     * New GUID
+     */
+    public function newGuid(): Guid
+    {
+        return Guid::comb();
+    }
+
+
+    /**
      * Shorten Guid
      *
      * @param string|Guid $guid
