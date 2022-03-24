@@ -71,7 +71,7 @@ class Helper
      */
     public function getCompileTimestamp(): ?int
     {
-        return df\Launchpad::$compileTimestamp;
+        return Launchpad::$compileTimestamp;
     }
 
 
