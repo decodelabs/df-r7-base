@@ -81,7 +81,13 @@ class Helper
      */
     public function getQueryVar(string $key): ?string
     {
-        return $this->getContext()->request[$key];
+        $output = $this->getContext()->request[$key];
+
+        if ($output === '') {
+            $output = null;
+        }
+
+        return $output;
     }
 
     /**
