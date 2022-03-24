@@ -76,6 +76,39 @@ class Helper
 
 
     /**
+     * Is app in development mode?
+     */
+    public function isDevelopment(): bool
+    {
+        return Launchpad::$app->isDevelopment();
+    }
+
+    /**
+     * Is app in testing mode?
+     */
+    public function isTesting(): bool
+    {
+        return Launchpad::$app->isTesting();
+    }
+
+    /**
+     * Is app in production mode?
+     */
+    public function isProduction(): bool
+    {
+        return Launchpad::$app->isProduction();
+    }
+
+    /**
+     * Get run mode
+     */
+    public function getRunMode(): string
+    {
+        return Launchpad::$app->getRunMode();
+    }
+
+
+    /**
      * Get current arch context
      */
     public function getContext(): Context
