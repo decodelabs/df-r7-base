@@ -30,7 +30,7 @@
         "decodelabs/tagged": "^0.13",
         "decodelabs/terminus": "^0.7",
         "decodelabs/typify": "^0.1",
-        "decodelabs/veneer": "^0.8",
+        "decodelabs/veneer": "^0.8.5",
 
         "guzzlehttp/guzzle": "^7.2",
         "erusev/parsedown": "^1.7",

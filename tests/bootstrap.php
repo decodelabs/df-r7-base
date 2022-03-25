@@ -5,8 +5,10 @@ require_once dirname(__DIR__).'/Df.php';
 use df\core;
 use df\apex;
 use DecodeLabs\Glitch;
+use DecodeLabs\Veneer;
 
 $startTime = df\Launchpad::initEnvironment();
+Veneer::getDefaultManager()->setDeferrals(false);
 $appDir = getcwd();
 $hasAppFile = file_exists($appDir.'/App.php');
 
