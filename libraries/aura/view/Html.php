@@ -942,11 +942,11 @@ class Html extends Base implements IHtmlView, Dumpable
             }
 
             $attributes = array_merge(
-                $entry['attributes'] ?? [],
                 [
                     'src' => $entry['url'],
                     'type' => 'text/javascript'
-                ]
+                ],
+                $entry['attributes'] ?? []
             );
 
             $tag = new aura\html\Tag('script', $attributes);
