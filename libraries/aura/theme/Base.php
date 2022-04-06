@@ -26,6 +26,7 @@ class Base implements ITheme, Dumpable
     public const DEFAULT_FACETS = ['analytics', 'touchIcons'];
 
     public const DEPENDENCIES = [];
+    public const IMPORT_MAP = [];
 
     public const DEFAULT_CONTENT_CONTAINER_NAME = 'main';
 
@@ -363,6 +364,11 @@ class Base implements ITheme, Dumpable
     public function getDependencies()
     {
         return static::DEPENDENCIES;
+    }
+
+    public function getImportMap(): array
+    {
+        return static::IMPORT_MAP;
     }
 
 

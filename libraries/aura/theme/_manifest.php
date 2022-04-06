@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\theme;
 
 use df;
@@ -28,6 +29,7 @@ interface ITheme extends IFacetProvider, aura\view\IViewRenderEventReceiver, aur
     public function mapIcon($name);
 
     public function getDependencies();
+    public function getImportMap(): array;
     public function getDefaultContentContainerName(): string;
 }
 
