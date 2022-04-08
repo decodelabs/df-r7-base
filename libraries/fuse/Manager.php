@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\fuse;
 
 use df;
@@ -19,7 +20,7 @@ class Manager implements IManager
 {
     use core\TManager;
 
-    const REGISTRY_PREFIX = 'manager://fuse';
+    public const REGISTRY_PREFIX = 'manager://fuse';
 
     protected static $_depCache = [];
 
@@ -268,10 +269,6 @@ class Manager implements IManager
 
 
         // Default defs - need a better way to handle this!
-        if (!isset($output['requirejs'])) {
-            $output['requirejs'] = new Dependency('requirejs#~2.3');
-        }
-
         if (!isset($output['jquery'])) {
             $output['jquery'] = new Dependency('jquery#~3.1');
         }
