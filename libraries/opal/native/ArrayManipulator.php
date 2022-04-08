@@ -590,7 +590,7 @@ class ArrayManipulator implements IArrayManipulator
                             break;
 
                         case opal\query\field\Aggregate::TYPE_HAS:
-                            $row[$qName] = !empty($rowAggregateData);
+                            $row[$qName] = !empty((array)$rowAggregateData);
                             break;
                     }
                 }
