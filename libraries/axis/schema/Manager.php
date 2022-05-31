@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\schema;
 
 use df;
@@ -13,7 +14,7 @@ class Manager implements IManager
 {
     use core\TManager;
 
-    const REGISTRY_PREFIX = 'manager://axis/schema';
+    public const REGISTRY_PREFIX = 'manager://axis/schema';
 
     protected $_transient = [];
     protected $_storeSchema;
@@ -68,12 +69,17 @@ class Manager implements IManager
 
                 $schema->acceptChanges();
 
+                // Local cache store schema
                 if ($isStoreUnit) {
                     $this->_storeSchema = $schema;
                 }
 
-                $this->store($unit, $schema);
+                // Store schema in DB
+                if (!$isStoreUnit) {
+                    $this->store($unit, $schema);
+                }
 
+                // Clear local store schema
                 if ($isStoreUnit) {
                     $this->_storeSchema = null;
                 }
@@ -95,9 +101,12 @@ class Manager implements IManager
         $schema->acceptChanges();
         $jsonData = $schema->toJson();
 
+        $globalUnitId = $unit->getUnitId();
+        $isStoreUnit = $globalUnitId == 'axis/schema';
+
         if ($currentTimestamp === null) {
             $this->insert($unit, $jsonData, $schema->getVersion());
-        } else {
+        } elseif (!$isStoreUnit) {
             $this->update($unit, $jsonData, $schema->getVersion());
         }
 
