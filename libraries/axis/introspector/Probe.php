@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\introspector;
 
 use df;
@@ -62,6 +63,10 @@ class Probe implements IProbe
         $adapters = [];
 
         foreach ($unitList as $unitId) {
+            if (false === strpos($unitId, '/')) {
+                continue;
+            }
+
             $unit = axis\Model::loadUnitFromId($unitId);
             $inspector = new UnitInspector($unit);
 
