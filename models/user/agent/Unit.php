@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\models\user\agent;
 
 use df;
@@ -12,7 +13,7 @@ use df\axis;
 
 class Unit extends axis\unit\Table
 {
-    const BROADCAST_HOOK_EVENTS = false;
+    public const BROADCAST_HOOK_EVENTS = false;
 
     protected function createSchema($schema)
     {
@@ -123,6 +124,7 @@ class Unit extends axis\unit\Table
         'Mediatoolkitbot',
         'MJ12bot',
         'msnbot',
+        'Neevabot',
         'NerdyBot',
         'nutch',
         'Protocol Discovery',
