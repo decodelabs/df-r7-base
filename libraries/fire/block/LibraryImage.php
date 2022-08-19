@@ -3,8 +3,10 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\fire\block;
 
+use DecodeLabs\Dictum;
 use df;
 use df\core;
 use df\fire;
@@ -18,7 +20,7 @@ use DecodeLabs\Exemplar\Writer as XmlWriter;
 
 class LibraryImage extends Base
 {
-    const DEFAULT_CATEGORIES = ['Description'];
+    public const DEFAULT_CATEGORIES = ['Description'];
 
     protected $_imageId;
     protected $_alt;
@@ -113,13 +115,26 @@ class LibraryImage extends Base
 
 
     // Form
-    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate
-    {
-        return new class($this, ...func_get_args()) extends Base_Delegate {
+    public function loadFormDelegate(
+        arch\IContext $context,
+        arch\node\IFormState $state,
+        arch\node\IFormEventDescriptor $event,
+        string $id
+    ): arch\node\IDelegate {
+        return new class ($this, ...func_get_args()) extends Base_Delegate {
+            /**
+             * @var LibraryImage
+             */
+            protected $_block;
+
             protected function loadDelegates()
             {
-                $this->loadDelegate('image', '~/media/FileSelector')
-                    ->setAcceptTypes('image/*')
+                /**
+                 * Image
+                 * @var apex\directory\shared\media\_formDelegates\ImageSelector $image
+                 */
+                $image = $this->loadDelegate('image', '~admin/media/ImageSelector');
+                $image
                     ->isForOne(true)
                     ->isRequired(true);
             }
@@ -152,6 +167,13 @@ class LibraryImage extends Base
                 // Alt text
                 $field->addField($this->_('Alt text'))->push(
                     $this->html->textbox($this->fieldName('alt'), $this->values->alt)
+                        ->isRequired(true)
+                        ->setId($this->elementId('alt')),
+
+                    $this->html->eventButton($this->eventName('useFileName'), 'Import file name')
+                        ->setIcon('edit')
+                        ->setDisposition('operative')
+                        ->shouldValidate(false)
                 );
 
                 // Link URL
@@ -162,6 +184,31 @@ class LibraryImage extends Base
                 return $this;
             }
 
+            protected function onUseFileNameEvent()
+            {
+                $val = $this->data->newValidator()
+                    // Image
+                    ->addField('image', 'delegate')
+                        ->fromForm($this)
+                    ->validate($this->values);
+
+                if ($val['image']) {
+                    $fileName = $this->data->media->file->select('fileName')
+                        ->where('id', '=', $val['image'])
+                        ->toValue();
+
+                    $fileName = trim((string)$fileName);
+                    $parts = explode('.', $fileName);
+                    array_pop($parts);
+                    $fileName = implode(' ', $parts);
+                    $alt = Dictum::name($fileName);
+
+                    $this->values->alt = $alt;
+                }
+
+                return $this->http->redirect('#'.$this->elementId('alt'));
+            }
+
             public function apply()
             {
                 $validator = $this->data->newValidator()
@@ -170,7 +217,7 @@ class LibraryImage extends Base
                         ->fromForm($this)
 
                     // Alt
-                    ->addField('alt', 'text')
+                    ->addRequiredField('alt', 'text')
 
                     // Link
                     ->addField('link', 'text')
