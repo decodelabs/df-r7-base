@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\fire\block;
 
 use df;
@@ -19,7 +20,7 @@ use DecodeLabs\Exceptional;
 
 class Error extends Base
 {
-    const DEFAULT_CATEGORIES = [];
+    public const DEFAULT_CATEGORIES = [];
 
     protected $_error;
     protected $_type;
@@ -116,9 +117,18 @@ class Error extends Base
 
 
     // Form
-    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate
-    {
-        return new class($this, ...func_get_args()) extends Base_Delegate {
+    public function loadFormDelegate(
+        arch\IContext $context,
+        arch\node\IFormState $state,
+        arch\node\IFormEventDescriptor $event,
+        string $id
+    ): arch\node\IDelegate {
+        return new class ($this, ...func_get_args()) extends Base_Delegate {
+            /**
+             * @var Error
+             */
+            protected $_block;
+
             protected function setDefaultValues()
             {
                 $this->setStore('type', $this->_block->getType());

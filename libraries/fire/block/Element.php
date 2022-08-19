@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\fire\block;
 
 use df;
@@ -17,7 +18,7 @@ use DecodeLabs\Exemplar\Writer as XmlWriter;
 
 class Element extends Base
 {
-    const DEFAULT_CATEGORIES = [];
+    public const DEFAULT_CATEGORIES = [];
 
     protected $_slug;
 
@@ -66,12 +67,26 @@ class Element extends Base
 
 
     // Form
-    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate
-    {
-        return new class($this, ...func_get_args()) extends Base_Delegate {
+    public function loadFormDelegate(
+        arch\IContext $context,
+        arch\node\IFormState $state,
+        arch\node\IFormEventDescriptor $event,
+        string $id
+    ): arch\node\IDelegate {
+        return new class ($this, ...func_get_args()) extends Base_Delegate {
+            /**
+             * @var Element
+             */
+            protected $_block;
+
             protected function loadDelegates()
             {
-                $this->loadDelegate('element', '~/content/elements/ElementSelector')
+                /**
+                 * Element
+                 * @var arch\scaffold\Node\Form\SelectorDelegate $element
+                 */
+                $element = $this->loadDelegate('element', '~/content/elements/ElementSelector');
+                $element
                     ->isForOne(true)
                     ->isRequired($this->_isRequired);
             }

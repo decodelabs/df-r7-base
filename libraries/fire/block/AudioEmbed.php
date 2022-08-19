@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\fire\block;
 
 use df;
@@ -18,7 +19,7 @@ use DecodeLabs\Exemplar\Writer as XmlWriter;
 
 class AudioEmbed extends Base
 {
-    const DEFAULT_CATEGORIES = ['Article', 'Description'];
+    public const DEFAULT_CATEGORIES = ['Article', 'Description'];
 
     protected $_embedCode;
 
@@ -85,9 +86,18 @@ class AudioEmbed extends Base
 
 
     // Form
-    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate
-    {
-        return new class($this, ...func_get_args()) extends Base_Delegate {
+    public function loadFormDelegate(
+        arch\IContext $context,
+        arch\node\IFormState $state,
+        arch\node\IFormEventDescriptor $event,
+        string $id
+    ): arch\node\IDelegate {
+        return new class ($this, ...func_get_args()) extends Base_Delegate {
+            /**
+             * @var AudioEmbed
+             */
+            protected $_block;
+
             protected function setDefaultValues()
             {
                 $this->values->embed = $this->_block->getEmbedCode();

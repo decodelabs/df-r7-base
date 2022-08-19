@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\fire\block;
 
 use df;
@@ -18,9 +19,9 @@ use DecodeLabs\Exemplar\Writer as XmlWriter;
 
 class Heading extends Base
 {
-    const DEFAULT_CATEGORIES = ['Description'];
+    public const DEFAULT_CATEGORIES = ['Description'];
 
-    const OPTIONS = [
+    public const OPTIONS = [
         1 => 'h1',
         2 => 'h2',
         3 => 'h3',
@@ -145,9 +146,18 @@ class Heading extends Base
 
 
     // Form
-    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate
-    {
-        return new class($this, ...func_get_args()) extends Base_Delegate {
+    public function loadFormDelegate(
+        arch\IContext $context,
+        arch\node\IFormState $state,
+        arch\node\IFormEventDescriptor $event,
+        string $id
+    ): arch\node\IDelegate {
+        return new class ($this, ...func_get_args()) extends Base_Delegate {
+            /**
+             * @var Heading
+             */
+            protected $_block;
+
             protected function setDefaultValues()
             {
                 $this->values->heading = $this->_block->getHeading();
