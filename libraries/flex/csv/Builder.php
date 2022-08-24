@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flex\csv;
 
 use df;
@@ -46,7 +47,7 @@ class Builder implements IBuilder
         $this->setGenerator($generator);
     }
 
-    public function setDataReceiver(DataReceiver $receiver): DataSender
+    public function setDataReceiver(DataReceiver $receiver): static
     {
         $this->_receiver = $receiver;
         return $this;

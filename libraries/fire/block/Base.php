@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\fire\block;
 
 use df;
@@ -27,12 +28,12 @@ abstract class Base implements fire\IBlock
     use aura\view\TView_DeferredRenderable;
     use core\TStringProvider;
 
-    const VERSION = 1;
-    const DEFAULT_CATEGORIES = [];
+    public const VERSION = 1;
+    public const DEFAULT_CATEGORIES = [];
 
     protected $_isNested = false;
 
-    public static function fromXmlElement(XmlElement $element): XmlConsumer
+    public static function fromXmlElement(XmlElement $element): static
     {
         if (null === ($type = $element->getAttribute('type'))) {
             throw Exceptional::UnexpectedValue(

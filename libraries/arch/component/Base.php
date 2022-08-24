@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\component;
 
 use df;
@@ -15,7 +16,7 @@ use df\link;
 use df\arch\scaffold\Loader as ScaffoldLoader;
 
 use DecodeLabs\Tagged as Html;
-use DecodeLabs\Elementary\Markup;
+use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Exceptional;
 
 abstract class Base implements arch\IComponent
@@ -28,7 +29,7 @@ abstract class Base implements arch\IComponent
     use aura\view\TView_CascadingHelperProvider;
     use aura\view\TView_SlotContainer;
 
-    const DEFAULT_ACCESS = arch\IAccess::ALL;
+    public const DEFAULT_ACCESS = arch\IAccess::ALL;
 
     public $slots = [];
     protected $_componentArgs = [];
