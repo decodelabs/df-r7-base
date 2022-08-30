@@ -991,9 +991,20 @@ class Html extends Base implements IHtmlView, Dumpable
         }
 
         $output = '';
+        $nonce = null;
+
+        if ($csp = $this->context->app->getCsp('text/html')) {
+            $nonce = $csp->getNonce();
+        }
 
         foreach ($scripts as $entry) {
-            $line = '    <script type="text/javascript">'.
+            $line = '    <script type="text/javascript"';
+
+            if ($nonce !== null) {
+                $line .= ' nonce="'.$nonce.'"';
+            }
+
+            $line .= '>'.
                     "\n        ".str_replace("\n", "\n        ", $entry['script'])."\n".
                     '    </script>'."\n";
 
