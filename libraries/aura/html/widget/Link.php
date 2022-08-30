@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget;
 
 use df;
@@ -27,8 +28,8 @@ class Link extends Base implements
     use TWidget_IconProvider;
     use arch\navigation\TSharedLinkComponents;
 
-    const PRIMARY_TAG = 'a';
-    const DEFAULT_ACTIVE_CLASS = 'active';
+    public const PRIMARY_TAG = 'a';
+    public const DEFAULT_ACTIVE_CLASS = 'active';
 
     protected $_rel = [];
     protected $_isActive = false;
@@ -469,6 +470,7 @@ class Link extends Base implements
             '%tag' => $this->getTag()
         ];
 
-        yield 'values' => $this->_body->toArray();
+        yield 'values' => is_array($this->_body) ?
+            $this->_body : $this->_body->toArray();
     }
 }
