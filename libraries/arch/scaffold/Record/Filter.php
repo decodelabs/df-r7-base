@@ -3,13 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\scaffold\Record;
 
 use df\opal\query\ISelectQuery as SelectQuery;
 
 use DecodeLabs\Exceptional;
-use DecodeLabs\Gadgets\Constraint\Requirable;
-use DecodeLabs\Gadgets\Constraint\RequirableTrait;
+use DecodeLabs\Tightrope\Manifest\Requirable;
+use DecodeLabs\Tightrope\Manifest\RequirableTrait;
 
 class Filter implements Requirable
 {

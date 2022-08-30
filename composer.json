@@ -21,7 +21,6 @@
         "decodelabs/eventful": "^0.3",
         "decodelabs/exceptional": "^0.4",
         "decodelabs/exemplar": "^0.3",
-        "decodelabs/gadgets": "^0.9",
         "decodelabs/glitch": "^0.18",
         "decodelabs/idiom": "^0.2",
         "decodelabs/metamorph": "^0.5",
@@ -30,6 +29,7 @@
         "decodelabs/systemic": "^0.9",
         "decodelabs/tagged": "^0.14",
         "decodelabs/terminus": "^0.8",
+        "decodelabs/tightrope": "^0.1",
         "decodelabs/typify": "^0.2",
         "decodelabs/veneer": "^0.9",
 
