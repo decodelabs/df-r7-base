@@ -935,6 +935,11 @@ class Html extends Base implements IHtmlView, Dumpable
         }
 
         $output = '';
+        $nonce = null;
+
+        if ($csp = $this->context->app->getCsp('text/html')) {
+            $nonce = $csp->getNonce();
+        }
 
         foreach ($this->_js as $url => $entry) {
             if ($entry['location'] != $location) {
@@ -949,6 +954,10 @@ class Html extends Base implements IHtmlView, Dumpable
                 $entry['attributes'] ?? []
             );
 
+            if ($nonce !== null) {
+                $attributes['nonce'] = $nonce;
+            }
+
             $tag = new aura\html\Tag('script', $attributes);
             $line = '    '.$tag->open().$tag->close()."\n";
 
@@ -959,7 +968,16 @@ class Html extends Base implements IHtmlView, Dumpable
             $output .= $line;
 
             if (isset($entry['invoke'])) {
-                $output .= '    <script>'.$entry['invoke'].'</script>'."\n";
+                $attributes = [
+                    'type' => 'text/javascript'
+                ];
+
+                if ($nonce !== null) {
+                    $attributes['nonce'] = $nonce;
+                }
+
+                $tag = new aura\html\Tag('script', $attributes);
+                $output .= '    '.$tag->open().$tag->close()."\n";
             }
         }
 

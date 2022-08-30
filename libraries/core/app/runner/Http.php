@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\app\runner;
 
 use df;
@@ -619,6 +620,16 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
                 $headers->set('access-control-allow-headers', 'x-ajax-request-source, x-ajax-request-type');
             }
         }
+
+
+        // Csp
+        $contentType = explode(';', $response->getContentType());
+        $contentType = trim(array_shift($contentType));
+
+        if ($csp = df\Launchpad::$app->getCsp($contentType)) {
+            $response->getHeaders()->import($csp->exportHeaders());
+        }
+
 
         return $response;
     }

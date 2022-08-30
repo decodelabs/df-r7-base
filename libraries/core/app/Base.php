@@ -9,6 +9,7 @@ namespace df\core\app;
 use df;
 use df\core;
 use df\flex;
+use df\link;
 
 use df\user\Disciple\Adapter as DiscipleAdapter;
 
@@ -16,6 +17,7 @@ use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Metamorph;
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\Sanctum\Definition as Csp;
 use DecodeLabs\Veneer;
 
 abstract class Base implements core\IApp
@@ -41,6 +43,8 @@ abstract class Base implements core\IApp
 
     protected $_runMode;
     protected $_registry = [];
+
+    protected $_csps = [];
 
     public static function factory(string $envId, string $path): core\IApp
     {
@@ -269,6 +273,24 @@ PHP;
     public static function setupVeneerBindings(): void
     {
         Veneer::register(Legacy\Helper::class, Legacy::class);
+    }
+
+
+    final public function getCsp(string $contentType): ?Csp
+    {
+        $contentType = trim(strtolower($contentType));
+
+        if (!isset($this->_csps[$contentType])) {
+            $this->_csps[$contentType] = static::loadCsp($contentType) ?? false;
+        }
+
+        return $this->_csps[$contentType] ?
+            $this->_csps[$contentType] : null;
+    }
+
+    protected static function loadCsp(string $contentType): ?Csp
+    {
+        return null;
     }
 
 
