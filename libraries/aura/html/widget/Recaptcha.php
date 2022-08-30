@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget;
 
 use df;
@@ -13,7 +14,7 @@ use df\spur;
 
 class Recaptcha extends Base
 {
-    const PRIMARY_TAG = 'div.recaptcha';
+    public const PRIMARY_TAG = 'div.recaptcha';
 
     protected $_siteKey = null;
 
@@ -52,9 +53,19 @@ class Recaptcha extends Base
             ->setDataAttribute('sitekey', $key)
             ->setClass('g-recaptcha');
 
+        $nonce = null;
+
+        if ($csp = $this->getContext()->app->getCsp('text/html')) {
+            $nonce = $csp->getNonce();
+        }
+
         $script = new aura\html\Tag('script', [
             'src' => 'https://www.google.com/recaptcha/api.js'
         ]);
+
+        if ($nonce !== null) {
+            $script->setAttribute('nonce', $nonce);
+        }
 
         return $script->render().$tag->render();
     }
