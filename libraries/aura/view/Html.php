@@ -977,7 +977,7 @@ class Html extends Base implements IHtmlView, Dumpable
                 }
 
                 $tag = new aura\html\Tag('script', $attributes);
-                $output .= '    '.$tag->open().$tag->close()."\n";
+                $output .= '    '.$tag->open().$entry['invoke'].$tag->close()."\n";
             }
         }
 
