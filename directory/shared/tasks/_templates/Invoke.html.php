@@ -1,5 +1,18 @@
 <?php
+
 use DecodeLabs\Tagged as Html;
+
+$nonce = null;
+
+if ($csp = $this->context->app->getCsp('text/html')) {
+    $nonce = $csp->getNonce();
+}
+
+$attr = [];
+
+if ($nonce !== null) {
+    $attr['nonce'] = $nonce;
+}
 
 echo Html::script(Html::raw('
 if(window.XMLHttpRequest) {
@@ -20,7 +33,7 @@ if(window.XMLHttpRequest) {
     xhr.open("GET", "'.$this->uri('~/tasks/invoke.stream?token='.$token).'", true);
     xhr.send("Making request...");
 }
-'));
+'), $attr);
 
 echo $this->html->flashMessage($this->_(
     'Do not browse away from this page while the task is processing otherwise you will not be able to track progress'
