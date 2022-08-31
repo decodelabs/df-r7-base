@@ -997,8 +997,8 @@ class Html extends Base implements IHtmlView, Dumpable
             $nonce = $csp->getNonce();
         }
 
-        foreach ($scripts as $entry) {
-            $line = '    <script type="text/javascript"';
+        foreach ($scripts as $id => $entry) {
+            $line = '    <script type="text/javascript" id="script-'.$id.'"';
 
             if ($nonce !== null) {
                 $line .= ' nonce="'.$nonce.'"';
