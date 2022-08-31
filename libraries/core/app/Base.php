@@ -281,7 +281,14 @@ PHP;
         $contentType = trim(strtolower($contentType));
 
         if (!isset($this->_csps[$contentType])) {
-            $this->_csps[$contentType] = static::loadCsp($contentType) ?? false;
+            $this->_csps[$contentType] = $csp = static::loadCsp($contentType) ?? false;
+
+            if (
+                $csp &&
+                $csp->getReportUri() === null
+            ) {
+                $csp->setReportUri(Legacy::uri('pest-control/csp-report'));
+            }
         }
 
         return $this->_csps[$contentType] ?
