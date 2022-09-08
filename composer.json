@@ -13,7 +13,7 @@
 
         "decodelabs/atlas": "^0.10",
         "decodelabs/coercion": "^0.2",
-        "decodelabs/collections": "^0.7",
+        "decodelabs/collections": "^0.8",
         "decodelabs/deliverance": "^0.2",
         "decodelabs/dictum": "^0.4",
         "decodelabs/disciple": "^0.3",
@@ -23,6 +23,7 @@
         "decodelabs/exemplar": "^0.3",
         "decodelabs/glitch": "^0.18",
         "decodelabs/idiom": "^0.2",
+        "decodelabs/lucid": "^0.3",
         "decodelabs/metamorph": "^0.5",
         "decodelabs/sanctum": "^0.1",
         "decodelabs/spectrum": "^0.2",
