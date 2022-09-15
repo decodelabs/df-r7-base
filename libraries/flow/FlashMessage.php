@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flow;
 
 use df;
@@ -81,7 +82,7 @@ class FlashMessage implements IFlashMessage, \Serializable
         return json_encode($data);
     }
 
-    public function unserialize($data)
+    public function unserialize(string $data): void
     {
         $data = json_decode($data, true);
 

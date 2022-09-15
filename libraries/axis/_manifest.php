@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis;
 
 use df;
@@ -32,14 +33,14 @@ interface IModel extends mesh\entity\IParentEntity, core\IRegistryObject
 
 interface IUnitOptions
 {
-    const BACKUP_SUFFIX = '__bak_';
+    public const BACKUP_SUFFIX = '__bak_';
 }
 
 
 
 interface IUnit extends mesh\entity\IEntity, user\IAccessLock, \Serializable
 {
-    const DEFAULT_ACCESS = axis\IAccess::GUEST;
+    public const DEFAULT_ACCESS = axis\IAccess::GUEST;
 
     public function _setUnitName($name);
     public function getUnitName();
@@ -75,9 +76,9 @@ trait TUnit
         return $this->getUnitId();
     }
 
-    public function unserialize($data)
+    public function unserialize(string $data): void
     {
-        return axis\Model::loadUnitFromId($data);
+        axis\Model::loadUnitFromId($data);
     }
 
     public function _setUnitName($name)
@@ -339,7 +340,6 @@ interface ISchemaBasedStorageUnit extends IAdapterBasedStorageUnit, opal\schema\
 
 trait TSchemaBasedStorageUnit
 {
-
     //const NAME_FIELD = null;
     //const KEY_NAME = null;
     //const PRIORITY_FIELDS = [];

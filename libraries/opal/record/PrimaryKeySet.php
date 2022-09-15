@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\record;
 
 use df;
@@ -14,7 +15,7 @@ use DecodeLabs\Exceptional;
 
 class PrimaryKeySet implements IPrimaryKeySet, Dumpable
 {
-    const COMBINE_SEPARATOR = '+';
+    public const COMBINE_SEPARATOR = '+';
 
     protected $_keys = [];
 
@@ -339,10 +340,9 @@ class PrimaryKeySet implements IPrimaryKeySet, Dumpable
 
 
     // Array access
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
         $this->_keys[$key] = $value;
-        return $this;
     }
 
     public function offsetGet($key)
@@ -352,15 +352,14 @@ class PrimaryKeySet implements IPrimaryKeySet, Dumpable
         }
     }
 
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         return isset($this->_keys[$key]);
     }
 
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
         unset($this->_keys[$key]);
-        return $this;
     }
 
     /**

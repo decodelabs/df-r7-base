@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\i18n;
 
 use df\core;
@@ -68,7 +69,7 @@ class Locale implements ILocale, \Serializable, Dumpable
         return $this->toString();
     }
 
-    public function unserialize($data)
+    public function unserialize(string $data): void
     {
         $this->__construct($data);
     }

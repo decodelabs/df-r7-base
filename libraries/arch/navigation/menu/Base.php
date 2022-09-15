@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\navigation\menu;
 
 use df;
@@ -17,7 +18,7 @@ class Base implements IMenu, \Serializable
 {
     use core\TContextAware;
 
-    const DEFAULT_SOURCE = 'Directory';
+    public const DEFAULT_SOURCE = 'Directory';
 
     protected $_id;
     protected $_subId;
@@ -151,13 +152,11 @@ class Base implements IMenu, \Serializable
         return serialize($this->_getStorageArray());
     }
 
-    public function unserialize($data)
+    public function unserialize(string $data): void
     {
         if (is_array($data = unserialize($data))) {
             $this->_setStorageArray($data);
         }
-
-        return $this;
     }
 
     protected function _getStorageArray()

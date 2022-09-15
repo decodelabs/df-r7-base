@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\cache\backend;
 
 use df;
@@ -190,14 +191,14 @@ class Memcached implements core\cache\IBackend
         return $this;
     }
 
-    public function count()
+    public function count(): int
     {
         $output = 0;
         $length = strlen($this->_prefix);
         $keys = $this->_connection->getAllKeys();
 
         if (!is_iterable($keys)) {
-            return [];
+            return 0;
         }
 
         foreach ($keys as $key) {

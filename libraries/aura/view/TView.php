@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\view;
 
 use df;
@@ -243,10 +244,9 @@ trait TView
     }
 
 
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
         $this->setSlot($key, $value);
-        return $this;
     }
 
     public function offsetGet($key)
@@ -254,15 +254,14 @@ trait TView
         return $this->getSlot($key);
     }
 
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         return $this->hasSlot($key);
     }
 
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
         $this->removeSlot($key);
-        return $this;
     }
 
 

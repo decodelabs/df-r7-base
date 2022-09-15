@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\lang;
 
 use df;
@@ -46,7 +47,7 @@ class TypeRef implements ITypeRef, \Serializable, Dumpable
         return $this->_class;
     }
 
-    public function unserialize($data)
+    public function unserialize(string $data): void
     {
         $this->_class = $data;
         $this->_reflection = new \ReflectionClass($this->_class);

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\time;
 
 use df;
@@ -16,7 +17,7 @@ use DateTime;
 
 class Date implements IDate, Dumpable
 {
-    const MONTHS = [
+    public const MONTHS = [
         'jan' => 1, 'january' => 1,
         'feb' => 2, 'february' => 2,
         'mar' => 3, 'march' => 3,
@@ -31,7 +32,7 @@ class Date implements IDate, Dumpable
         'dec' => 12, 'december' => 12
     ];
 
-    const DAYS = [
+    public const DAYS = [
         'mon' => 1, 'monday' => 1,
         'tue' => 2, 'tuesday' => 2,
         'wed' => 3, 'wednesday' => 3,
@@ -214,10 +215,9 @@ class Date implements IDate, Dumpable
         return $this->__toString();
     }
 
-    public function unserialize($string)
+    public function unserialize(string $string): void
     {
         $this->_date = new \DateTime($string);
-        return $this;
     }
 
 

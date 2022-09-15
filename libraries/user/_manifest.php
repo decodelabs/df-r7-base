@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\user;
 
 use df;
@@ -17,16 +18,16 @@ use DecodeLabs\Exceptional;
 // Constants
 interface IState
 {
-    const SPAM = -2;
-    const DEACTIVATED = -1;
-    const GUEST = 0;
-    const PENDING = 1;
-    const BOUND = 2;
-    const CONFIRMED = 3;
+    public const SPAM = -2;
+    public const DEACTIVATED = -1;
+    public const GUEST = 0;
+    public const PENDING = 1;
+    public const BOUND = 2;
+    public const CONFIRMED = 3;
 
-    const ALL = true;
-    const NONE = false;
-    const DEV = 666;
+    public const ALL = true;
+    public const NONE = false;
+    public const DEV = 666;
 }
 
 
@@ -143,12 +144,11 @@ trait TSessionBackedHelper
     protected $_sessionDataNew = false;
     protected $_sessionDataChanged = false;
 
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
         $this->_ensureSessionData();
         $this->_sessionData[$key] = $value;
         $this->_sessionDataChanged = true;
-        return $this;
     }
 
     public function offsetGet($key)
@@ -160,18 +160,17 @@ trait TSessionBackedHelper
         }
     }
 
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         $this->_ensureSessionData();
         return isset($this->_sessionData[$key]);
     }
 
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
         $this->_ensureSessionData();
         unset($this->_sessionData[$key]);
         $this->_sessionDataChanged = true;
-        return $this;
     }
 
 

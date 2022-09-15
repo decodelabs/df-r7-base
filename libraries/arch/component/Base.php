@@ -237,9 +237,9 @@ abstract class Base implements arch\IComponent
         return $this;
     }
 
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
-        return $this->setSlot($key, $value);
+        $this->setSlot($key, $value);
     }
 
     public function offsetGet($key)
@@ -247,14 +247,14 @@ abstract class Base implements arch\IComponent
         return $this->getSlot($key);
     }
 
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         return $this->hasSlot($key);
     }
 
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
-        return $this->removeSlot($key);
+        $this->removeSlot($key);
     }
 
 

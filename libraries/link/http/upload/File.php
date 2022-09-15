@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\http\upload;
 
 use df;
@@ -302,13 +303,13 @@ class File implements link\http\IUploadFile
                 chmod($this->_tempPath, 0644);
                 $result = $quahog->scanFile($this->_tempPath);
 
-                if ($result['status'] === Quahog::RESULT_FOUND) {
+                if ($result->isFound()) {
                     $inputNode->addError('virus', $i18n->_(
                         'The uploaded file did not pass AV scan'
                     ));
 
                     unlink($this->_tempPath);
-                } elseif ($result['status'] === Quahog::RESULT_ERROR) {
+                } elseif ($result->isError()) {
                     Glitch::logException(
                         Exceptional::Scan($result['reason'])
                     );

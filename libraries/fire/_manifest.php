@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\fire;
 
 use df;
@@ -40,8 +41,8 @@ interface IBlock extends
     aura\view\IDeferredRenderable,
     arch\node\IDelegateProxy
 {
-    public static function factory(string $name): IBlock;
-    public static function normalize($block): ?IBlock;
+    public static function factory(string $name): static;
+    public static function normalize($block): ?static;
 
     public function getName(): string;
     public function getDisplayName(): string;

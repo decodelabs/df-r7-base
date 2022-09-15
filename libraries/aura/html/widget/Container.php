@@ -277,10 +277,9 @@ class Container extends Base implements
         return $this->_children->getIterator();
     }
 
-    public function offsetSet($index, $value)
+    public function offsetSet($index, $value): void
     {
         $this->_children->offsetSet($index, $value);
-        return $this;
     }
 
     public function offsetGet($index)
@@ -288,15 +287,14 @@ class Container extends Base implements
         return $this->_children->offsetGet($index);
     }
 
-    public function offsetExists($index)
+    public function offsetExists($index): bool
     {
         return $this->_children->offsetExists($index);
     }
 
-    public function offsetUnset($index)
+    public function offsetUnset($index): void
     {
         $this->_children->offsetUnset($index);
-        return $this;
     }
 
 

@@ -250,9 +250,9 @@ trait TForm
     }
 
 
-    public function offsetSet($id, $name)
+    public function offsetSet($id, $name): void
     {
-        return $this->loadDelegate($id, $name);
+        $this->loadDelegate($id, $name);
     }
 
     public function offsetGet($id)
@@ -260,14 +260,14 @@ trait TForm
         return $this->getDelegate($id);
     }
 
-    public function offsetExists($id)
+    public function offsetExists($id): bool
     {
         return $this->hasDelegate($id);
     }
 
-    public function offsetUnset($id)
+    public function offsetUnset($id): void
     {
-        return $this->unloadDelegate($id);
+        $this->unloadDelegate($id);
     }
 
 

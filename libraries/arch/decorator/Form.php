@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\decorator;
 
 use df;
@@ -176,10 +177,9 @@ abstract class Form implements IFormDecorator
     }
 
     // ArrayAccess
-    final public function offsetSet($key, $value)
+    final public function offsetSet($key, $value): void
     {
         $this->form->offsetSet($key, $value);
-        return $this;
     }
 
     final public function offsetGet($key)
@@ -187,14 +187,13 @@ abstract class Form implements IFormDecorator
         return $this->form->offsetGet($key);
     }
 
-    final public function offsetExists($key)
+    final public function offsetExists($key): bool
     {
         return $this->form->offsetExists($key);
     }
 
-    final public function offsetUnset($key)
+    final public function offsetUnset($key): void
     {
         $this->form->offsetUnset($key);
-        return $this;
     }
 }

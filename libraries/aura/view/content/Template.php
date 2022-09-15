@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\view\content;
 
 use df;
@@ -359,9 +360,9 @@ class Template implements aura\view\ITemplate, Dumpable
         }
     }
 
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
-        return $this->setSlot($key, $value);
+        $this->setSlot($key, $value);
     }
 
     public function offsetGet($key)
@@ -369,14 +370,14 @@ class Template implements aura\view\ITemplate, Dumpable
         return $this->getSlot($key);
     }
 
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         return $this->hasSlot($key);
     }
 
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
-        return $this->removeSlot($key);
+        $this->removeSlot($key);
     }
 
 

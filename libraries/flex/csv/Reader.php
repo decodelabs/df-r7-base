@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flex\csv;
 
 use df;
@@ -17,13 +18,13 @@ use DecodeLabs\Exceptional;
 
 class Reader implements IReader
 {
-    const BUFFER_READ_SIZE = 1024;
-    const BUFFER_THRESHOLD = 256;
+    public const BUFFER_READ_SIZE = 1024;
+    public const BUFFER_THRESHOLD = 256;
 
-    const MODE_START = 0;
-    const MODE_CELL = 1;
-    const MODE_ENCLOSURE = 2;
-    const MODE_CELL_AFTER_ENCLOSURE = 3;
+    public const MODE_START = 0;
+    public const MODE_CELL = 1;
+    public const MODE_ENCLOSURE = 2;
+    public const MODE_CELL_AFTER_ENCLOSURE = 3;
 
     protected $_file;
     protected $_delimiter = ',';
@@ -271,11 +272,10 @@ class Reader implements IReader
     }
 
     // Iterator
-    public function rewind()
+    public function rewind(): void
     {
         $this->_file->setPosition($this->_rewindSeek);
         $this->_rowCount = 0;
-        return $this;
     }
 
     public function current()
@@ -288,13 +288,16 @@ class Reader implements IReader
         return $this->_rowCount;
     }
 
-    public function next()
+    public function next(): void
     {
-        return $this->_readRow();
+        $this->_readRow();
     }
 
-    public function valid()
+    public function valid(): bool
     {
-        return !$this->_file->isAtEnd() || strlen($this->_buffer) || $this->_currentRow !== null;
+        return
+            !$this->_file->isAtEnd() ||
+            strlen($this->_buffer) ||
+            $this->_currentRow !== null;
     }
 }

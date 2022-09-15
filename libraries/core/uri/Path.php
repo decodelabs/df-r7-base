@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\uri;
 
 use df;
@@ -100,9 +101,9 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
         return $this->toString();
     }
 
-    public function unserialize($data)
+    public function unserialize(string $data): void
     {
-        return $this->import($data);
+        $this->import($data);
     }
 
     // Parameters

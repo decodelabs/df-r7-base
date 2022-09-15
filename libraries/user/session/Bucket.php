@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\user\session;
 
 use df;
@@ -281,9 +282,9 @@ class Bucket implements user\session\IBucket, Dumpable
     }
 
 
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
-        return $this->set($key, $value);
+        $this->set($key, $value);
     }
 
     public function offsetGet($key)
@@ -291,14 +292,14 @@ class Bucket implements user\session\IBucket, Dumpable
         return $this->get($key);
     }
 
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         return $this->has($key);
     }
 
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
-        return $this->remove($key);
+        $this->remove($key);
     }
 
     /**

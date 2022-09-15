@@ -95,15 +95,13 @@ class Base implements IRecord, \Serializable, Dumpable
         ]);
     }
 
-    public function unserialize($data)
+    public function unserialize(string $data): void
     {
         $values = unserialize($data);
         $adapter = mesh\Manager::getInstance()->fetchEntity($values['adapter']);
 
         $this->__construct($adapter);
         $this->populateWithRawData($values['values']);
-
-        return $this;
     }
 
     public function isNew()
@@ -971,7 +969,7 @@ class Base implements IRecord, \Serializable, Dumpable
         return $this;
     }
 
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
         // Sanitize value from record
         $value = $this->_sanitizeValue($key, $value);
@@ -994,19 +992,19 @@ class Base implements IRecord, \Serializable, Dumpable
 
             if ($oldVal instanceof IValueContainer) {
                 if ($isEqual = $oldVal->eq($value)) {
-                    return $this;
+                    return;
                 }
             }
 
 
             if ($isEqual === null && $fieldProcessor) {
                 if ($isEqual = $fieldProcessor->compareValues($oldVal, $value)) {
-                    return $this;
+                    return;
                 }
             }
 
             if ($isEqual === null && $oldVal === $value) {
-                return $this;
+                return;
             }
 
             if ($oldVal instanceof IValueContainer) {
@@ -1027,8 +1025,6 @@ class Base implements IRecord, \Serializable, Dumpable
         }
 
         $this->onValueChange($key, $oldVal, $value);
-
-        return $this;
     }
 
     public function offsetGet($key, $default=null)
@@ -1077,7 +1073,7 @@ class Base implements IRecord, \Serializable, Dumpable
         return $value;
     }
 
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         if (array_key_exists($key, $this->_changes) && $this->_changes[$key] !== null) {
             if ($this->_changes[$key] instanceof IValueContainer) {
@@ -1106,7 +1102,7 @@ class Base implements IRecord, \Serializable, Dumpable
         return false;
     }
 
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
         $output = null;
 
@@ -1120,8 +1116,6 @@ class Base implements IRecord, \Serializable, Dumpable
         //unset($this->_values[$key]);
 
         $this->onValueRemove($key, $output);
-
-        return $this;
     }
 
 

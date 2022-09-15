@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\schema\field;
 
 use df;
@@ -92,13 +93,11 @@ abstract class Base implements axis\schema\IField, \Serializable, Dumpable
         return json_encode($this->toStorageArray());
     }
 
-    public function unserialize($data)
+    public function unserialize(string $data): void
     {
         $data = json_decode($data, true);
         $this->_name = $data['nam'];
         $this->_importStorageArray($data);
-
-        return $this;
     }
 
 

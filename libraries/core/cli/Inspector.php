@@ -237,7 +237,7 @@ class Inspector implements IInspector
         }
     }
 
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
         if (!$value instanceof IArgument) {
             $optionString = $key;
@@ -256,7 +256,6 @@ class Inspector implements IInspector
         }
 
         $this->_optionArguments[$key] = $value;
-        return $this;
     }
 
     public function offsetGet($key)
@@ -274,12 +273,12 @@ class Inspector implements IInspector
         }
     }
 
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         return isset($this->_optionArguments[$key]);
     }
 
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
         unset($this->_optionArguments[$key]);
     }

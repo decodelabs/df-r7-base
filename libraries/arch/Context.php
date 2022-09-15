@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch;
 
 use df;
@@ -122,7 +123,7 @@ class Context implements IContext, \Serializable, Dumpable
         return (string)$this->location;
     }
 
-    public function unserialize($data)
+    public function unserialize(string $data): void
     {
         $this->location = Request::factory($data);
         $this->runner = df\Launchpad::$runner;
@@ -133,8 +134,6 @@ class Context implements IContext, \Serializable, Dumpable
         } else {
             $this->request = $this->location;
         }
-
-        return $this;
     }
 
 

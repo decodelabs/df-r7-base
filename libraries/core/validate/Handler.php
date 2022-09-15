@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\validate;
 
 use df;
@@ -198,9 +199,9 @@ class Handler implements IHandler
         return true;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
-        return $this->setValue($offset, $value);
+        $this->setValue($offset, $value);
     }
 
     public function offsetGet($offset)
@@ -208,12 +209,12 @@ class Handler implements IHandler
         return $this->getValue($offset);
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->_values);
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         throw Exceptional::BadMethodCall(
             'Validator values cannot be set via array access'

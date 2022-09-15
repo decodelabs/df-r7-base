@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\collection;
 
 use df;
@@ -34,9 +35,9 @@ trait TExtractList
 
 trait TValueMapArrayAccess
 {
-    public function offsetSet($index, $value)
+    public function offsetSet($index, $value): void
     {
-        return $this->set($index, $value);
+        $this->set($index, $value);
     }
 
     public function offsetGet($index)
@@ -44,14 +45,14 @@ trait TValueMapArrayAccess
         return $this->get($index);
     }
 
-    public function offsetExists($index)
+    public function offsetExists($index): bool
     {
         return $this->has($index);
     }
 
-    public function offsetUnset($index)
+    public function offsetUnset($index): void
     {
-        return $this->remove($index);
+        $this->remove($index);
     }
 }
 
@@ -601,9 +602,9 @@ trait TAttributeContainer
 
 trait TAttributeContainerArrayAccessProxy
 {
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
-        return $this->setAttribute($key, $value);
+        $this->setAttribute($key, $value);
     }
 
     public function offsetGet($key)
@@ -611,14 +612,14 @@ trait TAttributeContainerArrayAccessProxy
         return $this->getAttribute($key);
     }
 
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         return $this->hasAttribute($key);
     }
 
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
-        return $this->removeAttribute($key);
+        $this->removeAttribute($key);
     }
 }
 

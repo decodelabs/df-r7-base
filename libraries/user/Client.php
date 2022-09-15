@@ -150,7 +150,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
         ]);
     }
 
-    public function unserialize($data)
+    public function unserialize(string $data): void
     {
         $data = json_decode($data, true);
         $this->_id = $data['id'];

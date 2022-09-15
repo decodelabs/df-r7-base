@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core;
 
 use df;
@@ -17,11 +18,11 @@ abstract class Config implements IConfig, Dumpable
 {
     use core\TValueMap;
 
-    const REGISTRY_PREFIX = 'config://';
+    public const REGISTRY_PREFIX = 'config://';
 
-    const ID = null;
-    const USE_ENVIRONMENT_ID_BY_DEFAULT = false;
-    const STORE_IN_MEMORY = true;
+    public const ID = null;
+    public const USE_ENVIRONMENT_ID_BY_DEFAULT = false;
+    public const STORE_IN_MEMORY = true;
 
     /**
      * @var df\core\collection\Tree
@@ -167,9 +168,9 @@ abstract class Config implements IConfig, Dumpable
         return $this;
     }
 
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
-        return $this->set($key, $value);
+        $this->set($key, $value);
     }
 
     public function offsetGet($key)
@@ -177,14 +178,14 @@ abstract class Config implements IConfig, Dumpable
         return $this->get($key);
     }
 
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         return $this->has($key);
     }
 
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
-        return $this->remove($key);
+        $this->remove($key);
     }
 
 

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\collection;
 
 use df;
@@ -13,8 +14,6 @@ use DecodeLabs\Exceptional;
 
 class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
 {
-    protected const PROPAGATE_TYPE = true;
-
     use core\TValueMap;
     use core\TStringValueProvider;
 
@@ -24,6 +23,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
     use TArrayCollection_Seekable;
     use TArrayCollection_ValueContainerSortable;
     use TArrayCollection_MappedMovable;
+    protected const PROPAGATE_TYPE = true;
 
     protected $_value;
 
@@ -158,13 +158,11 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
         return $output;
     }
 
-    public function unserialize($data)
+    public function unserialize(string $data): void
     {
         if (is_array($values = unserialize($data))) {
             $this->_setUnserializedValues($values);
         }
-
-        return $this;
     }
 
     protected function _setUnserializedValues(array $values)
@@ -381,13 +379,14 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
         return $this;
     }
 
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
         if ($key === null) {
-            return $this->push($value);
+            $this->push($value);
+            return;
         }
 
-        return $this->__set($key, $value);
+        $this->__set($key, $value);
     }
 
     public function clearKeys()

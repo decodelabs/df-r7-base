@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch;
 
 use df;
@@ -426,10 +427,9 @@ class Request extends core\uri\Url implements IRequest, Dumpable
 
 
     // Query
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
         $this->getQuery()->{$key} = $value;
-        return $this;
     }
 
     public function offsetGet($key)
@@ -437,15 +437,14 @@ class Request extends core\uri\Url implements IRequest, Dumpable
         return $this->getQuery()->offsetGet($key);
     }
 
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         return $this->getQuery()->__isset($key);
     }
 
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
         unset($this->getQuery()->{$key});
-        return $this;
     }
 
 

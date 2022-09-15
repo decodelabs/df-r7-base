@@ -53,7 +53,7 @@ abstract class Base implements fire\IBlock
         return $output;
     }
 
-    public static function factory(string $name): fire\IBlock
+    public static function factory(string $name): static
     {
         $class = 'df\\fire\\block\\'.ucfirst($name);
 
@@ -63,12 +63,14 @@ abstract class Base implements fire\IBlock
             );
         }
 
-        return new $class();
+        /** @var static $output */
+        $output = new $class();
+        return $output;
     }
 
-    public static function normalize($block): ?fire\IBlock
+    public static function normalize($block): ?static
     {
-        if ($block instanceof fire\IBlock || $block === null) {
+        if ($block instanceof static || $block === null) {
             return $block;
         }
 

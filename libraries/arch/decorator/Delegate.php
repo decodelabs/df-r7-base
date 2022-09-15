@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\decorator;
 
 use df;
@@ -182,10 +183,9 @@ abstract class Delegate implements IDelegateDecorator
     }
 
     // ArrayAccess
-    final public function offsetSet($key, $value)
+    final public function offsetSet($key, $value): void
     {
         $this->delegate->offsetSet($key, $value);
-        return $this;
     }
 
     final public function offsetGet($key)
@@ -193,14 +193,13 @@ abstract class Delegate implements IDelegateDecorator
         return $this->delegate->offsetGet($key);
     }
 
-    final public function offsetExists($key)
+    final public function offsetExists($key): bool
     {
         return $this->delegate->offsetExists($key);
     }
 
-    final public function offsetUnset($key)
+    final public function offsetUnset($key): void
     {
         $this->delegate->offsetUnset($key);
-        return $this;
     }
 }

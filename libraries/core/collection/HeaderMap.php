@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\collection;
 
 use df;
@@ -384,7 +385,7 @@ class HeaderMap implements IHeaderMap, Dumpable
         return $output;
     }
 
-    public function next()
+    public function next(): void
     {
         $key = key($this->_collection);
 
@@ -392,11 +393,11 @@ class HeaderMap implements IHeaderMap, Dumpable
             $output = next($this->_collection[$key]);
 
             if (key($this->_collection[$key]) !== null) {
-                return $output;
+                return;
             }
         }
 
-        return next($this->_collection);
+        next($this->_collection);
     }
 
     public function key()
@@ -404,7 +405,7 @@ class HeaderMap implements IHeaderMap, Dumpable
         return key($this->_collection);
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         foreach ($this->_collection as $key => &$value) {
             if (is_array($value)) {
@@ -412,10 +413,10 @@ class HeaderMap implements IHeaderMap, Dumpable
             }
         }
 
-        return reset($this->_collection);
+        reset($this->_collection);
     }
 
-    public function valid()
+    public function valid(): bool
     {
         return key($this->_collection) !== null;
     }

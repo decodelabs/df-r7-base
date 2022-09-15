@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flow\mail;
 
 use df;
@@ -10,6 +11,8 @@ use df\core;
 use df\flow;
 
 use DecodeLabs\Glitch\Dumpable;
+use ArrayIterator;
+use Traversable;
 
 class AddressList implements IAddressList, Dumpable
 {
@@ -34,9 +37,9 @@ class AddressList implements IAddressList, Dumpable
         $this->import(...$input);
     }
 
-    public function getIterator()
+    public function getIterator(): Traversable
     {
-        return new \ArrayIterator($this->_addresses);
+        return new ArrayIterator($this->_addresses);
     }
 
     public function import(...$args)
@@ -87,7 +90,7 @@ class AddressList implements IAddressList, Dumpable
         return $this;
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->_addresses);
     }
@@ -181,9 +184,9 @@ class AddressList implements IAddressList, Dumpable
     }
 
 
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
-        return $this->set($key, $value);
+        $this->set($key, $value);
     }
 
     public function offsetGet($key)
@@ -191,14 +194,14 @@ class AddressList implements IAddressList, Dumpable
         return $this->get($key);
     }
 
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         return $this->has($key);
     }
 
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
-        return $this->remove($key);
+        $this->remove($key);
     }
 
     /**

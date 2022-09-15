@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\user\helper;
 
 use df;
@@ -118,9 +119,9 @@ class Options extends Base implements
         return $this;
     }
 
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
-        return $this->set($key, $value);
+        $this->set($key, $value);
     }
 
     public function offsetGet($key)
@@ -128,14 +129,14 @@ class Options extends Base implements
         return $this->get($key);
     }
 
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         return $this->has($key);
     }
 
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
-        return $this->remove($key);
+        $this->remove($key);
     }
 
 

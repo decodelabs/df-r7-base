@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flow;
 
 use df;
@@ -12,7 +13,6 @@ use df\user;
 
 interface IManager extends core\IManager
 {
-
 // Mail
     public function sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null);
     public function forceSendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null);
@@ -87,11 +87,11 @@ interface IManager extends core\IManager
 
 interface IFlashMessage
 {
-    const INFO = 'info';
-    const SUCCESS = 'success';
-    const ERROR = 'error';
-    const WARNING = 'warning';
-    const DEBUG = 'debug';
+    public const INFO = 'info';
+    public const SUCCESS = 'success';
+    public const ERROR = 'error';
+    public const WARNING = 'warning';
+    public const DEBUG = 'debug';
 
     public function getId(): string;
     public function setType($type);
@@ -147,7 +147,7 @@ class FlashQueue implements \Serializable
         return serialize($data);
     }
 
-    public function unserialize($data)
+    public function unserialize(string $data): void
     {
         $data = unserialize($data);
         $this->limit = $data['l'];
