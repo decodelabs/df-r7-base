@@ -37,6 +37,7 @@ class Reader implements IReader
 
     public static function openFile($path): Reader
     {
+        /** @phpstan-ignore-next-line */
         ini_set('auto_detect_line_endings', true);
         return new self(Atlas::file($path, Mode::READ_ONLY));
     }

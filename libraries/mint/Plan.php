@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\mint;
 
 use df;
@@ -77,7 +78,7 @@ class Plan implements mint\IPlan, Dumpable
             default:
                 throw Exceptional::InvalidArgument([
                     'message' => 'Invalid interval',
-                    $interval
+                    'data' => $interval
                 ]);
         }
 

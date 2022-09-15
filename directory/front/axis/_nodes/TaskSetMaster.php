@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\axis\_nodes;
 
 use df;
@@ -32,7 +33,7 @@ class TaskSetMaster extends arch\node\Task
             $current = null;
         }
 
-        $check = Dictum::toBoolean($this->request['check'], true);
+        $check = Dictum::toBoolean($this->request['check']);
 
         if ($current && (!$check || Cli::confirm('Use current: '.opal\rdbms\Dsn::factory($current)->getDisplayString(true), true))) {
             if (!$check) {

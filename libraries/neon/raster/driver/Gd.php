@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\neon\raster\driver;
 
 use df;
@@ -14,11 +15,11 @@ use DecodeLabs\Exceptional;
 
 class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\raster\IImageFilterDriver
 {
-    const READ_FORMATS = [
+    public const READ_FORMATS = [
         'GIF', 'JPEG', 'PNG', 'PNG8', 'PNG24', 'PNG32', 'WBMP', 'XBM', 'XPM'
     ];
 
-    const WRITE_FORMATS = [
+    public const WRITE_FORMATS = [
         'GIF', 'JPEG', 'PNG', 'PNG8', 'PNG24', 'PNG32', 'WBMP'
     ];
 
@@ -37,7 +38,8 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
 
     public function loadFile($file)
     {
-        @ini_set('memory_limit', -1);
+        /** @phpstan-ignore-next-line */
+        ini_set('memory_limit', -1);
 
         if ($i = getimagesize($file)) {
             $this->_width = $i[0];

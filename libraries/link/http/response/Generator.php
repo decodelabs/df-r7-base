@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\http\response;
 
 use df;
@@ -52,7 +53,7 @@ class Generator extends Base implements link\http\IGeneratorResponse
         }
 
         flush();
-        ob_implicit_flush(1);
+        ob_implicit_flush(true);
 
         $gen = ($this->_sender)($this);
 

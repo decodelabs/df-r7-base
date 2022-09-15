@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\query\clause;
 
 use df;
@@ -156,7 +157,7 @@ class ListBase implements opal\query\IClauseList, Dumpable
 
         foreach ($this->_clauses as $clause) {
             if ($clause instanceof opal\query\IClauseList) {
-                if (null !== ($newClause = $clause->getClausesFor($source, $output))) {
+                if (null !== ($newClause = $clause->getClausesFor($source, $parent))) {
                     $output->_clauses[] = $newClause;
                 }
             } else {
