@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\shared\nightfire\_formDelegates;
 
 use df;
@@ -45,8 +46,9 @@ class ContentBlock extends arch\node\form\Delegate implements
     public function reloadDefaultValues(): void
     {
         if ($this->hasDelegate('block')) {
-            $this->proxyLoadDelegate('block', $this->_block)
-                ->isRequired($this->_isRequired);
+            /** @var fire\IBlockDelegate $delegate */
+            $delegate = $this->proxyLoadDelegate('block', $this->_block);
+            $delegate->isRequired($this->_isRequired);
         }
 
         parent::reloadDefaultValues();
@@ -170,8 +172,9 @@ class ContentBlock extends arch\node\form\Delegate implements
         }
 
         if ($this->_block) {
-            $this->proxyLoadDelegate('block', $this->_block)
-                ->isRequired($this->_isRequired);
+            /** @var fire\IBlockDelegate $delegate */
+            $delegate = $this->proxyLoadDelegate('block', $this->_block);
+            $delegate->isRequired($this->_isRequired);
         }
     }
 
@@ -241,7 +244,9 @@ class ContentBlock extends arch\node\form\Delegate implements
         if ($oldBlock && $oldBlock !== $this->_block) {
             $this->_block->setTransitionValue($oldBlock->getTransitionValue());
 
-            $this->proxyLoadDelegate('block', $this->_block)
+            /** @var fire\IBlockDelegate $delegate */
+            $delegate = $this->proxyLoadDelegate('block', $this->_block);
+            $delegate
                 ->isRequired($this->_isRequired)
                 ->isNested($this->_isNested)
                 ->initialize();

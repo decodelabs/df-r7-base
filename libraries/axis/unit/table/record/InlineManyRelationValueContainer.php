@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\unit\table\record;
 
 use df;
@@ -488,6 +489,7 @@ class InlineManyRelationValueContainer implements
 
             if ($record instanceof opal\record\IRecord) {
                 if (!$targetRecordJob = $record->deploySaveJobs($queue)) {
+                    /** @phpstan-ignore-next-line */
                     $targetRecordJob = $queue->update($record);
                 }
 

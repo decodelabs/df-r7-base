@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\unit\table\record;
 
 use df;
@@ -693,9 +694,11 @@ class BridgedManyRelationValueContainer implements
             // Build bridge
             if ($record instanceof opal\record\IPartial && $record->isBridge()) {
                 $bridgeRecord = $bridgeUnit->newRecord($record->toArray());
+                /** @phpstan-ignore-next-line */
                 $bridgeJob = $queue->replace($bridgeRecord);
             } else {
                 $bridgeRecord = $bridgeUnit->newRecord();
+                /** @phpstan-ignore-next-line */
                 $bridgeJob = $queue->insert($bridgeRecord)->ifNotExists(true);
             }
 

@@ -105,9 +105,12 @@ class Html implements arch\IDirectoryHelper
         if ($isBoolean) {
             return $this->checkbox($key, $value, $name);
         } else {
-            return $this->textbox($key, $value)
+            /** @var aura\html\widget\Textbox $output */
+            $output = $this->textbox($key, $value);
+            $output
                 ->isRequired($isRequired)
                 ->setPlaceholder($name);
+            return $output;
         }
     }
 
@@ -210,17 +213,21 @@ class Html implements arch\IDirectoryHelper
             return null;
         }
 
-        return $this->link('tel:'.$number, $number)
-            ->setIcon($icon);
+        /** @var aura\html\widget\Link $output */
+        $output = $this->link('tel:'.$number, $number);
+        $output->setIcon($icon);
+        return $output;
     }
 
     public function backLink($default=null, $success=true, $body=null)
     {
-        return $this->link(
-                $this->context->uri->back($default, $success),
-                $body ?? $this->context->_('Back')
-            )
-            ->setIcon('back');
+        /** @var aura\html\widget\Link $output */
+        $output = $this->link(
+            $this->context->uri->back($default, $success),
+            $body ?? $this->context->_('Back')
+        );
+        $output->setIcon('back');
+        return $output;
     }
 
     public function queryToggleLink($request, $queryVar, $onString, $offString, $onIcon=null, $offIcon=null)
@@ -234,11 +241,13 @@ class Html implements arch\IDirectoryHelper
             );
         }
 
-        return $this->link(
-                $uriHelper->queryToggle($request, $queryVar, $result),
-                $result ? $onString : $offString
-            )
-            ->setIcon($result ? $onIcon : $offIcon);
+        /** @var aura\html\widget\Link $output */
+        $output = $this->link(
+            $uriHelper->queryToggle($request, $queryVar, $result),
+            $result ? $onString : $offString
+        );
+        $output->setIcon($result ? $onIcon : $offIcon);
+        return $output;
     }
 
     public function flashList()
@@ -307,14 +316,16 @@ class Html implements arch\IDirectoryHelper
             $mainEvent = 'submit';
         }
 
-        return $this->buttonArea(
-            $this->eventButton($mainEvent, $this->context->_('Yes'))
-                ->setIcon('accept'),
+        /** @var aura\html\widget\EventButton $yes */
+        $yes = $this->eventButton($mainEvent, $this->context->_('Yes'));
+        $yes->setIcon('accept');
 
-            $this->eventButton('cancel', $this->context->_('No'))
-                ->setIcon('deny')
-                ->shouldValidate(false)
-        );
+        /** @var aura\html\widget\EventButton $no */
+        $no = $this->eventButton('cancel', $this->context->_('No'));
+        $no->setIcon('deny');
+        $no->shouldValidate(false);
+
+        return $this->buttonArea($yes, $no);
     }
 
     public function saveEventButton($event=null, $text=null, $icon=null, $disposition=null)
@@ -341,9 +352,11 @@ class Html implements arch\IDirectoryHelper
             $disposition = null;
         }
 
-        return $this->eventButton($event, $text)
-            ->setIcon($icon)
-            ->setDisposition($disposition);
+        /** @var aura\html\widget\EventButton $output */
+        $output = $this->eventButton($event, $text);
+        $output->setIcon($icon);
+        $output->setDisposition($disposition);
+        return $output;
     }
 
     public function resetEventButton($event=null, $label=null, $icon=null, $disposition=null)
@@ -364,10 +377,12 @@ class Html implements arch\IDirectoryHelper
             $icon = 'refresh';
         }
 
-        return $this->eventButton($event, $label)
-            ->setIcon($icon)
-            ->setDisposition($disposition)
-            ->shouldValidate(false);
+        /** @var aura\html\widget\EventButton $output */
+        $output = $this->eventButton($event, $label);
+        $output->setIcon($icon);
+        $output->setDisposition($disposition);
+        $output->shouldValidate(false);
+        return $output;
     }
 
     public function cancelEventButton($event=null, $label=null, $icon=null, $disposition=null)
@@ -394,10 +409,12 @@ class Html implements arch\IDirectoryHelper
             $disposition = null;
         }
 
-        return $this->eventButton($event, $label)
-            ->setIcon($icon)
-            ->setDisposition($disposition)
-            ->shouldValidate(false);
+        /** @var aura\html\widget\EventButton $output */
+        $output = $this->eventButton($event, $label);
+        $output->setIcon($icon);
+        $output->setDisposition($disposition);
+        $output->shouldValidate(false);
+        return $output;
     }
 
     public function jsonLd(string $type, $data, string $context=null): Buffer

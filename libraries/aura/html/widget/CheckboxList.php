@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget;
 
 use df;
@@ -14,7 +15,7 @@ use DecodeLabs\Glitch\Dumpable;
 
 class CheckboxList extends Base implements Dumpable
 {
-    const PRIMARY_TAG = 'div.list.check.checkbox';
+    public const PRIMARY_TAG = 'div.list.check.checkbox';
 
     protected $_labelClass = null;
     protected $_shouldWrapBody = true;
@@ -95,11 +96,15 @@ class CheckboxList extends Base implements Dumpable
         $checkboxList = [];
 
         foreach ($this->_options as $key => $label) {
-            $checkboxList[] = self::factory($this->_context, 'Checkbox', [
+            /** @var Checkbox $checkbox */
+            $checkbox = self::factory($this->_context, 'Checkbox', [
                     $key, $this->_values->{$key}, $label
-                ])
+            ]);
+            $checkbox
                 ->shouldWrapBody($this->_shouldWrapBody)
                 ->setLabelClass($this->_labelClass);
+
+            $checkboxList[] = $checkbox;
         }
 
         return $tag->renderWith($checkboxList);

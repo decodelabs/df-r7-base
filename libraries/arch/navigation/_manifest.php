@@ -3,11 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\navigation;
 
 use df;
 use df\core;
 use df\arch;
+use df\arch\navigation\entry;
 use df\user;
 
 use DecodeLabs\Exceptional;
@@ -25,6 +27,11 @@ interface IEntry extends core\IArrayInterchange
 }
 
 
+/**
+ * @method entry\Link newLink($uri, $body, $icon=null)
+ * @method entry\Menu newMenu($delegate, $text, $icon=null)
+ * @method entry\Spacer newSpacer()
+ */
 interface IEntryList extends core\IArrayInterchange, \Countable
 {
     public function setEntries(...$entries);
@@ -69,6 +76,11 @@ trait TEntryGenerator
     }
 }
 
+/**
+ * @method entry\Link newLink($uri, $body, $icon=null)
+ * @method entry\Menu newMenu($delegate, $text, $icon=null)
+ * @method entry\Spacer newSpacer()
+ */
 trait TEntryList
 {
     use TEntryGenerator;
@@ -225,8 +237,7 @@ trait TEntryList
 
 interface ILink extends user\IAccessControlled
 {
-
-// Uri
+    // Uri
     public function setUri($uri, $setAsMatchRequest=false);
     public function getUri();
 

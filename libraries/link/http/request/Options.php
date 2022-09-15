@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\http\request;
 
 use df;
@@ -53,8 +54,10 @@ class Options implements link\http\IRequestOptions
         ];
 
         foreach ($keys as $key) {
-            if ($options->{$key} !== null) {
-                $this->{$key} = $options->{$key};
+            $val = $options->{'get'.ucfirst($key)}();
+
+            if ($val !== null) {
+                $this->{$key} = $val;
             }
         }
 

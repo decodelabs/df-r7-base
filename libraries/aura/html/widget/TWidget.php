@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget;
 
 use df;
@@ -135,7 +136,6 @@ trait TWidget_BodyContentAware
 // Forms
 trait TWidget_FormData
 {
-
     //const PRIMARY_TAG = 'input';
     //const ARRAY_INPUT = false;
 
@@ -1244,7 +1244,7 @@ trait TWidget_MappedList
 
     public function setField(IField $field)
     {
-        $this->_fields[$field->getId()] = $field;
+        $this->_fields[$field->getKey()] = $field;
         return $this;
     }
 

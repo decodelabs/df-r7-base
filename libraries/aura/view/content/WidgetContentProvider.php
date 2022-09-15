@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\view\content;
 
 use df;
@@ -15,6 +16,7 @@ use DecodeLabs\Glitch\Dumpable;
 class WidgetContentProvider extends aura\html\Element implements
     aura\view\ICollapsibleContentProvider,
     aura\html\widget\IWidgetShortcutProvider,
+    aura\html\IMarkupAdder,
     Dumpable
 {
     use core\TContextAware;

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\record;
 
 use df;
@@ -17,8 +18,6 @@ use DecodeLabs\Exceptional;
 
 class Base implements IRecord, \Serializable, Dumpable
 {
-    const BROADCAST_HOOK_EVENTS = null;
-
     use TRecordAdapterProvider;
     use TPrimaryKeySetProvider;
     use core\TValueMap;
@@ -28,6 +27,7 @@ class Base implements IRecord, \Serializable, Dumpable
     use TAccessLockProvider, user\TAccessLock {
         TAccessLockProvider::getAccessSignifiers insteadof user\TAccessLock;
     }
+    public const BROADCAST_HOOK_EVENTS = null;
 
     protected $_values = [];
     protected $_changes = [];
@@ -711,6 +711,7 @@ class Base implements IRecord, \Serializable, Dumpable
         }
 
         if ($this->hasChanged() || $this->isNew()) {
+            /** @phpstan-ignore-next-line */
             $recordJob = $queue->save($this);
             $ignored = false;
         } else {
@@ -740,6 +741,7 @@ class Base implements IRecord, \Serializable, Dumpable
                 return $recordJob;
             }
 
+            /** @phpstan-ignore-next-line */
             $recordJob = $queue->delete($this);
 
             foreach (array_merge($this->_values, $this->_changes) as $key => $value) {

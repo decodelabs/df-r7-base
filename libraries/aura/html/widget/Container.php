@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget;
 
 use df;
@@ -11,8 +12,13 @@ use df\aura;
 use df\arch;
 
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Tagged as Html;
 
-class Container extends Base implements IContainerWidget, IWidgetShortcutProvider, Dumpable
+class Container extends Base implements
+    IContainerWidget,
+    IWidgetShortcutProvider,
+    aura\html\IMarkupAdder,
+    Dumpable
 {
     use core\TValueMap;
 
@@ -262,7 +268,7 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
     }
 
 
-    public function count()
+    public function count(): int
     {
         return $this->_children->count();
     }

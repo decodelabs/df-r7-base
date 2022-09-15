@@ -3,18 +3,17 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\plug;
 
 use df;
 use df\core;
-use df\arch as archLib;
 use df\axis;
 use df\opal;
 use df\flex;
 use df\mesh;
 
 use DecodeLabs\Atlas\File;
-use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 
 class Data implements core\ISharedHelper, opal\query\IEntryPoint

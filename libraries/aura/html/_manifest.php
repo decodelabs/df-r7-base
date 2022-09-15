@@ -3,11 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html;
 
 use df;
 use df\core;
 use df\aura;
+use df\aura\html\widget;
 use df\flex;
 
 use DecodeLabs\Tagged\Markup;
@@ -450,4 +452,72 @@ class ElementString implements IElementRepresentation, Dumpable
 interface IElement extends ITag, IElementContentCollection
 {
     public function setBody($body);
+}
+
+
+/**
+ * @method Markup add(string $tag, $body, array $attr=[])
+ * @method widget\Address addAddress($address=null)
+ * @method widget\AttributeList addAttributeList($data=null, $renderer=null)
+ * @method widget\BlockLink addBlockLink($uri, $body=null, $description=null, $matchRequest=null)
+ * @method widget\BlockMenu addBlockMenu(...$entries)
+ * @method widget\BreadcrumbList addBreadcrumbList(...$entries)
+ * @method widget\Button addButton($name, $body=null, $value=null)
+ * @method widget\ButtonArea addButtonArea(...$input)
+ * @method widget\ButtonGroup addButtonGroup(...$input)
+ * @method widget\Checkbox addCheckbox($name, $isChecked=false, $body=null, $value='1')
+ * @method widget\CheckboxGroup addCheckboxGroup($name, $value=null, $options=null, $labelsAsValues=false)
+ * @method widget\CheckboxList addCheckboxList(core\collection\IInputTree $values, array $options)
+ * @method widget\CollectionList addCollectionList($data, core\collection\IPaginator $paginator=null)
+ * @method widget\CollectionStack addCollectionStack($data)
+ * @method widget\ColorPicker addColorPicker($name, $value=null)
+ * @method widget\Container addContainer(...$input)
+ * @method widget\Currency addCurrency($name, $value=null, string $inputCurrency=null, bool $allowSelection=false, int $precision=2)
+ * @method widget\DataList addDataList($id, $options=null)
+ * @method widget\DatePicker addDatePicker($name, $value=null, $outputFormat=null)
+ * @method widget\DateTimePicker addDateTimePicker($name, $value=null, $timezone=null)
+ * @method widget\Duration addDuration($name, $value=null)
+ * @method widget\EmailTextbox addEmailTextbox($name, $value=null)
+ * @method widget\EventButton addEventButton($event, $body=null)
+ * @method widget\Field addField($body=null, $input=null)
+ * @method widget\FieldError addFieldError($errors=null)
+ * @method widget\FieldSet addFieldSet($legend=null)
+ * @method widget\FileUpload addFileUpload($name, $value=null)
+ * @method widget\FlashMessage addFlashMessage($message, $type=null)
+ * @method widget\Form addForm($action=null, $method=null, $encoding=null)
+ * @method widget\GroupedSelect addGroupedSelect($name, $value=null, $options=null, $labelsAsValues=false)
+ * @method widget\GroupedMultiSelect addGroupedMultiSelect($name, $value=null, $options=null, $labelsAsValues=false)
+ * @method widget\Hidden addHidden($name, $value=null)
+ * @method widget\Label addLabel($body, $inputId=null)
+ * @method widget\Link addLink($uri, $body=null, $matchRequest=null)
+ * @method widget\Menu addMenu(...$entries)
+ * @method widget\MenuBar addMenuBar(...$entries)
+ * @method widget\MonthPicker addMonthPicker($name, $value=null, $outputFormat=null)
+ * @method widget\MultiSelect addMultiSelect($name, $value=null, $options=null, $labelsAsValues=false)
+ * @method widget\NumberTextbox addNumberTextbox($name, $value=null)
+ * @method widget\OrderList addOrderList($data)
+ * @method widget\Overlay addOverlay($title=null, $url=null)
+ * @method widget\Paginator addPaginator($data)
+ * @method widget\PanelSet addPanelSet()
+ * @method widget\PasswordTextbox addPasswordTextbox($name, $value=null)
+ * @method widget\PrioritySlider addPrioritySlider($name, $value=null)
+ * @method widget\ProgressBar addProgressBar($value, $max=100, $min=0)
+ * @method widget\Radio addRadio($name, $isChecked=false, $body=null, $value='1')
+ * @method widget\RadioGroup addRadioGroup($name, $value=null, $options=null, $labelsAsValues=false)
+ * @method widget\RangeSlider addRangeSlider($name, $value=null)
+ * @method widget\Recaptcha addRecaptcha($siteKey=null)
+ * @method widget\ResetButton addResetButton($name, $body=null, $value=null)
+ * @method widget\SearchTextbox addSearchTextbox($name, $value=null)
+ * @method widget\Select addSelect($name, $value=null, $options=null, $labelsAsValues=false)
+ * @method widget\StarRating addStarRating($value, $max=5)
+ * @method widget\SubmitButton addSubmitButton($name, $body=null, $value=null)
+ * @method widget\TelephoneTextbox addTelephoneTextbox($name, $value=null)
+ * @method widget\TextArea addTextArea($name, $value=null)
+ * @method widget\Textbox addTextbox($name, $value=null)
+ * @method widget\TimePicker addTimePicker($name, $value=null, $outputFormat=null)
+ * @method widget\UrlTextbox addUrlTextbox($name, $value=null)
+ * @method widget\WeekPicker addWeekPicker($name, $value=null, $outputFormat=null)
+ */
+interface IMarkupAdder
+{
 }

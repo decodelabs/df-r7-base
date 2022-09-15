@@ -11,6 +11,7 @@ use df;
 use df\core;
 use df\fire;
 use df\arch;
+use df\apex;
 use df\flex;
 use df\aura;
 
@@ -131,7 +132,7 @@ class LibraryImage extends Base
             {
                 /**
                  * Image
-                 * @var apex\directory\shared\media\_formDelegates\ImageSelector $image
+                 * @var arch\scaffold\Node\Form\SelectorDelegate $image
                  */
                 $image = $this->loadDelegate('image', '~admin/media/ImageSelector');
                 $image

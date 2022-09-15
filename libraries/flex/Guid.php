@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flex;
 
 use df;
@@ -17,21 +18,21 @@ class Guid implements IGuid, Dumpable
 {
     use core\TStringProvider;
 
-    const CLEAR_VERSION = 15;
-    const CLEAR_VARIANT = 63;
+    public const CLEAR_VERSION = 15;
+    public const CLEAR_VARIANT = 63;
 
-    const VARIANT_RESERVED = 224;
-    const VARIANT_MS = 192;
-    const VARIANT_RFC = 128;
-    const VARIANT_NCS = 0;
+    public const VARIANT_RESERVED = 224;
+    public const VARIANT_MS = 192;
+    public const VARIANT_RFC = 128;
+    public const VARIANT_NCS = 0;
 
-    const VERSION_1 = 16;
-    const VERSION_3 = 48;
-    const VERSION_4 = 64;
-    const VERSION_5 = 80;
-    const VERSION_COMB = 0xc0;
+    public const VERSION_1 = 16;
+    public const VERSION_3 = 48;
+    public const VERSION_4 = 64;
+    public const VERSION_5 = 80;
+    public const VERSION_COMB = 0xc0;
 
-    const INTERVAL = 0x01b21dd213814000;
+    public const INTERVAL = 0x01b21dd213814000;
 
     protected $_bytes;
 
@@ -158,7 +159,7 @@ class Guid implements IGuid, Dumpable
     {
         $time = explode(' ', (string)microtime());
         $time[0] = substr($time[0], 2);
-        return ($time[1].$time[0]) / 100;
+        return ((int)($time[1].$time[0])) / 100;
     }
 
     private static function _makeBin($string, $length)

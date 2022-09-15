@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\unit\table\record;
 
 use df;
@@ -214,6 +215,7 @@ class OneChildRelationValueContainer implements
 
             if ($originalRecord) {
                 $originalRecord->set($targetField, null);
+                /** @phpstan-ignore-next-line */
                 $queue->save($originalRecord);
             }
         }

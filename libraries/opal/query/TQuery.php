@@ -2473,7 +2473,9 @@ trait TQuery_EntryPoint
             );
         }
 
-        return $this->select()->count();
+        /** @var ISelectQuery $query */
+        $query = $this->select();
+        return $query->count();
     }
 
     public function countAllDistinct()

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\unit;
 
 use df;
@@ -14,7 +15,7 @@ class Ratio implements IRatio, Dumpable
 {
     use core\TStringProvider;
 
-    const FAREY_LIMIT = 100;
+    public const FAREY_LIMIT = 100;
 
     protected $_numerator;
     protected $_denominator;
@@ -132,7 +133,7 @@ class Ratio implements IRatio, Dumpable
 
     public static function farey($factor, $limit)
     {
-        $factor = (double)$factor;
+        $factor = (float)$factor;
         $limit = (int)$limit;
 
         if ($factor < 0) {
@@ -154,7 +155,7 @@ class Ratio implements IRatio, Dumpable
                 }
 
                 $lower = $mediant;
-            } elseif ($crossFactor == $mediant) {
+            } elseif ($crossFactor == $mediant[0]) {
                 if ($limit >= $mediant[1]) {
                     return $mediant;
                 }

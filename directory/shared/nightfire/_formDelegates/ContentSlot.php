@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\shared\nightfire\_formDelegates;
 
 use df;
@@ -196,7 +197,9 @@ class ContentSlot extends arch\node\form\Delegate implements
     protected function loadDelegates()
     {
         foreach ($this->_blocks as $delegateId => $block) {
-            $this->proxyLoadDelegate($delegateId, $block)
+            /** @var fire\IBlockDelegate $delegate */
+            $delegate = $this->proxyLoadDelegate($delegateId, $block);
+            $delegate
                 ->isRequired($this->_isRequired)
                 ->isNested($this->_isNested);
         }
@@ -346,7 +349,9 @@ class ContentSlot extends arch\node\form\Delegate implements
                 $block->setTransitionValue($oldBlock->getTransitionValue());
                 $this->_blocks[$delegateId] = $block;
 
-                $this->proxyLoadDelegate($delegateId, $block)
+                /** @var fire\IBlockDelegate $delegate */
+                $delegate = $this->proxyLoadDelegate($delegateId, $block);
+                $delegate
                     ->isRequired($this->_isRequired)
                     ->isNested($this->_isNested)
                     ->initialize();
