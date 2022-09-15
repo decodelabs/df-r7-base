@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\component;
 
 use df;
@@ -164,7 +165,6 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Dumpa
             $this->record = $this->view->getSlot($this->viewArg);
         }
 
-        $output = [];
         $list = $this->_createBaseList();
         $divider = 0;
 
@@ -204,17 +204,11 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Dumpa
             }
         }
 
-        if ($list->hasFields()) {
-            $output[] = $list;
+        if (!$list->hasFields()) {
+            return null;
         }
 
-        if (count($output) < 2) {
-            $output = array_pop($output);
-        } else {
-            $output = Html::{'div'}($output);
-        }
-
-        return $output;
+        return $list;
     }
 
     protected function _createBaseList()

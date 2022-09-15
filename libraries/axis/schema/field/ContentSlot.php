@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\schema\field;
 
 use df;
@@ -17,7 +18,6 @@ use DecodeLabs\Exceptional;
 
 class ContentSlot extends Base
 {
-
 // Values
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
     {
@@ -55,10 +55,6 @@ class ContentSlot extends Base
         }
 
         if (is_string($value)/* && substr($value, 0, 1) == '<'*/) {
-            return $value;
-        }
-
-        if (is_string($value)) {
             return $value;
         }
 

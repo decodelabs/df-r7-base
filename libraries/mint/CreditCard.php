@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\mint;
 
 use df;
@@ -15,7 +16,7 @@ use DecodeLabs\Exceptional;
 
 class CreditCard implements ICreditCard, Dumpable
 {
-    const BRANDS = [
+    public const BRANDS = [
         'visa' => '/^4\d{12}(\d{3})?$/',
         'mastercard' => '/^(5[1-5]\d{4}|677189)\d{10}$/',
         'discover' => '/^(6011|65\d{2}|64[4-9]\d)\d{12}|(62\d{14})$/',
@@ -302,19 +303,15 @@ class CreditCard implements ICreditCard, Dumpable
         $month = array_shift($parts);
         $year = array_shift($parts);
 
-        if ($month !== null) {
-            $month = (int)$month;
-        }
-
-        if ($year !== null) {
-            $year = (int)$year;
-        }
-
+        /** @phpstan-ignore-next-line */
         if ($month === null || $year === null) {
             throw Exceptional::InvalidArgument(
                 'Invalid expiry date string', null, $expiry
             );
         }
+
+        $month = (int)$month;
+        $year = (int)$year;
 
         return $this
             ->setExpiryMonth($month)

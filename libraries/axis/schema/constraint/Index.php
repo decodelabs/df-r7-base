@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\schema\constraint;
 
 use df\core;
@@ -22,10 +23,13 @@ class Index implements opal\schema\IIndex, Dumpable
         return $output;
     }
 
-    public function __construct(axis\schema\ISchema $schema, $name, $fields=null)
-    {
-        $schema;
+    public function __construct(
+        axis\schema\ISchema $schema,
+        $name,
+        $fields=null
+    ) {
         $this->_setName($name);
         $this->setFields($fields);
+        $schema->getName();
     }
 }

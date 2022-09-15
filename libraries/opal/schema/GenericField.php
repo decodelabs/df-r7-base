@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\schema;
 
 use df;
@@ -16,6 +17,6 @@ class GenericField implements opal\schema\IField
     public function __construct($name, array $args=[])
     {
         $this->_setName($name);
-        empty($args);
+        unset($args);
     }
 }

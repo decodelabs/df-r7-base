@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\query;
 
 use df;
@@ -98,6 +99,7 @@ class Union implements IUnionQuery
                     if ($field instanceof IExpressionField && $field->isNull() && isset($newFields[$i])) {
                         $newField = $newFields[$i];
 
+                        /** @phpstan-ignore-next-line */
                         if (!$newField instanceof IExpressionField || !$field->isNull()) {
                             $field->setAlias($newField->getAlias())
                                 ->setAltSourceAlias($newField->getSourceAlias());

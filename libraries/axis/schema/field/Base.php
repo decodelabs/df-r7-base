@@ -33,9 +33,13 @@ abstract class Base implements axis\schema\IField, \Serializable, Dumpable
         return new $class($schema, $type, $name, $args);
     }
 
-    public function __construct(axis\schema\ISchema $schema, $type, $name, $args=null)
-    {
-        $schema;
+    public function __construct(
+        axis\schema\ISchema $schema,
+        $type,
+        $name,
+        $args=null
+    ) {
+        $schema->getName();
         $this->_setName($name);
         $hasInit = false;
 

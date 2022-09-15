@@ -351,7 +351,7 @@ interface ITree extends
 {
     public function importTree(ITree $child);
     public function merge(ITree $child);
-    public function getNestedChild($parts, $separator='.');
+    public function getNestedChild($parts, string $separator='.');
     public function contains($value, $includeChildren=false);
     public function toArrayDelimitedString($setDelimiter='&', $valueDelimiter='=');
     public function toArrayDelimitedSet($prefix=null);

@@ -711,10 +711,7 @@ class Base implements link\http\IRequest, Dumpable
             'url' => $this->url
         ];
 
-        if ($ip = $this->getIp()) {
-            yield 'property:ip' => $ip;
-        }
-
+        yield 'property:ip' => $this->getIp();
         yield 'property:headers' => $this->getHeaders();
 
         if ($this->method === 'post') {

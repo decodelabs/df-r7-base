@@ -22,25 +22,11 @@ trait TCache
 
     public static function getInstance()
     {
-        $class = get_called_class();
-
-        if ($class === FileStore::class) {
-            throw Exceptional::Implementation(
-                'Cannot instantiate abstract root FileStore class'
-            );
-        }
-
-        if ($class === Base::class) {
-            throw Exceptional::Runtime(
-                'Unable to instantiate abstract Base class: '.$class
-            );
-        }
-
-        $id = self::REGISTRY_PREFIX.$class::getCacheId();
+        $id = self::REGISTRY_PREFIX.static::getCacheId();
 
         if (!$cache = df\Launchpad::$app->getRegistryObject($id)) {
             df\Launchpad::$app->setRegistryObject(
-                $cache = new $class()
+                $cache = new static()
             );
         }
 

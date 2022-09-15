@@ -125,7 +125,8 @@ PHP;
         $this->path = $path;
 
         $this->envId = $envId;
-        $this->envMode = @df\COMPILE_ENV_MODE ?? 'testing';
+        /** @phpstan-ignore-next-line */
+        $this->envMode = df\COMPILE_ENV_MODE ?? 'testing';
     }
 
 

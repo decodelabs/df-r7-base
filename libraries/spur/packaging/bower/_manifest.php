@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\packaging\bower;
 
 use df;
@@ -89,15 +90,15 @@ trait TGitResolver
 
     protected function _sortTags(array $tags)
     {
-        @usort($tags, function ($left, $right) {
+        usort($tags, function ($left, $right) {
             $leftVersion = $left->getVersion();
             $rightVersion = $right->getVersion();
 
             if (!$leftVersion && !$rightVersion) {
                 return 0;
-            } elseif (!$leftVersion && $rightVersion) {
+            } elseif (!$leftVersion) {
                 return 1;
-            } elseif ($leftVersion && !$rightVersion) {
+            } elseif (!$rightVersion) {
                 return -1;
             }
 

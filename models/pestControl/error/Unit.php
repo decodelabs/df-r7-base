@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\models\pestControl\error;
 
 use df;
@@ -15,16 +16,16 @@ use DecodeLabs\Glitch;
 
 class Unit extends axis\unit\Table
 {
-    const SEARCH_FIELDS = [
+    public const SEARCH_FIELDS = [
         'type' => 1,
         'message' => 4
     ];
 
-    const ORDERABLE_FIELDS = [
+    public const ORDERABLE_FIELDS = [
         'type', 'code', 'file', 'line', 'seen', 'firstSeen', 'lastSeen'
     ];
 
-    const DEFAULT_ORDER = ['lastSeen DESC', 'seen DESC'];
+    public const DEFAULT_ORDER = ['lastSeen DESC', 'seen DESC'];
 
     protected function createSchema($schema)
     {
@@ -76,7 +77,6 @@ class Unit extends axis\unit\Table
                 $topName = array_pop($parts);
 
                 if (
-                    $topName === null ||
                     (
                         !preg_match('/^E[A-Z][a-zA-Z0-9_]+$/', $topName) &&
                         !preg_match('/^([A-Z][a-zA-Z0-9_]+)Exception$/', $topName)

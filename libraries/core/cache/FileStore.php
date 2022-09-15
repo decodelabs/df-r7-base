@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\cache;
 
 use df;
@@ -18,8 +19,8 @@ abstract class FileStore implements IFileStore
 {
     use TCache;
 
-    const REGISTRY_PREFIX = 'cache://';
-    const IS_DISTRIBUTED = false;
+    public const REGISTRY_PREFIX = 'cache://';
+    public const IS_DISTRIBUTED = false;
 
     protected $_dir;
 
@@ -93,16 +94,10 @@ abstract class FileStore implements IFileStore
 
     public function set($key, $value)
     {
-        if (!$value instanceof File) {
-            try {
-                $value = (string)$value;
-            } catch (\Throwable $e) {
-                throw Exceptional::UnexpectedValue(
-                    'FileStore value must be Atlas File or string'
-                );
-            }
-        } else {
+        if ($value instanceof File) {
             $value = $value->getContents();
+        } else {
+            $value = (string)$value;
         }
 
         $key = $this->_normalizeKey($key);

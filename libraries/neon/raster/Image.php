@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\neon\raster;
 
 use df;
@@ -64,6 +65,7 @@ class Image implements IImage
                 break;
             }
 
+            /** @phpstan-ignore-next-line */
             if (!self::$_driverClass) {
                 throw Exceptional::ComponentUnavailable(
                     'There are no available raster image drivers'
@@ -632,7 +634,7 @@ class Image implements IImage
 
 
     // Formats
-    const FORMATS = [
+    public const FORMATS = [
         'AAI' => 'AAI Dune image',
         'ART' => 'PFS: 1st Publisher Format originally used on the Macintosh (MacPaint?) and later used for PFS: 1st Publisher clip art.',
         'ARW' => 'Sony Digital Camera Alpha Raw Image Format',
@@ -774,7 +776,7 @@ class Image implements IImage
     ];
 
 
-    const EXTENSIONS = [
+    public const EXTENSIONS = [
         'srf' => 'ARW',
         'sr2' => 'ARW',
         'cal' => 'CALS',

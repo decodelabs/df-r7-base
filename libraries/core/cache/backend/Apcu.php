@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\cache\backend;
 
 use df;
@@ -84,7 +85,7 @@ class Apcu implements core\cache\IBackend
         $this->_lifeTime = $lifeTime;
         $this->_prefix = df\Launchpad::$app->getUniquePrefix().'-'.$cache->getCacheId().':';
         $this->_isCli = php_sapi_name() == 'cli';
-        $options;
+        unset($options);
     }
 
     public function getConnectionDescription(): string

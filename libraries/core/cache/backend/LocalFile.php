@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\cache\backend;
 
 use df;
@@ -18,7 +19,7 @@ class LocalFile implements core\cache\IBackend
 {
     use core\TValueMap;
 
-    const PRUNE_LIFETIME = '1 month';
+    public const PRUNE_LIFETIME = '1 month';
 
     protected $_lifeTime;
     protected $_cache;
@@ -92,7 +93,7 @@ class LocalFile implements core\cache\IBackend
 
         $path .= '/cache/'.Dictum::fileName($cache->getCacheId());
         $this->_dir = Atlas::createDir($path);
-        $options;
+        unset($options);
     }
 
     public function getConnectionDescription(): string

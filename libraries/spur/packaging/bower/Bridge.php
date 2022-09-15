@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\packaging\bower;
 
 use df;
@@ -74,7 +75,5 @@ class Bridge implements IBridge
             ->launch();
 
         Glitch::incomplete($result);
-
-        return $this;
     }
 }

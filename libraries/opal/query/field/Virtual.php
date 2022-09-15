@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\query\field;
 
 use df;
@@ -112,6 +113,7 @@ class Virtual implements opal\query\IVirtualField, Dumpable
     {
         return new self($source, $this->_name, $this->_alias, $this->_targetFields);
 
+        /*
         $targetFields = [];
 
         foreach ($this->_targetFields as $field) {
@@ -119,6 +121,7 @@ class Virtual implements opal\query\IVirtualField, Dumpable
         }
 
         return new self($source, $this->_source->getAlias().'.'.$this->_name, $this->_source->getAlias().'.'.$this->_alias, $targetFields);
+        */
     }
 
     public function toString(): string

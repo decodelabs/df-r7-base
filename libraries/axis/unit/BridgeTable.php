@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\unit;
 
 use df\core;
@@ -14,9 +15,9 @@ use DecodeLabs\Exceptional;
 
 class BridgeTable extends Table implements axis\IVirtualUnit
 {
-    const IS_SHARED = false;
-    const DOMINANT_UNIT = null;
-    const DOMINANT_FIELD = null;
+    public const IS_SHARED = false;
+    public const DOMINANT_UNIT = null;
+    public const DOMINANT_FIELD = null;
 
     private $_dominantUnitName;
     private $_dominantFieldName;
@@ -70,7 +71,7 @@ class BridgeTable extends Table implements axis\IVirtualUnit
         return $output;
     }
 
-    public function __construct(axis\IModel $model, $unitName=null)
+    public function __construct(axis\IModel $model)
     {
         if (!static::IS_SHARED && get_class($this) !== __CLASS__) {
             if (!static::DOMINANT_UNIT || !static::DOMINANT_FIELD) {
@@ -83,7 +84,7 @@ class BridgeTable extends Table implements axis\IVirtualUnit
             $this->_dominantFieldName = static::DOMINANT_FIELD;
         }
 
-        parent::__construct($model, $unitName);
+        parent::__construct($model);
     }
 
     public function getUnitName()

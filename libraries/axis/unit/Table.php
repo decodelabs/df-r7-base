@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\unit;
 
 use df;
@@ -26,24 +27,23 @@ abstract class Table implements
     use axis\TAdapterBasedStorageUnit;
     use axis\TSchemaBasedStorageUnit;
 
-    const NAME_FIELD = null;
-    const KEY_NAME = null;
-    const PRIORITY_FIELDS = null;
-    const BROADCAST_HOOK_EVENTS = true;
-    const DEFAULT_RECORD_CLASS = 'df\\opal\\record\\Base';
+    public const NAME_FIELD = null;
+    public const KEY_NAME = null;
+    public const PRIORITY_FIELDS = null;
+    public const BROADCAST_HOOK_EVENTS = true;
+    public const DEFAULT_RECORD_CLASS = 'df\\opal\\record\\Base';
 
-    const ORDERABLE_FIELDS = null;
-    const DEFAULT_ORDER = null;
-    const SEARCH_FIELDS = null;
+    public const ORDERABLE_FIELDS = null;
+    public const DEFAULT_ORDER = null;
+    public const SEARCH_FIELDS = null;
 
     private $_recordClass;
     private $_schema;
 
-    public function __construct(axis\IModel $model, $unitName=null)
+    public function __construct(axis\IModel $model)
     {
         $this->_model = $model;
         $this->_loadAdapter();
-        $unitName;
     }
 
     public function getUnitType()
@@ -292,8 +292,11 @@ abstract class Table implements
             }
         } else {
             foreach ($schema->getFields() as $name => $field) {
-                if ($field instanceof opal\schema\INullPrimitiveField
-                || $field instanceof opal\schema\IManyRelationField) {
+                if (
+                    $field instanceof opal\schema\INullPrimitiveField ||
+                    /** @phpstan-ignore-next-line */
+                    $field instanceof opal\schema\IManyRelationField
+                ) {
                     continue;
                 }
 

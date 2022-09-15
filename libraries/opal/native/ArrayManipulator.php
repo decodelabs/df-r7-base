@@ -722,6 +722,7 @@ class ArrayManipulator implements IArrayManipulator
             foreach ($sortFields as $field => $direction) {
                 if (isset($row[$field])) {
                     $value = $row[$field];
+                    /** @phpstan-ignore-next-line */
                     $isNull = $row[$field] === null;
                 } else {
                     $value = null;

@@ -755,14 +755,14 @@ class Date implements IDate, Dumpable
 
         if ($interval instanceof IDuration) {
             $seconds = $interval->getSeconds();
+        } elseif (is_int($interval) || is_float($interval)) {
+            $seconds = $interval;
         } elseif (is_numeric($interval)) {
             if ((float)$interval == $interval) {
                 $seconds = (float)$interval;
             } elseif ((int)$interval == $interval) {
                 $seconds = (int)$interval;
             }
-        } elseif (is_int($interval) || is_float($interval)) {
-            $seconds = $interval;
         } elseif (preg_match('/^(([0-9]+)\:)?([0-9]{1,2})\:([0-9.]+)$/', $interval)) {
             $parts = explode(':', $interval);
             $i = 1;

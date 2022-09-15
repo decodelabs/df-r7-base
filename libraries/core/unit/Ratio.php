@@ -111,7 +111,12 @@ class Ratio implements IRatio, Dumpable
 
     public static function reduce($numerator, $denominator)
     {
-        if ((!($numerator % 1) && $numerator) && (!($denominator % 1) && $denominator)) {
+        if (
+            /** @phpstan-ignore-next-line */
+            (!($numerator % 1) && $numerator) &&
+            /** @phpstan-ignore-next-line */
+            (!($denominator % 1) && $denominator)
+        ) {
             $high = max($numerator, $denominator);
             $low = min($numerator, $denominator);
 

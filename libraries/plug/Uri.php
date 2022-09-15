@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\plug;
 
 use df;
@@ -36,10 +37,6 @@ class Uri implements arch\IDirectoryHelper
     public function __invoke($uri, $from=null, $to=null, $asRequest=false)
     {
         if ($uri === null) {
-            if ($asRequest) {
-                return clone $this->context->request;
-            }
-
             return $asRequest ?
                 $this->currentRequest($from, $to) :
                 $this->current($from, $to);
@@ -248,7 +245,7 @@ class Uri implements arch\IDirectoryHelper
         $request->query->import($path->getQuery());
 
         if ($attachment) {
-            $request->query->attachment;
+            $request->query->attachment = null;
         }
 
         return $request;

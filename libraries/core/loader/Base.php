@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\loader;
 
 use df;
@@ -17,8 +18,6 @@ class Base implements core\ILoader
 
     protected $_locations = [];
     protected $_packages = [];
-
-    private $_isInit = false;
 
 
     // Stats
@@ -71,9 +70,11 @@ class Base implements core\ILoader
     // Class loader
     public function loadClass(string $class): bool
     {
-        if (class_exists($class, false)
-        || interface_exists($class, false)
-        || trait_exists($class, false)) {
+        if (
+            class_exists($class, false) ||
+            interface_exists($class, false) ||
+            trait_exists($class, false)
+        ) {
             return true;
         }
 
@@ -85,12 +86,20 @@ class Base implements core\ILoader
             foreach ($paths as $path) {
                 self::$_includeAttempts++;
 
-                if (file_exists($path) && !in_array($path, $included)) {
+                if (
+                    file_exists($path) &&
+                    !in_array($path, $included)
+                ) {
                     include_once $path;
 
-                    if (class_exists($class, false)
-                    || interface_exists($class, false)
-                    || trait_exists($class, false)) {
+                    if (
+                        /** @phpstan-ignore-next-line */
+                        class_exists($class, false) ||
+                        /** @phpstan-ignore-next-line */
+                        interface_exists($class, false) ||
+                        /** @phpstan-ignore-next-line */
+                        trait_exists($class, false)
+                    ) {
                         $output = true;
                         break;
                     }
@@ -347,14 +356,6 @@ class Base implements core\ILoader
 
     public function loadPackages(array $packages)
     {
-        /*
-        if($this->_isInit) {
-            throw Exceptional::Logic(
-                'Cannot load packages after init'
-            );
-        }
-        */
-
         $this->_loadPackageList($packages);
 
         uasort($this->_packages, function ($a, $b) {
@@ -365,7 +366,6 @@ class Base implements core\ILoader
             $package->init();
         }
 
-        $this->_isInit = true;
         return $this;
     }
 

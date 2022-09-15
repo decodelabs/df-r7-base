@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms\variant\sqlite;
 
 use df;
@@ -15,8 +16,7 @@ use DecodeLabs\Exceptional;
 
 class SchemaExecutor extends opal\rdbms\SchemaExecutor
 {
-
-## Stats ##
+    ## Stats ##
     public function getTableStats($name)
     {
         Glitch::incomplete($name);
@@ -46,6 +46,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
         $indexes = [];
         $tableData = null;
 
+        /** @phpstan-ignore-next-line */
         while (!$res->isEmpty()) {
             $row = $res->extract();
 
@@ -67,7 +68,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
             }
         }
 
-
+        /** @phpstan-ignore-next-line */
         if (empty($tableData) || empty($tableData['sql'])) {
             throw Exceptional::{'df/opal/rdbms/TableNotFound,NotFound'}(
                 'Table '.$tableName.' could not be found',

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\halo\daemon;
 
 use df;
@@ -25,11 +26,11 @@ abstract class Base implements IDaemon
 {
     use core\TContextProxy;
 
-    const REQUIRES_PRIVILEGED_PROCESS = false;
-    const TEST_MODE = false;
-    const REPORT_STATUS = true;
-    const DEV_RUN_TIME = '3 minutes';
-    const AUTOMATIC = false;
+    public const REQUIRES_PRIVILEGED_PROCESS = false;
+    public const TEST_MODE = false;
+    public const REPORT_STATUS = true;
+    public const DEV_RUN_TIME = '3 minutes';
+    public const AUTOMATIC = false;
 
     public $terminal;
     public $process;
@@ -237,7 +238,7 @@ abstract class Base implements IDaemon
         }
 
 
-        declare(ticks = 20);
+        declare(ticks=20);
         $this->_isRunning = true;
 
         $this->_setup();
@@ -259,6 +260,7 @@ abstract class Base implements IDaemon
             } else {
                 $this->events->listen();
 
+                /** @phpstan-ignore-next-line */
                 if (!$this->_isPaused) {
                     break;
                 }

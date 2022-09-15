@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\http\cookieJar;
 
 use df;
@@ -95,12 +96,13 @@ class Memory implements link\http\ICookieJar, Dumpable
             $newExpiry = $cookie->getExpiryDate();
             $oldExpiry = $test->getExpiryDate();
 
-            if ($newExpiry && !$oldExpiry) {
-                unset($this->_cookies[$i]);
-                continue;
-            }
-
-            if ($newExpiry && $oldExpiry && $newExpiry->gt($oldExpiry)) {
+            if (
+                $newExpiry &&
+                (
+                    !$oldExpiry ||
+                    $newExpiry->gt($oldExpiry)
+                )
+            ) {
                 unset($this->_cookies[$i]);
                 continue;
             }

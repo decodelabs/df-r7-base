@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\query\clause;
 
 use df;
@@ -14,31 +15,31 @@ use DecodeLabs\Exceptional;
 
 class Clause implements opal\query\IClause, Dumpable
 {
-    const BETWEEN_CONVERSION_THRESHOLD = 15;
+    public const BETWEEN_CONVERSION_THRESHOLD = 15;
 
-    const OP_EQ = '=';
-    const OP_EQ_NULL = '<=>';
-    const OP_NEQ = '!=';
-    const OP_NEQ_NULL = '<>';
-    const OP_GT = '>';
-    const OP_GTE = '>=';
-    const OP_LT = '<';
-    const OP_LTE = '<=';
+    public const OP_EQ = '=';
+    public const OP_EQ_NULL = '<=>';
+    public const OP_NEQ = '!=';
+    public const OP_NEQ_NULL = '<>';
+    public const OP_GT = '>';
+    public const OP_GTE = '>=';
+    public const OP_LT = '<';
+    public const OP_LTE = '<=';
 
-    const OP_IN = 'in';
-    const OP_NOT_IN = 'not in';
-    const OP_BETWEEN = 'between';
-    const OP_NOT_BETWEEN = 'not between';
-    const OP_LIKE = 'like';
-    const OP_NOT_LIKE = 'not like';
-    const OP_CONTAINS = 'contains';
-    const OP_NOT_CONTAINS = 'not contains';
-    const OP_BEGINS = 'begins';
-    const OP_NOT_BEGINS = 'not begins';
-    const OP_ENDS = 'ends';
-    const OP_NOT_ENDS = 'not ends';
-    const OP_MATCHES = 'matches';
-    const OP_NOT_MATCHES = 'not matches';
+    public const OP_IN = 'in';
+    public const OP_NOT_IN = 'not in';
+    public const OP_BETWEEN = 'between';
+    public const OP_NOT_BETWEEN = 'not between';
+    public const OP_LIKE = 'like';
+    public const OP_NOT_LIKE = 'not like';
+    public const OP_CONTAINS = 'contains';
+    public const OP_NOT_CONTAINS = 'not contains';
+    public const OP_BEGINS = 'begins';
+    public const OP_NOT_BEGINS = 'not begins';
+    public const OP_ENDS = 'ends';
+    public const OP_NOT_ENDS = 'not ends';
+    public const OP_MATCHES = 'matches';
+    public const OP_NOT_MATCHES = 'not matches';
 
     protected $_isOr = false;
     protected $_field;
@@ -225,8 +226,6 @@ class Clause implements opal\query\IClause, Dumpable
                     'Operator '.$operator.' is not recognized'
                 );
         }
-
-        return $operator;
     }
 
     public static function normalizeOperator($operator)

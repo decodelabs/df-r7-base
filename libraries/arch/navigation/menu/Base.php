@@ -154,9 +154,9 @@ class Base implements IMenu, \Serializable
 
     public function unserialize(string $data): void
     {
-        if (is_array($data = unserialize($data))) {
-            $this->_setStorageArray($data);
-        }
+        /** @var array $unserialized */
+        $unserialized = unserialize($data);
+        $this->_setStorageArray($unserialized);
     }
 
     protected function _getStorageArray()

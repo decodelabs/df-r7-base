@@ -26,6 +26,7 @@ class Context implements IContext, \Serializable, Dumpable
 
     public $request;
     public $location;
+    protected $runMode;
 
     public static function getCurrent(): IContext
     {
@@ -76,7 +77,7 @@ class Context implements IContext, \Serializable, Dumpable
     {
         $this->runner = df\Launchpad::$runner;
         $this->location = $location;
-        $runMode;
+        $this->runMode = $runMode;
 
         if ($request === true) {
             $this->request = clone $location;

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core;
 
 use df;
@@ -185,8 +186,8 @@ interface ILoader
 
 class Package
 {
-    const PRIORITY = 20;
-    const DEPENDENCIES = [];
+    public const PRIORITY = 20;
+    public const DEPENDENCIES = [];
 
     public $path;
     public $name;
@@ -676,10 +677,9 @@ trait TSharedHelper
 {
     public $context;
 
-    public function __construct(IContext $context, $target)
+    public function __construct(IContext $context)
     {
         $this->context = $context;
-        $target;
     }
 }
 

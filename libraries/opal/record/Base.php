@@ -793,6 +793,7 @@ class Base implements IRecord, \Serializable, Dumpable
                 $this->{$func}($queue, $job);
             }
 
+            /** @phpstan-ignore-next-line */
             if ($broadcast && !$this->_bypassHooks && $event && $meshManager) {
                 $event->setAction($funcPrefix.'Save');
                 $meshManager->emitEventObject($event);

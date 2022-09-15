@@ -756,6 +756,7 @@ class Manager implements IManager, core\IShutdownAware
         if (!$this->_isFlashQueueProcessed) {
             $this->_loadFlashQueue();
 
+            /** @phpstan-ignore-next-line */
             if ($this->_flashDisabled) {
                 return $this;
             }
@@ -825,17 +826,17 @@ class Manager implements IManager, core\IShutdownAware
             return false;
         }
 
-        if (!$this->_flashQueue instanceof FlashQueue
-        || !$this->_flashQueueChanged) {
+        if (
+            !$this->_flashQueue instanceof FlashQueue ||
+            !$this->_flashQueueChanged
+        ) {
             return false;
         }
 
         $session = user\Manager::getInstance()->session->getBucket(self::SESSION_NAMESPACE);
 
         if ($this->_flashQueue->isEmpty()) {
-            if ($this->_flashQueueChanged) {
-                $session->remove(self::FLASH_SESSION_KEY);
-            }
+            $session->remove(self::FLASH_SESSION_KEY);
         } else {
             $session->set(self::FLASH_SESSION_KEY, $this->_flashQueue);
         }

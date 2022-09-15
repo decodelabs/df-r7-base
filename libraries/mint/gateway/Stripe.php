@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\mint\gateway;
 
 use df;
@@ -714,6 +715,7 @@ class Stripe extends Base implements
                     case 'processing_error':
                         break;
                 }
+                /** @phpstan-ignore-next-line */
             } elseif ($e instanceof StripePHP\Error\RateLimit) {
                 $types[] = 'RateLimit';
             }

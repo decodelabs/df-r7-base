@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\fire;
 
 use df;
@@ -11,9 +12,9 @@ use df\fire;
 
 class Config extends core\Config implements ILayoutConfig
 {
-    const ID = 'nightfire';
+    public const ID = 'nightfire';
 
-    const STATIC_LAYOUTS = [
+    public const STATIC_LAYOUTS = [
         'Default' => [
             'name' => 'Standard layout',
             'areas' => null,
@@ -65,6 +66,7 @@ class Config extends core\Config implements ILayoutConfig
 
         foreach ($this->values->layouts as $id => $set) {
             if (isset(self::STATIC_LAYOUTS[$id])) {
+                /** @phpstan-ignore-next-line */
                 $output[$id] = self::STATIC_LAYOUTS[$id]['name'] ?? $id;
                 continue;
             }

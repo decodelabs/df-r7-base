@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\query\field;
 
 use df;
@@ -61,7 +62,6 @@ class Correlation implements opal\query\ICorrelationField, Dumpable
     public function setAlias($alias)
     {
         Glitch::incomplete($alias);
-        return $this;
     }
 
     public function getAlias()

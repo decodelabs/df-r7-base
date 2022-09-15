@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\analytics\adapter;
 
 use df;
@@ -34,7 +35,7 @@ class GoogleUniversal extends Base
         $map = $this->getDefaultUserAttributeMap();
 
         foreach ($attributes as $attribute => $value) {
-            if (!isset($map[$attribute]) || $map[$attribute] === null) {
+            if (!isset($map[$attribute])) {
                 unset($attributes[$attribute]);
             }
         }

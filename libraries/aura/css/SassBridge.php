@@ -184,7 +184,7 @@ class SassBridge implements ISassBridge
         return;
     }
 
-    protected function _waitForLock($lockFile, bool $doNotWait=false)
+    protected function _waitForLock(LockFile $lockFile, bool $doNotWait=false)
     {
         if ($lockFile->canLock()) {
             return false;
@@ -198,8 +198,12 @@ class SassBridge implements ISassBridge
 
         do {
             sleep(1);
-        } while (!$lockFile->canLock());
+        } while (
+            /** @phpstan-ignore-next-line */
+            !$lockFile->canLock()
+        );
 
+        /** @phpstan-ignore-next-line */
         return is_file($filePath);
     }
 
@@ -542,8 +546,6 @@ class SassBridge implements ISassBridge
                         'Theme sass file not found: '.$path
                     );
                 }
-
-                break;
         }
 
         return $uri;

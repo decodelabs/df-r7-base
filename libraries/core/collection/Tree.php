@@ -27,15 +27,17 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
 
     protected $_value;
 
-    public static function fromArrayDelimitedString(?string $string, $setDelimiter='&', $valueDelimiter='=')
-    {
+    /**
+     * @param non-empty-string $setDelimiter
+     * @param non-empty-string $valueDelimiter
+     */
+    public static function fromArrayDelimitedString(
+        ?string $string,
+        string $setDelimiter='&',
+        string $valueDelimiter='='
+    ): Tree {
         $output = new self();
-
-        if (false === ($parts = explode($setDelimiter, (string)$string))) {
-            throw Exceptional::UnexpectedValue(
-                'Unable to parse array delimited string', null, $string
-            );
-        }
+        $parts = explode($setDelimiter, (string)$string);
 
         foreach ($parts as $part) {
             $valueParts = explode($valueDelimiter, trim($part), 2);
@@ -213,14 +215,14 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
 
 
     // Access
-    public function getNestedChild($parts, $separator='.')
+
+    /**
+     * @param non-empty-string $separator
+     */
+    public function getNestedChild($parts, string $separator='.')
     {
         if (!is_array($parts)) {
-            if (false === ($parts = explode($separator, (string)$parts))) {
-                throw Exceptional::UnexpectedValue(
-                    'Unable to parse nested child key', null, $parts
-                );
-            }
+            $parts = explode($separator, (string)$parts);
         }
 
         $node = $this;

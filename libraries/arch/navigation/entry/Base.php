@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\navigation\entry;
 
 use df;
@@ -43,15 +44,7 @@ abstract class Base implements arch\navigation\IEntry
 
     protected static function _fromArray(array $entry): arch\navigation\IEntry
     {
-        $class = get_called_class();
-
-        if ($class === self::class) {
-            throw Exceptional::Runtime(
-                'Cannot create Base type menu'
-            );
-        }
-
-        return (new $class())->setId($entry['id'])->setWeight($entry['weight']);
+        return (new static())->setId($entry['id'])->setWeight($entry['weight']);
     }
 
 

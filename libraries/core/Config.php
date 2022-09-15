@@ -46,28 +46,20 @@ abstract class Config implements IConfig, Dumpable
 
     final protected static function _factory(?string $id)
     {
-        $handlerClass = get_called_class();
-
-        if ($handlerClass === self::class) {
-            throw Exceptional::Implementation(
-                'Cannot instantiate abstract base Config class'
-            );
-        }
-
         if (empty($id)) {
             throw Exceptional::Implementation(
-                'Invalid config id passed for '.$handlerClass
+                'Invalid config id passed for '.static::class
             );
         }
 
-        if ($handlerClass::STORE_IN_MEMORY) {
+        if (static::STORE_IN_MEMORY) {
             if (!$config = df\Launchpad::$app->getRegistryObject(self::REGISTRY_PREFIX.$id)) {
                 df\Launchpad::$app->setRegistryObject(
-                    $config = new $handlerClass($id)
+                    $config = new static($id)
                 );
             }
         } else {
-            $config = new $handlerClass($id);
+            $config = new static($id);
         }
 
         return $config;

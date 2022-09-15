@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flow\mime;
 
 use df;
@@ -43,12 +44,6 @@ class MultiPart implements IMultiPart, Dumpable
             $output = new $class($contentType, $headers);
             $boundary = $output->getBoundary();
             $parts = explode("\n".'--'.$boundary, "\n".trim($body));
-
-            if ($parts === false) {
-                throw Exceptional::UnexpectedValue(
-                    'Unable to parse mime string', null, $body
-                );
-            }
 
             array_shift($parts);
             array_pop($parts);
