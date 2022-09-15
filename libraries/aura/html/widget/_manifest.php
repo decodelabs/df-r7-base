@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget;
 
 use df;
@@ -87,7 +88,11 @@ interface IBodyContentAwareWidget extends IWidget
 }
 
 
-interface IContainerWidget extends IWidget, core\collection\IIndexedQueue, aura\html\IWidgetFinder
+interface IContainerWidget extends
+    IWidget,
+    core\collection\IIndexedQueue,
+    aura\html\IWidgetFinder,
+    aura\html\IMarkupAdder
 {
 }
 

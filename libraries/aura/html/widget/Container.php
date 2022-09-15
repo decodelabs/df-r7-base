@@ -17,7 +17,6 @@ use DecodeLabs\Tagged as Html;
 class Container extends Base implements
     IContainerWidget,
     IWidgetShortcutProvider,
-    aura\html\IMarkupAdder,
     Dumpable
 {
     use core\TValueMap;
