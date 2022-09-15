@@ -59,7 +59,7 @@ class Adapter implements
 
                     return new GenericClient(
                         'http',
-                        (string)$context->http->getIp(),
+                        $context->http->getRequest()->getIp(),
                         $context->http->getUserAgent()
                     );
                 } catch (Throwable $e) {

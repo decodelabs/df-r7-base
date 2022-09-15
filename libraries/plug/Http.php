@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\plug;
 
 use df;
@@ -12,6 +13,7 @@ use df\link;
 use df\aura;
 use df\flex;
 
+use DecodeLabs\Compass\Ip;
 use DecodeLabs\Exceptional;
 
 class Http implements arch\IDirectoryHelper
@@ -120,11 +122,6 @@ class Http implements arch\IDirectoryHelper
     public function getUserAgent()
     {
         return $this->_httpRequest->headers->get('User-Agent');
-    }
-
-    public function getIp()
-    {
-        return $this->_httpRequest->getIp();
     }
 
 

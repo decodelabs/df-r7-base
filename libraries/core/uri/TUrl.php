@@ -3,12 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\uri;
 
 use df;
 use df\core;
 use df\link;
 
+use DecodeLabs\Compass\Ip;
 use DecodeLabs\Exceptional;
 
 trait TUrl_TransientScheme
@@ -192,7 +194,7 @@ trait TUrl_DomainContainer
         $this->_domain = null;
     }
 
-    public function lookupIp()
+    public function lookupIp(): Ip
     {
         if (empty($this->_domain)) {
             $ip = '127.0.0.1';
@@ -202,51 +204,10 @@ trait TUrl_DomainContainer
             );
         }
 
-        return new link\Ip($ip);
+        return Ip::parse($ip);
     }
 }
 
-
-// Ip
-trait TUrl_IpContainer
-{
-    protected $_ip;
-
-    public function setIp($ip)
-    {
-        if ($ip !== null) {
-            $ip = link\Ip::factory($ip);
-        }
-
-        $this->_ip = $ip;
-        return $this;
-    }
-
-    public function getIp()
-    {
-        if (!$this->_ip) {
-            $this->_ip = link\Ip::getV4Loopback();
-        }
-
-        return $this->_ip;
-    }
-
-    protected function _resetIp()
-    {
-        $this->_ip = null;
-    }
-
-    protected function _getIpString()
-    {
-        $ip = $this->getIp();
-
-        if ($ip->isStandardV4()) {
-            return $ip->getV4String();
-        } else {
-            return '['.$ip->getCompressedV6String().']';
-        }
-    }
-}
 
 
 // Port

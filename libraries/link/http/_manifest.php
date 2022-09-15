@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\http;
 
 use df;
@@ -12,6 +13,7 @@ use df\arch;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
+use DecodeLabs\Compass\Ip;
 use DecodeLabs\Deliverance\DataReceiver;
 use DecodeLabs\Deliverance\Channel;
 use DecodeLabs\Exceptional;
@@ -86,8 +88,10 @@ interface IRequest extends
     public function removeCookie($key);
 
     // Ip
-    public function setIp($ip);
-    public function getIp();
+    public function setIp(
+        Ip|string|null $ip
+    );
+    public function getIp(): Ip;
     public function getSocketAddress();
 }
 
@@ -569,9 +573,9 @@ interface IUploadHandler extends core\lang\IAcceptTypeProcessor, \Countable, \It
 
 interface IUploadFile
 {
-    const RENAME = 'rename';
-    const OVERWRITE = 'overwrite';
-    const HALT = 'halt';
+    public const RENAME = 'rename';
+    public const OVERWRITE = 'overwrite';
+    public const HALT = 'halt';
 
     public function setFileName($fileName);
     public function getFileName();

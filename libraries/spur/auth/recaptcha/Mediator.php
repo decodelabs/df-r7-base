@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\auth\recaptcha;
 
 use df;
@@ -10,13 +11,14 @@ use df\core;
 use df\spur;
 use df\link;
 
+use DecodeLabs\Compass\Ip;
 use DecodeLabs\Exceptional;
 
 class Mediator implements IMediator
 {
     use spur\TGuzzleMediator;
 
-    const ENDPOINT = 'https://www.google.com/recaptcha/api/siteverify';
+    public const ENDPOINT = 'https://www.google.com/recaptcha/api/siteverify';
 
     protected $_secret;
 
@@ -36,12 +38,14 @@ class Mediator implements IMediator
         return $this->_secret;
     }
 
-    public function verify(string $key, $ip=null): IResult
-    {
+    public function verify(
+        string $key,
+        Ip|string|null $ip=null
+    ): IResult {
         $response = $this->requestJson('post', self::ENDPOINT, [
             'secret' => $this->_secret,
             'response' => $key,
-            'remoteIp' => $ip
+            'remoteIp' => $ip ? (string)$ip : null
         ]);
 
         if (!$response['success']) {

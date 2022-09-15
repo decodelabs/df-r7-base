@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\user;
 
 use df;
@@ -14,6 +15,7 @@ use df\flex;
 
 use DateTime;
 use DecodeLabs\Dictum;
+use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
 
 class Client implements IClient, \Serializable, mesh\entity\IEntity
@@ -96,19 +98,17 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
 
         $output->_language = $locale->getLanguage();
 
-        if (df\Launchpad::$runner instanceof core\app\runner\Http) {
-            $ip = df\Launchpad::$runner->getHttpRequest()->getIp();
-            $geoIp = link\geoIp\Handler::factory()->lookup($ip);
+        $ip = Disciple::getIp();
+        $geoIp = link\geoIp\Handler::factory()->lookup($ip);
 
-            if ($geoIp->country) {
-                $output->_country = $geoIp->country;
-            } else {
-                $output->_country = $locale->getRegion();
-            }
+        if ($geoIp->country) {
+            $output->_country = $geoIp->country;
+        } else {
+            $output->_country = $locale->getRegion();
+        }
 
-            if ($geoIp->timezone) {
-                $output->_timezone = $geoIp->timezone;
-            }
+        if ($geoIp->timezone) {
+            $output->_timezone = $geoIp->timezone;
         }
 
         if ($output->_country === null) {
@@ -339,17 +339,15 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
 
         $this->_signifiers = $clientData->getSignifiers();
 
-        if (df\Launchpad::$runner instanceof core\app\runner\Http) {
-            $ip = df\Launchpad::$runner->getHttpRequest()->getIp();
-            $geoIp = link\geoIp\Handler::factory()->lookup($ip);
+        $ip = Disciple::getIp();
+        $geoIp = link\geoIp\Handler::factory()->lookup($ip);
 
-            if ($geoIp->country) {
-                $this->_country = $geoIp->country;
-            }
+        if ($geoIp->country) {
+            $this->_country = $geoIp->country;
+        }
 
-            if ($geoIp->timezone) {
-                $this->_timezone = $geoIp->timezone;
-            }
+        if ($geoIp->timezone) {
+            $this->_timezone = $geoIp->timezone;
         }
     }
 

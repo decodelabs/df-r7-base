@@ -3,13 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\geoIp;
 
 use df\Launchpad;
-use df\link\Ip;
 use df\link\geoIp\Adapter;
 use df\link\geoIp\Result;
 
+use DecodeLabs\Compass\Ip;
 use DecodeLabs\Exceptional;
 
 class Handler
@@ -93,9 +94,10 @@ class Handler
         return $this->_adapter;
     }
 
-    public function lookup($ip): Result
-    {
-        $ip = Ip::factory($ip);
+    public function lookup(
+        Ip|string $ip
+    ): Result {
+        $ip = Ip::parse($ip);
         $result = new Result($ip);
 
         if ($this->_adapter) {

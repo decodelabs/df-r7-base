@@ -13,6 +13,7 @@ use df\flex;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
+use DecodeLabs\Compass\Ip;
 use DecodeLabs\Deliverance\Channel;
 use DecodeLabs\Typify;
 
@@ -170,10 +171,10 @@ class Base implements link\http\IRequest, Dumpable
                 $ip = trim(array_shift($parts));
 
                 try {
-                    return new link\Ip($ip);
-                } catch (link\InvalidArgumentException $e) {
+                    return Ip::parse($ip);
+                } catch (\Exception $e) {
                     if (empty($parts)) {
-                        return new link\Ip('0.0.0.0');
+                        return new Ip('0.0.0.0');
                     }
                 }
             }
@@ -584,21 +585,22 @@ class Base implements link\http\IRequest, Dumpable
 
 
     // Ip
-    public function setIp($ip)
-    {
+    public function setIp(
+        Ip|string|null $ip
+    ) {
         if (empty($ip)) {
             $this->_ip = null;
         } else {
-            $this->_ip = link\Ip::factory($ip);
+            $this->_ip = Ip::parse($ip);
         }
 
         return $this;
     }
 
-    public function getIp()
+    public function getIp(): Ip
     {
         if ($this->_ip instanceof core\lang\IFuture) {
-            $this->_ip = $this->_ip->getValue();
+            $this->_ip = Ip::parse($this->_ip->getValue());
         }
 
         if ($this->_ip === null) {

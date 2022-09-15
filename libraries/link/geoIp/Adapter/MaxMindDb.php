@@ -3,16 +3,17 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\geoIp\Adapter;
 
 use df\Launchpad;
 use df\opal\mmdb\Reader;
 use df\opal\mmdb\IReader;
-use df\link\Ip;
 use df\link\geoIp\Adapter;
 use df\link\geoIp\Result;
 use df\link\geoIp\Config;
 
+use DecodeLabs\Compass\Ip;
 use DecodeLabs\Exceptional;
 
 class MaxMindDb implements Adapter
@@ -68,12 +69,15 @@ class MaxMindDb implements Adapter
         return (string)array_pop($parts);
     }
 
-    public function lookup(Ip $ip, Result $result): Result
-    {
+    public function lookup(
+        Ip|string $ip,
+        Result $result
+    ): Result {
+        $ip = Ip::parse($ip);
+
         try {
             $data = $this->reader->get($ip);
         } catch (\Exception $e) {
-            // inet_pton issue
             return $result;
         }
 

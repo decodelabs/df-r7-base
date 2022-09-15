@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\validate\field;
 
 use df;
@@ -10,9 +11,11 @@ use df\core;
 use df\arch;
 use df\spur;
 
+use DecodeLabs\Disciple;
+
 class Recaptcha extends Base implements core\validate\IRecaptchaField
 {
-    const KEY = 'g-recaptcha-response';
+    public const KEY = 'g-recaptcha-response';
 
     protected $_name = 'recaptcha';
     protected $_secret = null;
@@ -69,12 +72,7 @@ class Recaptcha extends Base implements core\validate\IRecaptchaField
             ));
         } else {
             // Validate
-            if ($context->runner instanceof core\app\runner\Http) {
-                $ip = $context->http->getIp();
-            } else {
-                $ip = null;
-            }
-
+            $ip = Disciple::getIp();
             $m = new spur\auth\recaptcha\Mediator($secret);
 
             try {

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\mmdb;
 
 use df;
@@ -13,12 +14,13 @@ use df\link;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Mode;
 use DecodeLabs\Atlas\File;
+use DecodeLabs\Compass\Ip;
 use DecodeLabs\Exceptional;
 
 class Reader implements IReader
 {
-    const DATA_SECTION_SEPARATOR_SIZE = 16;
-    const METADATA_START_MARKER = "\xAB\xCD\xEFMaxMind.com";
+    public const DATA_SECTION_SEPARATOR_SIZE = 16;
+    public const METADATA_START_MARKER = "\xAB\xCD\xEFMaxMind.com";
 
     protected $_file;
     protected $_fileSize;
@@ -77,9 +79,10 @@ class Reader implements IReader
     }
 
 
-    public function get($ip)
-    {
-        $ip = link\Ip::factory($ip);
+    public function get(
+        Ip|string $ip
+    ) {
+        $ip = Ip::parse($ip);
 
         if ($this->_metaData['ip_version'] == 4 && !$ip->isV4()) {
             throw Exceptional::InvalidArgument(
@@ -96,9 +99,9 @@ class Reader implements IReader
         return $this->_resolveDataPointer($pointer);
     }
 
-    protected function _findAddressInTree(link\Ip $ip)
+    protected function _findAddressInTree(Ip $ip)
     {
-        if (false === ($packed = inet_pton($ip->toString()))) {
+        if (false === ($packed = inet_pton((string)$ip))) {
             throw Exceptional::Runtime(
                 'Unable to pack IP string', null, $ip
             );

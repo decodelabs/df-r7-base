@@ -3,10 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\uri;
 
 use df;
 use df\core;
+
+use DecodeLabs\Compass\Ip;
 
 interface IPath extends core\IStringProvider, core\collection\IIndexedQueue
 {
@@ -66,14 +69,7 @@ interface IDomainContainer
     public function setDomain($domain);
     public function getDomain();
     public function hasDomain();
-    public function lookupIp();
-}
-
-
-interface IIpContainer
-{
-    public function setIp($ip);
-    public function getIp();
+    public function lookupIp(): Ip;
 }
 
 interface IPortContainer
@@ -88,9 +84,6 @@ interface IDomainPortContainer extends IDomainContainer, IPortContainer
     public function getHost(): string;
 }
 
-interface IIpPortContainer extends IIpContainer, IPortContainer
-{
-}
 
 interface IPathContainer
 {

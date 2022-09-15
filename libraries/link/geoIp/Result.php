@@ -3,11 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\geoIp;
+
+use DecodeLabs\Compass\Ip;
 
 class Result
 {
-    public $ip;
+    public Ip $ip;
     public $continent;
     public $continentName;
     public $continentGeonameId;
@@ -25,12 +28,12 @@ class Result
     public $timezone;
 
 
-    public function __construct($ip)
+    public function __construct(Ip $ip)
     {
         $this->ip = $ip;
     }
 
-    public function getIp()
+    public function getIp(): Ip
     {
         return $this->ip;
     }

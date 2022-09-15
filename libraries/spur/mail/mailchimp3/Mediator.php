@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\mail\mailchimp3;
 
 use df;
@@ -13,13 +14,14 @@ use df\link;
 use df\flex;
 use df\user;
 
+use DecodeLabs\Compass\Ip;
 use Psr\Http\Message\ResponseInterface;
 
 class Mediator implements IMediator
 {
     use spur\TGuzzleMediator;
 
-    const API_URL = '//api.mailchimp.com/3.0/';
+    public const API_URL = '//api.mailchimp.com/3.0/';
 
     protected $_isSecure = true;
     protected $_apiKey;
@@ -323,7 +325,7 @@ class Mediator implements IMediator
     protected function _processMember(core\collection\ITree $data)
     {
         if (isset($data->ip_signup)) {
-            $data['ip_signup'] = link\Ip::normalize($data['ip_signup']);
+            $data['ip_signup'] = Ip::orNull($data['ip_signup']);
         }
 
         if (isset($data->timestamp_signup)) {
@@ -331,7 +333,7 @@ class Mediator implements IMediator
         }
 
         if (isset($data->ip_opt)) {
-            $data['ip_opt'] = link\Ip::normalize($data['ip_opt']);
+            $data['ip_opt'] = Ip::orNull($data['ip_opt']);
         }
 
         if (isset($data->timestamp_opt)) {

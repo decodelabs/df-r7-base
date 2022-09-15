@@ -13,6 +13,7 @@ use df\flow;
 use df\arch;
 use df\halo;
 
+use DecodeLabs\Compass\Ip;
 use DecodeLabs\Deliverance;
 use DecodeLabs\Typify;
 use DecodeLabs\Glitch;
@@ -144,7 +145,6 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     {
         try {
             $ip = $this->_httpRequest->getIp();
-
             $this->_handleDebugMode();
 
             $request = $this->_prepareDirectoryRequest();
@@ -163,7 +163,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
 
     // Credentials
-    protected function _enforceCredentials(link\Ip $ip): bool
+    protected function _enforceCredentials(Ip $ip): bool
     {
         // Check for credentials or loopback
         if (!$this->_credentials || $ip->isLoopback()) {
@@ -193,8 +193,10 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
 
     // IP check
-    protected function _checkIpRanges(link\Ip $ip, arch\IRequest $request=null)
-    {
+    protected function _checkIpRanges(
+        Ip $ip,
+        arch\IRequest $request=null
+    ) {
         // Get ranges from config
         $config = namespace\http\Config::getInstance();
 
@@ -203,6 +205,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         } else {
             $ranges = $config->getIpRanges();
         }
+
 
         if (empty($ranges)) {
             return;
@@ -224,24 +227,32 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         $augmentor->setHeaderForAnyRequest('x-allow-ip', (string)$ip);
 
         foreach ($ranges as $range) {
-            if ($range->check($ip)) {
+            if ($range->contains($ip)) {
                 $augmentor->setHeaderForAnyRequest('x-allow-ip-range', (string)$range);
                 return;
             }
         }
 
+
+        // Loopback check
         if ($ip->isLoopback()) {
             $augmentor->setHeaderForAnyRequest('x-allow-ip-range', 'loopback');
             return;
         }
 
-        $current = link\Ip::factory(gethostbyname((string)gethostname()));
 
-        if ($current->toString() == $ip->toString()) {
+        // Resolved IP check
+        $current = Ip::parse(
+            gethostbyname((string)gethostname())
+        );
+
+        if ($current->matches($ip)) {
             $augmentor->setHeaderForAnyRequest('x-allow-ip-range', 'loopback');
             return;
         }
 
+
+        // Apply request
         if ($request) {
             // Test for passthrough requests
             if ($request->matches('.well-known/pki-validation/')) {

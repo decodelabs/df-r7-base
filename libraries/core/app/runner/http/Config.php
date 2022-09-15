@@ -3,17 +3,21 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\app\runner\http;
 
 use df;
 use df\core;
 use df\link;
 
+use DecodeLabs\Compass\Ip;
+use DecodeLabs\Compass\Range;
+
 class Config extends core\Config
 {
-    const ID = 'http';
-    const STORE_IN_MEMORY = true;
-    const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
+    public const ID = 'http';
+    public const STORE_IN_MEMORY = true;
+    public const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
 
     public function getDefaultValues(): array
     {
@@ -204,7 +208,7 @@ class Config extends core\Config
     {
         if ($ranges !== null) {
             foreach ($ranges as $i => $range) {
-                $ranges = (string)link\IpRange::factory($range);
+                $ranges = (string)Range::parse($range);
             }
         }
 
@@ -217,7 +221,7 @@ class Config extends core\Config
         $output = [];
 
         foreach ($this->values->ipRanges as $range) {
-            $output[] = link\IpRange::factory((string)$range);
+            $output[] = Range::parse((string)$range);
         }
 
         return $output;
