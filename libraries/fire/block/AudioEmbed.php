@@ -74,13 +74,10 @@ class AudioEmbed extends Base
     // Render
     public function render()
     {
-        /** @var Audio|null $output */
         $output = Html::$embed->audio($this->_embedCode);
 
         if ($output) {
-            /** @var Element $output */
-            $output = $output->render();
-            $output
+            $output = $output->render()
                 ->addClass('block')
                 ->setDataAttribute('type', $this->getName());
         }

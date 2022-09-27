@@ -29,7 +29,7 @@
         "decodelabs/sanctum": "^0.1",
         "decodelabs/spectrum": "^0.2",
         "decodelabs/systemic": "^0.9",
-        "decodelabs/tagged": "^0.14",
+        "decodelabs/tagged": "^0.14.5",
         "decodelabs/terminus": "^0.8",
         "decodelabs/tightrope": "^0.1",
         "decodelabs/typify": "^0.2",
