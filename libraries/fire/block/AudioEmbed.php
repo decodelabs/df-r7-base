@@ -16,6 +16,8 @@ use df\aura;
 use DecodeLabs\Tagged as Html;
 use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
+use DecodeLabs\Tagged\Embed\Audio;
+use DecodeLabs\Tagged\Element;
 
 class AudioEmbed extends Base
 {
@@ -72,10 +74,13 @@ class AudioEmbed extends Base
     // Render
     public function render()
     {
+        /** @var Audio|null $output */
         $output = Html::$embed->audio($this->_embedCode);
 
         if ($output) {
-            $output = $output->render()
+            /** @var Element $output */
+            $output = $output->render();
+            $output
                 ->addClass('block')
                 ->setDataAttribute('type', $this->getName());
         }

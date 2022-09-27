@@ -53,8 +53,9 @@ class TaskVeneerStub extends arch\node\Task
 
 
         // Generate
-        $dir = Atlas::createDir($this->app->getPath() . '/stubs');
-        $generator = new Generator($dir);
+        $scanDir = Atlas::dir($this->app->getPath());
+        $stubDir = Atlas::createDir($this->app->getPath() . '/stubs');
+        $generator = new Generator($scanDir, $stubDir);
         $generator->generate($binding);
 
         Cli::success('done');

@@ -16,6 +16,7 @@ use df\aura;
 use DecodeLabs\Tagged as Html;
 use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
+use DecodeLabs\Tagged\Embed\Video;
 
 class VideoEmbed extends Base
 {
@@ -78,6 +79,7 @@ class VideoEmbed extends Base
         if (!$view->consent->has('statistics')) {
             $output = $view->apex->template('cookies/#elements/VideoPlaceholder.html');
         } else {
+            /** @var Video|null $output */
             $output = Html::$embed->video($this->_embedCode);
 
             if (!empty($output)) {

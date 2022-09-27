@@ -33,7 +33,7 @@
         "decodelabs/terminus": "^0.8",
         "decodelabs/tightrope": "^0.1",
         "decodelabs/typify": "^0.2",
-        "decodelabs/veneer": "^0.10",
+        "decodelabs/veneer": "^0.10.7",
 
         "guzzlehttp/guzzle": "^7.2",
         "erusev/parsedown": "^1.7",
@@ -70,6 +70,7 @@
     "prefer-stable": true,
     "scripts": {
         "analyze": "phpstan analyze",
-        "clear-phpstan": "phpstan clear-result-cache"
+        "clear-phpstan": "phpstan clear-result-cache",
+        "veneer-stub": "vendor/bin/veneer-stub"
     }
 }
