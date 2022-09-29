@@ -34,7 +34,7 @@
         "decodelabs/terminus": "^0.8",
         "decodelabs/tightrope": "^0.1",
         "decodelabs/typify": "^0.2",
-        "decodelabs/veneer": "^0.10.10",
+        "decodelabs/veneer": "^0.10.11",
 
         "guzzlehttp/guzzle": "^7.2",
         "erusev/parsedown": "^1.7",
