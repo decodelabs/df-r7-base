@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Genesis;
 
+use df;
 use df\core;
 use df\core\app\Base as AppBase;
 use df\Launchpad;
@@ -95,11 +96,34 @@ class Hub implements HubInterface
 
     public function initializeLoaders(StackLoader $loader): void
     {
-        Launchpad::initLoaders(
-            $this->appPath,
-            $this->context->getStartTime(),
-            false
-        );
+        $this->ensureCompileConstants();
+
+        // Ensure root has not been mangled by symlink
+        if (Launchpad::$rootPath === dirname(dirname(dirname(__DIR__)))) {
+            $dir = $this->appPath.'/vendor/df-r7/base';
+
+            if (Launchpad::$rootPath !== $dir && is_dir($dir)) {
+                Launchpad::$rootPath = $dir;
+            }
+        }
+
+        // Load core library
+        $this->loadBaseClass('core/_manifest');
+
+        // Register loader
+        if (Launchpad::$isCompiled) {
+            Launchpad::$loader = new core\loader\Base(['root' => dirname(Launchpad::$rootPath)]);
+        } else {
+            Launchpad::$loader = new core\loader\Development(['root' => dirname(Launchpad::$rootPath)]);
+        }
+
+        // Packages
+        Launchpad::$loader->initRootPackages(Launchpad::$rootPath, $this->appPath);
+
+
+
+
+
 
         if ($this->analysis) {
             $this->initForAnalysis();
@@ -111,6 +135,40 @@ class Hub implements HubInterface
             $this->context->hub->getApplicationPath()
         );
     }
+
+
+
+    protected function ensureCompileConstants()
+    {
+        if (!defined('df\\COMPILE_TIMESTAMP')) {
+            define('df\\COMPILE_TIMESTAMP', null);
+            define('df\\COMPILE_BUILD_ID', null);
+            define('df\\COMPILE_ROOT_PATH', null);
+            define('df\\COMPILE_ENV_MODE', null);
+        }
+
+        if (
+            df\COMPILE_ROOT_PATH &&
+            is_dir(df\COMPILE_ROOT_PATH)
+        ) {
+            Launchpad::$isCompiled = true;
+            Launchpad::$compileTimestamp = df\COMPILE_TIMESTAMP;
+            Launchpad::$rootPath = df\COMPILE_ROOT_PATH;
+        }
+    }
+
+    protected function loadBaseClass($path): void
+    {
+        if (Launchpad::$isCompiled) {
+            $path = Launchpad::$rootPath.'/'.$path.'.php';
+        } else {
+            $path = Launchpad::$rootPath.'/libraries/'.$path.'.php';
+        }
+
+        require_once $path;
+    }
+
+
 
     protected function initForAnalysis(): void
     {

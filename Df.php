@@ -9,18 +9,9 @@ if (array_pop($parts) != 'entry') {
 }
 
 $appPath = implode('/', $parts);
-$bootstrapPath = $appPath.'/vendor/decodelabs/genesis/src/bootstrap.php';
-
-// Genesis not found - load Legacy DF
-if (!file_exists($bootstrapPath)) {
-    require_once __DIR__.'/Df.Legacy.php';
-    return;
-}
-
-
 
 // Load Genesis bootstrap
-require_once $bootstrapPath;
+require_once $appPath.'/vendor/decodelabs/genesis/src/bootstrap.php';
 require_once __DIR__.'/provider/R7/Genesis/Bootstrap.php';
 
 (new DecodeLabs\R7\Genesis\Bootstrap(__DIR__, $appPath))->run();

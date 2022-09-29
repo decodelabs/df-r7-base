@@ -15,6 +15,7 @@ use DecodeLabs\Genesis\Kernel as KernelInterface;
 class Kernel implements KernelInterface
 {
     protected Context $context;
+    protected bool $shutdown = false;
 
     public function __construct(Context $context)
     {
@@ -29,6 +30,23 @@ class Kernel implements KernelInterface
 
     public function shutdown(): void
     {
-        Launchpad::shutdown();
+        if ($this->shutdown) {
+            return;
+        }
+
+        $this->shutdown = true;
+
+        if (Launchpad::$app) {
+            Launchpad::$app->shutdown();
+        }
+
+        if (Launchpad::$loader) {
+            Launchpad::$loader->shutdown();
+        }
+
+        Launchpad::$app = null;
+        Launchpad::$loader = null;
+
+        exit;
     }
 }

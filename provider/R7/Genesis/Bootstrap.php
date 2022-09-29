@@ -49,7 +49,7 @@ class Bootstrap extends Base
             $paths = [];
         }
 
-        $paths[$this->rootPath.'/Df.Base.php'] = $this->appPath.'/vendor';
+        $paths[$this->rootPath.'/Df.Genesis.php'] = $this->appPath.'/vendor';
 
         return $paths;
     }
@@ -60,14 +60,10 @@ class Bootstrap extends Base
     public function execute(string $vendorPath): void
     {
         // Load Genesis DF
-        if (class_exists(Genesis::class)) {
-            if (file_exists($vendorPath.'/df-r7/base/Df.Genesis.php')) {
-                require_once $vendorPath.'/df-r7/base/Df.Genesis.php';
-            } else {
-                require_once $this->appPath.'/vendor/df-r7/base/Df.Genesis.php';
-            }
+        if (file_exists($vendorPath.'/df-r7/base/Df.Genesis.php')) {
+            require_once $vendorPath.'/df-r7/base/Df.Genesis.php';
         } else {
-            require_once $this->appPath.'/vendor/df-r7/base/Df.Legacy.php';
+            require_once $this->appPath.'/vendor/df-r7/base/Df.Genesis.php';
         }
     }
 }

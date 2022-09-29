@@ -12,18 +12,20 @@ use df\core;
 use DecodeLabs\Genesis;
 use DecodeLabs\R7\Genesis\Hub;
 
-require_once __DIR__.'/Df.Base.php';
-
-class Launchpad extends LaunchpadBase
+class Launchpad
 {
+    public static bool $isCompiled = false;
+    public static ?int $compileTimestamp = null;
+
+    public static string $rootPath = __DIR__;
+
+    public static $loader;
+    public static $app;
+    public static $runner;
+
+
     public static function run(): void
     {
         Genesis::run(Hub::class);
-    }
-
-    public static function initEnvironment(): float
-    {
-        Genesis::initialize(Hub::class);
-        return Genesis::getStartTime();
     }
 }
