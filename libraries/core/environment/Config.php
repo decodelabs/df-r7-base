@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\environment;
 
 use df;
@@ -15,9 +16,9 @@ use DecodeLabs\Exceptional;
 
 class Config extends core\Config
 {
-    const ID = 'environment';
-    const STORE_IN_MEMORY = true;
-    const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
+    public const ID = 'environment';
+    public const STORE_IN_MEMORY = true;
+    public const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
 
     public function getDefaultValues(): array
     {

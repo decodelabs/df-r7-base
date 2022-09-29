@@ -22,18 +22,19 @@
         "decodelabs/eventful": "^0.3",
         "decodelabs/exceptional": "^0.4",
         "decodelabs/exemplar": "^0.3",
+        "decodelabs/genesis": "^0.1.1",
         "decodelabs/glitch": "^0.18.2",
         "decodelabs/idiom": "^0.2",
         "decodelabs/lucid": "^0.3",
         "decodelabs/metamorph": "^0.5",
         "decodelabs/sanctum": "^0.1",
         "decodelabs/spectrum": "^0.2",
-        "decodelabs/systemic": "^0.9",
+        "decodelabs/systemic": "^0.9.4",
         "decodelabs/tagged": "^0.14.5",
         "decodelabs/terminus": "^0.8",
         "decodelabs/tightrope": "^0.1",
         "decodelabs/typify": "^0.2",
-        "decodelabs/veneer": "^0.10.7",
+        "decodelabs/veneer": "^0.10.8",
 
         "guzzlehttp/guzzle": "^7.2",
         "erusev/parsedown": "^1.7",
@@ -53,7 +54,7 @@
     },
     "autoload": {
         "psr-4": {
-            "DecodeLabs\\R7\\": "provider/"
+            "DecodeLabs\\": "provider/"
         }
     },
     "autoload-dev": {
