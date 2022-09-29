@@ -18,46 +18,38 @@ class TaskVeneerStub extends arch\node\Task
 {
     public function execute()
     {
-        // Get bindings
-        $manager = Veneer::getDefaultManager();
-        $bindings = $manager->getBindings();
-
         // Prepare arguments
         Cli::getCommandDefinition()
-            ->addArgument('task', 'Task entry')
-            ->addArgument('?binding', 'Name of the binding');
+            ->addArgument('?stubPath', 'Directory to save the stub');
         Cli::prepareArguments();
 
-        // Ask for binding name
-        Cli::newLine();
-        foreach ($bindings as $proxyClass => $binding) {
-            Cli::{'>.yellow'}($proxyClass);
-        }
-        Cli::newLine();
 
-        if (null === ($bindingName = Cli::getArgument('binding'))) {
-            $bindingName = Cli::newQuestion('Which binding do you want to stub?')
-                //->setOptions(...array_keys($bindings))
-                ->prompt();
+        // Ask for stub path
+        if (null === ($stubPath = Cli::getArgument('stubPath'))) {
+            $stubPath = 'stubs/';
+            //$stubPath = Cli::ask('Where would you like to save it?', $stubPath);
         }
 
-        $bindingName = ucfirst($bindingName);
+        $scanDir = Atlas::dir(getcwd());
+        $stubDir = Atlas::dir($stubPath);
 
-        // Load binding
-        if (!isset($bindings[$bindingName])) {
-            Cli::operative('Binding not found');
+        // Scan
+        $generator = new Generator($scanDir, $stubDir);
+        $bindings = $generator->scan();
+
+        if (empty($bindings)) {
+            Cli::warning('There are no Veneer bindings to stub');
             exit;
         }
 
-        $binding = $bindings[$bindingName];
+        Cli::newLine();
 
+        foreach ($bindings as $binding) {
+            Cli::{'brightMagenta'}($binding->getProviderClass().' ');
+            $generator->generate($binding);
+            Cli::success('done');
+        }
 
-        // Generate
-        $scanDir = Atlas::dir($this->app->getPath());
-        $stubDir = Atlas::createDir($this->app->getPath() . '/stubs');
-        $generator = new Generator($scanDir, $stubDir);
-        $generator->generate($binding);
-
-        Cli::success('done');
+        Cli::newLine();
     }
 }
