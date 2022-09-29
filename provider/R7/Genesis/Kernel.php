@@ -19,6 +19,7 @@ class Kernel implements KernelInterface
     public function __construct(Context $context)
     {
         $this->context = $context;
+        error_reporting(E_ALL | E_STRICT);
     }
 
     public function run(): void
