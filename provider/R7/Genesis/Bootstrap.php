@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Genesis;
 
+use DecodeLabs\Genesis;
 use DecodeLabs\Genesis\Bootstrap as Base;
 
 class Bootstrap extends Base
@@ -59,11 +60,14 @@ class Bootstrap extends Base
     public function execute(string $vendorPath): void
     {
         // Load Genesis DF
-
-        if (file_exists($vendorPath.'/df-r7/base/Df.Genesis.php')) {
-            require_once $vendorPath.'/df-r7/base/Df.Genesis.php';
+        if (class_exists(Genesis::class)) {
+            if (file_exists($vendorPath.'/df-r7/base/Df.Genesis.php')) {
+                require_once $vendorPath.'/df-r7/base/Df.Genesis.php';
+            } else {
+                require_once $this->appPath.'/vendor/df-r7/base/Df.Genesis.php';
+            }
         } else {
-            require_once $this->appPath.'/vendor/df-r7/base/Df.Genesis.php';
+            require_once $this->appPath.'/vendor/df-r7/base/Df.Legacy.php';
         }
     }
 }
