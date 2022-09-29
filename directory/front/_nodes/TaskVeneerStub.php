@@ -18,20 +18,8 @@ class TaskVeneerStub extends arch\node\Task
 {
     public function execute()
     {
-        // Prepare arguments
-        Cli::getCommandDefinition()
-            ->addArgument('?stubPath', 'Directory to save the stub');
-        Cli::prepareArguments();
-
-
-        // Ask for stub path
-        if (null === ($stubPath = Cli::getArgument('stubPath'))) {
-            $stubPath = 'stubs/';
-            //$stubPath = Cli::ask('Where would you like to save it?', $stubPath);
-        }
-
         $scanDir = Atlas::dir(getcwd());
-        $stubDir = Atlas::dir($stubPath);
+        $stubDir = Atlas::dir('stubs/');
 
         // Scan
         $generator = new Generator($scanDir, $stubDir);
