@@ -21,6 +21,7 @@ class Loader
         $registryKey = 'scaffold('.$context->location->getPath()->getDirname().')';
 
         if ($output = Legacy::getRegistryObject($registryKey)) {
+            /** @var Scaffold $output */
             return $output;
         }
 

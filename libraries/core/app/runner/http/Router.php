@@ -40,6 +40,7 @@ class Router implements core\IRegistryObject
             Legacy::setRegistryObject($output);
         }
 
+        /** @var self $output */
         return $output;
     }
 

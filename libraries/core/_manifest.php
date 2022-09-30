@@ -290,13 +290,14 @@ interface IManager extends IRegistryObject
 
 trait TManager
 {
-    public static function getInstance(): self
+    public static function getInstance(): static
     {
         if (!$output = Legacy::getRegistryObject(static::REGISTRY_PREFIX)) {
             $output = static::_getDefaultInstance();
             static::setInstance($output);
         }
 
+        /** @var static $output */
         return $output;
     }
 

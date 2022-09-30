@@ -144,6 +144,7 @@ abstract class Model implements IModel, Dumpable
     public static function purgeLiveCache()
     {
         foreach (Legacy::findRegistryObjects(self::REGISTRY_PREFIX) as $key => $model) {
+            /** @var Model $model */
             $model->_purgeLiveCache();
         }
     }
