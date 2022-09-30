@@ -13,8 +13,9 @@ use df\flex;
 use df\halo;
 
 use DecodeLabs\Atlas;
-use DecodeLabs\Systemic;
 use DecodeLabs\Glitch;
+use DecodeLabs\Genesis;
+use DecodeLabs\Systemic;
 
 class Bridge implements IBridge
 {
@@ -23,7 +24,7 @@ class Bridge implements IBridge
 
     public function __construct()
     {
-        $this->_execPath = df\Launchpad::$app->getLocalDataPath().'/bower';
+        $this->_execPath = Genesis::$hub->getLocalDataPath().'/bower';
     }
 
     public function setInstallPath($path)
@@ -51,7 +52,7 @@ class Bridge implements IBridge
     public function generate(array $deps)
     {
         $json1 = flex\Json::toString([
-            'name' => df\Launchpad::$app->getName(),
+            'name' => Genesis::$hub->getApplicationName(),
             'ignore' => [],
             'dependencies' => $deps
         ]);

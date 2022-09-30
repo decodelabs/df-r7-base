@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\node\task;
 
 use df;
@@ -12,24 +13,25 @@ use df\halo;
 use df\link;
 use df\flex;
 
+use DecodeLabs\Deliverance;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 use DecodeLabs\Systemic;
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
 use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Terminus\Session;
-use DecodeLabs\Deliverance;
-use DecodeLabs\Exceptional;
 
 class Manager implements arch\node\ITaskManager
 {
     use core\TManager;
 
-    const REGISTRY_PREFIX = 'manager://task';
+    public const REGISTRY_PREFIX = 'manager://task';
 
     public function launch($request, ?Session $session=null, $user=null, bool $dfSource=false, bool $decoratable=null): ProcessResult
     {
         $request = arch\Request::factory($request);
-        $path = df\Launchpad::$app->path.'/entry/';
-        $path .= df\Launchpad::$app->envId.'.php';
+        $path = Genesis::$hub->getApplicationPath().'/entry/';
+        $path .= Genesis::$environment->getName().'.php';
         $args = ['task', $request];
 
         if ($dfSource) {
@@ -55,8 +57,8 @@ class Manager implements arch\node\ITaskManager
     public function launchBackground($request, $user=null, bool $dfSource=false, bool $decoratable=null)
     {
         $request = arch\Request::factory($request);
-        $path = df\Launchpad::$app->path.'/entry/';
-        $path .= df\Launchpad::$app->envId.'.php';
+        $path = Genesis::$hub->getApplicationPath().'/entry/';
+        $path .= Genesis::$environment->getName().'.php';
         $args = ['task', $request];
 
         if ($dfSource) {
@@ -93,7 +95,7 @@ class Manager implements arch\node\ITaskManager
     public function invoke($request): void
     {
         $request = arch\Request::factory($request);
-        $context = arch\Context::factory($request, 'Task', true);
+        $context = arch\Context::factory($request, true);
         $node = arch\node\Base::factory($context);
 
         if (!$node instanceof arch\node\ITaskNode) {

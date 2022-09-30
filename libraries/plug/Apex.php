@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\plug;
 
 use df;
@@ -16,6 +17,7 @@ use df\arch\scaffold\Loader as ScaffoldLoader;
 
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 
 class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
 {
@@ -147,15 +149,13 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
     }
 
     // Nodes
-    public function nodeExists($request, $runMode=null)
+    public function nodeExists($request)
     {
         $request = $this->context->uri->directoryRequest($request);
 
-        if ($runMode === null) {
-            $runMode = $this->context->getRunMode();
-        }
-
-        if (null !== arch\node\Base::getClassFor($request, $runMode)) {
+        if (null !== arch\node\Base::getClassFor(
+            $request, Genesis::$kernel->getMode()
+        )) {
             return true;
         }
 
@@ -171,10 +171,10 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
         return arch\Transformer::isNodeDeliverable($context);
     }
 
-    public function getNode($request, $runMode=null)
+    public function getNode($request)
     {
         $request = $this->context->uri->directoryRequest($request);
-        $context = arch\Context::factory($request, $runMode);
+        $context = arch\Context::factory($request);
         return arch\node\Base::factory($context);
     }
 
@@ -305,7 +305,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
             return $entry->getBody();
         }
 
-        return $this->context->app->getName();
+        return Genesis::$hub->getApplicationName();
     }
 
     public function clearMenuCache($id=null)

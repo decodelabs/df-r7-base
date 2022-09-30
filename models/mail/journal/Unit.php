@@ -3,20 +3,20 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\models\mail\journal;
 
-use df;
 use df\core;
-use df\apex;
 use df\axis;
-use df\opal;
 use df\flow;
+
+use DecodeLabs\Genesis;
 
 class Unit extends axis\unit\Table
 {
-    const BROADCAST_HOOK_EVENTS = false;
+    public const BROADCAST_HOOK_EVENTS = false;
 
-    const SEARCH_FIELDS = [
+    public const SEARCH_FIELDS = [
         'name' => 3,
         'email' => 1
     ];
@@ -56,7 +56,7 @@ class Unit extends axis\unit\Table
             'key1' => $message->getJournalKey1(),
             'key2' => $message->getJournalKey2(),
             'expireDate' => $expire,
-            'environmentMode' => $this->context->app->envMode
+            'environmentMode' => Genesis::$environment->getMode()
         ];
 
         $emails = [];

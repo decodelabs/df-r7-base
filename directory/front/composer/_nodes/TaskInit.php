@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\composer\_nodes;
 
 use df;
@@ -11,8 +12,9 @@ use df\apex;
 use df\halo;
 use df\arch;
 
-use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
+use DecodeLabs\Genesis;
+use DecodeLabs\Terminus as Cli;
 
 class TaskInit extends arch\node\Task
 {
@@ -20,7 +22,7 @@ class TaskInit extends arch\node\Task
     {
         $this->ensureDfSource();
 
-        $file = Atlas::file($this->app->path.'/composer.json');
+        $file = Atlas::file(Genesis::$hub->getApplicationPath().'/composer.json');
 
         if ($file->exists()) {
             if (!isset($this->request['no-update'])) {
@@ -32,7 +34,7 @@ class TaskInit extends arch\node\Task
 
 
         // Name
-        $parts = explode('/', $this->app->path);
+        $parts = explode('/', Genesis::$hub->getApplicationPath());
         $appName = array_pop($parts);
         $container = array_pop($parts);
 
@@ -46,7 +48,7 @@ class TaskInit extends arch\node\Task
         $description = $this->_askFor('Enter app name', function ($answer) {
             return $this->data->newValidator()
                 ->addRequiredField('appName', 'text');
-        }, $this->app->getName());
+        }, Genesis::$hub->getApplicationName());
 
 
         // Author

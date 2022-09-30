@@ -10,9 +10,9 @@ use df;
 use df\core;
 
 use DecodeLabs\Atlas;
-
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
+use DecodeLabs\Glitch\Dumpable;
 
 abstract class Config implements IConfig, Dumpable
 {
@@ -23,6 +23,9 @@ abstract class Config implements IConfig, Dumpable
     public const ID = null;
     public const USE_ENVIRONMENT_ID_BY_DEFAULT = false;
     public const STORE_IN_MEMORY = true;
+
+
+    public static string $envId;
 
     /**
      * @var df\core\collection\Tree
@@ -205,7 +208,7 @@ abstract class Config implements IConfig, Dumpable
     {
         $parts = explode('/', $this->_id);
         $name = array_pop($parts);
-        $envId = df\Launchpad::$app->envId;
+        $envId = self::$envId;
         $basePath = $this->_getBasePath();
 
         if (!empty($parts)) {
@@ -240,7 +243,7 @@ abstract class Config implements IConfig, Dumpable
         if ($this->_filePath) {
             $savePath = $this->_filePath;
         } else {
-            $envId = df\Launchpad::$app->envId;
+            $envId = self::$envId;
             $parts = explode('/', $this->_id);
             $name = array_pop($parts);
             $basePath = $this->_getBasePath();
@@ -267,7 +270,7 @@ abstract class Config implements IConfig, Dumpable
 
     private function _getBasePath()
     {
-        return df\Launchpad::$app->path.'/config';
+        return Genesis::$hub->getApplicationPath().'/config';
     }
 
 

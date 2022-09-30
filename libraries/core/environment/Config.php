@@ -25,9 +25,6 @@ class Config extends core\Config
         return [
             'mode' => 'development',
             'binaryPaths' => [],
-            'distributed' => false,
-            'activeLocations' => [],
-            'maintenanceMode' => false,
             'daemonsEnabled' => false,
             'daemonUser' => $this->_extrapolateDaemonUser(),
             'daemonGroup' => $this->_extrapolateDaemonGroup()
@@ -67,39 +64,6 @@ class Config extends core\Config
     public function getBinaryPath($id)
     {
         return $this->values->binaryPaths->get($id, $id);
-    }
-
-    // Load balancing
-    public function isDistributed(bool $flag=null)
-    {
-        if ($flag !== null) {
-            $this->values->distributed = $flag;
-            return $this;
-        }
-
-        return (bool)$this->values['distributed'];
-    }
-
-    // Locations
-    public function getActiveLocations()
-    {
-        if (!isset($this->values->activeLocations)) {
-            return [];
-        }
-
-        return $this->values->activeLocations->toArray();
-    }
-
-
-    // Maintenance
-    public function isMaintenanceMode(bool $flag=null)
-    {
-        if ($flag !== null) {
-            $this->values->maintenanceMode = $flag;
-            return $this;
-        }
-
-        return $this->values['maintenanceMode'];
     }
 
 

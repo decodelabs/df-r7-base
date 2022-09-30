@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\media\_nodes;
 
 use df;
@@ -11,17 +12,18 @@ use df\apex;
 use df\arch;
 use df\neon;
 
-use DecodeLabs\Dictum;
-use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
+use DecodeLabs\Dictum;
+use DecodeLabs\Genesis;
+use DecodeLabs\Terminus as Cli;
 
 class TaskPurgeLargeFiles extends arch\node\Task
 {
-    const THRESHOLD = '2mb';
+    public const THRESHOLD = '2mb';
 
     public function execute()
     {
-        if (!$this->app->isDevelopment()) {
+        if (!Genesis::$environment->isDevelopment()) {
             Cli::error('This task cannot be run on production systems');
             return;
         }

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\tasks\_nodes;
 
 use df;
@@ -10,8 +11,9 @@ use df\core;
 use df\apex;
 use df\arch;
 
-use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
+use DecodeLabs\Genesis;
+use DecodeLabs\Terminus as Cli;
 
 class TaskLaunchQueued extends arch\node\Task
 {
@@ -41,7 +43,7 @@ class TaskLaunchQueued extends arch\node\Task
 
         $this->_log = $this->data->task->log->newRecord([
                 'request' => $this->_entry['request'],
-                'environmentMode' => df\Launchpad::$app->envMode,
+                'environmentMode' => Genesis::$environment->getMode(),
                 'status' => 'processing'
             ])
             ->save();

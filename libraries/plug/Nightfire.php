@@ -7,12 +7,11 @@
 namespace df\plug;
 
 use df;
-use df\core;
-use df\plug;
 use df\arch;
 use df\aura;
 use df\fire;
 
+use DecodeLabs\Genesis;
 use DecodeLabs\Metamorph;
 
 class Nightfire implements arch\IDirectoryHelper
@@ -131,7 +130,7 @@ class Nightfire implements arch\IDirectoryHelper
             ->toValue('body');
 
         if (!$body) {
-            if (!df\Launchpad::$app->isProduction()) {
+            if (!Genesis::$environment->isProduction()) {
                 return $this->getView()->html->flashMessage('Dynamic element \''.$slug.'\' not found', 'error');
             }
 

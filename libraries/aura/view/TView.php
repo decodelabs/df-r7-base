@@ -294,14 +294,14 @@ trait TView
 
     protected function _beforeRender()
     {
-        if ($this instanceof IThemedView && $this->_canThemeProcess()) {
+        if ($this instanceof IThemedView) {
             $this->getTheme()->beforeViewRender($this);
         }
     }
 
     protected function _onContentRender($content)
     {
-        if ($this instanceof IThemedView && $this->_canThemeProcess()) {
+        if ($this instanceof IThemedView) {
             $content = $this->getTheme()->onViewContentRender($this, $content);
         }
 
@@ -310,7 +310,7 @@ trait TView
 
     protected function _onLayoutRender($content)
     {
-        if ($this instanceof IThemedView && $this->_canThemeProcess()) {
+        if ($this instanceof IThemedView) {
             $content = $this->getTheme()->onViewLayoutRender($this, $content);
         }
 
@@ -319,20 +319,11 @@ trait TView
 
     protected function _afterRender($content)
     {
-        if ($this instanceof IThemedView && $this->_canThemeProcess()) {
+        if ($this instanceof IThemedView) {
             $content = $this->getTheme()->afterViewRender($this, $content);
         }
 
         return $content;
-    }
-
-    protected function _canThemeProcess(): bool
-    {
-        return !df\Launchpad::$app->isMaintenance
-                || $this->context->request->isArea('admin')
-                || $this->context->request->isArea('devtools')
-                || $this->context->request->isArea('mail')
-                || $this->context->request->matches('account/');
     }
 
     private function _checkContentProvider()

@@ -6,11 +6,9 @@
 
 namespace df\aura\theme\facet;
 
-use df;
-use df\core;
 use df\aura;
-use df\arch;
-use df\spur;
+
+use DecodeLabs\Genesis;
 
 class GoogleTagManager extends Base
 {
@@ -80,7 +78,7 @@ class GoogleTagManager extends Base
         $devSuffix = $devQuery = '';
 
         if (
-            !$view->app->isProduction() &&
+            !Genesis::$environment->isProduction() &&
             !empty($this->_devAuth) &&
             !empty($this->_devEnv)
         ) {

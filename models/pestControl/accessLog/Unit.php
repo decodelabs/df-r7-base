@@ -3,16 +3,16 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\models\pestControl\accessLog;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
+
+use DecodeLabs\Genesis;
 
 class Unit extends axis\unit\Table
 {
-    const SEARCH_FIELDS = [
+    public const SEARCH_FIELDS = [
         'code' => [
             'operator' => '=',
             'weight' => 5
@@ -21,11 +21,11 @@ class Unit extends axis\unit\Table
         'message' => 2
     ];
 
-    const ORDERABLE_FIELDS = [
+    public const ORDERABLE_FIELDS = [
         'date', 'mode', 'code', 'request', 'seen'
     ];
 
-    const DEFAULT_ORDER = 'date DESC';
+    public const DEFAULT_ORDER = 'date DESC';
 
     protected function createSchema($schema)
     {
@@ -52,7 +52,7 @@ class Unit extends axis\unit\Table
 
     public function logAccess($code=403, $request=null, $message=null)
     {
-        $mode = $this->context->getRunMode();
+        $mode = Genesis::$kernel->getMode();
         $request = $this->_model->normalizeLogRequest($request, $mode);
 
         return $this->newRecord([
@@ -62,7 +62,7 @@ class Unit extends axis\unit\Table
                 'message' => $message,
                 'userAgent' => $this->_model->logCurrentAgent()['id'],
                 'user' => $this->_model->getLogUserId(),
-                'isProduction' => $this->context->app->isProduction()
+                'isProduction' => Genesis::$environment->isProduction()
             ])
             ->save();
     }

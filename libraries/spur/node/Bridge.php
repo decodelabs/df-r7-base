@@ -13,11 +13,11 @@ use df\flex;
 use df\halo;
 
 use DecodeLabs\Atlas;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch;
+use DecodeLabs\Genesis;
 use DecodeLabs\Systemic;
 use DecodeLabs\Terminus\Session;
-
-use DecodeLabs\Glitch;
-use DecodeLabs\Exceptional;
 
 class Bridge implements IBridge
 {
@@ -25,7 +25,7 @@ class Bridge implements IBridge
 
     public function __construct()
     {
-        $this->_nodePath = df\Launchpad::$app->getLocalDataPath().'/node';
+        $this->_nodePath = Genesis::$hub->getLocalDataPath().'/node';
     }
 
     public function find($name)

@@ -17,6 +17,7 @@ use DecodeLabs\Disciple\Client\Generic as GenericClient;
 use DecodeLabs\Disciple\GateKeeper as GateKeeperInterface;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 
 use Throwable;
 
@@ -52,7 +53,7 @@ class Adapter implements
             return $this->client;
         }
 
-        switch ($mode = Launchpad::$app->getRunMode()) {
+        switch ($mode = Genesis::$kernel->getMode()) {
             case 'Http':
                 try {
                     $context = Context::getCurrent();

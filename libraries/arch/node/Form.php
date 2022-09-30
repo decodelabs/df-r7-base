@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\node;
 
 use df;
@@ -14,21 +15,22 @@ use df\link;
 
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 
 abstract class Form extends Base implements IFormNode
 {
     use TForm;
 
-    const SESSION_ID_KEY = 'fsid';
-    const MAX_SESSIONS = 15;
-    const SESSION_PRUNE_THRESHOLD = 5400; // 1.5 hrs
-    const SESSION_AUTO_RESUME = true;
-    const AUTO_INSTANCE_ID_IGNORE = ['rf', 'rt'];
+    public const SESSION_ID_KEY = 'fsid';
+    public const MAX_SESSIONS = 15;
+    public const SESSION_PRUNE_THRESHOLD = 5400; // 1.5 hrs
+    public const SESSION_AUTO_RESUME = true;
+    public const AUTO_INSTANCE_ID_IGNORE = ['rf', 'rt'];
 
-    const DEFAULT_EVENT = 'save';
-    const DEFAULT_REDIRECT = null;
+    public const DEFAULT_EVENT = 'save';
+    public const DEFAULT_REDIRECT = null;
 
-    const QUERY_RESET = false;
+    public const QUERY_RESET = false;
 
     private $_isNew = false;
     private $_isComplete = false;
@@ -39,7 +41,7 @@ abstract class Form extends Base implements IFormNode
     {
         parent::__construct($context);
 
-        if ($this->context->getRunMode() !== 'Http') {
+        if (Genesis::$kernel->getMode() !== 'Http') {
             throw Exceptional::Logic(
                 'Form nodes can only be used in Http run mode'
             );
@@ -332,7 +334,7 @@ abstract class Form extends Base implements IFormNode
             $decorator->renderUi();
         } elseif (method_exists($this, 'createUi')) {
             $this->createUi();
-        } elseif ($this->context->app->isDevelopment()) {
+        } elseif (Genesis::$environment->isDevelopment()) {
             $this->content->add(
                 'p',
                 'This form handler has no ui generator - you need to implement function createUi() or override function handleGetRequest()'

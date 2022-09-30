@@ -219,12 +219,15 @@ class Descriptor implements IDescriptor
 
     protected function normalizePath(?string $path)
     {
-        if (!df\Launchpad::$loader || $path === null) {
+        if ($path === null) {
             return $path;
         }
 
-        $locations = df\Launchpad::$loader->getLocations();
-        $locations['app'] = df\Launchpad::$app->path;
+        $locations = [
+            'root' => dirname(Genesis::$build->path),
+            'app' => Genesis::$hub->getApplicationPath()
+        ];
+
         $path = (string)preg_replace('/[[:^print:]]/', '', $path);
 
         foreach ($locations as $key => $match) {

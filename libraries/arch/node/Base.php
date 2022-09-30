@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\node;
 
 use df;
@@ -14,8 +15,9 @@ use df\link;
 use df\arch\scaffold\Loader as ScaffoldLoader;
 
 use DecodeLabs\Dictum;
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
+use DecodeLabs\Glitch\Dumpable;
 
 class Base implements INode, Dumpable
 {
@@ -23,13 +25,13 @@ class Base implements INode, Dumpable
     use arch\TDirectoryAccessLock;
     use arch\TResponseForcer;
 
-    const OPTIMIZE = false;
+    public const OPTIMIZE = false;
 
-    const DEFAULT_ACCESS = null;
-    const CHECK_ACCESS = null;
-    const ACCESS_SIGNIFIERS = null;
+    public const DEFAULT_ACCESS = null;
+    public const CHECK_ACCESS = null;
+    public const ACCESS_SIGNIFIERS = null;
 
-    const SITEMAP = false;
+    public const SITEMAP = false;
 
     private $_shouldOptimize = null;
     private $_shouldCheckAccess = null;
@@ -41,7 +43,7 @@ class Base implements INode, Dumpable
     {
         $class = self::getClassFor(
             $context->location,
-            $context->getRunMode(),
+            Genesis::$kernel->getMode(),
             $isDefault
         );
 
@@ -264,7 +266,7 @@ class Base implements INode, Dumpable
     {
         $type = $this->context->location->getType();
 
-        if ($this->context->getRunMode() == 'Http') {
+        if (Genesis::$kernel->getMode() == 'Http') {
             $mode = ucfirst(strtolower($this->context->runner->getHttpRequest()->getMethod()));
 
             if ($mode == 'Head') {
@@ -326,7 +328,7 @@ class Base implements INode, Dumpable
 
     public function executeAsAjax()
     {
-        switch ($this->context->getRunMode()) {
+        switch (Genesis::$kernel->getMode()) {
             case 'Http':
                 if (method_exists($this, 'executeAsHtml')) {
                     $this->request->setType(null);
@@ -387,7 +389,7 @@ class Base implements INode, Dumpable
     public function glitchDump(): iterable
     {
         yield 'properties' => [
-            '*type' => $this->context->getRunMode(),
+            '*type' => Genesis::$kernel->getMode(),
             '*context' => $this->context
         ];
     }

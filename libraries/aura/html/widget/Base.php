@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget;
 
 use df;
@@ -11,15 +12,15 @@ use df\aura;
 use df\arch;
 use df\flex;
 
-use DecodeLabs\Tagged as Html;
-
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
+use DecodeLabs\Tagged as Html;
 
 abstract class Base implements IWidget
 {
     use TWidget;
 
-    const PRIMARY_TAG = 'div';
+    public const PRIMARY_TAG = 'div';
 
     public static function factory(arch\IContext $context, $name, array $args=[]): IWidget
     {
@@ -90,7 +91,7 @@ abstract class Base implements IWidget
 
         $message = Html::esc('Error rendering widget '.$this->getWidgetName());
 
-        if (df\Launchpad::$app->isTesting()) {
+        if (Genesis::$environment->isTesting()) {
             $message .= Html::esc(' - '.$e->getMessage()).'<br /><code>'.Html::esc($e->getFile().' : '.$e->getLine()).'</code>';
         }
 

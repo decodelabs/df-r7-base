@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\theme\facet;
 
-use df;
-use df\core;
 use df\aura;
-use df\arch;
 use df\spur;
+
+use DecodeLabs\Genesis;
 
 class Analytics extends Base
 {
@@ -30,8 +30,13 @@ class Analytics extends Base
             return;
         }
 
-        if ($view->context->getRunMode() == 'Http'
-        && ($view->context->app->isProduction() || isset($view->context->request->query->forceAnalytics))) {
+        if (
+            Genesis::$kernel->getMode() == 'Http' &&
+            (
+                Genesis::$environment->isProduction() ||
+                isset($view->context->request->query->forceAnalytics)
+            )
+        ) {
             $this->getHandler()->apply($view);
         }
     }

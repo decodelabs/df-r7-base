@@ -26,22 +26,10 @@ class Context implements IContext, \Serializable, Dumpable
 
     public $request;
     public $location;
-    protected $runMode;
 
     public static function getCurrent(): IContext
     {
-        $runner = df\Launchpad::$runner;
-
-        if ($runner instanceof core\IContextAware) {
-            try {
-                if ($context = $runner->getContext()) {
-                    return $context;
-                }
-            } catch (core\app\runner\NoContextException $e) {
-            }
-        }
-
-        return self::factory();
+        return self::getActive() ?? self::factory();
     }
 
     public static function getActive(): ?IContext
@@ -58,7 +46,7 @@ class Context implements IContext, \Serializable, Dumpable
         return null;
     }
 
-    public static function factory($location=null, $runMode=null, $request=null): IContext
+    public static function factory($location=null, $request=null): IContext
     {
         $runner = df\Launchpad::$runner;
 
@@ -70,14 +58,13 @@ class Context implements IContext, \Serializable, Dumpable
             $location = new arch\Request('/');
         }
 
-        return new self($location, $runMode, $request);
+        return new self($location, $request);
     }
 
-    public function __construct(arch\IRequest $location, $runMode=null, $request=null)
+    public function __construct(arch\IRequest $location, $request=null)
     {
         $this->runner = df\Launchpad::$runner;
         $this->location = $location;
-        $this->runMode = $runMode;
 
         if ($request === true) {
             $this->request = clone $location;

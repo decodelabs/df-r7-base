@@ -3,27 +3,29 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\models\mail\capture;
 
-use df;
-use df\core;
 use df\axis;
 use df\flow;
 
-class Unit extends axis\unit\Table {
+use DecodeLabs\Genesis;
 
-    const SEARCH_FIELDS = [
+class Unit extends axis\unit\Table
+{
+    public const SEARCH_FIELDS = [
         'subject' => 10,
         'body' => 1
     ];
 
-    const ORDERABLE_FIELDS = [
+    public const ORDERABLE_FIELDS = [
         'from', 'to', 'subject', 'date', 'environmentMode'
     ];
 
-    const DEFAULT_ORDER = 'date DESC';
+    public const DEFAULT_ORDER = 'date DESC';
 
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addField('from', 'Text', 128);
         $schema->addField('to', 'Text', 'medium');
@@ -37,7 +39,8 @@ class Unit extends axis\unit\Table {
             ->setDefaultValue('development');
     }
 
-    public function store(flow\mime\IMultiPart $message) {
+    public function store(flow\mime\IMultiPart $message)
+    {
         $headers = $message->getHeaders();
         $to = new flow\mail\AddressList();
 
@@ -54,7 +57,7 @@ class Unit extends axis\unit\Table {
                 'to' => (string)$to,
                 'subject' => $headers->get('subject'),
                 'body' => (string)$message,
-                'environmentMode' => $this->context->app->envMode
+                'environmentMode' => Genesis::$environment->getMode()
             ])
             ->save();
     }

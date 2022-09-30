@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch;
 
 use df;
@@ -67,7 +68,7 @@ interface IAccess extends user\IState
 
 interface IContext extends core\IContext, IResponseForcer
 {
-    public static function factory($location=null, $runMode=null, $request=null): IContext;
+    public static function factory($location=null, $request=null): IContext;
 
     // Application
     public function spawnInstance($request=null, bool $copyRequest=false): IContext;
@@ -149,13 +150,13 @@ interface IRequest extends
     user\IAccessLock,
     \ArrayAccess
 {
-    const AREA_MARKER = '~';
-    const DEFAULT_AREA = 'front';
-    const DEFAULT_NODE = 'index';
-    const DEFAULT_TYPE = 'html';
+    public const AREA_MARKER = '~';
+    public const DEFAULT_AREA = 'front';
+    public const DEFAULT_NODE = 'index';
+    public const DEFAULT_TYPE = 'html';
 
-    const REDIRECT_FROM = 'rf';
-    const REDIRECT_TO = 'rt';
+    public const REDIRECT_FROM = 'rf';
+    public const REDIRECT_TO = 'rt';
 
     // Area
     public function setArea(string $area);

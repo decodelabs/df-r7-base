@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\app\runner;
 
 use df;
@@ -10,8 +11,9 @@ use df\core;
 use df\arch;
 use df\halo;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch;
+use DecodeLabs\Genesis;
 
 class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunner
 {
@@ -90,7 +92,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
         }
 
         $request = arch\Request::factory($request);
-        $this->_command = new core\cli\Command(df\Launchpad::$app->envId.'.php');
+        $this->_command = new core\cli\Command(Genesis::$environment->getName().'.php');
 
         if ($args) {
             foreach ($args as $arg) {

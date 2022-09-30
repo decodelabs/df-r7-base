@@ -94,7 +94,7 @@ class Base implements ITheme, Dumpable
 
     public function beforeHtmlViewRender(aura\view\IView $view)
     {
-        if (df\Launchpad::$app->isDevelopment()) {
+        if (Genesis::$environment->isDevelopment()) {
             fuse\Manager::getInstance()->ensureDependenciesFor($this);
         }
 
@@ -222,7 +222,7 @@ class Base implements ITheme, Dumpable
         }
 
         if (!$view->hasTitleSuffix()) {
-            $suffix = df\Launchpad::$app->getName();
+            $suffix = Genesis::$hub->getApplicationName();
 
             if ($view->hasTitle()) {
                 $suffix = ' : '.$suffix;
@@ -247,7 +247,7 @@ class Base implements ITheme, Dumpable
         }
 
         if (!$view->hasMeta('application-name')) {
-            $view->setMeta('application-name', df\Launchpad::$app->getName());
+            $view->setMeta('application-name', Genesis::$hub->getApplicationName());
         }
 
         if (!$view->hasMeta('og:title')) {
@@ -277,7 +277,7 @@ class Base implements ITheme, Dumpable
         }
 
         if (!$view->hasMeta('og:site_name')) {
-            $view->setMeta('og:site_name', df\Launchpad::$app->getName());
+            $view->setMeta('og:site_name', Genesis::$hub->getApplicationName());
         }
 
 

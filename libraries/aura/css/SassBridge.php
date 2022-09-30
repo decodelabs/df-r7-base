@@ -62,9 +62,9 @@ class SassBridge implements ISassBridge
         $this->_fileName = substr($basename, 0, -5);
         $this->_type = strtolower(substr($basename, -4));
 
-        $this->_workDir = $context->app->getLocalDataPath().'/sass/'.$context->app->envMode;
+        $this->_workDir = Genesis::$hub->getLocalDataPath().'/sass/'.Genesis::$environment->getMode();
 
-        $this->_isDevelopment = $this->context->app->isDevelopment();
+        $this->_isDevelopment = Genesis::$environment->isDevelopment();
         $this->_key = md5($activePath ?? $path);
     }
 
@@ -213,8 +213,8 @@ class SassBridge implements ISassBridge
 
     protected function _compile()
     {
-        $envMode = $this->context->app->envMode;
-        $envId = $this->context->app->envId;
+        $envMode = Genesis::$environment->getMode();
+        $envId = Genesis::$environment->getName();
 
         $sourceFiles = [$this->_sourceDir.'/'.$this->_fileName.'.'.$this->_type];
         $this->_manifest = [];

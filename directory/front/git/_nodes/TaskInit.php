@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\git\_nodes;
 
 use df;
@@ -12,17 +13,18 @@ use df\halo;
 use df\arch;
 use df\spur;
 
+use DecodeLabs\Genesis;
 use DecodeLabs\Terminus as Cli;
 
 class TaskInit extends arch\node\Task
 {
-    const GEOMETRY = '1914x1036+5+23 450 300';
+    public const GEOMETRY = '1914x1036+5+23 450 300';
 
     public function execute()
     {
         $this->ensureDfSource();
 
-        $path = df\Launchpad::$app->path;
+        $path = Genesis::$hub->getApplicationPath();
         $this->runChild('git/init-gitignore');
 
         if (is_dir($path.'/.git')) {

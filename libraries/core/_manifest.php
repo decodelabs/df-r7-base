@@ -159,7 +159,7 @@ trait TUserValueContainer
 // Loader
 interface ILoader
 {
-    public function loadClass(string $class): bool;
+    public function loadClass(string $class): void;
     public function getClassSearchPaths(string $class): ?array;
     public function lookupClass(string $path): ?string;
 
@@ -171,18 +171,11 @@ interface ILoader
     public function lookupFolderList(string $path): \Generator;
     public function lookupLibraryList(): array;
 
-    public function registerLocations(array $locations);
-    public function registerLocation(string $name, string $path);
-    public function unregisterLocation(string $name);
-    public function getLocations(): array;
-
     public function initRootPackages(string $rootPath, string $appPath);
     public function loadPackages(array $packages);
     public function getPackages(): array;
     public function hasPackage(string $package): bool;
     public function getPackage(string $package): ?Package;
-
-    public function shutdown(): void;
 }
 
 class Package
@@ -245,37 +238,16 @@ class Package
 // Applications
 interface IApp
 {
-    public static function factory(string $envId, string $path): IApp;
-
-    // Paths
-    public function getPath(): string;
-    public function getLocalDataPath(): string;
-    public function getSharedDataPath(): string;
+    public static function factory(): IApp;
 
 
     // Environment
-    public function getEnvId(): string;
-    public function getEnvMode(): string;
-
-    public function isDevelopment(): bool;
-    public function isTesting(): bool;
-    public function isProduction(): bool;
-    public function isDistributed(): bool;
-
     public function getUniquePrefix(): string;
     public function getPassKey(): string;
 
-    // Details
-    public function getName(): string;
-    public function getStartTime(): float;
-    public function getRunningTime(): float;
-
 
     // Runner
-    public function startup(float $startTime=null): void;
-    public function run(): void;
     public function shutdown(): void;
-    public function getRunMode(): string;
 
 
     // Registry
@@ -477,8 +449,6 @@ trait TTranslator
 // Context
 interface IContext extends core\IHelperProvider, core\ITranslator
 {
-    public function getRunMode(): string;
-
     // Locale
     public function setLocale($locale);
     public function getLocale();
@@ -502,11 +472,6 @@ trait TContext
 
     public $runner;
     protected $_locale;
-
-    public function getRunMode(): string
-    {
-        return df\Launchpad::$app->getRunMode();
-    }
 
 
     // Locale

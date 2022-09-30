@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms\adapter;
 
 use df;
@@ -10,10 +11,10 @@ use df\core;
 use df\opal;
 
 use DecodeLabs\Atlas;
+use DecodeLabs\Genesis;
 
 class Sqlite extends Base_Pdo
 {
-
 // Connection
     protected function _connect($global=false)
     {
@@ -39,7 +40,7 @@ class Sqlite extends Base_Pdo
         $database = $this->_dsn->getDatabaseKeyName();
 
         if (!$database || $database == 'default') {
-            $database = df\Launchpad::$app->getSharedDataPath().'/sqlite/default';
+            $database = Genesis::$hub->getSharedDataPath().'/sqlite/default';
 
             if ($suffix = $this->_dsn->getDatabaseSuffix()) {
                 $database .= $suffix;

@@ -3,17 +3,20 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\navigation\breadcrumbs;
 
 use df;
 use df\core;
 use df\arch;
 
+use DecodeLabs\Genesis;
+
 class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, core\IDispatchAware
 {
     use arch\navigation\TEntryList;
 
-    const REGISTRY_KEY = 'breadcrumbs';
+    public const REGISTRY_KEY = 'breadcrumbs';
 
     public function getRegistryObjectKey(): string
     {

@@ -3,10 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\loader;
 
 use df;
 use df\core;
+
+use DecodeLabs\Genesis;
 
 class Development extends Base
 {
@@ -32,15 +35,13 @@ class Development extends Base
                 case 'packages':
                     $packageName = $pathPackageName = (string)array_shift($parts);
                     $pathName = implode('/', $parts);
+                    $location = dirname(Genesis::$build->path);
 
-                    foreach ($this->_locations as $location) {
-                        if (basename(dirname($location)) === 'vendor') {
-                            $pathPackageName = strtolower($packageName);
-                        }
-
-                        $output[] = $location.'/'.$pathPackageName.'/'.$pathName.'.php';
+                    if (basename(dirname($location)) === 'vendor') {
+                        $pathPackageName = strtolower($packageName);
                     }
 
+                    $output[] = $location.'/'.$pathPackageName.'/'.$pathName.'.php';
                     return $output;
 
                 default:

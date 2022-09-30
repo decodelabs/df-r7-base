@@ -10,9 +10,10 @@ use df;
 use df\core;
 use df\flex;
 
-use DecodeLabs\Dictum;
 use DecodeLabs\Atlas;
+use DecodeLabs\Dictum;
 use DecodeLabs\Glitch;
+use DecodeLabs\Genesis;
 use DecodeLabs\Terminus\Session;
 
 class LocalFile implements core\cache\IBackend
@@ -36,8 +37,8 @@ class LocalFile implements core\cache\IBackend
             return;
         }
 
-        $path1 = df\Launchpad::$app->getSharedDataPath().'/cache/';
-        $path2 = df\Launchpad::$app->getLocalDataPath().'/cache/';
+        $path1 = Genesis::$hub->getSharedDataPath().'/cache/';
+        $path2 = Genesis::$hub->getLocalDataPath().'/cache/';
 
         Atlas::emptyOut($path1);
         Atlas::emptyOut($path2);
@@ -46,8 +47,8 @@ class LocalFile implements core\cache\IBackend
     public static function prune(core\collection\ITree $options)
     {
         $paths = [
-            df\Launchpad::$app->getSharedDataPath().'/cache',
-            df\Launchpad::$app->getLocalDataPath().'/cache'
+            Genesis::$hub->getSharedDataPath().'/cache',
+            Genesis::$hub->getLocalDataPath().'/cache'
         ];
 
         clearstatcache();
@@ -86,9 +87,9 @@ class LocalFile implements core\cache\IBackend
         $this->_lifeTime = $lifeTime;
 
         if ($cache->isCacheDistributed()) {
-            $path = df\Launchpad::$app->getSharedDataPath();
+            $path = Genesis::$hub->getSharedDataPath();
         } else {
-            $path = df\Launchpad::$app->getLocalDataPath();
+            $path = Genesis::$hub->getLocalDataPath();
         }
 
         $path .= '/cache/'.Dictum::fileName($cache->getCacheId());

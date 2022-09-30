@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\config\_nodes;
 
 use df;
@@ -11,43 +12,15 @@ use df\apex;
 use df\arch;
 use df\axis;
 
+use DecodeLabs\Genesis;
 use DecodeLabs\Terminus as Cli;
 
 class TaskInit extends arch\node\Task
 {
-    public function extractCliArguments(core\cli\ICommand $command)
-    {
-        foreach ($command->getArguments() as $arg) {
-            if (!$arg->isOption()) {
-                $this->request->query->environments[] = (string)$arg;
-            }
-        }
-    }
-
     public function execute()
     {
         $this->ensureDfSource();
 
-        if (!empty($this->request->query->environments)) {
-            $currentEnv = null;
-
-            foreach ($this->request->query->environments as $envNode) {
-                core\Config::clearLiveCache();
-                $currentEnv = df\Launchpad::$app->envId;
-                df\Launchpad::$app->envId = $envNode->getValue();
-
-                $this->_apply();
-            }
-
-            df\Launchpad::$app->envId = $currentEnv;
-            core\Config::clearLiveCache();
-        } else {
-            $this->_apply();
-        }
-    }
-
-    protected function _apply()
-    {
         Cli::{'yellow'}('Looking up configs:');
         $libList = df\Launchpad::$loader->lookupLibraryList();
         $classes = [];

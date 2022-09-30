@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\git\_nodes;
 
 use df;
@@ -12,6 +13,7 @@ use df\halo;
 use df\arch;
 use df\spur;
 
+use DecodeLabs\Genesis;
 use DecodeLabs\Terminus as Cli;
 
 class TaskUpdateAll extends arch\node\Task
@@ -41,12 +43,12 @@ class TaskUpdateAll extends arch\node\Task
             }
         }
 
-        $noBuild = isset($this->request['no-build']);
-
-        if ($this->app->isDevelopment() && !$noBuild) {
-            $this->runChild('app/build?dev', false);
-        } elseif ($this->app->isTesting() && !$noBuild) {
-            $this->runChild('app/build', false);
+        if (!isset($this->request['no-build'])) {
+            if (Genesis::$environment->isDevelopment()) {
+                $this->runChild('app/build?dev', false);
+            } elseif (Genesis::$environment->isTesting()) {
+                $this->runChild('app/build', false);
+            }
         }
     }
 }

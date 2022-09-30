@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\tasks\_nodes;
 
 use df;
@@ -10,15 +11,16 @@ use df\core;
 use df\apex;
 use df\arch;
 
+use DecodeLabs\Atlas;
+use DecodeLabs\Genesis;
 use DecodeLabs\Glitch;
 use DecodeLabs\Terminus as Cli;
-use DecodeLabs\Atlas;
 
 class TaskSpool extends arch\node\Task
 {
-    const SELF_REQUEST = 'tasks/spool';
-    const COOLOFF = 20;
-    const QUEUE_LIMIT = 10;
+    public const SELF_REQUEST = 'tasks/spool';
+    public const COOLOFF = 20;
+    public const QUEUE_LIMIT = 10;
 
     protected $_log;
     protected $_timer;
@@ -37,7 +39,7 @@ class TaskSpool extends arch\node\Task
 
         $this->_log = $this->data->task->log->newRecord([
                 'request' => self::SELF_REQUEST,
-                'environmentMode' => df\Launchpad::$app->envMode,
+                'environmentMode' => Genesis::$environment->getMode(),
                 'status' => 'processing'
             ])
             ->save();

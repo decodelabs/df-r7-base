@@ -6,10 +6,9 @@
 
 namespace df\apex\models\pestControl\report;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
+
+use DecodeLabs\Genesis;
 
 class Unit extends axis\unit\Table
 {
@@ -46,7 +45,7 @@ class Unit extends axis\unit\Table
                 'body' => $report,
                 'userAgent' => $this->_model->logCurrentAgent()['id'],
                 'user' => $this->_model->getLogUserId(),
-                'isProduction' => $this->context->app->isProduction()
+                'isProduction' => Genesis::$environment->isProduction()
             ])
             ->save();
     }

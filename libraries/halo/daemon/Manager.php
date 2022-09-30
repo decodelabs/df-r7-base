@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\halo\daemon;
 
 use df;
@@ -12,12 +13,13 @@ use df\arch;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 
 class Manager implements IManager
 {
     use core\TManager;
 
-    const REGISTRY_PREFIX = 'manager://daemon';
+    public const REGISTRY_PREFIX = 'manager://daemon';
 
     protected $_isEnabled = null;
 
@@ -32,7 +34,7 @@ class Manager implements IManager
 
     public function ensureActivity()
     {
-        if (df\Launchpad::$app->isDevelopment()) {
+        if (Genesis::$environment->isDevelopment()) {
             return $this;
         }
 
@@ -43,13 +45,13 @@ class Manager implements IManager
             //return $this;
         }
 
-        $path = df\Launchpad::$app->getLocalDataPath().'/daemons/__activity';
+        $path = Genesis::$hub->getLocalDataPath().'/daemons/__activity';
         $launch = false;
 
         try {
             $mtime = filemtime($path);
 
-            if (df\Launchpad::$app->startTime - $mtime > 300) {
+            if (Genesis::getStartTime() - $mtime > 300) {
                 $launch = true;
             }
         } catch (\Throwable $e) {

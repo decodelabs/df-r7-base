@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\app\_nodes;
 
 use df;
@@ -11,6 +12,7 @@ use df\apex;
 use df\arch;
 
 use DecodeLabs\Atlas;
+use DecodeLabs\Genesis;
 
 class TaskClearBuild extends arch\node\Task
 {
@@ -18,8 +20,8 @@ class TaskClearBuild extends arch\node\Task
     {
         $this->ensureDfSource();
 
-        $appPath = $this->app->path;
-        $envId = $this->app->envId;
+        $appPath = Genesis::$hub->getApplicationPath();
+        $envId = Genesis::$environment->getName();
 
         Atlas::deleteFile($appPath.'/data/local/run/active/Run.php');
 

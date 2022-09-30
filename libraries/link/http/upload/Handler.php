@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\http\upload;
 
 use df;
@@ -12,6 +13,7 @@ use df\flex;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Dir;
+use DecodeLabs\Genesis;
 
 class Handler implements link\http\IUploadHandler
 {
@@ -28,10 +30,7 @@ class Handler implements link\http\IUploadHandler
     public static function createUploadTemp(?string $path=null): Dir
     {
         if ($path === null) {
-            $path = df\Launchpad::$app->isDistributed ?
-                df\Launchpad::$app->getSharedDataPath() :
-                df\Launchpad::$app->getLocalDataPath();
-
+            $path = Genesis::$hub->getSharedDataPath();
             $path .= '/upload/'.flex\Guid::uuid1();
         }
 
@@ -40,10 +39,7 @@ class Handler implements link\http\IUploadHandler
 
     public static function purgeUploadTemp(): void
     {
-        $path = df\Launchpad::$app->isDistributed ?
-            df\Launchpad::$app->getSharedDataPath() :
-            df\Launchpad::$app->getLocalDataPath();
-
+        $path = Genesis::$hub->getSharedDataPath();
         $path .= '/upload/';
 
 

@@ -12,10 +12,10 @@ use df\aura;
 use df\arch;
 use df\flow;
 
-use DecodeLabs\Tagged;
 use DecodeLabs\Elementary\Style\Sheet as StyleSheet;
-
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Genesis;
+use DecodeLabs\Tagged;
 
 class Html extends Base implements IHtmlView, Dumpable
 {
@@ -775,7 +775,7 @@ class Html extends Base implements IHtmlView, Dumpable
             $this->canIndex(false)->canFollow(false);
         }
 
-        if ($this->context->getRunMode() == 'Http') {
+        if (Genesis::$kernel->getMode() == 'Http') {
             if ($this->context->http->isAjaxRequest()) {
                 $this->_shouldRenderBase = false;
             }
@@ -860,7 +860,7 @@ class Html extends Base implements IHtmlView, Dumpable
                 $attr[] = 'data-'.$key.'="'.Tagged::esc($value).'"';
             }
 
-            $attr[] = 'data-'.df\Launchpad::$app->envMode;
+            $attr[] = 'data-'.Genesis::$environment->getMode();
 
             $output .= '    <meta id="custom-view-data" '.implode(' ', $attr).' />'."\n";
         }

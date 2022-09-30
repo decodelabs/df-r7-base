@@ -10,8 +10,8 @@ use df;
 use df\core;
 use df\link;
 
-use DecodeLabs\Compass\Ip;
 use DecodeLabs\Compass\Range;
+use DecodeLabs\Genesis;
 
 class Config extends core\Config
 {
@@ -35,7 +35,7 @@ class Config extends core\Config
     public function setRootUrl($url, $envMode=null)
     {
         if ($envMode === null) {
-            $envMode = df\Launchpad::$app->envMode;
+            $envMode = Genesis::$environment->getMode();
         }
 
         if ($url !== null) {
@@ -68,7 +68,7 @@ class Config extends core\Config
         }
 
         if ($envMode === null) {
-            $envMode = df\Launchpad::$app->envMode;
+            $envMode = Genesis::$environment->getMode();
         }
 
         $output = null;
@@ -95,7 +95,7 @@ class Config extends core\Config
     public function getBaseUrlMap($envMode=null)
     {
         if ($envMode === null) {
-            $envMode = df\Launchpad::$app->envMode;
+            $envMode = Genesis::$environment->getMode();
         }
 
         if (!isset($this->values->baseUrl->{$envMode}) && isset($_SERVER['HTTP_HOST'])) {
@@ -124,7 +124,7 @@ class Config extends core\Config
         }
 
         $baseUrl = $this->_generateRootUrl();
-        $envMode = df\Launchpad::$app->envMode;
+        $envMode = Genesis::$environment->getMode();
 
         $output = [
             'development' => null,
@@ -243,7 +243,7 @@ class Config extends core\Config
     public function getCredentials($mode=null)
     {
         if ($mode === null) {
-            $mode = df\Launchpad::$app->envMode;
+            $mode = Genesis::$environment->getMode();
         }
 
         if (isset($this->values->credentials->{$mode}['username'])) {

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\app\runner;
 
 use df;
@@ -11,14 +12,15 @@ use df\halo;
 use df\flex;
 
 use DecodeLabs\Dictum;
-use DecodeLabs\Terminus as Cli;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 use DecodeLabs\Systemic;
 use DecodeLabs\Systemic\Process\Managed as ManagedProcess;
-use DecodeLabs\Exceptional;
+use DecodeLabs\Terminus as Cli;
 
 class Daemon extends Base
 {
-    const THRESHOLD = 600;
+    public const THRESHOLD = 600;
 
     protected $_statusData;
 
@@ -161,7 +163,7 @@ class Daemon extends Base
             Cli::{'yellow'}(': ');
         }
 
-        $entryPath = df\Launchpad::$app->path.'/entry/'.df\Launchpad::$app->envId.'.php';
+        $entryPath = Genesis::$hub->getApplicationPath().'/entry/'.Genesis::$environment->getName().'.php';
 
         $res = Systemic::$process->newScriptLauncher($entryPath, [
                 'daemon', $name, '__spawn'

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\models\package;
 
 use df;
@@ -11,6 +12,7 @@ use df\apex;
 use df\axis;
 use df\spur;
 
+use DecodeLabs\Genesis;
 use DecodeLabs\Terminus\Session;
 
 class Model extends axis\Model
@@ -24,47 +26,47 @@ class Model extends axis\Model
         $packages = $remainingPackages = df\Launchpad::$loader->getPackages();
         $installed = [];
 
-        foreach (df\Launchpad::$loader->getLocations() as $location) {
-            foreach (new \DirectoryIterator($location) as $item) {
-                if (!$item->isDir() || !is_file($item->getPathname().'/Package.php')) {
-                    continue;
-                }
+        $location = dirname(Genesis::$build->path);
 
-                $name = $item->getFilename();
-                $path = $item->getPathname();
-                $package = $repo = null;
+        foreach (new \DirectoryIterator($location) as $item) {
+            if (!$item->isDir() || !is_file($item->getPathname().'/Package.php')) {
+                continue;
+            }
 
-                if ($name === 'webcore') {
-                    $name = 'webCore';
-                }
+            $name = $item->getFilename();
+            $path = $item->getPathname();
+            $package = $repo = null;
 
-                if (isset($packages[$name]) && $packages[$name]->path == $path) {
-                    $package = $packages[$name];
-                }
+            if ($name === 'webcore') {
+                $name = 'webCore';
+            }
 
-                if (is_dir($path.'/.git') && basename(dirname(dirname($path))) !== 'vendor') {
-                    $repo = new spur\vcs\git\Repository($path);
-                }
+            if (isset($packages[$name]) && $packages[$name]->path == $path) {
+                $package = $packages[$name];
+            }
 
-                $installed[] = [
+            if (is_dir($path.'/.git') && basename(dirname(dirname($path))) !== 'vendor') {
+                $repo = new spur\vcs\git\Repository($path);
+            }
+
+            $installed[] = [
                     'name' => $name,
                     'path' => $path,
                     'instance' => $package,
                     'repo' => $repo
                 ];
 
-                if ($repo) {
-                    if ($this->_gitPath) {
-                        $repo->setGitPath($this->_gitPath);
-                    }
-
-                    if ($this->_gitUser) {
-                        $repo->setGitUser($this->_gitUser);
-                    }
+            if ($repo) {
+                if ($this->_gitPath) {
+                    $repo->setGitPath($this->_gitPath);
                 }
 
-                unset($remainingPackages[$name]);
+                if ($this->_gitUser) {
+                    $repo->setGitUser($this->_gitUser);
+                }
             }
+
+            unset($remainingPackages[$name]);
         }
 
         foreach ($remainingPackages as $package) {

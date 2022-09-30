@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\composer\_nodes;
 
 use df;
@@ -11,15 +12,16 @@ use df\apex;
 use df\arch;
 use df\halo;
 
-use DecodeLabs\Systemic;
 use DecodeLabs\Atlas;
+use DecodeLabs\Genesis;
+use DecodeLabs\Systemic;
 use DecodeLabs\Terminus as Cli;
 
 class TaskInstall extends arch\node\Task
 {
     public function execute()
     {
-        $file = Atlas::file($this->app->path.'/composer.json');
+        $file = Atlas::file(Genesis::$hub->getApplicationPath().'/composer.json');
 
         if (!$file->exists()) {
             $this->runChild('composer/init?no-update');
@@ -27,12 +29,12 @@ class TaskInstall extends arch\node\Task
 
         $args = [];
 
-        if (!$this->app->isDevelopment()) {
+        if (!Genesis::$environment->isDevelopment()) {
             $args[] = '--no-dev';
         }
 
         Systemic::$process->newLauncher('composer install', $args)
-            ->setWorkingDirectory($this->app->path)
+            ->setWorkingDirectory(Genesis::$hub->getApplicationPath())
             ->setBroker(Cli::getSession()->getBroker())
             ->launch();
     }

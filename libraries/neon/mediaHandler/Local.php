@@ -64,7 +64,7 @@ class Local extends Base implements ILocalDataHandler
     public function getFilePath($fileId, $versionId)
     {
         $storageKey = $this->_getStorageKey($fileId);
-        return df\Launchpad::$app->getSharedDataPath().'/media/'.$storageKey.'/'.$fileId.'/'.$versionId;
+        return Genesis::$hub->getSharedDataPath().'/media/'.$storageKey.'/'.$fileId.'/'.$versionId;
     }
 
     public function purgeVersion($fileId, $versionId, $isActive)
@@ -78,7 +78,7 @@ class Local extends Base implements ILocalDataHandler
     public function deleteFile($fileId)
     {
         $storageKey = $this->_getStorageKey($fileId);
-        $path = df\Launchpad::$app->getSharedDataPath().'/media/'.$storageKey.'/'.$fileId;
+        $path = Genesis::$hub->getSharedDataPath().'/media/'.$storageKey.'/'.$fileId;
         $dir = Atlas::dir($path);
         $parent = $dir->getParent();
         $dir->delete();

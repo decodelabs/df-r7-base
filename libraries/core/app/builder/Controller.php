@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\app\builder;
 
 use df;
@@ -12,19 +13,20 @@ use df\flex;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Dir;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 
 class Controller implements IController
 {
-    const APP_EXPORT = [
+    public const APP_EXPORT = [
         'libraries', 'assets', 'daemons', 'directory', 'helpers',
         'hooks', 'models', 'provider', 'themes', 'tests', 'vendor'
     ];
 
-    const PACKAGE_IGNORE = [
+    public const PACKAGE_IGNORE = [
         'vendor'
     ];
 
-    const APP_FILES = [
+    public const APP_FILES = [
         'composer.json', 'composer.lock'
     ];
 
@@ -36,10 +38,10 @@ class Controller implements IController
     public function __construct()
     {
         $this->_id = (string)flex\Guid::uuid1();
-        $this->_shouldCompile = !df\Launchpad::$app->isDevelopment();
+        $this->_shouldCompile = !Genesis::$environment->isDevelopment();
 
-        $this->_runPath = df\Launchpad::$app->getLocalDataPath().'/run';
-        $this->_destination = Atlas::dir(df\Launchpad::$app->getLocalDataPath().'/build/'.$this->_id);
+        $this->_runPath = Genesis::$hub->getLocalDataPath().'/run';
+        $this->_destination = Atlas::dir(Genesis::$hub->getLocalDataPath().'/build/'.$this->_id);
     }
 
     public function getBuildId(): string
@@ -151,7 +153,7 @@ class Controller implements IController
             'const COMPILE_TIMESTAMP = '.time().';'."\n".
             'const COMPILE_BUILD_ID = \''.$this->getBuildId().'\';'."\n".
             'const COMPILE_ROOT_PATH = __DIR__;'."\n".
-            'const COMPILE_ENV_MODE = \''.df\Launchpad::$app->envMode.'\';'
+            'const COMPILE_ENV_MODE = \''.Genesis::$environment->getMode().'\';'
         );
     }
 

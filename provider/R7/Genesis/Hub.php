@@ -10,6 +10,10 @@ namespace DecodeLabs\R7\Genesis;
 use df;
 use df\core;
 use df\core\app\Base as AppBase;
+use df\core\IApp as AppInterface;
+use df\core\Config as ConfigBase;
+use df\core\environment\Config as CoreEnvConfig;
+use df\core\loader\Base as LoaderBase;
 use df\Launchpad;
 
 use DecodeLabs\Exceptional;
@@ -96,7 +100,36 @@ class Hub implements HubInterface
         return $this->appPath;
     }
 
+    /**
+     * Get local data path
+     */
+    public function getLocalDataPath(): string
+    {
+        return $this->appPath.'/data/local';
+    }
 
+    /**
+     * Get shared data path
+     */
+    public function getSharedDataPath(): string
+    {
+        return $this->appPath.'/data/shared';
+    }
+
+
+    /**
+     * Get application name
+     */
+    public function getApplicationName(): string
+    {
+        static $name;
+
+        if (!isset($name)) {
+            $name = $this->context->container['app']::NAME;
+        }
+
+        return $name;
+    }
 
     /**
      * Load build info
@@ -114,7 +147,8 @@ class Hub implements HubInterface
 
         // Work out root path
         if (
-            df\COMPILE_ROOT_PATH &&
+            /** @phpstan-ignore-next-line */
+            df\COMPILE_ROOT_PATH !== null &&
             is_dir((string)df\COMPILE_ROOT_PATH)
         ) {
             $buildPath = df\COMPILE_ROOT_PATH;
@@ -138,7 +172,7 @@ class Hub implements HubInterface
     /**
      * Setup loaders
      */
-    public function initializeLoaders(StackLoader $loader): void
+    public function initializeLoaders(StackLoader $stack): void
     {
         // Load core library
         $this->loadBaseClass('core/_manifest');
@@ -148,32 +182,62 @@ class Hub implements HubInterface
 
         // Register loader
         if ($this->context->build->isCompiled()) {
-            Launchpad::$loader = new core\loader\Base(['root' => dirname($rootPath)]);
+            $loader = new core\loader\Base();
         } else {
             $this->loadBaseClass('core/loader/Development');
 
-            Launchpad::$loader = new core\loader\Development(['root' => dirname($rootPath)]);
+            $loader = new core\loader\Development();
         }
 
+        $stack->registerLoader($loader);
+
         // Packages
-        Launchpad::$loader->initRootPackages($rootPath, $this->appPath);
+        $loader->initRootPackages($rootPath, $this->appPath);
+
+
+        // Set envId in config
+        ConfigBase::$envId = $this->envId;
 
 
 
+        // Load app
 
+        /** @var AppBase $app */
+        $app = AppBase::factory();
+
+
+        // Add app and loader to Container
+        $this->context->container->bindShared(AppBase::class, $app)
+            ->alias('app');
+        $this->context->container->bindShared(LoaderBase::class, $loader)
+            ->alias('app.loader');
+
+
+        // DELETE ME
+        Launchpad::$app = $app;
+        Launchpad::$loader = $loader;
+
+
+        // Active packages
+        $packages = [];
+
+        foreach ($app::PACKAGES ?? [] as $name => $enabled) {
+            if (is_string($enabled)) {
+                $name = $enabled;
+                $enabled = true;
+            }
+
+            if ($enabled) {
+                $packages[] = $name;
+            }
+        }
+
+        $loader->loadPackages($packages);
 
 
         if ($this->analysis) {
-            $this->initForAnalysis();
-            return;
+            Veneer::getDefaultManager()->setDeferrals(false);
         }
-
-
-        // Move this to Kernel once env config doesn't require $app
-        Launchpad::$app = AppBase::factory(
-            $this->envId,
-            $this->context->hub->getApplicationPath()
-        );
     }
 
 
@@ -190,20 +254,6 @@ class Hub implements HubInterface
 
 
 
-    protected function initForAnalysis(): void
-    {
-        Veneer::getDefaultManager()->setDeferrals(false);
-
-        require_once $this->appPath.'/App.php';
-        $appClass = 'df\\apex\\App';
-
-        if (class_exists($appClass)) {
-            Launchpad::$loader->loadPackages(array_keys($appClass::PACKAGES));
-            $appClass::setupVeneerBindings();
-        }
-    }
-
-
     /**
      * Load r7 env config
      */
@@ -213,8 +263,12 @@ class Hub implements HubInterface
             return new EnvConfig\Development($this->envId);
         }
 
-        $conf = core\environment\Config::getInstance();
-        $class = EnvConfig::class.'\\'.ucfirst($conf->getMode());
+        $conf = CoreEnvConfig::getInstance();
+
+        /** @phpstan-ignore-next-line */
+        $name = ucfirst(df\COMPILE_ENV_MODE ?? $conf->getMode());
+
+        $class = EnvConfig::class.'\\'.$name;
         $output = new $class($this->envId);
 
         $output->setUmask(0);
@@ -227,7 +281,7 @@ class Hub implements HubInterface
     public function initializeErrorHandler(): void
     {
         Glitch::setStartTime($this->context->getstartTime())
-            ->setRunMode($this->context->environment->getRunMode())
+            ->setRunMode($this->context->environment->getMode())
             ->registerPathAliases([
                 'app' => $this->appPath,
                 'vendor' => $this->appPath.'/vendor',
@@ -247,6 +301,48 @@ class Hub implements HubInterface
      */
     public function loadKernel(): Kernel
     {
-        return new Kernel($this->context);
+        return new Kernel($this->context, $this->detectKernel());
+    }
+
+    protected function detectKernel(): string
+    {
+        if (isset($_SERVER['HTTP_HOST'])) {
+            $kernel = 'Http';
+        } elseif (isset($_SERVER['argv'])) {
+            if (isset($_SERVER['argv'][1])) {
+                $kernel = ucfirst($_SERVER['argv'][1]);
+            } else {
+                $kernel = 'Task';
+            }
+        } else {
+            $kernel = null;
+        }
+
+        switch ($kernel) {
+            case 'Http':
+            case 'Daemon':
+            case 'Task':
+                return (string)$kernel;
+        }
+
+        switch (\PHP_SAPI) {
+            case 'cli':
+            case 'phpdbg':
+                return 'Task';
+
+            case 'apache':
+            case 'apache2filter':
+            case 'apache2handler':
+            case 'fpm-fcgi':
+            case 'cgi-fcgi':
+            case 'phttpd':
+            case 'pi3web':
+            case 'thttpd':
+                return 'Http';
+        }
+
+        throw Exceptional::UnexpectedValue(
+            'Unable to detect run mode ('.\PHP_SAPI.')'
+        );
     }
 }

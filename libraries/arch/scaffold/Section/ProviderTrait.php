@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\scaffold\Section;
 
 use df\arch\IComponent as Component;
@@ -17,6 +18,7 @@ use df\aura\html\widget\Menu as MenuWidget;
 use df\core\lang\Callback;
 
 use DecodeLabs\Dictum;
+use DecodeLabs\Genesis;
 
 use Throwable;
 
@@ -194,7 +196,7 @@ trait ProviderTrait
             try {
                 $this->sectionItemCounts = (array)$this->countSectionItems($this->getRecord());
             } catch (Throwable $e) {
-                if ($this->app->isDevelopment()) {
+                if (Genesis::$environment->isDevelopment()) {
                     throw $e;
                 }
 

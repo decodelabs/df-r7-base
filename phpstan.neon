@@ -7,7 +7,9 @@ parameters:
         - daemons
         - directory
         - libraries
+        - provider
         - models
+        - Df.Genesis.php
 
     excludePaths:
         - libraries/core/archive/Rar.php

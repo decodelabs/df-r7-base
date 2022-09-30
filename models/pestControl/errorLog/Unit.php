@@ -3,17 +3,16 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\models\pestControl\errorLog;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
-use df\arch;
+
+use DecodeLabs\Genesis;
 
 class Unit extends axis\unit\Table
 {
-    const SEARCH_FIELDS = [
+    public const SEARCH_FIELDS = [
         'request' => 3,
         'message' => 2
     ];
@@ -56,7 +55,7 @@ class Unit extends axis\unit\Table
         }
 
         $error = $this->_model->error->logException($e);
-        $mode = $this->context->getRunMode();
+        $mode = Genesis::$kernel->getMode();
         $message = $e->getMessage();
 
         if ($message == $error['message']) {
@@ -72,7 +71,7 @@ class Unit extends axis\unit\Table
                 'userAgent' => $this->_model->logCurrentAgent()['id'],
                 'stackTrace' => $this->_model->stackTrace->logException($e),
                 'user' => $this->_model->getLogUserId(),
-                'isProduction' => $this->context->app->isProduction()
+                'isProduction' => Genesis::$environment->isProduction()
             ])
             ->save();
     }

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\user\helper;
 
 use df;
@@ -10,6 +11,8 @@ use df\core;
 use df\user;
 use df\axis;
 use df\flex;
+
+use DecodeLabs\Genesis;
 
 class Session extends Base implements user\session\IController
 {
@@ -47,7 +50,6 @@ class Session extends Base implements user\session\IController
         }
 
 
-        $runMode = df\Launchpad::$app->getRunMode();
         $this->_isOpen = true;
 
         $this->cache = user\session\Cache::getInstance();
@@ -59,7 +61,7 @@ class Session extends Base implements user\session\IController
             );
         }
 
-        switch ($runMode) {
+        switch (Genesis::$kernel->getMode()) {
             case 'Http':
                 $this->perpetuator = new user\session\perpetuator\Cookie();
                 break;

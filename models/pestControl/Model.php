@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\models\pestControl;
 
 use df;
@@ -13,11 +14,12 @@ use df\arch;
 use df\link;
 
 use DecodeLabs\Disciple;
+use DecodeLabs\Genesis;
 
 class Model extends axis\Model
 {
-    const PURGE_THRESHOLD = '1 month';
-    const LOG_BOTS = false;
+    public const PURGE_THRESHOLD = '1 month';
+    public const LOG_BOTS = false;
 
     public function logCurrentAgent(bool $logBots=false): array
     {
@@ -39,7 +41,7 @@ class Model extends axis\Model
             return;
         }
 
-        $mode = $this->context->getRunMode();
+        $mode = Genesis::$kernel->getMode();
         $request = $this->normalizeLogRequest($request, $mode, $url);
 
         if (!$this->miss->checkRequest($request)) {
@@ -76,7 +78,7 @@ class Model extends axis\Model
                 'mode' => $mode,
                 'request' => $request,
                 'seen' => 1,
-                'botsSeen' => $isBot ? 1:0,
+                'botsSeen' => $isBot ? 1 : 0,
                 'firstSeen' => 'now',
                 'lastSeen' => 'now'
             ])->execute()['id'];
@@ -97,7 +99,7 @@ class Model extends axis\Model
                     'message' => $message,
                     'userAgent' => $agent['id'],
                     'user' => $this->getLogUserId(),
-                    'isProduction' => $this->context->app->isProduction()
+                    'isProduction' => Genesis::$environment->isProduction()
                 ])
                 ->execute();
         }

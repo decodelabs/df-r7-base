@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\theme\facet;
 
 use df;
@@ -11,6 +12,7 @@ use df\aura;
 use df\arch;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 
 abstract class Base implements aura\theme\IFacet
 {
@@ -43,7 +45,7 @@ abstract class Base implements aura\theme\IFacet
             return true;
         }
 
-        return in_array(df\Launchpad::$app->envId, $this->_environments);
+        return in_array(Genesis::$environment->getName(), $this->_environments);
     }
 
     # Before render

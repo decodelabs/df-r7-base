@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\app\_nodes;
 
 use df;
@@ -11,8 +12,9 @@ use df\apex;
 use df\halo;
 use df\arch;
 
-use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
+use DecodeLabs\Genesis;
+use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Systemic;
 
 class TaskGenerateEntry extends arch\node\Task
@@ -23,8 +25,8 @@ class TaskGenerateEntry extends arch\node\Task
 
         $phpPath = core\environment\Config::getInstance()->getBinaryPath('php');
 
-        $appPath = df\Launchpad::$app->path;
-        $envId = df\Launchpad::$app->envId;
+        $appPath = Genesis::$hub->getApplicationPath();
+        $envId = Genesis::$environment->getName();
 
         if ($phpPath == 'php') {
             $phpPath = Systemic::$os->which('php');
@@ -36,7 +38,7 @@ class TaskGenerateEntry extends arch\node\Task
         if (!$mainFile->exists()) {
             $mainFile->putContents(
                 '<?php'."\n".
-                'require_once dirname(__DIR__).\'/vendor/autoload.php\';'."\n".
+                'require_once dirname(__DIR__).\'/vendor/df-r7/base/Df.php\';'."\n".
                 'df\Launchpad::run();'."\n"
             );
         }

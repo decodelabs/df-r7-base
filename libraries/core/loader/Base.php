@@ -10,13 +10,15 @@ use df;
 use df\core;
 
 use DecodeLabs\Genesis;
+use DecodeLabs\Genesis\Loader;
 
-class Base implements core\ILoader
+class Base implements
+    core\ILoader,
+    Loader
 {
     private static $_includeAttempts = 0;
     private static $_includeMisses = 0;
 
-    protected $_locations = [];
     protected $_packages = [];
 
 
@@ -32,28 +34,24 @@ class Base implements core\ILoader
     }
 
 
-    // Construct
-    public function __construct(array $locations=[])
-    {
-        $this->_locations = $locations;
 
-        spl_autoload_register(function (string $class): void {
-            $this->loadClass($class);
-        });
+    public function getPriority(): int
+    {
+        return 1;
     }
 
+
     // Class loader
-    public function loadClass(string $class): bool
+    public function loadClass(string $class): void
     {
         if (
             class_exists($class, false) ||
             interface_exists($class, false) ||
             trait_exists($class, false)
         ) {
-            return true;
+            return;
         }
 
-        $output = false;
 
         if ($paths = $this->getClassSearchPaths($class)) {
             $included = get_included_files();
@@ -75,7 +73,6 @@ class Base implements core\ILoader
                         /** @phpstan-ignore-next-line */
                         trait_exists($class, false)
                     ) {
-                        $output = true;
                         break;
                     }
                 }
@@ -84,7 +81,7 @@ class Base implements core\ILoader
             }
         }
 
-        return $output;
+        return;
     }
 
     public function getClassSearchPaths(string $class): ?array
@@ -296,31 +293,6 @@ class Base implements core\ILoader
     }
 
 
-    // Locations
-    public function registerLocations(array $locations)
-    {
-        $this->_locations = $locations + $this->_locations;
-        return $this;
-    }
-
-    public function registerLocation(string $name, string $path)
-    {
-        $this->_locations = [$name => $path] + $this->_locations;
-        return $this;
-    }
-
-    public function unregisterLocation(string $name)
-    {
-        unset($this->_locations[$name]);
-        return $this;
-    }
-
-    public function getLocations(): array
-    {
-        return $this->_locations;
-    }
-
-
     // Packages
     public function initRootPackages(string $rootPath, string $appPath)
     {
@@ -379,13 +351,5 @@ class Base implements core\ILoader
         }
 
         return null;
-    }
-
-
-
-    // Shutdown
-    public function shutdown(): void
-    {
-        // do nothing yet
     }
 }

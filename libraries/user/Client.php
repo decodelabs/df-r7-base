@@ -17,6 +17,7 @@ use DateTime;
 use DecodeLabs\Dictum;
 use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 
 class Client implements IClient, \Serializable, mesh\entity\IEntity
 {
@@ -439,7 +440,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
                         break;
 
                     case IState::DEV:
-                        $output = df\Launchpad::$app->isDevelopment()
+                        $output = Genesis::$environment->isDevelopment()
                                && $this->_authState >= IState::GUEST
                                && $this->_authState != IState::PENDING;
                         break;

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\halo\daemon;
 
 use df;
@@ -11,9 +12,10 @@ use df\halo;
 use df\flex;
 
 use DecodeLabs\Dictum;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 use DecodeLabs\Systemic;
 use DecodeLabs\Terminus\Session;
-use DecodeLabs\Exceptional;
 
 class Remote implements IRemote
 {
@@ -94,7 +96,7 @@ class Remote implements IRemote
         $pid = null;
 
         if ($daemon::REPORT_STATUS) {
-            $path = df\Launchpad::$app->getLocalDataPath().'/daemons/'.Dictum::fileName($name).'.status';
+            $path = Genesis::$hub->getLocalDataPath().'/daemons/'.Dictum::fileName($name).'.status';
 
             if (!is_file($path)) {
                 return $this;
@@ -178,7 +180,7 @@ class Remote implements IRemote
                 );
         }
 
-        $path = df\Launchpad::$app->path.'/entry/'.df\Launchpad::$app->envId.'.php';
+        $path = Genesis::$hub->getApplicationPath().'/entry/'.Genesis::$environment->getName().'.php';
 
         return Systemic::$process->newScriptLauncher($path, [
                 'daemon', $this->_daemon->getName(), $command

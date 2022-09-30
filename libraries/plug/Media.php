@@ -8,15 +8,14 @@ namespace df\plug;
 
 use df;
 use df\core;
-use df\plug;
 use df\arch;
-use df\fire;
 use df\axis;
 use df\neon;
 use df\link;
 
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 
 class Media implements arch\IDirectoryHelper
 {
@@ -194,7 +193,7 @@ class Media implements arch\IDirectoryHelper
         try {
             $filePath = $this->getDownloadFileLocation($fileId, $versionId, $isActive);
         } catch (core\fs\NotFoundException $e) {
-            if (!df\Launchpad::$app->isProduction()) {
+            if (!Genesis::$environment->isProduction()) {
                 return $this->serveFallbackImage($contentType, $fileName, $transformation);
             }
 

@@ -48,18 +48,13 @@ use df\opal\record\IPartial as Partial;
 use df\user\Manager as UserManager;
 use df\user\IClientDataObject as ClientObject;
 
-use df\Launchpad;
-
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use DateTime;
 use DateInterval;
 
-use DecodeLabs\Exceptional;
-use DecodeLabs\Genesis;
 use DecodeLabs\Systemic\Process;
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
-use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Terminus\Session as TerminusSession;
 
 use Stringable;
@@ -67,39 +62,6 @@ use Throwable;
 
 class Helper
 {
-    /**
-     * Is app in development mode?
-     */
-    public function isDevelopment(): bool
-    {
-        return Launchpad::$app->isDevelopment();
-    }
-
-    /**
-     * Is app in testing mode?
-     */
-    public function isTesting(): bool
-    {
-        return Launchpad::$app->isTesting();
-    }
-
-    /**
-     * Is app in production mode?
-     */
-    public function isProduction(): bool
-    {
-        return Launchpad::$app->isProduction();
-    }
-
-    /**
-     * Get run mode
-     */
-    public function getRunMode(): string
-    {
-        return Launchpad::$app->getRunMode();
-    }
-
-
     /**
      * Get current arch context
      */

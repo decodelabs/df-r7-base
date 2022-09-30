@@ -11,16 +11,15 @@ use df\core;
 use df\halo;
 use df\flex;
 
-use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
 use DecodeLabs\Deliverance;
-
+use DecodeLabs\Dictum;
 use DecodeLabs\Eventful\Dispatcher as EventDispatcher;
 use DecodeLabs\Eventful\Factory as EventFactory;
-
-use DecodeLabs\Dictum;
-use DecodeLabs\Systemic;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
+use DecodeLabs\Systemic;
+use DecodeLabs\Terminus as Cli;
 
 abstract class Base implements IDaemon
 {
@@ -56,8 +55,8 @@ abstract class Base implements IDaemon
             $user = core\environment\Config::getInstance()->getDaemonUser();
         }
 
-        $path = df\Launchpad::$app->path.'/entry/';
-        $path .= df\Launchpad::$app->envId.'.php';
+        $path = Genesis::$hub->getApplicationPath().'/entry/';
+        $path .= Genesis::$environment->getName().'.php';
 
         return Systemic::$process->launchScript($path, ['daemon', $name], null, $user);
     }
@@ -156,13 +155,13 @@ abstract class Base implements IDaemon
         $this->context = new core\SharedContext();
         $this->process = Systemic::$process->getCurrent();
 
-        $basePath = df\Launchpad::$app->getLocalDataPath().'/daemons/'.Dictum::fileName($this->getName());
+        $basePath = Genesis::$hub->getLocalDataPath().'/daemons/'.Dictum::fileName($this->getName());
         Atlas::createDir(dirname($basePath));
 
         $this->_startTime = time();
         $this->_statusPath = $basePath.'.status';
 
-        if (!df\Launchpad::$app->isProduction()) {
+        if (!Genesis::$environment->isProduction()) {
             $this->_endTime = core\time\Date::factory('+'.self::DEV_RUN_TIME)->toTimestamp();
         }
 
@@ -200,7 +199,7 @@ abstract class Base implements IDaemon
         try {
             $this->_runForked();
         } catch (\Throwable $e) {
-            file_put_contents(df\Launchpad::$app->path.'/daemon-error', (string)$e);
+            file_put_contents(Genesis::$hub->getApplicationPath().'/daemon-error', (string)$e);
             throw $e;
         }
     }
@@ -208,7 +207,7 @@ abstract class Base implements IDaemon
     private function _runForked()
     {
         $this->events = EventFactory::newDispatcher();
-        $this->process->setTitle(df\Launchpad::$app->getName().' - '.$this->getName());
+        $this->process->setTitle(Genesis::$hub->getApplicationName().' - '.$this->getName());
 
         $pidPath = $this->getPidFilePath();
 
@@ -319,7 +318,7 @@ abstract class Base implements IDaemon
 
     public function getPidFilePath()
     {
-        return df\Launchpad::$app->getLocalDataPath().'/daemons/'.Dictum::fileName($this->getName()).'.pid';
+        return Genesis::$hub->getLocalDataPath().'/daemons/'.Dictum::fileName($this->getName()).'.pid';
     }
 
     protected function _setup()

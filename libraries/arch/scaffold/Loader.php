@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\scaffold;
 
 use df\arch\Scaffold;
@@ -10,6 +11,7 @@ use df\arch\IContext as Context;
 use df\arch\IRequest as Request;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 
 class Loader
 {
@@ -23,7 +25,7 @@ class Loader
 
         $class = self::getClassFromRequest(
             $context->location,
-            $context->getRunMode()
+            Genesis::$kernel->getMode()
         );
 
         if (!class_exists($class)) {

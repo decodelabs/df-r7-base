@@ -14,6 +14,7 @@ use df\axis;
 use df\opal;
 
 use DecodeLabs\Dictum;
+use DecodeLabs\Genesis;
 use DecodeLabs\Terminus as Cli;
 
 class TaskSetMaster extends arch\node\Task
@@ -43,7 +44,11 @@ class TaskSetMaster extends arch\node\Task
             return;
         }
 
-        $dsn = new opal\rdbms\Dsn('mysql://localhost/'.basename(dirname($this->app->path)));
+        $dsn = new opal\rdbms\Dsn(
+            'mysql://localhost/'.basename(dirname(
+                Genesis::$hub->getApplicationPath()
+            ))
+        );
 
         do {
             $adapter = $this->_askFor('Adapter', function ($answer) {

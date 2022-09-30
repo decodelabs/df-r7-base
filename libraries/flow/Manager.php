@@ -13,8 +13,8 @@ use df\user;
 use df\flex;
 use df\axis;
 
-use DecodeLabs\Metamorph;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 
 class Manager implements IManager, core\IShutdownAware
 {
@@ -114,7 +114,7 @@ class Manager implements IManager, core\IShutdownAware
                 }
 
                 if (!$from->getName()) {
-                    $from->setName(df\Launchpad::$app->getName());
+                    $from->setName(Genesis::$hub->getApplicationName());
                 }
 
                 $message->setFromAddress($from);
@@ -260,7 +260,7 @@ class Manager implements IManager, core\IShutdownAware
 
             return $output;
         } catch (\Throwable $e) {
-            if ($context->app->isDevelopment()) {
+            if (Genesis::$environment->isDevelopment()) {
                 throw $e;
             } else {
                 $context->logs->logException($e);
@@ -275,13 +275,20 @@ class Manager implements IManager, core\IShutdownAware
 
     public function getDefaultMailTransportName($forceSend=false)
     {
-        if (df\Launchpad::$app->isDevelopment() && !$forceSend) {
+        if (
+            Genesis::$environment->isDevelopment() &&
+            !$forceSend
+        ) {
             return 'Capture';
         }
 
         $config = flow\mail\Config::getInstance();
 
-        if (df\Launchpad::$app->isTesting() && $config->shouldCaptureInTesting() && !$forceSend) {
+        if (
+            Genesis::$environment->isTesting() &&
+            $config->shouldCaptureInTesting() &&
+            !$forceSend
+        ) {
             return 'Capture';
         }
 
@@ -802,7 +809,10 @@ class Manager implements IManager, core\IShutdownAware
             if ($this->_flashDisabled === null) {
                 $context = df\arch\Context::getCurrent();
 
-                if ($context->getRunMode() == 'Http' && !$context->http->isAjaxRequest()) {
+                if (
+                    Genesis::$kernel->getMode() == 'Http' &&
+                    !$context->http->isAjaxRequest()
+                ) {
                     $this->_flashDisabled = false;
                 } else {
                     $this->_flashDisabled = true;

@@ -10,10 +10,11 @@ use df;
 use df\core;
 use df\flex;
 
-use DecodeLabs\Dictum;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
+use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 
 abstract class FileStore implements IFileStore
 {
@@ -28,8 +29,8 @@ abstract class FileStore implements IFileStore
     {
         $total = 0;
         $dirs = [
-            df\Launchpad::$app->getLocalDataPath().'/filestore/',
-            df\Launchpad::$app->getSharedDataPath().'/filestore/',
+            Genesis::$hub->getLocalDataPath().'/filestore/',
+            Genesis::$hub->getSharedDataPath().'/filestore/',
         ];
 
         foreach ($dirs as $path) {
@@ -55,8 +56,8 @@ abstract class FileStore implements IFileStore
     public static function purgeAll(): void
     {
         $dirs = [
-            df\Launchpad::$app->getLocalDataPath().'/filestore/',
-            df\Launchpad::$app->getSharedDataPath().'/filestore/',
+            Genesis::$hub->getLocalDataPath().'/filestore/',
+            Genesis::$hub->getSharedDataPath().'/filestore/',
         ];
 
         foreach ($dirs as $path) {
@@ -67,9 +68,9 @@ abstract class FileStore implements IFileStore
     public function __construct()
     {
         if (static::IS_DISTRIBUTED) {
-            $path = df\Launchpad::$app->getSharedDataPath();
+            $path = Genesis::$hub->getSharedDataPath();
         } else {
-            $path = df\Launchpad::$app->getLocalDataPath();
+            $path = Genesis::$hub->getLocalDataPath();
         }
 
         $path .= '/filestore/'.Dictum::fileName($this->getCacheId());

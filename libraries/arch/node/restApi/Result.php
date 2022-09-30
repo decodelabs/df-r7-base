@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\node\restApi;
 
 use df;
@@ -11,8 +12,9 @@ use df\arch;
 use df\link;
 use df\flex;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
+use DecodeLabs\Glitch;
 
 class Result implements arch\node\IRestApiResult
 {
@@ -195,7 +197,7 @@ class Result implements arch\node\IRestApiResult
                 'key' => null
             ];
 
-            if (!df\Launchpad::$app->isProduction()) {
+            if (!Genesis::$environment->isProduction()) {
                 $data['error']['file'] = Glitch::normalizePath($this->_exception->getFile());
                 $data['error']['line'] = $this->_exception->getLine();
             }
@@ -215,7 +217,7 @@ class Result implements arch\node\IRestApiResult
 
         $flags = \JSON_UNESCAPED_SLASHES;
 
-        if (!df\Launchpad::$app->isProduction()) {
+        if (!Genesis::$environment->isProduction()) {
             $flags |= \JSON_PRETTY_PRINT;
         }
 

@@ -58,7 +58,7 @@ trait TCache
 
     public function isCacheDistributed(): bool
     {
-        return static::IS_DISTRIBUTED && df\Launchpad::$app->isDistributed();
+        return static::IS_DISTRIBUTED;
     }
 
 

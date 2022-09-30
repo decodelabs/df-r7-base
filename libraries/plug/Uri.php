@@ -15,8 +15,8 @@ use df\fuse;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
-use DecodeLabs\Atlas\File\Memory as MemoryFile;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 
 use GuzzleHttp\Client as HttpClient;
 use Psr\Http\Message\ResponseInterface;
@@ -293,7 +293,7 @@ class Uri implements arch\IDirectoryHelper
             if (isset($dep->js[0])) {
                 $subPath = $dep->js[0];
             } else {
-                if (!df\Launchpad::$app->isProduction()) {
+                if (!Genesis::$environment->isProduction()) {
                     throw Exceptional::{'df/fuse/Runtime'}(
                         'Dependency '.$name.' does not have a main file'
                     );
@@ -410,7 +410,7 @@ class Uri implements arch\IDirectoryHelper
         if ($url instanceof arch\IRequest) {
             $url = $this->__invoke($url);
             $config = core\app\runner\http\Config::getInstance();
-            $credentials = $config->getCredentials($this->context->app->envMode);
+            $credentials = $config->getCredentials(Genesis::$environment->getMode());
 
             $options = [
                 'verify' => false,

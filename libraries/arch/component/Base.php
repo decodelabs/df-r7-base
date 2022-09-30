@@ -15,9 +15,10 @@ use df\link;
 
 use df\arch\scaffold\Loader as ScaffoldLoader;
 
+use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 use DecodeLabs\Tagged as Html;
 use DecodeLabs\Tagged\Markup;
-use DecodeLabs\Exceptional;
 
 abstract class Base implements arch\IComponent
 {
@@ -44,8 +45,6 @@ abstract class Base implements arch\IComponent
         } else {
             $parts = [];
         }
-
-        $type = $context->getRunMode();
 
         $parts[] = '_components';
         $nameParts = explode('/', $name);

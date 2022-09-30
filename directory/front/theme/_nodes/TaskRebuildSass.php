@@ -27,7 +27,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
     {
         $this->ensureDfSource();
 
-        $path = $this->app->getLocalDataPath().'/sass/'.$this->app->envMode;
+        $path = Genesis::$hub->getLocalDataPath().'/sass/'.Genesis::$environment->getMode();
         $this->_dir = Atlas::dir($path);
 
         if (!$this->_dir->exists()) {
@@ -44,7 +44,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
         }
 
 
-        $runPath = df\Launchpad::$app->getLocalDataPath().'/run';
+        $runPath = Genesis::$hub->getLocalDataPath().'/run';
         clearstatcache(true);
         $activeExists = is_file($runPath.'/active/Run.php');
         $active2Exists = is_file($runPath.'/active2/Run.php');
@@ -110,7 +110,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
 
     protected function _checkFile(string $key, string $sassPath, ?string $activePath)
     {
-        $hasBuild = file_exists($this->app->getLocalDataPath().'/run/active/Run.php');
+        $hasBuild = file_exists(Genesis::$hub->getLocalDataPath().'/run/active/Run.php');
         $delete = !file_exists($sassPath);
         $why = 'file not found';
 
@@ -146,12 +146,15 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
 
     protected function normalizeSassPath(?string $path)
     {
-        if (!df\Launchpad::$loader || $path === null) {
+        if ($path === null) {
             return $path;
         }
 
-        $locations = df\Launchpad::$loader->getLocations();
-        $locations['app'] = df\Launchpad::$app->path;
+        $locations = [
+            'root' => dirname(Genesis::$build->path),
+            'app' => Genesis::$hub->getApplicationPath()
+        ];
+
         $path = (string)preg_replace('/[[:^print:]]/', '', $path);
 
         foreach ($locations as $key => $match) {

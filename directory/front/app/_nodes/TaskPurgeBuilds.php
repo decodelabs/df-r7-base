@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\app\_nodes;
 
 use df;
@@ -12,12 +13,13 @@ use df\arch;
 use df\halo;
 use df\flex;
 
-use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
+use DecodeLabs\Genesis;
+use DecodeLabs\Terminus as Cli;
 
 class TaskPurgeBuilds extends arch\node\Task
 {
-    const BUILD_DURATION = '5 minutes';
+    public const BUILD_DURATION = '5 minutes';
 
     public function execute()
     {
@@ -25,7 +27,7 @@ class TaskPurgeBuilds extends arch\node\Task
 
         Cli::{'yellow'}('Purging old build folders: ');
 
-        $appPath = df\Launchpad::$app->path;
+        $appPath = Genesis::$hub->getApplicationPath();
         $buildDir = Atlas::dir($appPath.'/data/local/build');
         $all = isset($this->request['all']);
         $active = $this->filter['?active']->guid();

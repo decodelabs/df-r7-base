@@ -15,8 +15,8 @@ use df\aura;
 
 use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
-
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 
 class Error extends Base
 {
@@ -99,7 +99,10 @@ class Error extends Base
     {
         $view = $this->getView();
 
-        if (df\Launchpad::$app->isProduction() && !$view->context->request->isArea('admin')) {
+        if (
+            Genesis::$environment->isProduction() &&
+            !$view->context->request->isArea('admin')
+        ) {
             return null;
         }
 

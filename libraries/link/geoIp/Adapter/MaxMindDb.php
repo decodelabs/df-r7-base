@@ -15,6 +15,7 @@ use df\link\geoIp\Config;
 
 use DecodeLabs\Compass\Ip;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 
 class MaxMindDb implements Adapter
 {
@@ -52,7 +53,7 @@ class MaxMindDb implements Adapter
         $file = $settings['file'];
 
         if (dirname($file) == '.') {
-            $file = Launchpad::$app->getLocalDataPath().'/geoIp/'.$file;
+            $file = Genesis::$hub->getLocalDataPath().'/geoIp/'.$file;
         }
 
         return $file;

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\cache\_nodes;
 
 use df;
@@ -12,6 +13,7 @@ use df\arch;
 use df\link;
 use df\flex;
 
+use DecodeLabs\Genesis;
 use DecodeLabs\Terminus as Cli;
 use GuzzleHttp\Client as HttpClient;
 
@@ -19,8 +21,8 @@ class TaskApcuClear extends arch\node\Task
 {
     use TApcuClear;
 
-    const DEFAULT_ACCESS = arch\IAccess::ALL;
-    const OPTIMIZE = true;
+    public const DEFAULT_ACCESS = arch\IAccess::ALL;
+    public const OPTIMIZE = true;
 
     public function execute()
     {
@@ -54,7 +56,7 @@ class TaskApcuClear extends arch\node\Task
             $url->query->import($this->request->query);
 
             $config = core\app\runner\http\Config::getInstance();
-            $credentials = $config->getCredentials($this->app->envMode);
+            $credentials = $config->getCredentials(Genesis::$environment->getMode());
 
             //Cli::info($url);
 

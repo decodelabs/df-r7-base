@@ -15,9 +15,10 @@ use df\halo;
 
 use DecodeLabs\Compass\Ip;
 use DecodeLabs\Deliverance;
-use DecodeLabs\Typify;
-use DecodeLabs\Glitch;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
+use DecodeLabs\Glitch;
+use DecodeLabs\Typify;
 
 class Http extends Base implements core\IContextAware, link\http\IResponseAugmentorProvider, arch\IRequestOrientedRunner
 {
@@ -145,8 +146,6 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     {
         try {
             $ip = $this->_httpRequest->getIp();
-            $this->_handleDebugMode();
-
             $request = $this->_prepareDirectoryRequest();
             $this->_prepareHttpRequest();
 
@@ -309,7 +308,11 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     // Prepare http request
     protected function _prepareHttpRequest()
     {
-        if ($this->_router->shouldUseHttps() && !$this->_httpRequest->getUrl()->isSecure() && df\Launchpad::$app->isProduction()) {
+        if (
+            $this->_router->shouldUseHttps() &&
+            !$this->_httpRequest->getUrl()->isSecure() &&
+            Genesis::$environment->isProduction()
+        ) {
             $response = new link\http\response\Redirect(
                 $this->_httpRequest->getUrl()
                     ->isSecure(true)
@@ -330,20 +333,6 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     }
 
 
-    // Debug mode
-    protected function _handleDebugMode()
-    {
-        if ($this->_httpRequest->hasCookie('debug')) {
-            df\Launchpad::$app->envMode = 'testing';
-
-            flow\Manager::getInstance()->flashNow(
-                    'global.debug',
-                    'Currently in enforced debug mode',
-                    'debug'
-                )
-                ->setLink('~devtools/application/debug-mode', 'Change debug settings');
-        }
-    }
 
 
     // Directory request
@@ -412,7 +401,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
             $baseUrl = (string)$baseUrl;
 
-            if (df\Launchpad::$app->isDevelopment()) {
+            if (Genesis::$environment->isDevelopment()) {
                 $response = new link\http\response\Stream(
                     '<html><head><title>Bad request</title></head><body>'.
                     '<p>Sorry, you are not in the right place!</p>'.
@@ -465,17 +454,6 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
         $request = $this->_router->routeIn($request);
-
-        if (df\Launchpad::$app->isMaintenance
-        && !$request->isArea('admin')
-        && !$request->isArea('devtools')
-        && !$request->isArea('mail')
-        && !$request->matches('account/')
-        && !$request->matches('assets/')
-        && !$request->matches('theme/')) {
-            return new arch\Request('site-maintenance');
-        }
-
         return $request;
     }
 
@@ -594,7 +572,10 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
         // Empty response
-        if ($response === null && df\Launchpad::$app->isDevelopment()) {
+        if (
+            $response === null &&
+            Genesis::$environment->isDevelopment()
+        ) {
             throw Exceptional::NotImplemented([
                 'message' => 'No response was returned by node: '.$this->_context->request,
                 'http' => 501
@@ -662,7 +643,10 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
         // HSTS
-        if ($this->_router->shouldUseHttps() && df\Launchpad::$app->isProduction()) {
+        if (
+            $this->_router->shouldUseHttps() &&
+            Genesis::$environment->isProduction()
+        ) {
             $headers = $response->getHeaders();
 
             if (!$headers->has('Strict-Transport-Security')) {

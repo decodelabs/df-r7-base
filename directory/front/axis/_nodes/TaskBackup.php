@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\axis\_nodes;
 
 use df;
@@ -12,9 +13,10 @@ use df\arch;
 use df\axis;
 use df\opal;
 
-use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
+use DecodeLabs\Genesis;
 use DecodeLabs\Glitch;
+use DecodeLabs\Terminus as Cli;
 
 class TaskBackup extends arch\node\Task
 {
@@ -40,7 +42,7 @@ class TaskBackup extends arch\node\Task
 
         $this->_manifest['timestamp'] = time();
         $backupId = 'axis-'.date('YmdHis');
-        $this->_path = $this->app->getSharedDataPath().'/backup/'.$backupId;
+        $this->_path = Genesis::$hub->getSharedDataPath().'/backup/'.$backupId;
         Atlas::createDir($this->_path);
 
         $progressBar = Cli::newProgressBar(0, count($units), 0);

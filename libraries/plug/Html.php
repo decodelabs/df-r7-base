@@ -16,9 +16,9 @@ use df\flow;
 
 use DecodeLabs\Tagged;
 use DecodeLabs\Tagged\Buffer;
-use DecodeLabs\Chirp\Parser as Chirp;
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 use DecodeLabs\Metamorph;
 
 class Html implements arch\IDirectoryHelper
@@ -256,7 +256,7 @@ class Html implements arch\IDirectoryHelper
         $manager->processFlashQueue();
         $messageCount = 0;
 
-        $isProduction = df\Launchpad::$app->isProduction();
+        $isProduction = Genesis::$environment->isProduction();
 
         $output = '<div class="w list flash">'."\n";
         $change = false;

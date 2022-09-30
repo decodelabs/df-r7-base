@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\mesh\event;
 
 use df;
@@ -11,12 +12,13 @@ use df\mesh;
 use df\axis;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 
 abstract class Hook implements IHook
 {
     use core\TContextProxy;
 
-    const EVENTS = [];
+    public const EVENTS = [];
 
     protected static $_enabled = true;
 
@@ -79,7 +81,7 @@ abstract class Hook implements IHook
             return;
         }
 
-        $isProduction = df\Launchpad::$app->isProduction();
+        $isProduction = Genesis::$environment->isProduction();
         $entity = $event->getCachedEntity();
 
         foreach ($entitySet[$action] as $target) {

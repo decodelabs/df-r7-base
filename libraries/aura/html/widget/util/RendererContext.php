@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget\util;
 
 use df;
@@ -10,6 +11,7 @@ use df\core;
 use df\aura;
 use df\arch;
 
+use DecodeLabs\Genesis;
 use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Tagged as Html;
 use DecodeLabs\Tagged\Element;
@@ -193,7 +195,7 @@ class RendererContext implements aura\html\widget\IRendererContext
             try {
                 $value = core\lang\Callback($renderer, $value, $this);
             } catch (\Throwable $e) {
-                if (!df\Launchpad::$app->isTesting()) {
+                if (!Genesis::$environment->isTesting()) {
                     $value = new aura\html\ElementString('<span class="error">ERROR: '.$e->getMessage().'</span>');
                 } else {
                     throw $e;

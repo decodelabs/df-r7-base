@@ -87,8 +87,6 @@ trait TForm
             $parts = [];
         }
 
-        $type = $context->getRunMode();
-
         $parts[] = '_formDelegates';
         $nameParts = explode('/', $name);
         $topName = (string)array_pop($nameParts);

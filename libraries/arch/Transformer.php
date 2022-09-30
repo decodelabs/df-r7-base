@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch;
 
 use df;
@@ -10,6 +11,7 @@ use df\core;
 use df\arch;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 
 abstract class Transformer implements ITransformer
 {
@@ -49,7 +51,7 @@ abstract class Transformer implements ITransformer
 
     public static function factory(IContext $context): ?ITransformer
     {
-        $runMode = $context->getRunMode();
+        $runMode = Genesis::$kernel->getMode();
         $class = self::getClassFor($context->location, $runMode);
 
         if (!$class) {
@@ -59,7 +61,7 @@ abstract class Transformer implements ITransformer
         return new $class($context);
     }
 
-    public static function getClassFor(IRequest $request, $runMode='Http')
+    public static function getClassFor(IRequest $request, string $runMode='Http')
     {
         $runMode = ucfirst($runMode);
         $mainParts = $sharedParts = explode('/', $request->getDirectoryLocation());

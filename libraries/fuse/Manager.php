@@ -13,8 +13,9 @@ use df\fuse;
 use df\spur;
 
 use DecodeLabs\Atlas;
-use DecodeLabs\Terminus\Session;
+use DecodeLabs\Genesis;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Terminus\Session;
 
 class Manager implements IManager
 {
@@ -27,12 +28,12 @@ class Manager implements IManager
 
     public static function getManifestCachePath(): string
     {
-        return df\Launchpad::$app->getLocalDataPath().'/theme/dependencies';
+        return Genesis::$hub->getLocalDataPath().'/theme/dependencies';
     }
 
     public static function getAssetPath(): string
     {
-        return df\Launchpad::$app->path.'/assets/vendor';
+        return Genesis::$hub->getApplicationPath().'/assets/vendor';
     }
 
 
@@ -94,7 +95,7 @@ class Manager implements IManager
         $swallow = true;
         $depContent = null;
 
-        if (df\Launchpad::$app->isDevelopment()) {
+        if (Genesis::$environment->isDevelopment()) {
             $swallow = false;
 
             if (!is_dir($vendorPath)) {
