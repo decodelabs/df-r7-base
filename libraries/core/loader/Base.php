@@ -9,7 +9,7 @@ namespace df\core\loader;
 use df;
 use df\core;
 
-use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 
 class Base implements core\ILoader
 {
@@ -40,31 +40,6 @@ class Base implements core\ILoader
         spl_autoload_register(function (string $class): void {
             $this->loadClass($class);
         });
-    }
-
-    public function loadComposer(string $appPath): void
-    {
-        $composerPath = null;
-
-        if (df\Launchpad::$isCompiled) {
-            $composerPath = df\Launchpad::$rootPath.'/apex/vendor/autoload.php';
-
-            if (!file_exists($composerPath)) {
-                $composerPath = null;
-            }
-        }
-
-        if ($composerPath === null) {
-            $composerPath = $appPath.'/vendor/autoload.php';
-
-            if (!file_exists($composerPath)) {
-                $composerPath = null;
-            }
-        }
-
-        if ($composerPath !== null) {
-            require_once $composerPath;
-        }
     }
 
     // Class loader
@@ -125,7 +100,7 @@ class Base implements core\ILoader
         }
 
         $fileName = (string)array_pop($parts);
-        $basePath = df\Launchpad::$rootPath.'/'.$library;
+        $basePath = Genesis::$build->path.'/'.$library;
 
         if (!empty($parts)) {
             $basePath .= '/'.implode('/', $parts);
@@ -177,7 +152,7 @@ class Base implements core\ILoader
     public function getFileSearchPaths(string $path): array
     {
         $path = core\uri\Path::normalizeLocal($path);
-        return [df\Launchpad::$rootPath.'/'.$path];
+        return [Genesis::$build->path.'/'.$path];
     }
 
     public function lookupFileList(string $path, array $extensions=null): \Generator

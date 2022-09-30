@@ -13,8 +13,9 @@ use df\arch;
 use df\spur;
 use df\fuse;
 
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Genesis;
 use DecodeLabs\Spectrum\Color;
 
 class Base implements ITheme, Dumpable
@@ -125,10 +126,8 @@ class Base implements ITheme, Dumpable
             ->setDataAttribute('location', $request->getLiteralPathString())
             ->setDataAttribute('layout', $view->getLayout());
 
-        if (df\Launchpad::$compileTimestamp) {
-            $view->setData('cts', df\Launchpad::$compileTimestamp);
-        } elseif ($view->context->app->isDevelopment()) {
-            $view->setData('cts', time());
+        if (Genesis::$build->shouldCacheBust()) {
+            $view->setData('cts', Genesis::$build->getCacheBuster());
         }
     }
 

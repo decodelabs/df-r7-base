@@ -14,11 +14,12 @@ use df\link;
 use df\halo;
 use df\flex;
 
-use DecodeLabs\Systemic;
 use DecodeLabs\Atlas;
-use DecodeLabs\Terminus\Session;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch;
+use DecodeLabs\Genesis;
+use DecodeLabs\Systemic;
+use DecodeLabs\Terminus\Session;
 
 class SassBridge implements ISassBridge
 {
@@ -146,7 +147,10 @@ class SassBridge implements ISassBridge
                 }
             }
         } else {
-            if (df\Launchpad::$compileTimestamp && $mtime < df\Launchpad::$compileTimestamp - 30) {
+            if (
+                Genesis::$build->isCompiled() &&
+                $mtime < Genesis::$build->getTime() - 30
+            ) {
                 $this->compile(true);
             }
         }
@@ -466,12 +470,7 @@ class SassBridge implements ISassBridge
 
     protected function _replaceUrls($sass)
     {
-        if (df\Launchpad::$compileTimestamp) {
-            $cts = df\Launchpad::$compileTimestamp;
-        } else {
-            $cts = time();
-        }
-
+        $cts = Genesis::$build->getCacheBuster();
         preg_match_all('/url\([\'\"]?([^\'\"\)]+)[\'\"]?\)/i', $sass, $matches);
 
         if (!empty($matches[1])) {

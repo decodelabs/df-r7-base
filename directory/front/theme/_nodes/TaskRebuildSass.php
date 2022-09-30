@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\theme\_nodes;
 
 use df;
@@ -12,12 +13,13 @@ use df\arch;
 use df\flex;
 use df\aura;
 
-use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
+use DecodeLabs\Genesis;
+use DecodeLabs\Terminus as Cli;
 
 class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
 {
-    const RUN_AFTER = true;
+    public const RUN_AFTER = true;
 
     protected $_dir;
 
@@ -156,7 +158,10 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             if (substr($path, 0, $len = strlen($match)) == $match) {
                 $innerPath = substr(str_replace('\\', '/', $path), $len + 1);
 
-                if (df\Launchpad::$isCompiled && $key == 'root') {
+                if (
+                    Genesis::$build->isCompiled() &&
+                    $key == 'root'
+                ) {
                     $parts = explode('/', $innerPath);
                     array_shift($parts);
                     $innerPath = implode('/', $parts);

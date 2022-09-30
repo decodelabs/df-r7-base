@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\neon\raster;
 
 use df;
@@ -12,15 +13,16 @@ use df\link;
 use df\flex;
 
 use DecodeLabs\Atlas;
+use DecodeLabs\Genesis;
 use DecodeLabs\Typify;
 use DecodeLabs\Spectrum\Color;
 
 class Descriptor implements IDescriptor
 {
-    const DEFAULT_LIFETIME = '3 days';
-    const URL_LIFETIME = '1 month';
+    public const DEFAULT_LIFETIME = '3 days';
+    public const URL_LIFETIME = '1 month';
 
-    const ALPHA_TYPES = [
+    public const ALPHA_TYPES = [
         'image/gif',
         'image/png',
         'image/svg+xml',
@@ -229,7 +231,10 @@ class Descriptor implements IDescriptor
             if (substr($path, 0, $len = strlen($match)) == $match) {
                 $innerPath = substr(str_replace('\\', '/', $path), $len + 1);
 
-                if (df\Launchpad::$isCompiled && $key == 'root') {
+                if (
+                    Genesis::$build->isCompiled() &&
+                    $key == 'root'
+                ) {
                     $parts = explode('/', $innerPath);
                     array_shift($parts);
                     $innerPath = implode('/', $parts);

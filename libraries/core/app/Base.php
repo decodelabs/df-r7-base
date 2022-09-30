@@ -15,6 +15,7 @@ use df\user\Disciple\Adapter as DiscipleAdapter;
 
 use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 use DecodeLabs\Metamorph;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Sanctum\Definition as Csp;
@@ -50,7 +51,7 @@ abstract class Base implements core\IApp
     {
         $class = 'df\\apex\\App';
 
-        if (df\Launchpad::$isCompiled) {
+        if (Genesis::$build->isCompiled()) {
             if (!class_exists($class)) {
                 throw Exceptional::Implementation(
                     'App class not found'
@@ -85,7 +86,7 @@ abstract class Base implements core\IApp
             $uniquePrefix = strtolower(flex\Generator::random(3, 3));
             $passKey = flex\Generator::passKey();
 
-            if (file_exists(dirname(df\Launchpad::$rootPath).'/webCore/Package.php')) {
+            if (file_exists(dirname(Genesis::$build->path).'/webCore/Package.php')) {
                 $packages = ['webCore' => true];
             } else {
                 $packages = [];
@@ -227,7 +228,7 @@ PHP;
 
 
         // Not compiled
-        if (!df\Launchpad::$isCompiled) {
+        if (!Genesis::$build->isCompiled()) {
             $this->envMode = $envConfig->getMode();
             df\Launchpad::$loader->registerLocations($envConfig->getActiveLocations());
         }

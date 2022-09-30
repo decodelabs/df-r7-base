@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\neon\mediaHandler;
 
 use df;
@@ -11,12 +12,12 @@ use df\neon;
 use df\opal;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 
 abstract class Base implements IMediaHandler
 {
-    const REGISTRY_PREFIX = 'manager://mediaHandler';
-
     use core\TManager;
+    public const REGISTRY_PREFIX = 'manager://mediaHandler';
 
     public static function factory($name)
     {
@@ -87,8 +88,8 @@ abstract class Base implements IMediaHandler
             $output .= '&transform='.$transformation;
         }
 
-        if (df\Launchpad::$compileTimestamp) {
-            $output .= '&cts='.df\Launchpad::$compileTimestamp;
+        if (Genesis::$build->shouldCacheBust()) {
+            $output .= '&cts='.Genesis::$build->getCacheBuster();
         }
 
         return $output;

@@ -10,6 +10,7 @@ use df;
 use df\core;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Genesis;
 use DecodeLabs\Exceptional;
 
 // String provider
@@ -206,15 +207,18 @@ class Package
         return new $class($name);
     }
 
-    public function __construct($name, $priority=null, $path=null)
-    {
+    public function __construct(
+        string $name,
+        ?int $priority=null,
+        ?string $path=null
+    ) {
         if ($path === null) {
             $ref = new \ReflectionObject($this);
             $path = dirname((string)$ref->getFileName());
         }
 
-        if (df\Launchpad::$isCompiled) {
-            $this->path = df\Launchpad::$rootPath.'/apex/packages/'.$name;
+        if (Genesis::$build->isCompiled()) {
+            $this->path = Genesis::$build->path.'/apex/packages/'.$name;
         } else {
             $this->path = $path;
         }
@@ -693,13 +697,6 @@ interface IConfig extends IRegistryObject, IValueMap, \ArrayAccess
     public function getConfigValues(): array;
     public function tidyConfigValues(): void;
     public function reset();
-}
-
-
-include __DIR__.'/loader/Base.php';
-
-if (!df\Launchpad::$isCompiled) {
-    include __DIR__.'/loader/Development.php';
 }
 
 

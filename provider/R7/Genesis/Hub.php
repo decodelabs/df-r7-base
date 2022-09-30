@@ -14,6 +14,7 @@ use df\Launchpad;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch;
+use DecodeLabs\Genesis\Build;
 use DecodeLabs\Genesis\Context;
 use DecodeLabs\Genesis\Environment\Config as EnvConfig;
 use DecodeLabs\Genesis\Hub as HubInterface;
@@ -26,6 +27,8 @@ class Hub implements HubInterface
     protected string $appPath;
 
     protected bool $analysis = false;
+
+    protected ?int $compileTimestamp = null;
 
     protected Context $context;
 
@@ -52,7 +55,7 @@ class Hub implements HubInterface
         $hasAppFile = file_exists($appDir.'/App.php');
 
         if (!$hasAppFile) {
-            $appDir = Launchpad::$rootPath.'/tests';
+            $appDir = dirname(dirname(dirname(__DIR__))).'/tests';
         }
 
         $this->appPath = $appDir;
@@ -94,31 +97,66 @@ class Hub implements HubInterface
     }
 
 
-    public function initializeLoaders(StackLoader $loader): void
+
+    /**
+     * Load build info
+     */
+    public function loadBuild(): Build
     {
-        $this->ensureCompileConstants();
-
-        // Ensure root has not been mangled by symlink
-        if (Launchpad::$rootPath === dirname(dirname(dirname(__DIR__)))) {
-            $dir = $this->appPath.'/vendor/df-r7/base';
-
-            if (Launchpad::$rootPath !== $dir && is_dir($dir)) {
-                Launchpad::$rootPath = $dir;
-            }
+        // Ensure compile constants
+        if (!defined('df\\COMPILE_TIMESTAMP')) {
+            define('df\\COMPILE_TIMESTAMP', null);
+            define('df\\COMPILE_BUILD_ID', null);
+            define('df\\COMPILE_ROOT_PATH', null);
+            define('df\\COMPILE_ENV_MODE', null);
         }
 
+
+        // Work out root path
+        if (
+            df\COMPILE_ROOT_PATH &&
+            is_dir((string)df\COMPILE_ROOT_PATH)
+        ) {
+            $buildPath = df\COMPILE_ROOT_PATH;
+        } elseif ($this->analysis) {
+            $buildPath = dirname(dirname(dirname(__DIR__)));
+        } else {
+            $buildPath = $this->appPath.'/vendor/df-r7/base';
+        }
+
+
+
+        // Create build info
+        return new Build(
+            $this->context,
+            $buildPath,
+            df\COMPILE_TIMESTAMP
+        );
+    }
+
+
+    /**
+     * Setup loaders
+     */
+    public function initializeLoaders(StackLoader $loader): void
+    {
         // Load core library
         $this->loadBaseClass('core/_manifest');
+        $this->loadBaseClass('core/loader/Base');
+
+        $rootPath = $this->context->build->path;
 
         // Register loader
-        if (Launchpad::$isCompiled) {
-            Launchpad::$loader = new core\loader\Base(['root' => dirname(Launchpad::$rootPath)]);
+        if ($this->context->build->isCompiled()) {
+            Launchpad::$loader = new core\loader\Base(['root' => dirname($rootPath)]);
         } else {
-            Launchpad::$loader = new core\loader\Development(['root' => dirname(Launchpad::$rootPath)]);
+            $this->loadBaseClass('core/loader/Development');
+
+            Launchpad::$loader = new core\loader\Development(['root' => dirname($rootPath)]);
         }
 
         // Packages
-        Launchpad::$loader->initRootPackages(Launchpad::$rootPath, $this->appPath);
+        Launchpad::$loader->initRootPackages($rootPath, $this->appPath);
 
 
 
@@ -130,6 +168,8 @@ class Hub implements HubInterface
             return;
         }
 
+
+        // Move this to Kernel once env config doesn't require $app
         Launchpad::$app = AppBase::factory(
             $this->envId,
             $this->context->hub->getApplicationPath()
@@ -137,32 +177,12 @@ class Hub implements HubInterface
     }
 
 
-
-    protected function ensureCompileConstants()
+    protected function loadBaseClass(string $path): void
     {
-        if (!defined('df\\COMPILE_TIMESTAMP')) {
-            define('df\\COMPILE_TIMESTAMP', null);
-            define('df\\COMPILE_BUILD_ID', null);
-            define('df\\COMPILE_ROOT_PATH', null);
-            define('df\\COMPILE_ENV_MODE', null);
-        }
-
-        if (
-            df\COMPILE_ROOT_PATH &&
-            is_dir(df\COMPILE_ROOT_PATH)
-        ) {
-            Launchpad::$isCompiled = true;
-            Launchpad::$compileTimestamp = df\COMPILE_TIMESTAMP;
-            Launchpad::$rootPath = df\COMPILE_ROOT_PATH;
-        }
-    }
-
-    protected function loadBaseClass($path): void
-    {
-        if (Launchpad::$isCompiled) {
-            $path = Launchpad::$rootPath.'/'.$path.'.php';
+        if ($this->context->build->isCompiled()) {
+            $path = $this->context->build->path.'/'.$path.'.php';
         } else {
-            $path = Launchpad::$rootPath.'/libraries/'.$path.'.php';
+            $path = $this->context->build->path.'/libraries/'.$path.'.php';
         }
 
         require_once $path;
@@ -211,9 +231,9 @@ class Hub implements HubInterface
             ->registerPathAliases([
                 'app' => $this->appPath,
                 'vendor' => $this->appPath.'/vendor',
-                'root' => Launchpad::$isCompiled ?
-                    Launchpad::$rootPath :
-                    dirname(Launchpad::$rootPath)
+                'root' => $this->context->build->isCompiled() ?
+                    $this->context->build->path :
+                    dirname($this->context->build->path)
             ])
             ->registerAsErrorHandler()
             ->setLogListener(function ($exception) {

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\neon\mediaHandler;
 
 use df;
@@ -10,6 +11,7 @@ use df\core;
 use df\neon;
 
 use DecodeLabs\Atlas;
+use DecodeLabs\Genesis;
 
 class Local extends Base implements ILocalDataHandler
 {
@@ -36,8 +38,8 @@ class Local extends Base implements ILocalDataHandler
     {
         $output = '/media/download?file='.$fileId;
 
-        if (df\Launchpad::$compileTimestamp) {
-            $output .= '&cts='.df\Launchpad::$compileTimestamp;
+        if (Genesis::$build->shouldCacheBust()) {
+            $output .= '&cts='.Genesis::$build->getCacheBuster();
         }
 
         return $output;
@@ -52,8 +54,8 @@ class Local extends Base implements ILocalDataHandler
     {
         $output = '/media/download?version='.$versionId;
 
-        if (df\Launchpad::$compileTimestamp) {
-            $output .= '&cts='.df\Launchpad::$compileTimestamp;
+        if (Genesis::$build->shouldCacheBust()) {
+            $output .= '&cts='.Genesis::$build->getCacheBuster();
         }
 
         return $output;

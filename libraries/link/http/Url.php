@@ -11,6 +11,8 @@ use df\core;
 use df\link;
 use df\arch;
 
+use DecodeLabs\Genesis;
+
 class Url extends core\uri\Url implements IUrl
 {
     use core\uri\TUrl_CredentialContainer;
@@ -93,12 +95,12 @@ class Url extends core\uri\Url implements IUrl
             if (!empty($request->_query)) {
                 $output->_query = $request->_query;
 
-                if (isset($output->_query->cts) && $output->_query->cts->getValue() == null) {
-                    if (df\Launchpad::$compileTimestamp) {
-                        $output->query->cts = df\Launchpad::$compileTimestamp;
-                    } elseif (df\Launchpad::$app && df\Launchpad::$app->isDevelopment()) {
-                        $output->query->cts = time();
-                    }
+                if (
+                    isset($output->_query->cts) &&
+                    $output->_query->cts->getValue() == null &&
+                    Genesis::$build->shouldCacheBust()
+                ) {
+                    $output->query->cts = Genesis::$build->getCacheBuster();
                 }
             }
 

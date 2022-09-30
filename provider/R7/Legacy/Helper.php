@@ -56,6 +56,7 @@ use DateTime;
 use DateInterval;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 use DecodeLabs\Systemic\Process;
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
 use DecodeLabs\Tagged\Markup;
@@ -66,15 +67,6 @@ use Throwable;
 
 class Helper
 {
-    /**
-     * Get compile timestamp
-     */
-    public function getCompileTimestamp(): ?int
-    {
-        return Launchpad::$compileTimestamp;
-    }
-
-
     /**
      * Is app in development mode?
      */

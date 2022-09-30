@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\node;
 
 use df;
@@ -10,17 +11,18 @@ use df\core;
 use df\arch;
 use df\halo;
 
+use DecodeLabs\Genesis;
 use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Systemic;
 use DecodeLabs\Exceptional;
 
 abstract class Task extends Base implements ITaskNode
 {
-    const SCHEDULE = null;
-    const SCHEDULE_PRIORITY = 'medium';
-    const SCHEDULE_AUTOMATIC = false;
+    public const SCHEDULE = null;
+    public const SCHEDULE_PRIORITY = 'medium';
+    public const SCHEDULE_AUTOMATIC = false;
 
-    const CHECK_ACCESS = false;
+    public const CHECK_ACCESS = false;
 
     public function __construct(arch\IContext $context)
     {
@@ -87,7 +89,7 @@ abstract class Task extends Base implements ITaskNode
 
     public function ensureDfSource()
     {
-        if (!df\Launchpad::$isCompiled) {
+        if (!Genesis::$build->isCompiled()) {
             return $this;
         }
 
