@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\migrate;
 
 use df;
@@ -13,6 +14,7 @@ use df\arch;
 use df\flex;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Legacy;
 
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Pool as HttpPool;
@@ -35,7 +37,7 @@ class Handler implements IHandler
         $this->_context = new core\SharedContext();
 
         $this->_key = $this->_context->data->hexHash(
-            $this->_context->app->getPassKey()
+            Legacy::getPassKey()
         );
 
         $this->_httpClient = new HttpClient();
@@ -147,7 +149,7 @@ class Handler implements IHandler
         }
 
         $request->setMethod($method);
-        //$request->getHeaders()->set('x-df-self', md5(df\Launchpad::$app->getPassKey()));
+        //$request->getHeaders()->set('x-df-self', md5(Legacy::getPassKey()));
 
         return $request;
     }

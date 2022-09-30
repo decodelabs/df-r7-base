@@ -11,6 +11,7 @@ use df\core;
 use df\arch;
 
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
 
 class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, core\IDispatchAware
 {
@@ -25,7 +26,7 @@ class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, cor
 
     public function onAppDispatch(arch\node\INode $node): void
     {
-        df\Launchpad::$app->removeRegistryObject(self::REGISTRY_KEY);
+        Legacy::removeRegistryObject(self::REGISTRY_KEY);
     }
 
     public static function generateFromRequest(arch\IRequest $request)

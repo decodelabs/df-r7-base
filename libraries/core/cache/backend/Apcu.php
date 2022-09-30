@@ -11,6 +11,7 @@ use df\core;
 use df\arch;
 
 use DecodeLabs\Terminus\Session;
+use DecodeLabs\R7\Legacy;
 
 class Apcu implements core\cache\IBackend
 {
@@ -24,7 +25,7 @@ class Apcu implements core\cache\IBackend
     public static function purgeApp(core\collection\ITree $options, ?Session $session=null)
     {
         if (extension_loaded('apcu') && !(php_sapi_name() == 'cli' && !ini_get('apc.enable_cli'))) {
-            $prefix = df\Launchpad::$app->getUniquePrefix().'-';
+            $prefix = Legacy::getUniquePrefix().'-';
             $list = self::getCacheList();
 
             foreach ($list as $set) {
@@ -83,7 +84,7 @@ class Apcu implements core\cache\IBackend
     {
         $this->_cache = $cache;
         $this->_lifeTime = $lifeTime;
-        $this->_prefix = df\Launchpad::$app->getUniquePrefix().'-'.$cache->getCacheId().':';
+        $this->_prefix = Legacy::getUniquePrefix().'-'.$cache->getCacheId().':';
         $this->_isCli = php_sapi_name() == 'cli';
         unset($options);
     }

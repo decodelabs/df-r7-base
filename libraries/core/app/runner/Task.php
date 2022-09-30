@@ -14,6 +14,7 @@ use df\halo;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
 
 class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunner
 {
@@ -143,7 +144,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
         }
 
 
-        foreach (df\Launchpad::$app->getRegistryObjects() as $object) {
+        foreach (Legacy::getRegistryObjects() as $object) {
             if ($object instanceof core\IDispatchAware) {
                 $object->onAppDispatch($node);
             }

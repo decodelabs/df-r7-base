@@ -104,17 +104,6 @@ PHP;
     }
 
 
-    // Environment
-    public function getUniquePrefix(): string
-    {
-        return static::UNIQUE_PREFIX;
-    }
-
-    public function getPassKey(): string
-    {
-        return static::PASS_KEY;
-    }
-
 
     public static function setupVeneerBindings(): void
     {

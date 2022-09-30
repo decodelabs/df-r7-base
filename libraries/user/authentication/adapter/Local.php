@@ -3,13 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\user\authentication\adapter;
 
 use df;
 use df\core;
 use df\user;
-use df\axis;
-use df\opal;
+
+use DecodeLabs\R7\Legacy;
 
 class Local implements user\authentication\IAdapter
 {
@@ -41,7 +42,7 @@ class Local implements user\authentication\IAdapter
 
         $passwordHash = core\crypt\Util::passwordHash(
             $request->getCredential('password'),
-            df\Launchpad::$app->getPassKey()
+            Legacy::getPassKey()
         );
 
         $domainPassword = $domainInfo->getPassword();

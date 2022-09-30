@@ -48,20 +48,54 @@ use df\opal\record\IPartial as Partial;
 use df\user\Manager as UserManager;
 use df\user\IClientDataObject as ClientObject;
 
+use df\core\IRegistryObject as RegistryObject;
+
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use DateTime;
 use DateInterval;
 
+
+use DecodeLabs\Genesis;
 use DecodeLabs\Systemic\Process;
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
 use DecodeLabs\Terminus\Session as TerminusSession;
 
+use df\Launchpad;
 use Stringable;
 use Throwable;
 
 class Helper
 {
+    /**
+     * Get pass key
+     */
+    public function getPassKey(): string
+    {
+        static $key;
+
+        if (!isset($key)) {
+            $key = (string)Genesis::$container['app']::PASS_KEY;
+        }
+
+        return $key;
+    }
+
+    /**
+     * Get unique prefix
+     */
+    public function getUniquePrefix(): string
+    {
+        static $prefix;
+
+        if (!isset($prefix)) {
+            $prefix = Genesis::$container['app']::UNIQUE_PREFIX;
+        }
+
+        return $prefix;
+    }
+
+
     /**
      * Get current arch context
      */
@@ -692,5 +726,62 @@ class Helper
     public function getCurrencyNames(): array
     {
         return $this->getContext()->i18n->numbers->getCurrencyList();
+    }
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Set registry object
+     */
+    public function setRegistryObject(RegistryObject $object)
+    {
+        return Genesis::$container['app']->setRegistryObject($object);
+    }
+
+    /**
+     * Get registry object
+     */
+    public function getRegistryObject(string $key): ?RegistryObject
+    {
+        return Genesis::$container['app']->getRegistryObject($key);
+    }
+
+    /**
+     * Has registry object
+     */
+    public function hasRegistryObject(string $key): bool
+    {
+        return Genesis::$container['app']->hasRegistryObject($key);
+    }
+
+    /**
+     * Remove registry object
+     */
+    public function removeRegistryObject(string $key)
+    {
+        return Genesis::$container['app']->removeRegistryObject($key);
+    }
+
+    /**
+     * @return array<string, RegistryObject>
+     */
+    public function findRegistryObjects(string $beginningWith): array
+    {
+        return Genesis::$container['app']->findRegistryObjects($beginningWith);
+    }
+
+    /**
+     * @return array<string, RegistryObject>
+     */
+    public function getRegistryObjects(): array
+    {
+        return Genesis::$container['app']->getRegistryObjects();
     }
 }

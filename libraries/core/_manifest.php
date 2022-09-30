@@ -12,6 +12,7 @@ use df\core;
 use DecodeLabs\Glitch;
 use DecodeLabs\Genesis;
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Legacy;
 
 // String provider
 interface IStringProvider
@@ -241,11 +242,6 @@ interface IApp
     public static function factory(): IApp;
 
 
-    // Environment
-    public function getUniquePrefix(): string;
-    public function getPassKey(): string;
-
-
     // Runner
     public function shutdown(): void;
 
@@ -296,7 +292,7 @@ trait TManager
 {
     public static function getInstance(): self
     {
-        if (!$output = df\Launchpad::$app->getRegistryObject(static::REGISTRY_PREFIX)) {
+        if (!$output = Legacy::getRegistryObject(static::REGISTRY_PREFIX)) {
             $output = static::_getDefaultInstance();
             static::setInstance($output);
         }
@@ -306,7 +302,7 @@ trait TManager
 
     public static function setInstance(IManager $manager): void
     {
-        df\Launchpad::$app->setRegistryObject($manager);
+        Legacy::setRegistryObject($manager);
     }
 
     protected static function _getDefaultInstance(): IManager

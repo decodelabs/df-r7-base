@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis;
 
 use df;
@@ -12,12 +13,13 @@ use df\flex;
 use df\mesh;
 use df\opal;
 
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\R7\Legacy;
 
 abstract class Model implements IModel, Dumpable
 {
-    const REGISTRY_PREFIX = 'model://';
+    public const REGISTRY_PREFIX = 'model://';
 
     private $_modelName;
     private $_units = [];
@@ -27,7 +29,7 @@ abstract class Model implements IModel, Dumpable
         $name = lcfirst($name);
         $key = self::REGISTRY_PREFIX.$name;
 
-        if ($model = df\Launchpad::$app->getRegistryObject($key)) {
+        if ($model = Legacy::getRegistryObject($key)) {
             return $model;
         }
 
@@ -40,7 +42,7 @@ abstract class Model implements IModel, Dumpable
         }
 
         $model = new $class();
-        df\Launchpad::$app->setRegistryObject($model);
+        Legacy::setRegistryObject($model);
 
         return $model;
     }
@@ -141,7 +143,7 @@ abstract class Model implements IModel, Dumpable
 
     public static function purgeLiveCache()
     {
-        foreach (df\Launchpad::$app->findRegistryObjects(self::REGISTRY_PREFIX) as $key => $model) {
+        foreach (Legacy::findRegistryObjects(self::REGISTRY_PREFIX) as $key => $model) {
             $model->_purgeLiveCache();
         }
     }

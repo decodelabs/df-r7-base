@@ -15,6 +15,7 @@ use df\mesh;
 
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Legacy;
 
 class Data implements core\ISharedHelper, opal\query\IEntryPoint
 {
@@ -411,7 +412,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
     public function hash($message, $salt=null)
     {
         if ($salt === null) {
-            $salt = $this->context->app->getPassKey();
+            $salt = Legacy::getPassKey();
         }
 
         return core\crypt\Util::passwordHash($message, $salt);

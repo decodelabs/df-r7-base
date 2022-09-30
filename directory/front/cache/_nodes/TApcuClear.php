@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\cache\_nodes;
 
 use df;
@@ -10,8 +11,9 @@ use df\core;
 use df\apex;
 use df\arch;
 
-use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Terminus as Cli;
+use DecodeLabs\R7\Legacy;
 
 trait TApcuClear
 {
@@ -43,7 +45,7 @@ trait TApcuClear
                 );
             }
 
-            $prefix = $this->app->getUniquePrefix().'-'.$cacheId.':';
+            $prefix = Legacy::getUniquePrefix().'-'.$cacheId.':';
         }
 
         if (!extension_loaded('apcu')) {
@@ -61,7 +63,7 @@ trait TApcuClear
             $list = core\cache\backend\Apcu::getCacheList();
 
             if ($purgeType == 'app') {
-                $prefix = $this->app->getUniquePrefix().'-';
+                $prefix = Legacy::getUniquePrefix().'-';
 
                 foreach ($list as $set) {
                     if (0 === strpos($set['info'], $prefix)) {

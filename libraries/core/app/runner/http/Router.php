@@ -12,6 +12,7 @@ use df\arch;
 use df\link;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Legacy;
 
 class Router implements core\IRegistryObject
 {
@@ -34,9 +35,9 @@ class Router implements core\IRegistryObject
 
     public static function getInstance(): self
     {
-        if (!$output = df\Launchpad::$app->getRegistryObject(self::REGISTRY_KEY)) {
+        if (!$output = Legacy::getRegistryObject(self::REGISTRY_KEY)) {
             $output = new self();
-            df\Launchpad::$app->setRegistryObject($output);
+            Legacy::setRegistryObject($output);
         }
 
         return $output;

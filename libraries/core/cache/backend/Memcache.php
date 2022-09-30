@@ -3,12 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\cache\backend;
 
 use df;
 use df\core;
 
 use DecodeLabs\Terminus\Session;
+use DecodeLabs\R7\Legacy;
 
 class Memcache implements core\cache\IBackend
 {
@@ -76,7 +78,7 @@ class Memcache implements core\cache\IBackend
     {
         $this->_cache = $cache;
         $this->_lifeTime = $lifeTime;
-        $this->_prefix = df\Launchpad::$app->getUniquePrefix().'-'.$cache->getCacheId().':';
+        $this->_prefix = Legacy::getUniquePrefix().'-'.$cache->getCacheId().':';
 
         $this->_connection = self::_loadConnection($options);
     }

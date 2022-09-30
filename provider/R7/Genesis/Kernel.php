@@ -52,11 +52,6 @@ class Kernel implements KernelInterface
                 return $url;
             }
         });
-
-
-        // Setup Veneer bindings
-        $app = $this->context->container['app'];
-        $app->setupVeneerBindings();
     }
 
 
@@ -95,10 +90,7 @@ class Kernel implements KernelInterface
         }
 
         $this->shutdown = true;
-
-        if (Launchpad::$app) {
-            Launchpad::$app->shutdown();
-        }
+        $this->context->container['app']->shutdown();
 
         exit;
     }

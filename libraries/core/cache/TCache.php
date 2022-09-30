@@ -10,6 +10,7 @@ use df;
 use df\core;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Legacy;
 
 trait TCache
 {
@@ -24,8 +25,8 @@ trait TCache
     {
         $id = self::REGISTRY_PREFIX.static::getCacheId();
 
-        if (!$cache = df\Launchpad::$app->getRegistryObject($id)) {
-            df\Launchpad::$app->setRegistryObject(
+        if (!$cache = Legacy::getRegistryObject($id)) {
+            Legacy::setRegistryObject(
                 $cache = new static()
             );
         }

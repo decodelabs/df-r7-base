@@ -199,7 +199,6 @@ class Hub implements HubInterface
         ConfigBase::$envId = $this->envId;
 
 
-
         // Load app
 
         /** @var AppBase $app */
@@ -238,6 +237,10 @@ class Hub implements HubInterface
         if ($this->analysis) {
             Veneer::getDefaultManager()->setDeferrals(false);
         }
+
+
+        // Init custom Veneer bindings
+        $app->setupVeneerBindings();
     }
 
 

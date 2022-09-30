@@ -18,6 +18,7 @@ use df\arch\scaffold\Loader as ScaffoldLoader;
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
 
 class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
 {
@@ -282,7 +283,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
 
     public function breadcrumbs($empty=false)
     {
-        if (!$output = $this->context->app->getRegistryObject('breadcrumbs')) {
+        if (!$output = Legacy::getRegistryObject('breadcrumbs')) {
             if ($empty) {
                 $output = new arch\navigation\breadcrumbs\EntryList();
             } else {
@@ -291,7 +292,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
                 );
             }
 
-            $this->context->app->setRegistryObject($output);
+            Legacy::setRegistryObject($output);
         }
 
         return $output;

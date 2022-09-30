@@ -3,17 +3,20 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\validate\field;
 
 use df;
 use df\core;
 use df\flex;
 
-class Password extends Base implements core\validate\IPasswordField {
+use DecodeLabs\R7\Legacy;
 
+class Password extends Base implements core\validate\IPasswordField
+{
     use core\validate\TMinLengthField;
 
-    const DEFAULT_MIN_LENGTH = 6;
+    public const DEFAULT_MIN_LENGTH = 6;
 
     protected $_matchField = null;
     protected $_minStrength = 18;
@@ -21,27 +24,32 @@ class Password extends Base implements core\validate\IPasswordField {
     protected $_shouldHash = true;
 
 
-// Options
-    public function setMatchField($field) {
+    // Options
+    public function setMatchField($field)
+    {
         $this->_matchField = $field;
         return $this;
     }
 
-    public function getMatchField() {
+    public function getMatchField()
+    {
         return $this->_matchField;
     }
 
-    public function setMinStrength($strength) {
+    public function setMinStrength($strength)
+    {
         $this->_minStrength = (int)$strength;
         return $this;
     }
 
-    public function getMinStrength() {
+    public function getMinStrength()
+    {
         return $this->_minStrength;
     }
 
-    public function shouldCheckStrength(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldCheckStrength(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_checkStrength = $flag;
             return $this;
         }
@@ -49,8 +57,9 @@ class Password extends Base implements core\validate\IPasswordField {
         return $this->_checkStrength;
     }
 
-    public function shouldHash(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldHash(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_shouldHash = $flag;
             return $this;
         }
@@ -60,13 +69,14 @@ class Password extends Base implements core\validate\IPasswordField {
 
 
 
-// Validate
-    public function validate() {
+    // Validate
+    public function validate()
+    {
         // Sanitize
         $this->_setDefaultMinLength(self::DEFAULT_MIN_LENGTH);
         $value = $this->_sanitizeValue($this->data->getValue());
 
-        if(!$length = $this->_checkRequired($value)) {
+        if (!$length = $this->_checkRequired($value)) {
             return null;
         }
 
@@ -74,14 +84,14 @@ class Password extends Base implements core\validate\IPasswordField {
         // Validate
         $this->_validateMinLength($value, $length);
 
-        if($this->data->hasErrors()) {
+        if ($this->data->hasErrors()) {
             return null;
         }
 
-        if($this->_checkStrength && $this->_minStrength > 0) {
-            $analyzer = new flex\PasswordAnalyzer($value, df\Launchpad::$app->getPassKey());
+        if ($this->_checkStrength && $this->_minStrength > 0) {
+            $analyzer = new flex\PasswordAnalyzer($value, Legacy::getPassKey());
 
-            if($analyzer->getStrength() < $this->_minStrength) {
+            if ($analyzer->getStrength() < $this->_minStrength) {
                 $this->addError('strength', $this->validator->_(
                     'This password is not strong enough - consider using numbers, capitals and more characters'
                 ));
@@ -89,11 +99,11 @@ class Password extends Base implements core\validate\IPasswordField {
         }
 
 
-        if($this->_matchField) {
+        if ($this->_matchField) {
             $data = $this->validator->getCurrentData();
             $matchNode = $data->{$this->_matchField};
 
-            if($matchNode->getValue() != $value) {
+            if ($matchNode->getValue() != $value) {
                 $matchNode->addError('invalid', $this->validator->_(
                     'Your passwords do not match'
                 ));
@@ -105,8 +115,8 @@ class Password extends Base implements core\validate\IPasswordField {
         // Finalize
         $this->_applyExtension($value);
 
-        if($this->_shouldHash) {
-            $value = core\crypt\Util::passwordHash($value, df\Launchpad::$app->getPassKey());
+        if ($this->_shouldHash) {
+            $value = core\crypt\Util::passwordHash($value, Legacy::getPassKey());
         }
 
         return $value;

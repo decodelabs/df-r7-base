@@ -19,6 +19,7 @@ use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\Glitch;
 use DecodeLabs\Typify;
+use DecodeLabs\R7\Legacy;
 
 class Http extends Base implements core\IContextAware, link\http\IResponseAugmentorProvider, arch\IRequestOrientedRunner
 {
@@ -173,7 +174,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         if ($this->_httpRequest->headers->has('x-df-self')) {
             $key = $this->_httpRequest->headers->get('x-df-self');
 
-            if ($key === md5(df\Launchpad::$app->getPassKey())) {
+            if ($key === md5(Legacy::getPassKey())) {
                 return true;
             }
         }
@@ -215,7 +216,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         if ($this->_httpRequest->headers->has('x-df-self')) {
             $key = $this->_httpRequest->headers->get('x-df-self');
 
-            if ($key === md5(df\Launchpad::$app->getPassKey())) {
+            if ($key === md5(Legacy::getPassKey())) {
                 return;
             }
         }
@@ -533,7 +534,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             throw $e;
         }
 
-        foreach (df\Launchpad::$app->getRegistryObjects() as $object) {
+        foreach (Legacy::getRegistryObjects() as $object) {
             if ($object instanceof core\IDispatchAware) {
                 $object->onAppDispatch($node);
             }

@@ -12,6 +12,7 @@ use df\arch\IRequest as Request;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
 
 class Loader
 {
@@ -19,7 +20,7 @@ class Loader
     {
         $registryKey = 'scaffold('.$context->location->getPath()->getDirname().')';
 
-        if ($output = $context->app->getRegistryObject($registryKey)) {
+        if ($output = Legacy::getRegistryObject($registryKey)) {
             return $output;
         }
 
@@ -35,7 +36,7 @@ class Loader
         }
 
         $output = new $class($context);
-        $context->app->setRegistryObject($output);
+        Legacy::setRegistryObject($output);
 
         return $output;
     }

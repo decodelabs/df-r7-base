@@ -12,8 +12,9 @@ use df\axis;
 use df\opal;
 use df\mesh;
 
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\R7\Legacy;
 
 abstract class Table implements
     axis\ISchemaBasedStorageUnit,
@@ -61,7 +62,7 @@ abstract class Table implements
         $output = $this->_model->getModelName().'_'.$this->getCanonicalUnitName();
 
         if ($this->_shouldPrefixNames()) {
-            $output = df\Launchpad::$app->getUniquePrefix().'_'.$output;
+            $output = Legacy::getUniquePrefix().'_'.$output;
         }
 
         return $output;

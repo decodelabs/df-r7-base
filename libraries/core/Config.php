@@ -13,6 +13,7 @@ use DecodeLabs\Atlas;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\R7\Legacy;
 
 abstract class Config implements IConfig, Dumpable
 {
@@ -56,8 +57,8 @@ abstract class Config implements IConfig, Dumpable
         }
 
         if (static::STORE_IN_MEMORY) {
-            if (!$config = df\Launchpad::$app->getRegistryObject(self::REGISTRY_PREFIX.$id)) {
-                df\Launchpad::$app->setRegistryObject(
+            if (!$config = Legacy::getRegistryObject(self::REGISTRY_PREFIX.$id)) {
+                Legacy::setRegistryObject(
                     $config = new static($id)
                 );
             }
@@ -70,8 +71,8 @@ abstract class Config implements IConfig, Dumpable
 
     public static function clearLiveCache()
     {
-        foreach (df\Launchpad::$app->findRegistryObjects('config://') as $config) {
-            df\Launchpad::$app->removeRegistryObject($config->getRegistryObjectKey());
+        foreach (Legacy::findRegistryObjects('config://') as $config) {
+            Legacy::removeRegistryObject($config->getRegistryObjectKey());
         }
     }
 
