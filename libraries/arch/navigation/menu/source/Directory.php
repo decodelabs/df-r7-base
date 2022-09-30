@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\navigation\menu\source;
 
 use df;
@@ -14,6 +15,7 @@ use df\arch\scaffold\Loader as ScaffoldLoader;
 
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Legacy;
 
 class Directory extends Base implements arch\navigation\menu\IListableSource
 {
@@ -49,7 +51,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource
 
         $menus = [];
 
-        foreach (df\Launchpad::$loader->getPackages() as $package) {
+        foreach (Legacy::getLoader()->getPackages() as $package) {
             $packageName = ucfirst($package->name);
 
             if (class_exists($classBase.'_'.$packageName)) {
@@ -211,7 +213,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource
         if (!$cache->has($cacheId)
         || null === ($list = $cache->get($cacheId))) {
             $list = [];
-            $paths = df\Launchpad::$loader->getFileSearchPaths('apex/directory');
+            $paths = Legacy::getLoader()->getFileSearchPaths('apex/directory');
 
             foreach ($paths as $path) {
                 if (!is_dir($path)) {

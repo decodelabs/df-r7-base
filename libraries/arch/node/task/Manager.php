@@ -20,6 +20,7 @@ use DecodeLabs\Systemic;
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
 use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Terminus\Session;
+use DecodeLabs\R7\Legacy;
 
 class Manager implements arch\node\ITaskManager
 {
@@ -80,7 +81,7 @@ class Manager implements arch\node\ITaskManager
 
     public function launchQuietly($request): void
     {
-        if (df\Launchpad::$runner instanceof core\app\runner\Task) {
+        if (Legacy::getRunner() instanceof core\app\runner\Task) {
             $session = Cli::getSession();
             $oldBroker = $session->getBroker();
             $session->setBroker(Deliverance::newBroker());
@@ -147,7 +148,7 @@ class Manager implements arch\node\ITaskManager
 
     protected function _getActiveContext()
     {
-        $runner = df\Launchpad::$runner;
+        $runner = Legacy::getRunner();
         $context = null;
 
         if ($runner instanceof core\IContextAware) {

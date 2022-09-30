@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\analytics\adapter;
 
 use df;
@@ -10,6 +11,7 @@ use df\core;
 use df\spur;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Legacy;
 
 abstract class Base implements spur\analytics\IAdapter
 {
@@ -65,7 +67,7 @@ abstract class Base implements spur\analytics\IAdapter
     {
         $output = [];
 
-        foreach (df\Launchpad::$loader->lookupClassList('spur/analytics/adapter') as $name => $class) {
+        foreach (Legacy::getLoader()->lookupClassList('spur/analytics/adapter') as $name => $class) {
             try {
                 $adapter = self::factory($name);
             } catch (NotFoundException $e) {

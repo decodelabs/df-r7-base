@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\node;
 
 use df;
@@ -11,20 +12,21 @@ use df\arch;
 use df\link;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Legacy;
 
 abstract class RestApi extends Base implements IRestApiNode
 {
-    const DEFAULT_ACCESS = arch\IAccess::ALL;
-    const OPTIMIZE = true;
-    const CHECK_ACCESS = false;
-    const CORS = false;
-    const REGENERATE_ACCESS_TOKEN = false;
+    public const DEFAULT_ACCESS = arch\IAccess::ALL;
+    public const OPTIMIZE = true;
+    public const CHECK_ACCESS = false;
+    public const CORS = false;
+    public const REGENERATE_ACCESS_TOKEN = false;
 
     protected $_httpRequest;
 
     public function dispatch()
     {
-        $this->_httpRequest = $this->runner->getHttpRequest();
+        $this->_httpRequest = Legacy::getHttpRunner()->getHttpRequest();
         return parent::dispatch();
     }
 

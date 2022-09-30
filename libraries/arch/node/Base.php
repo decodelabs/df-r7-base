@@ -18,6 +18,7 @@ use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\R7\Legacy;
 
 class Base implements INode, Dumpable
 {
@@ -267,7 +268,7 @@ class Base implements INode, Dumpable
         $type = $this->context->location->getType();
 
         if (Genesis::$kernel->getMode() == 'Http') {
-            $mode = ucfirst(strtolower($this->context->runner->getHttpRequest()->getMethod()));
+            $mode = ucfirst(strtolower(Legacy::getHttpRunner()->getHttpRequest()->getMethod()));
 
             if ($mode == 'Head') {
                 $mode = 'Get';

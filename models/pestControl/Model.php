@@ -15,6 +15,7 @@ use df\link;
 
 use DecodeLabs\Disciple;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
 
 class Model extends axis\Model
 {
@@ -123,10 +124,10 @@ class Model extends axis\Model
             $request = '/';
 
             try {
-                if (df\Launchpad::$runner instanceof core\app\runner\Http) {
-                    $request = df\Launchpad::$runner->getContext()->http->getRequest()->getUrl();
-                } elseif (df\Launchpad::$runner instanceof core\IContextAware) {
-                    $request = df\Launchpad::$runner->getContext()->request;
+                if (Legacy::getRunner() instanceof core\app\runner\Http) {
+                    $request = Legacy::getRunner()->getContext()->http->getRequest()->getUrl();
+                } elseif (Legacy::getRunner() instanceof core\IContextAware) {
+                    $request = Legacy::getRunner()->getContext()->request;
                 }
             } catch (\Throwable $e) {
             }
@@ -171,8 +172,8 @@ class Model extends axis\Model
 
     public function getLogReferrer()
     {
-        if (df\Launchpad::$runner instanceof core\app\runner\Http) {
-            return df\Launchpad::$runner->getContext()->http->getReferrer();
+        if (Legacy::getRunner() instanceof core\app\runner\Http) {
+            return Legacy::getRunner()->getContext()->http->getReferrer();
         }
 
         return null;

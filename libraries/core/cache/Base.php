@@ -3,22 +3,24 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\cache;
 
 use df;
 use df\core;
 
-use DecodeLabs\Terminus\Session;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Terminus\Session;
+use DecodeLabs\R7\Legacy;
 
 abstract class Base implements ICache
 {
     use TCache;
 
-    const REGISTRY_PREFIX = 'cache://';
+    public const REGISTRY_PREFIX = 'cache://';
 
-    const IS_DISTRIBUTED = true;
-    const DEFAULT_LIFETIME = 1800;
+    public const IS_DISTRIBUTED = true;
+    public const DEFAULT_LIFETIME = 1800;
 
     private $_backend;
 
@@ -30,7 +32,7 @@ abstract class Base implements ICache
 
         $config = Config::getInstance();
 
-        foreach (df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
+        foreach (Legacy::getLoader()->lookupClassList('core/cache/backend') as $name => $class) {
             $options = $config->getBackendOptions($name);
             $class::purgeApp($options, $session);
         }
@@ -44,7 +46,7 @@ abstract class Base implements ICache
 
         $config = Config::getInstance();
 
-        foreach (df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
+        foreach (Legacy::getLoader()->lookupClassList('core/cache/backend') as $name => $class) {
             $options = $config->getBackendOptions($name);
             $class::purgeAll($options, $session);
         }
@@ -159,7 +161,7 @@ abstract class Base implements ICache
     {
         $config = Config::getInstance();
 
-        foreach (df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
+        foreach (Legacy::getLoader()->lookupClassList('core/cache/backend') as $name => $class) {
             $options = $config->getBackendOptions($name);
             $class::clearFor($options, $this);
         }

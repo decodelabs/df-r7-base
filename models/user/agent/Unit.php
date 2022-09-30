@@ -11,6 +11,8 @@ use df\core;
 use df\apex;
 use df\axis;
 
+use DecodeLabs\R7\Legacy;
+
 class Unit extends axis\unit\Table
 {
     public const BROADCAST_HOOK_EVENTS = false;
@@ -66,7 +68,7 @@ class Unit extends axis\unit\Table
         $userAgent = null;
 
         try {
-            $runner = df\Launchpad::$runner;
+            $runner = Legacy::getRunner();
 
             if ($runner instanceof core\app\runner\Http) {
                 $userAgent = $runner->getContext()->http->getUserAgent();

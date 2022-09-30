@@ -11,13 +11,15 @@ use df\core;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\R7\Legacy;
+
 class Probe implements IProbe
 {
     public function getModelList()
     {
         $output = [];
 
-        foreach (df\Launchpad::$loader->lookupFolderList('apex/models') as $name => $dir) {
+        foreach (Legacy::getLoader()->lookupFolderList('apex/models') as $name => $dir) {
             if (class_exists('df\\apex\\models\\'.$name.'\\Model')) {
                 $output[] = $name;
             }
@@ -43,7 +45,7 @@ class Probe implements IProbe
     {
         $output = [];
 
-        foreach (df\Launchpad::$loader->lookupFolderList('apex/models/'.$modelName) as $name => $dir) {
+        foreach (Legacy::getLoader()->lookupFolderList('apex/models/'.$modelName) as $name => $dir) {
             $output[] = $name;
         }
 

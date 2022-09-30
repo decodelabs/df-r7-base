@@ -17,6 +17,7 @@ use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Genesis;
 use DecodeLabs\Spectrum\Color;
+use DecodeLabs\R7\Legacy;
 
 class Base implements ITheme, Dumpable
 {
@@ -309,12 +310,12 @@ class Base implements ITheme, Dumpable
     {
         $path = core\uri\Path::normalizeLocal($path);
 
-        $output = df\Launchpad::$loader->findFile(
+        $output = Legacy::getLoader()->findFile(
             $lookupPath = 'apex/themes/'.$this->getId().'/assets/'.$path
         );
 
         if (!$output) {
-            $output = df\Launchpad::$loader->findFile(
+            $output = Legacy::getLoader()->findFile(
                 $lookupPath = 'apex/themes/shared/assets/'.$path
             );
         }
@@ -335,8 +336,8 @@ class Base implements ITheme, Dumpable
     public function mapIcon($name)
     {
         if ($this->_iconMap === null) {
-            if (!$path = df\Launchpad::$loader->findFile('apex/themes/'.$this->getId().'/IconMap.php')) {
-                $path = df\Launchpad::$loader->findFile('apex/themes/shared/IconMap.php');
+            if (!$path = Legacy::getLoader()->findFile('apex/themes/'.$this->getId().'/IconMap.php')) {
+                $path = Legacy::getLoader()->findFile('apex/themes/shared/IconMap.php');
             }
 
             if ($path) {

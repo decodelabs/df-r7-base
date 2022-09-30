@@ -10,11 +10,9 @@ namespace DecodeLabs\R7\Genesis;
 use df;
 use df\core;
 use df\core\app\Base as AppBase;
-use df\core\IApp as AppInterface;
 use df\core\Config as ConfigBase;
 use df\core\environment\Config as CoreEnvConfig;
 use df\core\loader\Base as LoaderBase;
-use df\Launchpad;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch;
@@ -210,11 +208,6 @@ class Hub implements HubInterface
             ->alias('app');
         $this->context->container->bindShared(LoaderBase::class, $loader)
             ->alias('app.loader');
-
-
-        // DELETE ME
-        Launchpad::$app = $app;
-        Launchpad::$loader = $loader;
 
 
         // Active packages

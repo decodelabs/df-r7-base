@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\tasks\_nodes;
 
 use df;
@@ -12,6 +13,7 @@ use df\arch;
 
 use DecodeLabs\Dictum;
 use DecodeLabs\Terminus as Cli;
+use DecodeLabs\R7\Legacy;
 
 class TaskScan extends arch\node\Task
 {
@@ -20,7 +22,7 @@ class TaskScan extends arch\node\Task
         Cli::inlineInfo('Compiling task list: ');
 
         // Fetch full file list
-        $fileList = df\Launchpad::$loader->lookupFileListRecursive('apex/directory', ['php'], function ($path) {
+        $fileList = Legacy::getLoader()->lookupFileListRecursive('apex/directory', ['php'], function ($path) {
             return basename($path) == '_nodes';
         });
 

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\test\_nodes;
 
 use df;
@@ -12,6 +13,7 @@ use df\arch;
 use df\flex;
 
 use DecodeLabs\Terminus as Cli;
+use DecodeLabs\R7\Legacy;
 
 class TaskDependencies extends arch\node\Task
 {
@@ -24,7 +26,7 @@ class TaskDependencies extends arch\node\Task
         ]);
 
         $scanner->addFrameworkPackageLocations(true);
-        df\Launchpad::$loader->loadPackages(array_keys($scanner->getLocations()));
+        Legacy::getLoader()->loadPackages(array_keys($scanner->getLocations()));
 
         Cli::{'yellow'}('Scanning packages:');
         $errors = [];

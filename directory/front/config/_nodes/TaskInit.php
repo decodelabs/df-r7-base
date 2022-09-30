@@ -14,6 +14,7 @@ use df\axis;
 
 use DecodeLabs\Genesis;
 use DecodeLabs\Terminus as Cli;
+use DecodeLabs\R7\Legacy;
 
 class TaskInit extends arch\node\Task
 {
@@ -22,7 +23,7 @@ class TaskInit extends arch\node\Task
         $this->ensureDfSource();
 
         Cli::{'yellow'}('Looking up configs:');
-        $libList = df\Launchpad::$loader->lookupLibraryList();
+        $libList = Legacy::getLoader()->lookupLibraryList();
         $classes = [];
 
         foreach ($libList as $libName) {

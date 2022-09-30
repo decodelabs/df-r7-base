@@ -64,8 +64,6 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             self::$_init = true;
         }
 
-        df\Launchpad::$runner = $this;
-
         $config = namespace\http\Config::getInstance();
         $this->_sendFileHeader = $config->getSendFileHeader();
 
@@ -619,7 +617,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         $contentType = explode(';', $response->getContentType());
         $contentType = trim(array_shift($contentType));
 
-        if ($csp = df\Launchpad::$app->getCsp($contentType)) {
+        if ($csp = Legacy::app()->getCsp($contentType)) {
             $response->getHeaders()->import($csp->exportHeaders());
         }
 

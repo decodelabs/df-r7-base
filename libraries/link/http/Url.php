@@ -12,6 +12,7 @@ use df\link;
 use df\arch;
 
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
 
 class Url extends core\uri\Url implements IUrl
 {
@@ -207,7 +208,7 @@ class Url extends core\uri\Url implements IUrl
 
         if (substr($url, 0, 1) == '/') {
             unset($path[0]);
-            $runner = df\Launchpad::$runner;
+            $runner = Legacy::getRunner();
 
             if ($runner instanceof core\app\runner\Http) {
                 $requestUrl = $runner->getHttpRequest()->getUrl();

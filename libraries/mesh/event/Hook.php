@@ -13,6 +13,7 @@ use df\axis;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
 
 abstract class Hook implements IHook
 {
@@ -26,7 +27,7 @@ abstract class Hook implements IHook
     {
         $output = [];
 
-        foreach (df\Launchpad::$loader->lookupClassList('apex/hooks/', true) as $key => $val) {
+        foreach (Legacy::getLoader()->lookupClassList('apex/hooks/', true) as $key => $val) {
             $output[$key] = $val;
         }
 

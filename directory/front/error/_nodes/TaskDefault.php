@@ -12,8 +12,9 @@ use df\apex;
 use df\arch;
 use df\link;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch;
+use DecodeLabs\R7\Legacy;
 
 class TaskDefault extends arch\node\Base
 {
@@ -22,7 +23,7 @@ class TaskDefault extends arch\node\Base
 
     public function execute()
     {
-        if (!$exception = $this->runner->getDispatchException()) {
+        if (!$exception = Legacy::getRunner()->getDispatchException()) {
             throw Exceptional::Forbidden([
                 'message' => 'You shouldn\'t be here',
                 'http' => 403

@@ -184,7 +184,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
         $request = $this->context->uri->directoryRequest($request);
         $path = $request->getLibraryPath().'/_nodes';
 
-        foreach (df\Launchpad::$loader->lookupClassList($path) as $name => $class) {
+        foreach (Legacy::getLoader()->lookupClassList($path) as $name => $class) {
             if ($type !== null && 0 !== stripos($name, $type)) {
                 continue;
             }

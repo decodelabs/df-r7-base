@@ -6,7 +6,6 @@
 
 namespace df\link\geoIp\Adapter;
 
-use df\Launchpad;
 use df\opal\mmdb\Reader;
 use df\opal\mmdb\IReader;
 use df\link\geoIp\Adapter;

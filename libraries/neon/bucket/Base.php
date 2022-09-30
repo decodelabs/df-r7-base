@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\neon\bucket;
 
 use df;
@@ -11,19 +12,20 @@ use df\neon;
 use df\flex;
 
 use DecodeLabs\Dictum;
+use DecodeLabs\R7\Legacy;
 
 class Base implements IBucket
 {
     use core\lang\TAcceptTypeProcessor;
 
-    const USER_SPECIFIC = false;
-    const ALLOW_ONE_PER_USER = false;
+    public const USER_SPECIFIC = false;
+    public const ALLOW_ONE_PER_USER = false;
 
     public static function loadAll()
     {
         $output = [];
 
-        foreach (df\Launchpad::$loader->lookupClassList('neon/bucket') as $name => $class) {
+        foreach (Legacy::getLoader()->lookupClassList('neon/bucket') as $name => $class) {
             $context = self::factory($name);
             $output[$context->getName()] = $context;
         }

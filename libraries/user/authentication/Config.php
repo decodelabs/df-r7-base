@@ -3,23 +3,27 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\user\authentication;
 
 use df;
 use df\core;
 use df\user;
 
-class Config extends core\Config {
+use DecodeLabs\R7\Legacy;
 
-    const ID = 'Authentication';
+class Config extends core\Config
+{
+    public const ID = 'Authentication';
 
-    public function getDefaultValues(): array {
+    public function getDefaultValues(): array
+    {
         $output = [];
 
-        foreach(df\Launchpad::$loader->lookupClassList('user/authentication/adapter') as $name => $class) {
+        foreach (Legacy::getLoader()->lookupClassList('user/authentication/adapter') as $name => $class) {
             $output[$name] = $class::getDefaultConfigValues();
 
-            if(!isset($output[$name]['enabled'])) {
+            if (!isset($output[$name]['enabled'])) {
                 $output[$name]['enabled'] = false;
             }
         }
@@ -27,12 +31,13 @@ class Config extends core\Config {
         return $output;
     }
 
-    public function isAdapterEnabled($adapter, bool $flag=null) {
-        if($adapter instanceof IAdapter) {
+    public function isAdapterEnabled($adapter, bool $flag=null)
+    {
+        if ($adapter instanceof IAdapter) {
             $adapter = $adapter->getName();
         }
 
-        if($flag !== null) {
+        if ($flag !== null) {
             $this->values->{$adapter}->enabled = $flag;
             return $this;
         } else {
@@ -40,11 +45,12 @@ class Config extends core\Config {
         }
     }
 
-    public function getEnabledAdapters() {
+    public function getEnabledAdapters()
+    {
         $output = [];
 
-        foreach($this->values as $name => $data) {
-            if(!$data['enabled']) {
+        foreach ($this->values as $name => $data) {
+            if (!$data['enabled']) {
                 continue;
             }
 
@@ -54,9 +60,10 @@ class Config extends core\Config {
         return $output;
     }
 
-    public function getFirstEnabledAdapter() {
-        foreach($this->values as $name => $data) {
-            if($data['enabled']) {
+    public function getFirstEnabledAdapter()
+    {
+        foreach ($this->values as $name => $data) {
+            if ($data['enabled']) {
                 return $name;
             }
         }
@@ -64,12 +71,13 @@ class Config extends core\Config {
         return null;
     }
 
-    public function setOptionsFor($adapter, $options) {
-        if($adapter instanceof IAdapter) {
+    public function setOptionsFor($adapter, $options)
+    {
+        if ($adapter instanceof IAdapter) {
             $adapter = $adapter->getName();
         }
 
-        if(!isset($options['enabled'])) {
+        if (!isset($options['enabled'])) {
             $options['enabled'] = false;
         }
 
@@ -77,8 +85,9 @@ class Config extends core\Config {
         return $this;
     }
 
-    public function getOptionsFor($adapter) {
-        if($adapter instanceof IAdapter) {
+    public function getOptionsFor($adapter)
+    {
+        if ($adapter instanceof IAdapter) {
             $adapter = $adapter->getName();
         }
 

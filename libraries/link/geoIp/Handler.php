@@ -6,12 +6,12 @@
 
 namespace df\link\geoIp;
 
-use df\Launchpad;
 use df\link\geoIp\Adapter;
 use df\link\geoIp\Result;
 
 use DecodeLabs\Compass\Ip;
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Legacy;
 
 class Handler
 {
@@ -63,7 +63,7 @@ class Handler
     {
         $output = [];
 
-        foreach (Launchpad::$loader->lookupClassList('link/geoIp/Adapter') as $name => $class) {
+        foreach (Legacy::getLoader()->lookupClassList('link/geoIp/Adapter') as $name => $class) {
             $output[$name] = $class::isAvailable();
         }
 

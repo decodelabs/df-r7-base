@@ -20,6 +20,7 @@ use DecodeLabs\Glitch;
 use DecodeLabs\Genesis;
 use DecodeLabs\Systemic;
 use DecodeLabs\Terminus\Session;
+use DecodeLabs\R7\Legacy;
 
 class SassBridge implements ISassBridge
 {
@@ -512,14 +513,14 @@ class SassBridge implements ISassBridge
 
         switch ($schema) {
             case 'apex':
-                if ($output = df\Launchpad::$loader->findFile('apex/'.$path)) {
+                if ($output = Legacy::getLoader()->findFile('apex/'.$path)) {
                     return $output;
                 }
 
                 break;
 
             case 'asset':
-                if ($output = df\Launchpad::$loader->findFile('apex/assets/'.$path)) {
+                if ($output = Legacy::getLoader()->findFile('apex/assets/'.$path)) {
                     return $output;
                 }
 
@@ -532,10 +533,10 @@ class SassBridge implements ISassBridge
                     $theme = $this->context->apex->getTheme()->getId();
                 }
 
-                $output = df\Launchpad::$loader->findFile('apex/themes/'.$theme.'/assets/'.$path);
+                $output = Legacy::getLoader()->findFile('apex/themes/'.$theme.'/assets/'.$path);
 
                 if (!$output) {
-                    $output = df\Launchpad::$loader->findFile('apex/themes/shared/assets/'.$path);
+                    $output = Legacy::getLoader()->findFile('apex/themes/shared/assets/'.$path);
                 }
 
                 if ($output) {

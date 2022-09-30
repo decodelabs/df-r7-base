@@ -20,6 +20,7 @@ use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\Systemic;
 use DecodeLabs\Terminus as Cli;
+use DecodeLabs\R7\Legacy;
 
 abstract class Base implements IDaemon
 {
@@ -65,7 +66,7 @@ abstract class Base implements IDaemon
     {
         $output = [];
 
-        foreach (df\Launchpad::$loader->lookupClassList('apex/daemons') as $name => $class) {
+        foreach (Legacy::getLoader()->lookupClassList('apex/daemons') as $name => $class) {
             try {
                 $daemon = self::factory($name);
             } catch (NotFoundException $e) {

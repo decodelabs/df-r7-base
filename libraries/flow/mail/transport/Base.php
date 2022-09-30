@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flow\mail\transport;
 
 use df;
@@ -10,6 +11,7 @@ use df\core;
 use df\flow;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Legacy;
 
 abstract class Base implements flow\mail\ITransport
 {
@@ -17,7 +19,7 @@ abstract class Base implements flow\mail\ITransport
     {
         $output = [];
 
-        foreach (df\Launchpad::$loader->lookupClassList('flow/mail/transport') as $name => $class) {
+        foreach (Legacy::getLoader()->lookupClassList('flow/mail/transport') as $name => $class) {
             $output[$name] = $class::getDefaultConfigValues();
         }
 
@@ -63,7 +65,7 @@ abstract class Base implements flow\mail\ITransport
     {
         $output = [];
 
-        foreach (df\Launchpad::$loader->lookupClassList('flow/mail/transport') as $name => $class) {
+        foreach (Legacy::getLoader()->lookupClassList('flow/mail/transport') as $name => $class) {
             $output[$name] = $class::getDescription();
         }
 

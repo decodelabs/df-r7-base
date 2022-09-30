@@ -6,7 +6,6 @@
 
 namespace df\user\Disciple;
 
-use df\Launchpad;
 use df\arch\Context;
 use df\user\Manager;
 

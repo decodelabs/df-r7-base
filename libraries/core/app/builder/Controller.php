@@ -14,6 +14,7 @@ use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Dir;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
 
 class Controller implements IController
 {
@@ -85,7 +86,7 @@ class Controller implements IController
         $this->_destination->ensureExists(0777);
 
 
-        $packages = df\Launchpad::$loader->getPackages();
+        $packages = Legacy::getLoader()->getPackages();
         $appPackage = $packages['app'];
         unset($packages['app']);
         $destinationPath = (string)$this->_destination;

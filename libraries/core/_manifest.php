@@ -406,8 +406,8 @@ trait THelperProvider
         $target = $target ?? $this;
 
         if (!$context instanceof IContext) {
-            if (df\Launchpad::$runner instanceof core\IContextAware) {
-                $context = df\Launchpad::$runner->getContext();
+            if (Legacy::getRunner() instanceof core\IContextAware) {
+                $context = Legacy::getRunner()->getContext();
             } else {
                 $context = new SharedContext();
             }
@@ -467,7 +467,6 @@ trait TContext
     use core\TTranslator;
     use THelperProvider;
 
-    public $runner;
     protected $_locale;
 
 
@@ -496,7 +495,7 @@ trait TContext
     // Helpers
     public function findFile(string $path): ?string
     {
-        return df\Launchpad::$loader->findFile($path);
+        return Legacy::getLoader()->findFile($path);
     }
 
     public function getLogManager()
@@ -531,10 +530,7 @@ trait TContext
                 return $this;
 
             case 'app':
-                return df\Launchpad::$app;
-
-            case 'runner':
-                return $this->runner;
+                return Legacy::app();
 
             case 'locale':
                 return $this->getLocale();
@@ -569,11 +565,6 @@ trait TContext
 class SharedContext implements IContext
 {
     use TContext;
-
-    public function __construct()
-    {
-        $this->runner = df\Launchpad::$runner;
-    }
 
     protected function _loadHelper($name)
     {

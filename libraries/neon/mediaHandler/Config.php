@@ -3,28 +3,33 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\neon\mediaHandler;
 
 use df;
 use df\core;
 use df\neon;
 
-class Config extends core\Config implements IConfig {
+use DecodeLabs\R7\Legacy;
 
-    const ID = 'Media';
+class Config extends core\Config implements IConfig
+{
+    public const ID = 'Media';
 
-    public function getDefaultValues(): array {
+    public function getDefaultValues(): array
+    {
         return [
             'defaultHandler' => 'Local',
             'handlers' => $this->_getDefaultHandlerConfig()
         ];
     }
 
-    protected function _getDefaultHandlerConfig() {
+    protected function _getDefaultHandlerConfig()
+    {
         $output = [];
 
-        foreach(df\Launchpad::$loader->lookupClassList('neon/mediaHandler') as $name => $class) {
-            if($name == 'Config') {
+        foreach (Legacy::getLoader()->lookupClassList('neon/mediaHandler') as $name => $class) {
+            if ($name == 'Config') {
                 continue;
             }
 
@@ -37,8 +42,9 @@ class Config extends core\Config implements IConfig {
         return $output;
     }
 
-    public function setDefaultHandler($handler) {
-        if($handler instanceof IMediaHandler) {
+    public function setDefaultHandler($handler)
+    {
+        if ($handler instanceof IMediaHandler) {
             $handler = $handler->getName();
         }
 
@@ -46,16 +52,18 @@ class Config extends core\Config implements IConfig {
         return $this;
     }
 
-    public function getDefaultHandler() {
+    public function getDefaultHandler()
+    {
         return $this->values->get('defaultHandler', 'Local');
     }
 
-    public function setSettingsFor($handler, array $settings) {
-        if($handler instanceof IMediaHandler) {
+    public function setSettingsFor($handler, array $settings)
+    {
+        if ($handler instanceof IMediaHandler) {
             $handler = $handler->getName();
         }
 
-        if(!isset($settings['enabled'])) {
+        if (!isset($settings['enabled'])) {
             $settings['enabled'] = (bool)$this->values->handlers->{$handler}->get('enabled', false);
         }
 
@@ -63,19 +71,21 @@ class Config extends core\Config implements IConfig {
         return $this;
     }
 
-    public function getSettingsFor($handler) {
-        if($handler instanceof IMediaHandler) {
+    public function getSettingsFor($handler)
+    {
+        if ($handler instanceof IMediaHandler) {
             $handler = $handler->getName();
         }
 
         return $this->values->handlers->{$handler};
     }
 
-    public function getEnabledHandlers() {
+    public function getEnabledHandlers()
+    {
         $output = [];
 
-        foreach($this->values->handlers as $name => $settings) {
-            if($settings['enabled']) {
+        foreach ($this->values->handlers as $name => $settings) {
+            if ($settings['enabled']) {
                 $output[] = $name;
             }
         }

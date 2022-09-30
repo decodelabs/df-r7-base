@@ -13,8 +13,8 @@ use df\link;
 use df\aura;
 use df\flex;
 
-use DecodeLabs\Compass\Ip;
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Legacy;
 
 class Http implements arch\IDirectoryHelper
 {
@@ -24,13 +24,7 @@ class Http implements arch\IDirectoryHelper
 
     protected function _init()
     {
-        if (!$this->context->runner instanceof core\app\runner\Http) {
-            throw Exceptional::Domain(
-                'Http helper can only be used from http run mode'
-            );
-        }
-
-        $this->_httpRequest = $this->context->runner->getHttpRequest();
+        $this->_httpRequest = Legacy::getHttpRunner()->getHttpRequest();
     }
 
     public function __get($member)
@@ -67,7 +61,7 @@ class Http implements arch\IDirectoryHelper
 
     public function getRouter()
     {
-        return $this->context->runner->getRouter();
+        return Legacy::getHttpRunner()->getRouter();
     }
 
     public function getRequest()
@@ -326,7 +320,7 @@ class Http implements arch\IDirectoryHelper
     // Cookies
     public function setCookie($name, $value=null, $expiry=null, $httpOnly=null, $secure=null)
     {
-        $augmentor = $this->context->runner->getResponseAugmentor();
+        $augmentor = Legacy::getHttpRunner()->getResponseAugmentor();
 
         if ($name instanceof link\http\ICookie) {
             $cookie = $name;
@@ -350,7 +344,7 @@ class Http implements arch\IDirectoryHelper
 
     public function removeCookie($name)
     {
-        $augmentor = $this->context->runner->getResponseAugmentor();
+        $augmentor = Legacy::getHttpRunner()->getResponseAugmentor();
 
         if ($name instanceof link\http\ICookie) {
             $cookie = $name;
@@ -369,12 +363,12 @@ class Http implements arch\IDirectoryHelper
 
     public function newCookie($name, $value, $expiry=null, $httpOnly=null, $secure=null)
     {
-        return $this->context->runner->getResponseAugmentor()->newCookie($name, $value, $expiry, $httpOnly, $secure);
+        return Legacy::getHttpRunner()->getResponseAugmentor()->newCookie($name, $value, $expiry, $httpOnly, $secure);
     }
 
     public function getResponseAugmentor()
     {
-        return $this->context->runner->getResponseAugmentor();
+        return Legacy::getHttpRunner()->getResponseAugmentor();
     }
 
 

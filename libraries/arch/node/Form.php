@@ -16,6 +16,7 @@ use df\link;
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
 
 abstract class Form extends Base implements IFormNode
 {
@@ -469,7 +470,7 @@ abstract class Form extends Base implements IFormNode
     private function _runPostRequest(core\collection\ITree $postData=null)
     {
         if ($postData === null) {
-            $httpRequest = $this->context->runner->getHttpRequest();
+            $httpRequest = Legacy::getHttpRunner()->getHttpRequest();
             $postData = clone $httpRequest->getPostData();
         }
 
@@ -625,7 +626,7 @@ abstract class Form extends Base implements IFormNode
     // Node dispatch
     public function getDispatchMethodName(): ?string
     {
-        $method = ucfirst(strtolower($this->context->runner->getHttpRequest()->getMethod()));
+        $method = ucfirst(strtolower(Legacy::getHttpRunner()->getHttpRequest()->getMethod()));
 
         if ($method == 'Head') {
             $method = 'Get';
@@ -647,7 +648,7 @@ abstract class Form extends Base implements IFormNode
 
         throw Exceptional::BadRequest([
             'message' => 'Form node '.$this->context->location->getLiteralPath().' does not support '.
-                $this->context->runner->getHttpRequest()->getMethod().' http method',
+                Legacy::getHttpRunner()->getHttpRequest()->getMethod().' http method',
             'http' => 405
         ]);
     }

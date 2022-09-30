@@ -14,6 +14,7 @@ use df\spur;
 
 use DecodeLabs\Genesis;
 use DecodeLabs\Terminus\Session;
+use DecodeLabs\R7\Legacy;
 
 class Model extends axis\Model
 {
@@ -23,7 +24,7 @@ class Model extends axis\Model
     public function getInstalledPackageList()
     {
         $repos = [];
-        $packages = $remainingPackages = df\Launchpad::$loader->getPackages();
+        $packages = $remainingPackages = Legacy::getLoader()->getPackages();
         $installed = [];
 
         $location = dirname(Genesis::$build->path);

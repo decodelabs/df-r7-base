@@ -14,11 +14,6 @@ use DecodeLabs\R7\Genesis\Hub;
 
 class Launchpad
 {
-    public static $loader;
-    public static $app;
-    public static $runner;
-
-
     public static function run(): void
     {
         Genesis::run(Hub::class);

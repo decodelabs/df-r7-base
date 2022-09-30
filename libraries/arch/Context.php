@@ -16,8 +16,9 @@ use df\aura;
 use df\arch\Scaffold;
 use df\arch\scaffold\Loader as ScaffoldLoader;
 
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\R7\Legacy;
 
 class Context implements IContext, \Serializable, Dumpable
 {
@@ -34,7 +35,7 @@ class Context implements IContext, \Serializable, Dumpable
 
     public static function getActive(): ?IContext
     {
-        $runner = df\Launchpad::$runner;
+        $runner = Legacy::getRunner();
 
         if ($runner instanceof core\IContextAware) {
             try {
@@ -48,7 +49,7 @@ class Context implements IContext, \Serializable, Dumpable
 
     public static function factory($location=null, $request=null): IContext
     {
-        $runner = df\Launchpad::$runner;
+        $runner = Legacy::getRunner();
 
         if (!empty($location)) {
             $location = arch\Request::factory($location);
@@ -63,16 +64,18 @@ class Context implements IContext, \Serializable, Dumpable
 
     public function __construct(arch\IRequest $location, $request=null)
     {
-        $this->runner = df\Launchpad::$runner;
+        $runner = Legacy::getRunner();
         $this->location = $location;
 
         if ($request === true) {
             $this->request = clone $location;
         } elseif ($request !== null) {
             $this->request = arch\Request::factory($request);
-        } elseif ($this->runner instanceof core\IContextAware
-               && $this->runner->hasContext()) {
-            $this->request = $this->runner->getContext()->location;
+        } elseif (
+            $runner instanceof core\IContextAware &&
+            $runner->hasContext()
+        ) {
+            $this->request = $runner->getContext()->location;
         } else {
             $this->request = $location;
         }
@@ -114,11 +117,11 @@ class Context implements IContext, \Serializable, Dumpable
     public function unserialize(string $data): void
     {
         $this->location = Request::factory($data);
-        $this->runner = df\Launchpad::$runner;
+        $runner = Legacy::getRunner();
 
-        if ($this->runner instanceof core\IContextAware
-        && $this->runner->hasContext()) {
-            $this->request = $this->runner->getContext()->location;
+        if ($runner instanceof core\IContextAware
+        && $runner->hasContext()) {
+            $this->request = $runner->getContext()->location;
         } else {
             $this->request = $this->location;
         }
@@ -129,13 +132,15 @@ class Context implements IContext, \Serializable, Dumpable
     // Application
     public function getDispatchContext(): core\IContext
     {
-        if (!$this->runner instanceof core\IContextAware) {
+        $runner = Legacy::getRunner();
+
+        if (!$runner instanceof core\IContextAware) {
             throw Exceptional::NoContext(
                 'Current runner is not context aware'
             );
         }
 
-        return $this->runner->getContext();
+        return $runner->getContext();
     }
 
     public function isDispatchContext(): bool

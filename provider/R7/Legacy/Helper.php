@@ -48,6 +48,10 @@ use df\opal\record\IPartial as Partial;
 use df\user\Manager as UserManager;
 use df\user\IClientDataObject as ClientObject;
 
+use df\core\app\Base as AppBase;
+use df\core\loader\Base as LoaderBase;
+use df\core\app\runner\Base as RunnerBase;
+use df\core\app\runner\Http as HttpRunner;
 use df\core\IRegistryObject as RegistryObject;
 
 use Carbon\Carbon;
@@ -56,29 +60,77 @@ use DateTime;
 use DateInterval;
 
 
+use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\Systemic\Process;
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
 use DecodeLabs\Terminus\Session as TerminusSession;
 
-use df\Launchpad;
 use Stringable;
 use Throwable;
 
 class Helper
 {
     /**
+     * Get app from container
+     */
+    public function app(): AppBase
+    {
+        static $app;
+
+        if (!isset($app)) {
+            $app = Genesis::$container['app'];
+        }
+
+        return $app;
+    }
+
+    /**
+     * Get loader from container
+     */
+    public function getLoader(): LoaderBase
+    {
+        static $loader;
+
+        if (!isset($loader)) {
+            $loader = Genesis::$container['app.loader'];
+        }
+
+        return $loader;
+    }
+
+    /**
+     * Get runner form container
+     */
+    public function getRunner(): RunnerBase
+    {
+        static $runner;
+
+        if (!isset($runner)) {
+            $runner = Genesis::$container['app.runner'];
+        }
+
+        return $runner;
+    }
+
+    public function getHttpRunner(): HttpRunner
+    {
+        $runner = $this->getRunner();
+
+        if (!$runner instanceof HttpRunner) {
+            throw Exceptional::UnexpectedValue('Runner is not HTTP');
+        }
+
+        return $runner;
+    }
+
+
+    /**
      * Get pass key
      */
     public function getPassKey(): string
     {
-        static $key;
-
-        if (!isset($key)) {
-            $key = (string)Genesis::$container['app']::PASS_KEY;
-        }
-
-        return $key;
+        return $this->app()::PASS_KEY;
     }
 
     /**
@@ -86,13 +138,7 @@ class Helper
      */
     public function getUniquePrefix(): string
     {
-        static $prefix;
-
-        if (!isset($prefix)) {
-            $prefix = Genesis::$container['app']::UNIQUE_PREFIX;
-        }
-
-        return $prefix;
+        return $this->app()::UNIQUE_PREFIX;
     }
 
 
@@ -742,7 +788,7 @@ class Helper
      */
     public function setRegistryObject(RegistryObject $object)
     {
-        return Genesis::$container['app']->setRegistryObject($object);
+        return $this->app()->setRegistryObject($object);
     }
 
     /**
@@ -750,7 +796,7 @@ class Helper
      */
     public function getRegistryObject(string $key): ?RegistryObject
     {
-        return Genesis::$container['app']->getRegistryObject($key);
+        return $this->app()->getRegistryObject($key);
     }
 
     /**
@@ -758,7 +804,7 @@ class Helper
      */
     public function hasRegistryObject(string $key): bool
     {
-        return Genesis::$container['app']->hasRegistryObject($key);
+        return $this->app()->hasRegistryObject($key);
     }
 
     /**
@@ -766,7 +812,7 @@ class Helper
      */
     public function removeRegistryObject(string $key)
     {
-        return Genesis::$container['app']->removeRegistryObject($key);
+        return $this->app()->removeRegistryObject($key);
     }
 
     /**
@@ -774,7 +820,7 @@ class Helper
      */
     public function findRegistryObjects(string $beginningWith): array
     {
-        return Genesis::$container['app']->findRegistryObjects($beginningWith);
+        return $this->app()->findRegistryObjects($beginningWith);
     }
 
     /**
@@ -782,6 +828,6 @@ class Helper
      */
     public function getRegistryObjects(): array
     {
-        return Genesis::$container['app']->getRegistryObjects();
+        return $this->app()->getRegistryObjects();
     }
 }

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\fortify;
 
 use df;
@@ -10,8 +11,9 @@ use df\core;
 use df\axis;
 use df\opal;
 
-use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Terminus as Cli;
+use DecodeLabs\R7\Legacy;
 
 abstract class Base implements IFortify
 {
@@ -24,7 +26,7 @@ abstract class Base implements IFortify
     {
         $path = 'apex/models/'.$unit->getModel()->getModelName().'/'.$unit->getUnitName().'/fortify';
 
-        foreach (df\Launchpad::$loader->lookupClassList($path, false) as $name => $class) {
+        foreach (Legacy::getLoader()->lookupClassList($path, false) as $name => $class) {
             if (!class_exists($class)) {
                 continue;
             }

@@ -15,6 +15,7 @@ use df\axis;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
 
 class Manager implements IManager, core\IShutdownAware
 {
@@ -379,7 +380,7 @@ class Manager implements IManager, core\IShutdownAware
     {
         $output = [];
 
-        foreach (df\Launchpad::$loader->lookupClassList('flow/mailingList/adapter') as $name => $class) {
+        foreach (Legacy::getLoader()->lookupClassList('flow/mailingList/adapter') as $name => $class) {
             $output[$name] = $name;
         }
 

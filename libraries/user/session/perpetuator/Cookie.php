@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\user\session\perpetuator;
 
 use df;
@@ -13,20 +14,23 @@ use df\link;
 use df\axis;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Legacy;
 
 class Cookie implements user\session\IPerpetuator
 {
-    const SESSION_NAME = '_s';
-    const REMEMBER_NAME = '_r';
-    const JOIN_NAME = '_j';
+    public const SESSION_NAME = '_s';
+    public const REMEMBER_NAME = '_r';
+    public const JOIN_NAME = '_j';
 
     protected $_inputId;
     protected $_canRecall = true;
 
     public function __construct()
     {
-        $cookies = df\Launchpad::$runner->getHttpRequest()->cookies;
-        $router = df\Launchpad::$runner->getRouter();
+        $runner = Legacy::getHttpRunner();
+
+        $cookies = $runner->getHttpRequest()->cookies;
+        $router = $runner->getRouter();
         $isRoot = $router->isBaseInRoot();
 
         if (!$isRoot && !$cookies->has(self::SESSION_NAME) && !$cookies->has(self::JOIN_NAME)) {
@@ -86,7 +90,7 @@ class Cookie implements user\session\IPerpetuator
 
     protected function _setSessionCookie($outputId)
     {
-        $runner = df\Launchpad::$runner;
+        $runner = Legacy::getHttpRunner();
 
         if ($runner instanceof link\http\IResponseAugmentorProvider) {
             $augmentor = $runner->getResponseAugmentor();
@@ -98,7 +102,7 @@ class Cookie implements user\session\IPerpetuator
 
     public function destroy(user\session\IController $controller)
     {
-        $runner = df\Launchpad::$runner;
+        $runner = Legacy::getHttpRunner();
 
         if ($runner instanceof link\http\IResponseAugmentorProvider) {
             $augmentor = $runner->getResponseAugmentor();
@@ -119,8 +123,9 @@ class Cookie implements user\session\IPerpetuator
 
     public function handleDeadPublicKey($publicKey)
     {
-        $cookies = df\Launchpad::$runner->getHttpRequest()->cookies;
-        $isRoot = df\Launchpad::$runner->getRouter()->isBaseRoot();
+        $runner = Legacy::getHttpRunner();
+        $cookies = $runner->getHttpRequest()->cookies;
+        $isRoot = $runner->getRouter()->isBaseRoot();
 
         if (!$isRoot && !$cookies->has(self::JOIN_NAME)) {
             $this->_joinRoot();
@@ -131,8 +136,11 @@ class Cookie implements user\session\IPerpetuator
     {
         $key = $this->_generateJoinKey();
         $this->setJoinKey($key);
-        $httpRequest = df\Launchpad::$runner->getHttpRequest();
-        $router = df\Launchpad::$runner->getRouter();
+
+        $runner = Legacy::getHttpRunner();
+        $httpRequest = $runner->getHttpRequest();
+        $router = $runner->getRouter();
+
         $request = $router->requestToUrl(arch\Request::factory('account/join-session?key='.bin2hex($key)));
         $request->query->rf = $router->urlToRequest($httpRequest->url)->encode();
         $redirect = new link\http\response\Redirect($request);
@@ -142,7 +150,7 @@ class Cookie implements user\session\IPerpetuator
 
     public function perpetuateRecallKey(user\session\IController $controller, user\session\RecallKey $key)
     {
-        $runner = df\Launchpad::$runner;
+        $runner = Legacy::getHttpRunner();
 
         if ($runner instanceof link\http\IResponseAugmentorProvider) {
             $augmentor = $runner->getResponseAugmentor();
@@ -160,7 +168,7 @@ class Cookie implements user\session\IPerpetuator
 
     public function getRecallKey(user\session\IController $controller)
     {
-        $httpRequest = df\Launchpad::$runner->getHttpRequest();
+        $httpRequest = Legacy::getHttpRunner()->getHttpRequest();
 
         if (!$httpRequest->hasCookieData()) {
             return null;
@@ -178,7 +186,7 @@ class Cookie implements user\session\IPerpetuator
 
     public function destroyRecallKey(user\session\IController $controller)
     {
-        $runner = df\Launchpad::$runner;
+        $runner = Legacy::getHttpRunner();
 
         if ($runner instanceof link\http\IResponseAugmentorProvider) {
             $augmentor = $runner->getResponseAugmentor();
@@ -194,7 +202,7 @@ class Cookie implements user\session\IPerpetuator
 
     public function setJoinKey($key)
     {
-        $runner = df\Launchpad::$runner;
+        $runner = Legacy::getHttpRunner();
 
         if ($runner instanceof link\http\IResponseAugmentorProvider) {
             $augmentor = $runner->getResponseAugmentor();
@@ -212,7 +220,7 @@ class Cookie implements user\session\IPerpetuator
 
     public function destroyJoinKey()
     {
-        $runner = df\Launchpad::$runner;
+        $runner = Legacy::getHttpRunner();
 
         if ($runner instanceof link\http\IResponseAugmentorProvider) {
             $augmentor = $runner->getResponseAugmentor();

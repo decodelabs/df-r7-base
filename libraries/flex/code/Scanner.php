@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flex\code;
 
 use df;
@@ -11,6 +12,7 @@ use df\flex;
 use df\axis;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Legacy;
 
 class Scanner implements IScanner
 {
@@ -59,7 +61,7 @@ class Scanner implements IScanner
             $model = axis\Model::factory('package');
             $packages = $model->getInstalledPackageList();
         } else {
-            $packages = df\Launchpad::$loader->getPackages();
+            $packages = Legacy::getLoader()->getPackages();
         }
 
         foreach ($packages as $name => $package) {

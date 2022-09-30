@@ -3,17 +3,20 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\fire;
 
 use df;
 use df\core;
 use df\fire;
 
+use DecodeLabs\R7\Legacy;
+
 class Manager implements IManager
 {
     use core\TManager;
 
-    const REGISTRY_PREFIX = 'manager://fire';
+    public const REGISTRY_PREFIX = 'manager://fire';
 
     protected $_categories = null;
     protected $_blocks = null;
@@ -59,7 +62,7 @@ class Manager implements IManager
         $this->_categories = [];
         $blockIndex = [];
 
-        foreach (df\Launchpad::$loader->lookupClassList('fire/category') as $name => $class) {
+        foreach (Legacy::getLoader()->lookupClassList('fire/category') as $name => $class) {
             try {
                 $category = fire\category\Base::factory($name);
             } catch (\Throwable $e) {
@@ -250,7 +253,7 @@ class Manager implements IManager
 
         $this->_blocks = [];
 
-        foreach (df\Launchpad::$loader->lookupClassList('fire/block') as $name => $class) {
+        foreach (Legacy::getLoader()->lookupClassList('fire/block') as $name => $class) {
             try {
                 $block = fire\block\Base::factory($name);
             } catch (\Throwable $e) {

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\user\authentication\adapter;
 
 use df;
@@ -12,6 +13,7 @@ use df\axis;
 use df\opal;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Legacy;
 
 use Auth0\SDK\Auth0 as Auth0Conn;
 
@@ -66,8 +68,8 @@ class Auth0 implements user\authentication\IAdapter
 
     protected static function _getContext()
     {
-        if (df\Launchpad::$runner instanceof core\IContextAware) {
-            return df\Launchpad::$runner->getContext();
+        if (Legacy::getRunner() instanceof core\IContextAware) {
+            return Legacy::getRunner()->getContext();
         } else {
             return new core\SharedContext();
         }

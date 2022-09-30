@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Genesis;
 
-use df\Launchpad;
 use df\core\app\runner\Base as RunnerBase;
 use df\user\Disciple\Adapter as DiscipleAdapter;
 
@@ -73,9 +72,6 @@ class Kernel implements KernelInterface
         // Add runner to container
         $this->context->container->bindShared(RunnerBase::class, $runner)
             ->alias('app.runner');
-
-        // DELETE ME
-        Launchpad::$runner = $runner;
 
         // Dispatch runner
         $runner->dispatch();
