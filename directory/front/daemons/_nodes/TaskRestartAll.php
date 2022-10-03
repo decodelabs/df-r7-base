@@ -31,7 +31,7 @@ class TaskRestartAll extends arch\node\Task
             $remote = halo\daemon\Remote::factory($daemon);
 
             if ($remote->isRunning()) {
-                //$this->_ensurePrivileges();
+                $this->_ensurePrivileges();
             }
         }
 
