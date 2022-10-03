@@ -116,7 +116,7 @@ class BuildManifest implements Manifest
             yield new GenericTask(
                 'Running task: '.$request->getPath(),
                 function (Session $session) use ($request) {
-                    Legacy::launchTask((string)$request, $session);
+                    Legacy::launchTask((string)$request, $session, null, true);
                 }
             );
         }
@@ -249,7 +249,7 @@ class BuildManifest implements Manifest
             yield new GenericTask(
                 'Running task: '.$request->getPath(),
                 function (Session $session) use ($request) {
-                    Legacy::launchTask((string)$request, $session);
+                    Legacy::launchTask((string)$request, $session, null, true);
                 }
             );
         }
@@ -265,7 +265,7 @@ class BuildManifest implements Manifest
         yield new GenericTask(
             'Purging caches',
             function (Session $session) {
-                Legacy::launchTask('cache/purge', $session);
+                Legacy::launchTask('cache/purge', $session, null, true);
             }
         );
 
@@ -273,7 +273,7 @@ class BuildManifest implements Manifest
         yield new GenericTask(
             'Restarting daemons',
             function (Session $session) {
-                Legacy::launchTask('daemons/restart-all', $session);
+                Legacy::launchTask('daemons/restart-all', $session, null, true);
             }
         );
 
@@ -281,14 +281,14 @@ class BuildManifest implements Manifest
         yield new GenericTask(
             'Scanning for scheduled tasks',
             function (Session $session) {
-                Legacy::launchTask('tasks/scan', $session);
+                Legacy::launchTask('tasks/scan', $session, null, true);
             }
         );
 
         yield new GenericTask(
             'Running task spool',
             function (Session $session) {
-                Legacy::launchTask('tasks/spool', $session);
+                Legacy::launchTask('tasks/spool', $session, null, true);
             }
         );
     }
