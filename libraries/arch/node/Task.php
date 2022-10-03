@@ -111,7 +111,6 @@ abstract class Task extends Base implements ITaskNode
         Cli::newLine();
 
         $user = Systemic::$process->getCurrent()->getOwnerName();
-        $request = clone $this->request;
 
         throw new arch\ForcedResponse(function () use ($user, $request) {
             $this->task->launch($request, Cli::getSession(), $user, true);
