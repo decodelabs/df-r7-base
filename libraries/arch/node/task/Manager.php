@@ -49,7 +49,11 @@ class Manager implements arch\node\ITaskManager
 
         return Systemic::$process->newScriptLauncher($path, $args, null, $user)
             ->thenIf($session !== null, function ($launcher) use ($session) {
-                $launcher->setSession($session);
+                if (method_exists($launcher, 'setSession')) {
+                    $launcher->setSession($session);
+                } else {
+                    $launcher->setBroker($session->getBroker());
+                }
             })
             ->setDecoratable($decoratable)
             ->launch();
