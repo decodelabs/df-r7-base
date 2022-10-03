@@ -33,11 +33,17 @@ trait TDaemonTask
             $request = clone $this->request;
             $request->query->_privileged = true;
 
+
+            // Stop reading input
+            Cli::getBroker()->setReadEnabled(false);
+
             $this->task->launch(
                 $request,
                 Cli::getSession(),
                 'root'
             );
+
+            Cli::getBroker()->setReadEnabled(true);
 
             $this->forceResponse('');
         }
