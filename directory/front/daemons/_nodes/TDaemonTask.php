@@ -33,12 +33,10 @@ trait TDaemonTask
             $request = clone $this->request;
             $request->query->_privileged = true;
 
-            $pass = Cli::askPassword('Please enter your password');
-
             $this->task->launch(
                 $request,
                 Cli::getSession(),
-                'root|'.$pass
+                'root'
             );
 
             $this->forceResponse('');
