@@ -105,6 +105,20 @@ abstract class Task extends Base implements ITaskNode
     }
 
 
+    public function launch($request)
+    {
+        Cli::notice('Switching to new process');
+        Cli::newLine();
+
+        $user = Systemic::$process->getCurrent()->getOwnerName();
+        $request = clone $this->request;
+
+        throw new arch\ForcedResponse(function () use ($user, $request) {
+            $this->task->launch($request, Cli::getSession(), $user, true);
+        });
+    }
+
+
     // Interaction
     protected function _askFor(string $label, callable $validator, ?string $default=null, bool $confirm=false)
     {

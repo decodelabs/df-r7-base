@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\app\_nodes;
 
 use df;
@@ -23,6 +24,6 @@ class TaskUpdate extends arch\node\Task
         $this->runChild('composer/install');
         Cli::newLine();
 
-        $this->runChild('app/build');
+        $this->launch('app/build');
     }
 }
