@@ -37,7 +37,8 @@ trait TDaemonTask
             $this->task->launch(
                 $request,
                 Cli::getSession(),
-                'root'
+                'root',
+                true
             );
 
             $this->forceResponse('');

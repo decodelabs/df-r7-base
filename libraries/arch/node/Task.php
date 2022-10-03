@@ -103,9 +103,15 @@ abstract class Task extends Base implements ITaskNode
             $path = array_shift($args);
             $args[] = '--df-source';
 
+            $snapshot = Cli::snapshotStty();
+            Cli::toggleInputEcho(false);
+            Cli::toggleInputBuffer(false);
+
             Systemic::$process->newScriptLauncher($path, $args, null, $user)
                 ->setBroker(Cli::getBroker())
                 ->launch();
+
+            Cli::restoreStty($snapshot);
         });
     }
 

@@ -57,8 +57,7 @@ class Kernel implements KernelInterface
         if ($this->mode === 'Task') {
             Terminus::getCommandDefinition()
                 ->addArgument('task', 'Task path')
-                ->addArgument('--df-source', 'Source mode')
-                ;
+                ->addArgument('--df-source', 'Source mode');
         }
     }
 

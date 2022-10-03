@@ -20,6 +20,7 @@ class TaskUpdate extends arch\node\Task
     public function execute()
     {
         $this->ensureDfSource();
+
         $this->runChild('git/update?package=app&no-build');
         $this->runChild('composer/install');
         Cli::newLine();
