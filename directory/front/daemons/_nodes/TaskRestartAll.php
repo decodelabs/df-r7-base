@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\daemons\_nodes;
 
 use df;
@@ -30,7 +31,7 @@ class TaskRestartAll extends arch\node\Task
             $remote = halo\daemon\Remote::factory($daemon);
 
             if ($remote->isRunning()) {
-                $this->_ensurePrivileges();
+                //$this->_ensurePrivileges();
             }
         }
 
