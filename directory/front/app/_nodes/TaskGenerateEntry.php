@@ -38,8 +38,7 @@ class TaskGenerateEntry extends arch\node\Task
         if (!$mainFile->exists()) {
             $mainFile->putContents(
                 '<?php'."\n".
-                'require_once dirname(__DIR__).\'/vendor/df-r7/base/Df.php\';'."\n".
-                'df\Launchpad::run();'."\n"
+                'require_once dirname(__DIR__).\'/vendor/df-r7/base/Df.php\';'."\n"
             );
         }
 

@@ -9,11 +9,13 @@ namespace DecodeLabs\R7\Genesis;
 
 use DecodeLabs\Genesis;
 use DecodeLabs\Genesis\Bootstrap as Base;
+use DecodeLabs\R7\Genesis\Hub;
 
 class Bootstrap extends Base
 {
     protected string $rootPath;
     protected string $appPath;
+    protected string $vendorPath;
 
     /**
      * Init with root path of source Df.php and app path
@@ -49,7 +51,7 @@ class Bootstrap extends Base
             $paths = [];
         }
 
-        $paths[$this->rootPath.'/Df.Genesis.php'] = $this->appPath.'/vendor';
+        $paths[__FILE__] = $this->appPath.'/vendor';
 
         return $paths;
     }
@@ -59,11 +61,8 @@ class Bootstrap extends Base
      */
     public function execute(string $vendorPath): void
     {
-        // Load Genesis DF
-        if (file_exists($vendorPath.'/df-r7/base/Df.Genesis.php')) {
-            require_once $vendorPath.'/df-r7/base/Df.Genesis.php';
-        } else {
-            require_once $this->appPath.'/vendor/df-r7/base/Df.Genesis.php';
-        }
+        $this->vendorPath = $vendorPath;
+        Genesis::run(Hub::class);
+        exit;
     }
 }
