@@ -35,7 +35,7 @@ trait TDaemonTask
 
 
             // Stop reading input
-            Cli::getBroker()->setReadEnabled(false);
+            Cli::getBroker()->setInputEnabled(false);
 
             $this->task->launch(
                 $request,
@@ -43,7 +43,7 @@ trait TDaemonTask
                 'root'
             );
 
-            Cli::getBroker()->setReadEnabled(true);
+            Cli::getBroker()->setInputEnabled(true);
 
             $this->forceResponse('');
         }

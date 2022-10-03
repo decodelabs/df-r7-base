@@ -97,7 +97,7 @@ abstract class Task extends Base implements ITaskNode
         Cli::newLine();
 
         $user = Systemic::$process->getCurrent()->getOwnerName();
-        Cli::getBroker()->setReadEnabled(false);
+        Cli::getBroker()->setInputEnabled(false);
 
         throw new arch\ForcedResponse(function () use ($user) {
             $args = $_SERVER['argv'];
@@ -117,11 +117,11 @@ abstract class Task extends Base implements ITaskNode
         Cli::newLine();
 
         $user = Systemic::$process->getCurrent()->getOwnerName();
-        Cli::getBroker()->setReadEnabled(false);
+        Cli::getBroker()->setInputEnabled(false);
 
         $this->task->launch($request, Cli::getSession(), $user, true);
 
-        Cli::getBroker()->setReadEnabled(true);
+        Cli::getBroker()->setInputEnabled(true);
     }
 
 
