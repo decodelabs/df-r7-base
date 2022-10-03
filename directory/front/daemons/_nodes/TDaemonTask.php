@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\daemons\_nodes;
 
 use df;
@@ -32,10 +33,12 @@ trait TDaemonTask
             $request = clone $this->request;
             $request->query->_privileged = true;
 
+            $pass = Cli::askPassword('Password for root');
+
             $this->task->launch(
                 $request,
                 Cli::getSession(),
-                'root'
+                'root|'.$pass
             );
 
             $this->forceResponse('');
