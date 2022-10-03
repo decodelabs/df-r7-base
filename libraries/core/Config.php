@@ -69,11 +69,16 @@ abstract class Config implements IConfig, Dumpable
         return $config;
     }
 
-    public static function clearLiveCache()
+    public static function clearLiveCache(): array
     {
+        $output = [];
+
         foreach (Legacy::findRegistryObjects('config://') as $config) {
-            Legacy::removeRegistryObject($config->getRegistryObjectKey());
+            $output[] = $key = $config->getRegistryObjectKey();
+            Legacy::removeRegistryObject($key);
         }
+
+        return $output;
     }
 
 

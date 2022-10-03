@@ -6,13 +6,11 @@
 
 namespace df\apex\directory\front\app\_nodes;
 
-use df;
-use df\core;
-use df\apex;
 use df\arch;
 
-use DecodeLabs\Atlas;
-use DecodeLabs\Genesis;
+use DecodeLabs\Genesis\Build\Handler;
+use DecodeLabs\Terminus as Cli;
+use DecodeLabs\R7\Genesis\BuildManifest;
 
 class TaskClearBuild extends arch\node\Task
 {
@@ -20,15 +18,11 @@ class TaskClearBuild extends arch\node\Task
     {
         $this->ensureDfSource();
 
-        $appPath = Genesis::$hub->getApplicationPath();
-        $envId = Genesis::$environment->getName();
+        // Setup controller
+        $handler = new Handler(
+            new BuildManifest(Cli::getSession())
+        );
 
-        Atlas::deleteFile($appPath.'/data/local/run/active/Run.php');
-
-        $this->runChild('app/purge-builds?all');
-        Atlas::deleteDir($appPath.'/data/local/run/');
-
-        Atlas::deleteFile($appPath.'/entry/'.$envId.'.testing.php');
-        Atlas::deleteFile($appPath.'/entry/'.$envId.'.production.php');
+        $handler->clear();
     }
 }

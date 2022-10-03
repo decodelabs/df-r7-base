@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\app\_nodes;
 
 use df;
@@ -18,9 +19,6 @@ class TaskInit extends arch\node\Task
     public function execute()
     {
         $this->ensureDfSource();
-
-        $this->runChild('app/generate-entry');
-        Cli::newLine();
 
         $this->runChild('config/init');
         Cli::newLine();

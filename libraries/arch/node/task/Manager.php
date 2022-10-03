@@ -33,7 +33,7 @@ class Manager implements arch\node\ITaskManager
         $request = arch\Request::factory($request);
         $path = Genesis::$hub->getApplicationPath().'/entry/';
         $path .= Genesis::$environment->getName().'.php';
-        $args = ['task', $request];
+        $args = [$request];
 
         if ($dfSource) {
             $args[] = '--df-source';

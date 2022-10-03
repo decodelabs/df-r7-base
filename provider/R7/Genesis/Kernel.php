@@ -11,10 +11,10 @@ use df\core\app\runner\Base as RunnerBase;
 use df\user\Disciple\Adapter as DiscipleAdapter;
 
 use DecodeLabs\Disciple;
-use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis\Context;
 use DecodeLabs\Genesis\Kernel as KernelInterface;
 use DecodeLabs\Metamorph;
+use DecodeLabs\Terminus;
 use DecodeLabs\R7\Legacy;
 
 use Throwable;
@@ -51,6 +51,15 @@ class Kernel implements KernelInterface
                 return $url;
             }
         });
+
+
+        // Cli args
+        if ($this->mode === 'Task') {
+            Terminus::getCommandDefinition()
+                ->addArgument('task', 'Task path')
+                ->addArgument('--df-source', 'Source mode')
+                ;
+        }
     }
 
 
