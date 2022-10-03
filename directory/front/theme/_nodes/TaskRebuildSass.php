@@ -110,7 +110,9 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
 
     protected function _checkFile(string $key, string $sassPath, ?string $activePath)
     {
-        $hasBuild = file_exists(Genesis::$hub->getLocalDataPath().'/run/active/Run.php');
+        $hasBuild =
+            file_exists(Genesis::$hub->getLocalDataPath().'/run/active/Run.php') ||
+            file_exists(Genesis::$hub->getLocalDataPath().'/run/active2/Run.php');
         $delete = !file_exists($sassPath);
         $why = 'file not found';
 

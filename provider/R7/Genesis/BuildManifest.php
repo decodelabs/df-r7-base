@@ -344,6 +344,8 @@ class BuildManifest implements Manifest
                 trim(implode('/', $keyParts).'/'.Dictum::actionSlug(substr($basename, 4)), '/')
             );
 
+            $output->query->buildId = $this->buildId;
+
             yield $output;
         }
     }
