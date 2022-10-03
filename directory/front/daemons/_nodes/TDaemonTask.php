@@ -34,16 +34,11 @@ trait TDaemonTask
             $request->query->_privileged = true;
 
 
-            // Stop reading input
-            Cli::getBroker()->setInputEnabled(false);
-
             $this->task->launch(
                 $request,
                 Cli::getSession(),
                 'root'
             );
-
-            Cli::getBroker()->setInputEnabled(true);
 
             $this->forceResponse('');
         }
