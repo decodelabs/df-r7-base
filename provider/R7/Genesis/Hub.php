@@ -32,8 +32,6 @@ class Hub implements HubInterface
 
     protected bool $analysis = false;
 
-    protected ?int $compileTimestamp = null;
-
     protected Context $context;
 
     public function __construct(
