@@ -6,16 +6,10 @@
 
 namespace df\apex\directory\front\app\_nodes;
 
-use df;
-use df\core;
-use df\apex;
 use df\arch;
-use df\halo;
-use df\flex;
 
-use DecodeLabs\Genesis\Build\Handler;
+use DecodeLabs\Genesis;
 use DecodeLabs\Terminus as Cli;
-use DecodeLabs\R7\Genesis\BuildManifest;
 
 class TaskBuild extends arch\node\Task
 {
@@ -33,9 +27,7 @@ class TaskBuild extends arch\node\Task
 
 
         // Setup controller
-        $handler = new Handler(
-            new BuildManifest(Cli::getSession())
-        );
+        $handler = Genesis::$build->getHandler();
 
         if (Cli::getArgument('dev')) {
             $handler->setCompile(false);

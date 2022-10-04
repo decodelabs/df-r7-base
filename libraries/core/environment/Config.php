@@ -31,14 +31,6 @@ class Config extends core\Config
         ];
     }
 
-    protected function _sanitizeValuesOnCreate()
-    {
-        try {
-            arch\node\task\Manager::getInstance()->invoke('git/init-gitignore');
-        } catch (\Throwable $e) {
-        }
-    }
-
 
     // Mode
     public function setMode($mode)

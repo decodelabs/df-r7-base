@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis;
 
 use df;
@@ -13,9 +14,9 @@ use DecodeLabs\Exceptional;
 
 class Config extends core\Config
 {
-    const ID = 'DataConnections';
-    const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
-    const DEFAULT_DSN = 'mysql://user:pass@localhost/database';
+    public const ID = 'DataConnections';
+    public const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
+    public const DEFAULT_DSN = 'mysql://user:pass@localhost/database';
 
     protected $_isSetup = null;
 

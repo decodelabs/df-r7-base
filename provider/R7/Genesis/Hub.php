@@ -17,10 +17,12 @@ use df\core\loader\Base as LoaderBase;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch;
 use DecodeLabs\Genesis\Build;
+use DecodeLabs\R7\Genesis\BuildManifest;
 use DecodeLabs\Genesis\Context;
 use DecodeLabs\Genesis\Environment\Config as EnvConfig;
 use DecodeLabs\Genesis\Hub as HubInterface;
 use DecodeLabs\Genesis\Loader\Stack as StackLoader;
+use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Veneer;
 
 class Hub implements HubInterface
@@ -340,5 +342,11 @@ class Hub implements HubInterface
         throw Exceptional::UnexpectedValue(
             'Unable to detect run mode ('.\PHP_SAPI.')'
         );
+    }
+
+
+    public function getBuildManifest(): ?BuildManifest
+    {
+        return new BuildManifest(Cli::getSession());
     }
 }

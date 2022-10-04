@@ -34,9 +34,6 @@ class TaskInit extends arch\node\Task
         $this->runChild('composer/init');
         Cli::newLine();
 
-        $this->runChild('git/init');
-        Cli::newLine();
-
         $this->runChild('theme/install-dependencies');
     }
 }

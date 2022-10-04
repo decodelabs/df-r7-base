@@ -8,9 +8,7 @@ namespace df\apex\directory\front\app\_nodes;
 
 use df\arch;
 
-use DecodeLabs\Genesis\Build\Handler;
-use DecodeLabs\Terminus as Cli;
-use DecodeLabs\R7\Genesis\BuildManifest;
+use DecodeLabs\Genesis;
 
 class TaskClearBuild extends arch\node\Task
 {
@@ -18,11 +16,6 @@ class TaskClearBuild extends arch\node\Task
     {
         $this->ensureDfSource();
 
-        // Setup controller
-        $handler = new Handler(
-            new BuildManifest(Cli::getSession())
-        );
-
-        $handler->clear();
+        Genesis::$build->getHandler()->clear();
     }
 }

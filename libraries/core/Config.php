@@ -249,6 +249,10 @@ abstract class Config implements IConfig, Dumpable
         if ($this->_filePath) {
             $savePath = $this->_filePath;
         } else {
+            if (self::$envId === 'analysis') {
+                throw new \Exception('Cannot create config during analysis');
+            }
+
             $envId = self::$envId;
             $parts = explode('/', $this->_id);
             $name = array_pop($parts);
