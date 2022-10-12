@@ -4,7 +4,7 @@
  * @license http://opensource.org/licenses/MIT
  */
 
-namespace df\user\Disciple;
+namespace DecodeLabs\R7\Disciple;
 
 use DecodeLabs\Disciple\GateKeeper as GateKeeperInterface;
 use DecodeLabs\Disciple\GateKeeperTrait;

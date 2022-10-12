@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\node\form;
 
 use df;
@@ -12,6 +13,7 @@ use df\link;
 use df\flex;
 
 use DecodeLabs\Dictum;
+use DecodeLabs\R7\Legacy;
 
 class EventDescriptor implements arch\node\IFormEventDescriptor
 {
@@ -238,7 +240,7 @@ class EventDescriptor implements arch\node\IFormEventDescriptor
         }
 
         if (is_string($redirect)) {
-            $redirect = arch\Context::getCurrent()->uri->directoryRequest($redirect);
+            $redirect = Legacy::getContext()->uri->directoryRequest($redirect);
         }
 
         if ($redirect instanceof link\http\IUrl) {
@@ -303,7 +305,7 @@ class EventDescriptor implements arch\node\IFormEventDescriptor
     {
         if ($this->_response === null
         && $this->hasRedirect()) {
-            $this->_response = arch\Context::getCurrent()->http->redirect($this->_redirect);
+            $this->_response = Legacy::getContext()->http->redirect($this->_redirect);
         }
 
         return $this->_response;

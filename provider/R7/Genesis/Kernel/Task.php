@@ -32,16 +32,12 @@ class Task implements Kernel
      */
     use KernelTrait;
 
-    protected TaskRunner $runner;
-
 
     /**
      * Initialize platform systems
      */
     public function initialize(): void
     {
-        $this->runner = $this->loadRunner();
-
         Terminus::getCommandDefinition()
             ->addArgument('task', 'Task path')
             ->addArgument('--df-source', 'Source mode');
@@ -66,41 +62,14 @@ class Task implements Kernel
     {
         set_time_limit(0);
 
-        $request = $this->prepareRequest();
-
-        try {
-            $this->dispatchNode($request);
-        } catch (\Throwable $e) {
-            while (ob_get_level()) {
-                ob_end_clean();
-            }
-
-            $this->runner->setDispatchException($e);
-
-            try {
-                $this->dispatchNode(new Request('error/'));
-            } catch (Throwable $f) {
-                throw $e;
-            }
-        }
-    }
-
-
-
-    protected function prepareRequest(): Request
-    {
         $args = Terminus::prepareArguments();
 
         /** @var Request */
-        return Request::factory($args['task']);
-    }
+        $request = Request::factory($args['task']);
 
-
-    protected function dispatchNode(Request $request): void
-    {
         /** @var Context $context */
         $context = Context::factory(clone $request);
-        $this->runner->setContext($context);
+        Legacy::setActiveContext($context);
 
         $node = NodeBase::factory($context);
 

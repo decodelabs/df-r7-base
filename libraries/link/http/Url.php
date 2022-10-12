@@ -208,11 +208,11 @@ class Url extends core\uri\Url implements IUrl
 
         if (substr($url, 0, 1) == '/') {
             unset($path[0]);
-            $runner = Legacy::getRunner();
 
-            if ($runner instanceof core\app\runner\Http) {
-                $requestUrl = $runner->getHttpRequest()->getUrl();
+            if (Genesis::$kernel->getMode() === 'Http') {
+                $requestUrl = Legacy::getHttpRunner()->getHttpRequest()->getUrl();
 
+                $this->_scheme = $requestUrl->getScheme();
                 $this->_username = $requestUrl->getUsername();
                 $this->_password = $requestUrl->getPassword();
                 $this->_domain = $requestUrl->getDomain();

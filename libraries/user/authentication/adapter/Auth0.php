@@ -68,11 +68,7 @@ class Auth0 implements user\authentication\IAdapter
 
     protected static function _getContext()
     {
-        if (Legacy::getRunner() instanceof core\IContextAware) {
-            return Legacy::getRunner()->getContext();
-        } else {
-            return new core\SharedContext();
-        }
+        return Legacy::getContext();
     }
 
     public function authenticate(user\authentication\IRequest $request, user\authentication\Result $result)

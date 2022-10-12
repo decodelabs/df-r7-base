@@ -406,11 +406,7 @@ trait THelperProvider
         $target = $target ?? $this;
 
         if (!$context instanceof IContext) {
-            if (Legacy::getRunner() instanceof core\IContextAware) {
-                $context = Legacy::getRunner()->getContext();
-            } else {
-                $context = new SharedContext();
-            }
+            $context = Legacy::getContext();
         }
 
         return new $class($context, $target);

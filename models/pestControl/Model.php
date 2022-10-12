@@ -124,10 +124,10 @@ class Model extends axis\Model
             $request = '/';
 
             try {
-                if (Legacy::getRunner() instanceof core\app\runner\Http) {
-                    $request = Legacy::getRunner()->getContext()->http->getRequest()->getUrl();
-                } elseif (Legacy::getRunner() instanceof core\IContextAware) {
-                    $request = Legacy::getRunner()->getContext()->request;
+                if (Genesis::$kernel->getMode() === 'Http') {
+                    $request = Legacy::getHttpRunner()->getHttpRequest()->getUrl();
+                } else {
+                    $request = Legacy::getContext()->request;
                 }
             } catch (\Throwable $e) {
             }
@@ -172,8 +172,8 @@ class Model extends axis\Model
 
     public function getLogReferrer()
     {
-        if (Legacy::getRunner() instanceof core\app\runner\Http) {
-            return Legacy::getRunner()->getContext()->http->getReferrer();
+        if (Genesis::$kernel->getMode() === 'Http') {
+            return Legacy::getContext()->http->getReferrer();
         }
 
         return null;

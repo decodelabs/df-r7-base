@@ -15,6 +15,7 @@ use df\flow;
 
 use df\arch\Scaffold;
 
+use DecodeLabs\R7\Legacy;
 use DecodeLabs\Tagged\Markup\Proxy as MarkupProxy;
 
 // Exceptions
@@ -106,7 +107,7 @@ trait TDirectoryHelper
                 $context = $target;
                 $target = null;
             } else {
-                $context = Context::getCurrent();
+                $context = Legacy::getContext();
             }
         }
 

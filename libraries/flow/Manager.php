@@ -808,7 +808,7 @@ class Manager implements IManager, core\IShutdownAware
 
         if ($this->_flashQueue === null) {
             if ($this->_flashDisabled === null) {
-                $context = df\arch\Context::getCurrent();
+                $context = Legacy::getContext();
 
                 if (
                     Genesis::$kernel->getMode() == 'Http' &&

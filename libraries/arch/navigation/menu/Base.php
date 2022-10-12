@@ -13,6 +13,7 @@ use df\flex;
 
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Legacy;
 
 class Base implements IMenu, \Serializable
 {
@@ -178,7 +179,7 @@ class Base implements IMenu, \Serializable
         if (isset($data['context'])) {
             $this->context = $data['context'];
         } else {
-            $this->context = arch\Context::getCurrent();
+            $this->context = Legacy::getContext();
         }
     }
 

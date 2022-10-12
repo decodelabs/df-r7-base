@@ -15,6 +15,7 @@ use df\flex;
 
 use DecodeLabs\Dictum;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\R7\Legacy;
 
 class Request extends core\uri\Url implements IRequest, Dumpable
 {
@@ -81,7 +82,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
             $first = $this->_path->get(0);
 
             if ($first == '~') {
-                if ($context = arch\Context::getActive()) {
+                if ($context = Legacy::getActiveContext()) {
                     $this->setArea($context->request->getArea());
                 } else {
                     $this->setArea(static::DEFAULT_AREA);

@@ -3,12 +3,15 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\scaffold\Navigation;
 
 use df\arch\Context;
 use df\arch\Scaffold;
 use df\arch\scaffold\Loader as ScaffoldLoader;
 use df\arch\navigation\menu\Base as MenuBase;
+
+use DecodeLabs\R7\Legacy;
 
 class Menu extends MenuBase
 {
@@ -46,7 +49,7 @@ class Menu extends MenuBase
 
         if (!$this->scaffold) {
             if (!$this->context) {
-                $this->context = Context::getCurrent();
+                $this->context = Legacy::getContext();
             }
 
             $this->scaffold = ScaffoldLoader::fromContext($this->context);

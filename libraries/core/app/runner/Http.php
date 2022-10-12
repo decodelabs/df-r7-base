@@ -501,7 +501,9 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
         $this->_context = null;
-        $this->_context = arch\Context::factory(clone $request);
+        /** @var arch\Context $c */
+        $c = $this->_context = arch\Context::factory(clone $request);
+        Legacy::setActiveContext($c);
 
         try {
             $node = arch\node\Base::factory($this->_context);

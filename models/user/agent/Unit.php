@@ -11,6 +11,7 @@ use df\core;
 use df\apex;
 use df\axis;
 
+use DecodeLabs\Disciple;
 use DecodeLabs\R7\Legacy;
 
 class Unit extends axis\unit\Table
@@ -65,28 +66,7 @@ class Unit extends axis\unit\Table
 
     public function getCurrentString()
     {
-        $userAgent = null;
-
-        try {
-            $runner = Legacy::getRunner();
-
-            if ($runner instanceof core\app\runner\Http) {
-                $userAgent = $runner->getContext()->http->getUserAgent();
-            } elseif ($runner instanceof core\app\runner\Task) {
-                if (isset($_SERVER['TERM'])) {
-                    $userAgent = $_SERVER['TERM'];
-                } elseif (isset($_SERVER['TERM_PROGRAM'])) {
-                    $userAgent = $_SERVER['TERM_PROGRAM'];
-                } elseif (isset($_SERVER['TERMINAL'])) {
-                    $userAgent = $_SERVER['TERMINAL'];
-                } else {
-                    $userAgent = 'Terminal';
-                }
-            }
-        } catch (\Throwable $e) {
-        }
-
-        return $userAgent;
+        return Disciple::getClient()->getAgent();
     }
 
     protected $_botMatch = [

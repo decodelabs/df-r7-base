@@ -9,6 +9,7 @@ namespace df\core\i18n;
 use df;
 use df\core;
 
+use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy;
 
 class Manager implements IManager
@@ -55,9 +56,9 @@ class Manager implements IManager
 
         if (
             $config->shouldDetectClientLocale() &&
-            Legacy::getRunner() instanceof core\app\runner\Http
+            Genesis::$kernel->getMode() === 'Http'
         ) {
-            $request = Legacy::getRunner()->getHttpRequest();
+            $request = Legacy::getHttpRunner()->getHttpRequest();
 
             if (isset($request->headers['accept-language'])) {
                 $default = \Locale::acceptFromHttp($request->headers['accept-language']);

@@ -71,6 +71,9 @@ use Throwable;
 
 class Helper
 {
+    protected ?Context $context = null;
+
+
     /**
      * Get app from container
      */
@@ -99,26 +102,20 @@ class Helper
         return $loader;
     }
 
+
     /**
-     * Get runner form container
+     * Get HTTP runner
      */
-    public function getRunner(): RunnerBase
+    public function getHttpRunner(): HttpRunner
     {
         static $runner;
 
         if (!isset($runner)) {
             $runner = Genesis::$container['app.runner'];
-        }
 
-        return $runner;
-    }
-
-    public function getHttpRunner(): HttpRunner
-    {
-        $runner = $this->getRunner();
-
-        if (!$runner instanceof HttpRunner) {
-            throw Exceptional::UnexpectedValue('Runner is not HTTP');
+            if (!$runner instanceof HttpRunner) {
+                throw Exceptional::UnexpectedValue('Runner is not HTTP');
+            }
         }
 
         return $runner;
@@ -142,15 +139,29 @@ class Helper
     }
 
 
+
+    /**
+     * Set active context
+     */
+    public function setActiveContext(Context $context): void
+    {
+        $this->context = $context;
+    }
+
+    /**
+     * Get active context
+     */
+    public function getActiveContext(): ?Context
+    {
+        return $this->context;
+    }
+
     /**
      * Get current arch context
      */
     public function getContext(): Context
     {
-        /**
-         * @var Context
-         */
-        return Context::getCurrent();
+        return $this->context ?? new Context(new Request('/'));
     }
 
 

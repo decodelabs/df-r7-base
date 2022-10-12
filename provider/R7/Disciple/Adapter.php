@@ -4,9 +4,8 @@
  * @license http://opensource.org/licenses/MIT
  */
 
-namespace df\user\Disciple;
+namespace DecodeLabs\R7\Disciple;
 
-use df\arch\Context;
 use df\user\Manager;
 
 use DecodeLabs\Disciple\Adapter\GateKeeper as GateKeeperAdapter;
@@ -17,6 +16,7 @@ use DecodeLabs\Disciple\GateKeeper as GateKeeperInterface;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
 
 use Throwable;
 
@@ -55,7 +55,7 @@ class Adapter implements
         switch ($mode = Genesis::$kernel->getMode()) {
             case 'Http':
                 try {
-                    $context = Context::getCurrent();
+                    $context = Legacy::getContext();
 
                     return new GenericClient(
                         'http',
@@ -72,7 +72,7 @@ class Adapter implements
                 return new GenericClient(
                     'cli',
                     '127.0.0.1',
-                    $_SERVER['TERM'] ?? $_SERVER['SHELL'] ?? null
+                    $_SERVER['TERM'] ?? $_SERVER['TERM_PROGRAM'] ?? $_SERVER['TERMINAL'] ?? $_SERVER['SHELL'] ?? null
                 );
 
             default:

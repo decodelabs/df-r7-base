@@ -85,7 +85,7 @@ class Manager implements arch\node\ITaskManager
 
     public function launchQuietly($request): void
     {
-        if (Legacy::getRunner() instanceof core\app\runner\Task) {
+        if (Genesis::$kernel->getMode() === 'Task') {
             $session = Cli::getSession();
             $oldBroker = $session->getBroker();
             $session->setBroker(Deliverance::newBroker());
@@ -152,17 +152,6 @@ class Manager implements arch\node\ITaskManager
 
     protected function _getActiveContext()
     {
-        $runner = Legacy::getRunner();
-        $context = null;
-
-        if ($runner instanceof core\IContextAware) {
-            $context = $runner->getContext();
-        }
-
-        if (!$context) {
-            $context = arch\Context::factory();
-        }
-
-        return $context;
+        return Legacy::getContext();
     }
 }

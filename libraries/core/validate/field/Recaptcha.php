@@ -12,6 +12,7 @@ use df\arch;
 use df\spur;
 
 use DecodeLabs\Disciple;
+use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy;
 
 class Recaptcha extends Base implements core\validate\IRecaptchaField
@@ -44,12 +45,12 @@ class Recaptcha extends Base implements core\validate\IRecaptchaField
     // Validate
     public function validate()
     {
-        $context = arch\Context::getCurrent();
+        $context = Legacy::getContext();
         $value = $this->data->getValue();
 
         if (
             $value === null &&
-            Legacy::getRunner() instanceof core\app\runner\Http
+            Genesis::$kernel->getMode() === 'Http'
         ) {
             $value = $context->http->post[self::KEY];
         }

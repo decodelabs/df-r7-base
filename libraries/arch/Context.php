@@ -28,33 +28,12 @@ class Context implements IContext, \Serializable, Dumpable
     public $request;
     public $location;
 
-    public static function getCurrent(): IContext
-    {
-        return self::getActive() ?? self::factory();
-    }
-
-    public static function getActive(): ?IContext
-    {
-        $runner = Legacy::getRunner();
-
-        if ($runner instanceof core\IContextAware) {
-            try {
-                return $runner->getContext();
-            } catch (core\app\runner\NoContextException $e) {
-            }
-        }
-
-        return null;
-    }
-
     public static function factory($location=null, $request=null): IContext
     {
-        $runner = Legacy::getRunner();
-
         if (!empty($location)) {
             $location = arch\Request::factory($location);
-        } elseif ($runner instanceof core\IContextAware && $runner->hasContext()) {
-            $location = $runner->getContext()->location;
+        } elseif ($currentLocation = Legacy::getActiveContext()?->location) {
+            $location = $currentLocation;
         } else {
             $location = new arch\Request('/');
         }
@@ -64,18 +43,14 @@ class Context implements IContext, \Serializable, Dumpable
 
     public function __construct(arch\IRequest $location, $request=null)
     {
-        $runner = Legacy::getRunner();
         $this->location = $location;
 
         if ($request === true) {
             $this->request = clone $location;
         } elseif ($request !== null) {
             $this->request = arch\Request::factory($request);
-        } elseif (
-            $runner instanceof core\IContextAware &&
-            $runner->hasContext()
-        ) {
-            $this->request = $runner->getContext()->location;
+        } elseif ($currentLocation = Legacy::getActiveContext()?->location) {
+            $this->request = $currentLocation;
         } else {
             $this->request = $location;
         }
@@ -117,11 +92,9 @@ class Context implements IContext, \Serializable, Dumpable
     public function unserialize(string $data): void
     {
         $this->location = Request::factory($data);
-        $runner = Legacy::getRunner();
 
-        if ($runner instanceof core\IContextAware
-        && $runner->hasContext()) {
-            $this->request = $runner->getContext()->location;
+        if ($currentLocation = Legacy::getActiveContext()?->location) {
+            $this->request = $currentLocation;
         } else {
             $this->request = $this->location;
         }
@@ -132,15 +105,7 @@ class Context implements IContext, \Serializable, Dumpable
     // Application
     public function getDispatchContext(): core\IContext
     {
-        $runner = Legacy::getRunner();
-
-        if (!$runner instanceof core\IContextAware) {
-            throw Exceptional::NoContext(
-                'Current runner is not context aware'
-            );
-        }
-
-        return $runner->getContext();
+        return Legacy::getContext();
     }
 
     public function isDispatchContext(): bool
