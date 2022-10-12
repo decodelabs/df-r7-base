@@ -19,7 +19,7 @@ class TaskPrune extends arch\node\Task
     public const SCHEDULE = '0 23 */2 * *';
     public const SCHEDULE_AUTOMATIC = true;
 
-    public function execute()
+    public function execute(): void
     {
         $config = core\cache\Config::getInstance();
 

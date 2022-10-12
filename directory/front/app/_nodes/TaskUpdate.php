@@ -17,7 +17,7 @@ use DecodeLabs\Terminus as Cli;
 
 class TaskUpdate extends arch\node\Task
 {
-    public function execute()
+    public function execute(): void
     {
         // Ensure source
         $this->ensureDfSource();

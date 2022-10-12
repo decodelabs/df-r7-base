@@ -19,7 +19,7 @@ use DecodeLabs\Terminus as Cli;
 
 class TaskInstall extends arch\node\Task
 {
-    public function execute()
+    public function execute(): void
     {
         $file = Atlas::file(Genesis::$hub->getApplicationPath().'/composer.json');
 

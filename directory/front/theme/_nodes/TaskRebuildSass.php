@@ -23,7 +23,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
 
     protected $_dir;
 
-    public function execute()
+    public function execute(): void
     {
         $this->ensureDfSource();
 

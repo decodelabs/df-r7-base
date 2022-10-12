@@ -16,7 +16,7 @@ use DecodeLabs\Terminus as Cli;
 
 class TaskInit extends arch\node\Task
 {
-    public function execute()
+    public function execute(): void
     {
         $this->ensureDfSource();
 

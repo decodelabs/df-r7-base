@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\tasks\_nodes;
 
 use df;
@@ -16,7 +17,7 @@ class TaskQueueScheduled extends arch\node\Task
 {
     protected $_count = 0;
 
-    public function execute()
+    public function execute(): void
     {
         Cli::{'yellow'}('Queuing scheduled tasks');
 

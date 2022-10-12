@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\sessions\_nodes;
 
 use df;
@@ -14,13 +15,13 @@ use DecodeLabs\Terminus as Cli;
 
 class TaskCollectGarbage extends arch\node\Task
 {
-    const SCHEDULE = '*/15 * * * *';
-    const SCHEDULE_AUTOMATIC = true;
+    public const SCHEDULE = '*/15 * * * *';
+    public const SCHEDULE_AUTOMATIC = true;
 
-    const LIFETIME = 86400; // 24 hours
-    const CLOSE_THRESHOLD = '9 minutes';
+    public const LIFETIME = 86400; // 24 hours
+    public const CLOSE_THRESHOLD = '9 minutes';
 
-    public function execute()
+    public function execute(): void
     {
         $startDate = new core\time\Date('now');
 

@@ -20,7 +20,7 @@ class TaskAdd extends arch\node\Task
     protected $_client;
     protected $_auth;
 
-    public function execute()
+    public function execute(): void
     {
         if (!$this->data->user->client->countAll()) {
             $this->data->user->installDefaultManifest();

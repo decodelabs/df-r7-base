@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\app\runner;
 
 use df;
@@ -31,6 +32,11 @@ abstract class Base implements core\IRunner
 
 
     // Dispatch
+    public function setDispatchException(\Throwable $e)
+    {
+        $this->_dispatchException = $e;
+    }
+
     public function getDispatchException(): ?\Throwable
     {
         return $this->_dispatchException;

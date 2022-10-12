@@ -18,7 +18,7 @@ use DecodeLabs\R7\Legacy;
 
 class TaskInit extends arch\node\Task
 {
-    public function execute()
+    public function execute(): void
     {
         $this->ensureDfSource();
 

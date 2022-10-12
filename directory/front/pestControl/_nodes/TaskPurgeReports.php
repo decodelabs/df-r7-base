@@ -17,7 +17,7 @@ class TaskPurgeReports extends arch\node\Task
 {
     public const MAX_LOOP = 250;
 
-    public function execute()
+    public function execute(): void
     {
         $all = isset($this->request['all']);
         $threshold = '-'.$this->data->pestControl->getPurgeThreshold();

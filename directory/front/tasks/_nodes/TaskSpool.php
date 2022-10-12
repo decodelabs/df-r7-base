@@ -45,7 +45,7 @@ class TaskSpool extends arch\node\Task
             ->save();
     }
 
-    public function execute()
+    public function execute(): void
     {
         $this->_timer = new core\time\Timer();
 

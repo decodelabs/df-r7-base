@@ -12,7 +12,7 @@ use DecodeLabs\Genesis;
 
 class TaskClearBuild extends arch\node\Task
 {
-    public function execute()
+    public function execute(): void
     {
         $this->ensureDfSource();
 

@@ -16,7 +16,7 @@ use DecodeLabs\Veneer\Stub\Generator;
 
 class TaskVeneerStub extends arch\node\Task
 {
-    public function execute()
+    public function execute(): void
     {
         $scanDir = Atlas::dir(getcwd());
         $stubDir = Atlas::dir('stubs/');

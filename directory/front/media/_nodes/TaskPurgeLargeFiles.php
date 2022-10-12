@@ -21,7 +21,7 @@ class TaskPurgeLargeFiles extends arch\node\Task
 {
     public const THRESHOLD = '2mb';
 
-    public function execute()
+    public function execute(): void
     {
         if (!Genesis::$environment->isDevelopment()) {
             Cli::error('This task cannot be run on production systems');

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\pestControl\_nodes;
 
 use df;
@@ -12,10 +13,10 @@ use df\arch;
 
 class TaskPurgeLogs extends arch\node\Task
 {
-    const SCHEDULE = '30 4 * * *';
-    const SCHEDULE_AUTOMATIC = true;
+    public const SCHEDULE = '30 4 * * *';
+    public const SCHEDULE_AUTOMATIC = true;
 
-    public function execute()
+    public function execute(): void
     {
         $this->runChild('pest-control/purge-error-logs');
         $this->runChild('pest-control/purge-miss-logs');

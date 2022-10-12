@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\daemons\_nodes;
 
 use df;
@@ -17,7 +18,7 @@ class TaskEnsureActivity extends arch\node\Task
 {
     use TDaemonTask;
 
-    public function execute()
+    public function execute(): void
     {
         if (!$hasRestarted = $this->_hasRestarted()) {
             Cli::{'yellow'}('Looking up daemon list: ');

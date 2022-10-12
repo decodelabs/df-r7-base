@@ -19,7 +19,7 @@ use DecodeLabs\Terminus as Cli;
 
 class TaskSetMaster extends arch\node\Task
 {
-    public function execute()
+    public function execute(): void
     {
         $config = axis\Config::getInstance();
 

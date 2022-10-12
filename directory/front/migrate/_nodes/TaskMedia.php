@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\migrate\_nodes;
 
 use df;
@@ -43,7 +44,7 @@ class TaskMedia extends arch\node\Task
         }
     }
 
-    public function execute()
+    public function execute(): void
     {
         if (!$this->data->media->isLocalDataMediaHandler()) {
             Cli::error('You can currently only migrate to locally stored media libraries');

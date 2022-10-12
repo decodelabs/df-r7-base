@@ -17,7 +17,7 @@ use DecodeLabs\R7\Legacy;
 
 class TaskScan extends arch\node\Task
 {
-    public function execute()
+    public function execute(): void
     {
         Cli::inlineInfo('Compiling task list: ');
 

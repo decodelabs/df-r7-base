@@ -19,7 +19,7 @@ class TaskPurgeLogins extends arch\node\Task
     public const SCHEDULE = '25 */2 * * *';
     public const SCHEDULE_AUTOMATIC = true;
 
-    public function execute()
+    public function execute(): void
     {
         $total = 0;
         $unit = $this->data->user->login;

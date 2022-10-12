@@ -30,7 +30,7 @@ class TaskBackup extends arch\node\Task
         'connections' => []
     ];
 
-    public function execute()
+    public function execute(): void
     {
         axis\schema\Cache::getInstance()->clear();
         Cli::{'yellow'}('Probing units: ');

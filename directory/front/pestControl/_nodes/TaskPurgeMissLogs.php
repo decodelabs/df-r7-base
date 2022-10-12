@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\pestControl\_nodes;
 
 use df;
@@ -14,9 +15,9 @@ use DecodeLabs\Terminus as Cli;
 
 class TaskPurgeMissLogs extends arch\node\Task
 {
-    const MAX_LOOP = 250;
+    public const MAX_LOOP = 250;
 
-    public function execute()
+    public function execute(): void
     {
         $all = isset($this->request['all']);
         $threshold = '-'.$this->data->pestControl->getPurgeThreshold();

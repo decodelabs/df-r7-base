@@ -17,7 +17,7 @@ use DecodeLabs\Terminus as Cli;
 
 class TaskClearNodeCache extends arch\node\Task implements arch\node\IBuildTaskNode
 {
-    public function execute()
+    public function execute(): void
     {
         Cli::{'yellow'}('Clearing node cache: ');
         $dir = Atlas::dir(Genesis::$hub->getLocalDataPath().'/node');

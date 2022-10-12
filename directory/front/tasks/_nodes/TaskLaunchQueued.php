@@ -34,7 +34,7 @@ class TaskLaunchQueued extends arch\node\Task
             ->addErrorReceiver($this->_errorReceiver);
     }
 
-    public function execute()
+    public function execute(): void
     {
         $this->_entry = $this->data->fetchForAction(
             'axis://task/Queue',

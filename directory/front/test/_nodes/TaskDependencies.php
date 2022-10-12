@@ -17,7 +17,7 @@ use DecodeLabs\R7\Legacy;
 
 class TaskDependencies extends arch\node\Task
 {
-    public function execute()
+    public function execute(): void
     {
         $this->ensureDfSource();
 

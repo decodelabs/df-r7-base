@@ -18,7 +18,7 @@ class TaskRestartAll extends arch\node\Task
 {
     use TDaemonTask;
 
-    public function execute()
+    public function execute(): void
     {
         $daemons = halo\daemon\Base::loadAll();
 

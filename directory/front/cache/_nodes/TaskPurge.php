@@ -16,7 +16,7 @@ use DecodeLabs\R7\Legacy;
 
 class TaskPurge extends arch\node\Task
 {
-    public function execute()
+    public function execute(): void
     {
         if (function_exists('opcache_reset')) {
             Cli::{'.green'}('Opcache');

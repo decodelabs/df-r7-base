@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\node;
 
 use df;
@@ -48,8 +49,8 @@ interface ITaskNode extends INode
     public static function shouldScheduleAutomatically(): bool;
 
     public function extractCliArguments(core\cli\ICommand $command);
+    public function execute(): void;
     public function runChild($request, bool $announce=true);
-
     public function ensureDfSource();
 }
 

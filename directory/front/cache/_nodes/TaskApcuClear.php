@@ -24,7 +24,7 @@ class TaskApcuClear extends arch\node\Task
     public const DEFAULT_ACCESS = arch\IAccess::ALL;
     public const OPTIMIZE = true;
 
-    public function execute()
+    public function execute(): void
     {
         $mode = $this->request->query->get('mode');
         unset($this->request->query->mode);

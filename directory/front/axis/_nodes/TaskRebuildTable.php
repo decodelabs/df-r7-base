@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\front\axis\_nodes;
 
 use df;
@@ -34,7 +35,7 @@ class TaskRebuildTable extends arch\node\Task
         }
     }
 
-    public function execute()
+    public function execute(): void
     {
         $unitId = $this->request['unit'];
 
