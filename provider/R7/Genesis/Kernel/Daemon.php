@@ -11,6 +11,7 @@ use df\core\app\runner\Daemon as DaemonRunner;
 
 use DecodeLabs\Genesis\Kernel;
 use DecodeLabs\R7\Genesis\KernelTrait;
+use DecodeLabs\Terminus;
 
 class Daemon implements Kernel
 {
@@ -28,6 +29,11 @@ class Daemon implements Kernel
     public function initialize(): void
     {
         $this->runner = $this->loadRunner();
+
+        Terminus::getCommandDefinition()
+            ->addArgument('initiator', 'Daemon initiator')
+            ->addArgument('daemon', 'Daemon name')
+            ->addArgument('?command', 'Command to call');
     }
 
     /**

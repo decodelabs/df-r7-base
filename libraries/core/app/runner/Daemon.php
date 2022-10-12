@@ -40,16 +40,11 @@ class Daemon extends Base
             return;
         }
 
-        $args = core\cli\Command::fromArgv();
 
-        if (!$arg = $args[2]) {
-            throw Exceptional::InvalidArgument(
-                'No daemon path has been specified'
-            );
-        }
+        $args = Cli::prepareArguments();
 
         try {
-            $daemon = halo\daemon\Base::factory($arg->toString());
+            $daemon = halo\daemon\Base::factory($args['daemon']);
         } catch (\Throwable $e) {
             Cli::error($e->getMessage());
             return;
@@ -87,7 +82,7 @@ class Daemon extends Base
         $remote = halo\daemon\Remote::factory($daemon);
         $process = $remote->getProcess();
         $name = $daemon->getName();
-        $command = (string)$args[3];
+        $command = $args['command'] ?? 'restart';
 
         switch ($command) {
             case '__spawn':

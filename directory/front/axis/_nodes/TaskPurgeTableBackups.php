@@ -18,14 +18,12 @@ use DecodeLabs\Exceptional;
 
 class TaskPurgeTableBackups extends arch\node\Task
 {
-    public function extractCliArguments(core\cli\ICommand $command)
+    public function prepareArguments(): array
     {
-        foreach ($command->getArguments() as $arg) {
-            if (!$arg->isOption()) {
-                $this->request->query->unit = (string)$arg;
-                break;
-            }
-        }
+        Cli::getCommandDefinition()
+            ->addArgument('unit', 'Unit to purge');
+
+        return Cli::prepareArguments();
     }
 
     public function execute(): void

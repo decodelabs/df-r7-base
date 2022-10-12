@@ -19,20 +19,13 @@ use DecodeLabs\Exceptional;
 
 class TaskRebuildTable extends arch\node\Task
 {
-    public function extractCliArguments(core\cli\ICommand $command)
+    public function prepareArguments(): array
     {
-        $hasUnit = false;
+        Cli::getCommandDefinition()
+            ->addArgument('unit', 'Unit to purge')
+            ->addArgument('-delete|d', 'Delete backup');
 
-        foreach ($command->getArguments() as $arg) {
-            if (!$arg->isOption()) {
-                if (!$hasUnit) {
-                    $this->request->query->unit = (string)$arg;
-                    $hasUnit = true;
-                }
-            } elseif ($arg->getOption() === '-d') {
-                $this->request->query->delete = true;
-            }
-        }
+        return Cli::prepareArguments();
     }
 
     public function execute(): void

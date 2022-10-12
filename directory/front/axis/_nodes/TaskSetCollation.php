@@ -19,27 +19,6 @@ class TaskSetCollation extends arch\node\Task
     public const PREFIXES = ['legacy', 'r5', 'r7'];
     public const BLACKLIST = ['legacy_duk_chrdata'];
 
-    public function extractCliArguments(core\cli\ICommand $command)
-    {
-        $args = $command->getArguments();
-        $collation = $charset = null;
-
-        if (isset($args[1])) {
-            $collation = (string)$args[1];
-            $charset = (string)$args[0];
-        } elseif (isset($args[0])) {
-            $collation = (string)$args[0];
-        }
-
-        if ($collation) {
-            $this->request->query->collation = $collation;
-        }
-
-        if ($charset) {
-            $this->request->query->charset = $charset;
-        }
-    }
-
     public function execute(): void
     {
         $unit = $this->data->user->client;

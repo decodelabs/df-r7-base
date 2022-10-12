@@ -23,25 +23,13 @@ class TaskMedia extends arch\node\Task
 {
     protected $_migrator;
 
-    public function extractCliArguments(core\cli\ICommand $command)
+    public function prepareArguments(): array
     {
-        $i = 0;
+        Cli::getCommandDefinition()
+            ->addArgument('?url', 'URL of remote site')
+            ->addArgument('?bucket', 'Bucket to transfer');
 
-        foreach ($command->getArguments() as $arg) {
-            if ($arg->isOption()) {
-                continue;
-            }
-
-            switch (++$i) {
-                case 1:
-                    $this->request->query->url = (string)$arg;
-                    break;
-
-                case 2:
-                    $this->request->query->bucket = (string)$arg;
-                    break;
-            }
-        }
+        return Cli::prepareArguments();
     }
 
     public function execute(): void

@@ -6,9 +6,7 @@
 
 namespace df\apex\directory\front\axis\_nodes;
 
-use df;
 use df\core;
-use df\apex;
 use df\arch;
 use df\axis;
 
@@ -19,23 +17,13 @@ class TaskFortify extends arch\node\Task
     public const SCHEDULE = '0 2 * * *';
     public const SCHEDULE_AUTOMATIC = true;
 
-    public function extractCliArguments(core\cli\ICommand $command)
+    public function prepareArguments(): array
     {
-        $args = [];
+        Cli::getCommandDefinition()
+            ->addArgument('?unit', 'Unit name')
+            ->addArgument('?fortify', 'Fortify task');
 
-        foreach ($command->getArguments() as $arg) {
-            if (!$arg->isOption()) {
-                $args[] = (string)$arg;
-            }
-        }
-
-        if (isset($args[0])) {
-            $this->request->query->unit = $args[0];
-
-            if (isset($args[1])) {
-                $this->request->query->fortify = $args[1];
-            }
-        }
+        return Cli::prepareArguments();
     }
 
     public function execute(): void

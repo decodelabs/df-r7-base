@@ -14,7 +14,6 @@ use df\arch\node\ITaskNode;
 use df\arch\node\Base as NodeBase;
 use df\arch\Request;
 use df\core\app\runner\Task as TaskRunner;
-use df\core\cli\Command;
 use df\core\IDispatchAware;
 
 use DecodeLabs\Exceptional;
@@ -68,10 +67,9 @@ class Task implements Kernel
         set_time_limit(0);
 
         $request = $this->prepareRequest();
-        $command = $this->prepareCommand();
 
         try {
-            $this->dispatchNode($request, $command);
+            $this->dispatchNode($request);
         } catch (\Throwable $e) {
             while (ob_get_level()) {
                 ob_end_clean();
@@ -89,24 +87,42 @@ class Task implements Kernel
 
 
 
-    protected function dispatchNode(
-        Request $request,
-        ?Command $command = null
-    ): void {
+    protected function prepareRequest(): Request
+    {
+        $args = Terminus::prepareArguments();
+
+        /** @var Request */
+        return Request::factory($args['task']);
+    }
+
+
+    protected function dispatchNode(Request $request): void
+    {
         /** @var Context $context */
         $context = Context::factory(clone $request);
-        $context->request = $request;
         $this->runner->setContext($context);
 
         $node = NodeBase::factory($context);
 
-        if (
-            $command &&
-            ($node instanceof ITaskNode)
-        ) {
-            $node->extractCliArguments($command);
+
+        // Prepare request arguments
+        if ($node instanceof ITaskNode) {
+            $args = $node->prepareArguments();
+
+            foreach ($args as $key => $value) {
+                if (
+                    $key !== 'df-source' &&
+                    $key !== 'task' &&
+                    $value !== null &&
+                    $value !== false
+                ) {
+                    $context->request->query->{$key} = $value;
+                }
+            }
         }
 
+
+        // On dispatch
         foreach (Legacy::getRegistryObjects() as $object) {
             if ($object instanceof IDispatchAware) {
                 $object->onAppDispatch($node);
@@ -114,54 +130,5 @@ class Task implements Kernel
         }
 
         $node->dispatch();
-    }
-
-
-
-    protected function prepareRequest(): Request
-    {
-        $command = Command::fromArgv();
-        $args = array_slice($command->getArguments(), 1);
-        $request = array_shift($args);
-
-        if (strtolower((string)$request) == 'task') {
-            $request = array_shift($args);
-        }
-
-        if (!$request) {
-            throw Exceptional::InvalidArgument(
-                'No task path has been specified'
-            );
-        }
-
-        /** @var Request */
-        return Request::factory((string)$request);
-    }
-
-    protected function prepareCommand(): Command
-    {
-        $command = Command::fromArgv();
-        $args = array_slice($command->getArguments(), 1);
-        $request = array_shift($args);
-
-        if (strtolower((string)$request) == 'task') {
-            $request = array_shift($args);
-        }
-
-        if (!$request) {
-            throw Exceptional::InvalidArgument(
-                'No task path has been specified'
-            );
-        }
-
-        $command = new Command(Genesis::$environment->getName().'.php');
-
-        if ($args) {
-            foreach ($args as $arg) {
-                $command->addArgument($arg);
-            }
-        }
-
-        return $command;
     }
 }

@@ -58,11 +58,10 @@ abstract class Task extends Base implements ITaskNode
     }
 
 
-    public function extractCliArguments(core\cli\ICommand $command)
+    public function prepareArguments(): array
     {
-        // Do nothing
+        return [];
     }
-
 
     public function runChild($request, bool $announce=true)
     {

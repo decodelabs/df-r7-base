@@ -18,23 +18,13 @@ class TaskRemote extends arch\node\Task
 {
     use TDaemonTask;
 
-    public function extractCliArguments(core\cli\ICommand $command)
+    public function prepareArguments(): array
     {
-        $args = [];
+        Cli::getCommandDefinition()
+            ->addArgument('daemon', 'Daemon name')
+            ->addArgument('command', 'Command to call');
 
-        foreach ($command->getArguments() as $arg) {
-            if (!$arg->isOption()) {
-                $args[] = (string)$arg;
-            }
-        }
-
-        if (isset($args[0])) {
-            $this->request->query->daemon = $args[0];
-        }
-
-        if (isset($args[1])) {
-            $this->request->query->command = $args[1];
-        }
+        return Cli::prepareArguments();
     }
 
     public function execute(): void
