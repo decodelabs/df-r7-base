@@ -33,6 +33,8 @@ use DecodeLabs\Metamorph;
 use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Veneer;
 
+use Throwable;
+
 class Hub implements HubInterface
 {
     protected string $envId;
@@ -302,7 +304,8 @@ class Hub implements HubInterface
 
         // Archetype registration
         Archetype::register(new ArchetypeExtension(
-            Kernel::class, R7Kernel::class
+            Kernel::class,
+            R7Kernel::class /** @phpstan-ignore-line */
         ));
 
 

@@ -15,7 +15,7 @@ use DecodeLabs\R7\Genesis\KernelTrait;
 class Http implements Kernel
 {
     /**
-     * @uses KernelTrait<HttpRunner>
+     * @use KernelTrait<HttpRunner>
      */
     use KernelTrait;
 

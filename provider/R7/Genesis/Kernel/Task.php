@@ -16,7 +16,7 @@ use DecodeLabs\Terminus;
 class Task implements Kernel
 {
     /**
-     * @uses KernelTrait<TaskRunner>
+     * @use KernelTrait<TaskRunner>
      */
     use KernelTrait;
 

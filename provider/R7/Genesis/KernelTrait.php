@@ -30,6 +30,7 @@ trait KernelTrait
     protected function loadRunner(): RunnerBase
     {
         // Load runner
+        /** @phpstan-var T */
         $runner = RunnerBase::factory($this->getMode());
 
         // Add runner to container

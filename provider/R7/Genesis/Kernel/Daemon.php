@@ -15,7 +15,7 @@ use DecodeLabs\R7\Genesis\KernelTrait;
 class Daemon implements Kernel
 {
     /**
-     * @uses KernelTrait<DaemonRunner>
+     * @use KernelTrait<DaemonRunner>
      */
     use KernelTrait;
 
