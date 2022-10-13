@@ -26,7 +26,7 @@ abstract class RestApi extends Base implements IRestApiNode
 
     public function dispatch()
     {
-        $this->_httpRequest = Legacy::getHttpRunner()->getHttpRequest();
+        $this->_httpRequest = Legacy::getHttpRequest();
         return parent::dispatch();
     }
 

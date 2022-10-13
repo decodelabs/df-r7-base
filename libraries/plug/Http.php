@@ -24,7 +24,7 @@ class Http implements arch\IDirectoryHelper
 
     protected function _init()
     {
-        $this->_httpRequest = Legacy::getHttpRunner()->getHttpRequest();
+        $this->_httpRequest = Legacy::getHttpRequest();
     }
 
     public function __get($member)
@@ -55,13 +55,8 @@ class Http implements arch\IDirectoryHelper
 
     public function directoryRequestToUrl($request)
     {
-        return core\app\runner\http\Router::getInstance()
+        return Legacy::getHttpRouter()
             ->requestToUrl(arch\Request::factory($request));
-    }
-
-    public function getRouter()
-    {
-        return Legacy::getHttpRunner()->getRouter();
     }
 
     public function getRequest()
@@ -292,7 +287,7 @@ class Http implements arch\IDirectoryHelper
     public function localReferrerToRequest($referrer)
     {
         try {
-            return $this->getRouter()->urlToRequest(link\http\Url::factory($referrer));
+            return Legacy::getHttpRouter()->urlToRequest(link\http\Url::factory($referrer));
         } catch (\Throwable $e) {
             return null;
         }
@@ -320,7 +315,7 @@ class Http implements arch\IDirectoryHelper
     // Cookies
     public function setCookie($name, $value=null, $expiry=null, $httpOnly=null, $secure=null)
     {
-        $augmentor = Legacy::getHttpRunner()->getResponseAugmentor();
+        $augmentor = Legacy::getHttpResponseAugmentor();
 
         if ($name instanceof link\http\ICookie) {
             $cookie = $name;
@@ -344,7 +339,7 @@ class Http implements arch\IDirectoryHelper
 
     public function removeCookie($name)
     {
-        $augmentor = Legacy::getHttpRunner()->getResponseAugmentor();
+        $augmentor = Legacy::getHttpResponseAugmentor();
 
         if ($name instanceof link\http\ICookie) {
             $cookie = $name;
@@ -363,12 +358,7 @@ class Http implements arch\IDirectoryHelper
 
     public function newCookie($name, $value, $expiry=null, $httpOnly=null, $secure=null)
     {
-        return Legacy::getHttpRunner()->getResponseAugmentor()->newCookie($name, $value, $expiry, $httpOnly, $secure);
-    }
-
-    public function getResponseAugmentor()
-    {
-        return Legacy::getHttpRunner()->getResponseAugmentor();
+        return Legacy::getHttpResponseAugmentor()->newCookie($name, $value, $expiry, $httpOnly, $secure);
     }
 
 

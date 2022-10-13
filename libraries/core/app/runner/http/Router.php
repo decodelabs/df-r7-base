@@ -33,17 +33,6 @@ class Router implements core\IRegistryObject
 
     protected $_rootNodeRouter = false;
 
-    public static function getInstance(): self
-    {
-        if (!$output = Legacy::getRegistryObject(self::REGISTRY_KEY)) {
-            $output = new self();
-            Legacy::setRegistryObject($output);
-        }
-
-        /** @var self $output */
-        return $output;
-    }
-
     public function __construct(link\http\IUrl $rootUrl=null)
     {
         $config = Config::getInstance();

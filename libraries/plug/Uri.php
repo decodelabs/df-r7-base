@@ -17,6 +17,7 @@ use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
 
 use GuzzleHttp\Client as HttpClient;
 use Psr\Http\Message\ResponseInterface;
@@ -30,7 +31,7 @@ class Uri implements arch\IDirectoryHelper
 
     public function requestToUrl(arch\IRequest $request)
     {
-        return core\app\runner\http\Router::getInstance()
+        return Legacy::getHttpRouter()
             ->requestToUrl($request);
     }
 
@@ -196,7 +197,7 @@ class Uri implements arch\IDirectoryHelper
                 $request = clone $this->context->request;
             } elseif (is_string($request) && preg_match('#^\.\.?/#', $request)) {
                 $request = $this->context->location->extractRelative($request);
-                $router = core\app\runner\http\Router::getInstance();
+                $router = Legacy::getHttpRouter();
                 $router->applyBaseMapToRelativeRequest($request);
             } else {
                 $request = arch\Request::factory($request);

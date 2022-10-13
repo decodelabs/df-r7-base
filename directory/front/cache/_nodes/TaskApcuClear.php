@@ -15,6 +15,8 @@ use df\flex;
 
 use DecodeLabs\Genesis;
 use DecodeLabs\Terminus as Cli;
+use DecodeLabs\R7\Legacy;
+
 use GuzzleHttp\Client as HttpClient;
 
 class TaskApcuClear extends arch\node\Task
@@ -50,7 +52,7 @@ class TaskApcuClear extends arch\node\Task
         }
 
         if ($isHttp) {
-            $router = core\app\runner\http\Router::getInstance();
+            $router = Legacy::getHttpRouter();
             $url = clone $router->getRootUrl();
             $url->path->push('/cache/apcu-clear.json');
             $url->query->import($this->request->query);

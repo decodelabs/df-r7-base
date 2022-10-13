@@ -470,7 +470,7 @@ abstract class Form extends Base implements IFormNode
     private function _runPostRequest(core\collection\ITree $postData=null)
     {
         if ($postData === null) {
-            $httpRequest = Legacy::getHttpRunner()->getHttpRequest();
+            $httpRequest = Legacy::getHttpRequest();
             $postData = clone $httpRequest->getPostData();
         }
 
@@ -626,7 +626,7 @@ abstract class Form extends Base implements IFormNode
     // Node dispatch
     public function getDispatchMethodName(): ?string
     {
-        $method = ucfirst(strtolower(Legacy::getHttpRunner()->getHttpRequest()->getMethod()));
+        $method = ucfirst(strtolower(Legacy::getHttpRequest()->getMethod()));
 
         if ($method == 'Head') {
             $method = 'Get';
@@ -648,7 +648,7 @@ abstract class Form extends Base implements IFormNode
 
         throw Exceptional::BadRequest([
             'message' => 'Form node '.$this->context->location->getLiteralPath().' does not support '.
-                Legacy::getHttpRunner()->getHttpRequest()->getMethod().' http method',
+                Legacy::getHttpRequest()->getMethod().' http method',
             'http' => 405
         ]);
     }

@@ -21,17 +21,17 @@ use DecodeLabs\Glitch;
 use DecodeLabs\Typify;
 use DecodeLabs\R7\Legacy;
 
-class Http extends Base implements core\IContextAware, link\http\IResponseAugmentorProvider, arch\IRequestOrientedRunner
+class Http extends Base implements
+    core\IContextAware,
+    core\IRunner
 {
     private static $_init = false;
 
     protected $_httpRequest;
     protected $_baseUrl;
 
-    protected $_responseAugmentor;
     protected $_sendFileHeader;
     protected $_credentials = null;
-    protected $_dispatchRequest;
 
     protected $_context;
     protected $_router;
@@ -78,43 +78,12 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         $this->_credentials = $config->getCredentials();
 
         $this->_httpRequest = new link\http\request\Base(null, true);
-        $this->_router = namespace\http\Router::getInstance();
+        Legacy::setHttpRequest($this->_httpRequest);
+        $this->_router = Legacy::getHttpRouter();
 
         Glitch::setHeaderBufferSender([$this, 'sendGlitchDebugHeaders']);
     }
 
-
-    // Router
-    public function getRouter()
-    {
-        return $this->_router;
-    }
-
-    // Http request
-    public function getHttpRequest()
-    {
-        if (!$this->_httpRequest) {
-            throw Exceptional::Logic(
-                'The http request is not available until the application has been dispatched'
-            );
-        }
-
-        return $this->_httpRequest;
-    }
-
-
-
-    // Response augmentor
-    public function getResponseAugmentor()
-    {
-        if (!$this->_responseAugmentor) {
-            $this->_responseAugmentor = new link\http\response\Augmentor(
-                $this->_router
-            );
-        }
-
-        return $this->_responseAugmentor;
-    }
 
 
     // Context
@@ -132,11 +101,6 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     public function hasContext()
     {
         return $this->_context !== null;
-    }
-
-    public function getDispatchRequest(): ?arch\IRequest
-    {
-        return $this->_dispatchRequest;
     }
 
 
@@ -221,7 +185,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
 
         // Apply
-        $augmentor = $this->getResponseAugmentor();
+        $augmentor = Legacy::getHttpResponseAugmentor();
         $augmentor->setHeaderForAnyRequest('x-allow-ip', (string)$ip);
 
         foreach ($ranges as $range) {
@@ -460,7 +424,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     // Dispatch request
     protected function _dispatchRequest(arch\IRequest $request)
     {
-        $this->_dispatchRequest = clone $request;
+        Legacy::setDispatchRequest(clone $request);
 
         try {
             $response = $this->_dispatchNode($request);
@@ -473,7 +437,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             if ($e instanceof arch\IForcedResponse) {
                 $response = $this->_normalizeResponse($e->getResponse());
             } else {
-                $this->_dispatchException = $e;
+                Legacy::setDispatchException($e);
 
                 try {
                     $response = $this->_dispatchNode(new arch\Request('error/'));
@@ -496,9 +460,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     // Dispatch node
     protected function _dispatchNode(arch\IRequest $request)
     {
-        if ($this->_responseAugmentor) {
-            $this->_responseAugmentor->resetCurrent();
-        }
+        Legacy::getHttpResponseAugmentor()->resetCurrent();
 
         $this->_context = null;
         /** @var arch\Context $c */
@@ -639,9 +601,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     protected function _sendResponse(link\http\IResponse $response)
     {
         // Apply globally defined cookies, headers, etc
-        if ($this->_responseAugmentor) {
-            $this->_responseAugmentor->apply($response);
-        }
+        Legacy::getHttpResponseAugmentor()->apply($response);
 
         // HSTS
         if (
@@ -736,16 +696,15 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     public function sendGlitchDebugHeaders()
     {
         try {
-            if ($this->_responseAugmentor) {
-                $cookies = $this->_responseAugmentor->getCookieCollectionForCurrentRequest();
+            $augmentor = Legacy::getHttpResponseAugmentor();
+            $cookies = $augmentor->getCookieCollectionForCurrentRequest();
 
-                foreach ($cookies->toArray() as $cookie) {
-                    header('Set-Cookie: '.$cookie->toString());
-                }
+            foreach ($cookies->toArray() as $cookie) {
+                header('Set-Cookie: '.$cookie->toString());
+            }
 
-                foreach ($cookies->getRemoved() as $cookie) {
-                    header('Set-Cookie: '.$cookie->toInvalidateString());
-                }
+            foreach ($cookies->getRemoved() as $cookie) {
+                header('Set-Cookie: '.$cookie->toInvalidateString());
             }
         } catch (\Throwable $e) {
         }

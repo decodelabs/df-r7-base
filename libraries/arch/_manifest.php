@@ -86,11 +86,6 @@ interface IContext extends core\IContext, IResponseForcer
     public function getScaffold(): Scaffold;
 }
 
-interface IRequestOrientedRunner extends core\IRunner
-{
-    public function getDispatchRequest(): ?arch\IRequest;
-}
-
 
 interface IDirectoryHelper extends core\IContextAware, core\IHelper
 {

@@ -125,7 +125,7 @@ class Model extends axis\Model
 
             try {
                 if (Genesis::$kernel->getMode() === 'Http') {
-                    $request = Legacy::getHttpRunner()->getHttpRequest()->getUrl();
+                    $request = Legacy::getHttpRequest()->getUrl();
                 } else {
                     $request = Legacy::getContext()->request;
                 }
@@ -141,7 +141,7 @@ class Model extends axis\Model
 
             if ($request instanceof link\http\IUrl) {
                 $url = (string)$request;
-                $router = core\app\runner\http\Router::getInstance();
+                $router = Legacy::getHttpRouter();
                 $request = new core\uri\Url($request->getLocalString());
                 unset($request->query->cts);
                 $router->getRootMap()->mapPath($request->path);

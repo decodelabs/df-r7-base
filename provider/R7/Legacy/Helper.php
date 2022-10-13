@@ -26,6 +26,9 @@ use df\flex\Guid;
 
 use df\link\http\response\Redirect as RedirectResponse;
 use df\link\http\ICookie as Cookie;
+use df\link\http\IRequest as HttpRequest;
+use df\link\http\response\Augmentor as HttpResponseAugmentor;
+use df\core\app\runner\http\Router as HttpRouter;
 
 use df\flow\Manager as CommsManager;
 
@@ -72,6 +75,11 @@ use Throwable;
 class Helper
 {
     protected ?Context $context = null;
+    protected ?HttpRequest $httpRequest = null;
+    protected HttpRouter $httpRouter;
+    protected HttpResponseAugmentor $httpResponseAugmentor;
+    protected ?Request $dispatchRequest = null;
+    protected ?Throwable $dispatchException = null;
 
 
     /**
@@ -104,22 +112,89 @@ class Helper
 
 
     /**
-     * Get HTTP runner
+     * Set HTTP request
      */
-    public function getHttpRunner(): HttpRunner
+    public function setHttpRequest(?HttpRequest $request): void
     {
-        static $runner;
+        $this->httpRequest = $request;
+    }
 
-        if (!isset($runner)) {
-            $runner = Genesis::$container['app.runner'];
-
-            if (!$runner instanceof HttpRunner) {
-                throw Exceptional::UnexpectedValue('Runner is not HTTP');
-            }
+    /**
+     * Get HTTP request
+     */
+    public function getHttpRequest(): HttpRequest
+    {
+        if (!$this->httpRequest) {
+            throw Exceptional::Setup('No HTTP request available');
         }
 
-        return $runner;
+        return $this->httpRequest;
     }
+
+    /**
+     * Get HTTP router
+     */
+    public function getHttpRouter(): ?HttpRouter
+    {
+        if (!isset($this->httpRouter)) {
+            $this->httpRouter = new HttpRouter();
+        }
+
+        return $this->httpRouter;
+    }
+
+
+    /**
+     * Get response augmentor
+     */
+    public function getHttpResponseAugmentor(): HttpResponseAugmentor
+    {
+        if (!isset($this->httpResponseAugmentor)) {
+            $this->httpResponseAugmentor = new HttpResponseAugmentor($this->getHttpRouter());
+        }
+
+        return $this->httpResponseAugmentor;
+    }
+
+
+
+    /**
+     * Set dispatch request
+     */
+    public function setDispatchRequest(?Request $request): void
+    {
+        $this->dispatchRequest = $request;
+    }
+
+    /**
+     * Get dispatch request
+     */
+    public function getDispatchRequest(): ?Request
+    {
+        return $this->dispatchRequest;
+    }
+
+    /**
+     * Set dispatch exception
+     */
+    public function setDispatchException(?Throwable $exception): void
+    {
+        $this->dispatchException = $exception;
+    }
+
+    /**
+     * Get dispatch exception
+     */
+    public function getDispatchException(): ?Throwable
+    {
+        return $this->dispatchException;
+    }
+
+
+
+
+
+
 
 
     /**

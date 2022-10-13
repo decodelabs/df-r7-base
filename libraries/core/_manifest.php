@@ -263,7 +263,6 @@ interface IRunner
 {
     // Execute
     public function dispatch(): void;
-    public function getDispatchException(): ?\Throwable;
 }
 
 interface IRegistryObject

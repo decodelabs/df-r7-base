@@ -268,7 +268,7 @@ class Base implements INode, Dumpable
         $type = $this->context->location->getType();
 
         if (Genesis::$kernel->getMode() == 'Http') {
-            $mode = ucfirst(strtolower(Legacy::getHttpRunner()->getHttpRequest()->getMethod()));
+            $mode = ucfirst(strtolower(Legacy::getHttpRequest()->getMethod()));
 
             if ($mode == 'Head') {
                 $mode = 'Get';

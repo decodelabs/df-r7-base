@@ -27,10 +27,8 @@ class Cookie implements user\session\IPerpetuator
 
     public function __construct()
     {
-        $runner = Legacy::getHttpRunner();
-
-        $cookies = $runner->getHttpRequest()->cookies;
-        $router = $runner->getRouter();
+        $cookies = Legacy::getHttpRequest()->cookies;
+        $router = Legacy::getHttpRouter();
         $isRoot = $router->isBaseInRoot();
 
         if (!$isRoot && !$cookies->has(self::SESSION_NAME) && !$cookies->has(self::JOIN_NAME)) {
@@ -90,42 +88,33 @@ class Cookie implements user\session\IPerpetuator
 
     protected function _setSessionCookie($outputId)
     {
-        $runner = Legacy::getHttpRunner();
-
-        if ($runner instanceof link\http\IResponseAugmentorProvider) {
-            $augmentor = $runner->getResponseAugmentor();
-            $augmentor->setCookieForAnyRequest($augmentor->newCookie(
-                self::SESSION_NAME, $outputId, null, true
-            ));
-        }
+        $augmentor = Legacy::getHttpResponseAugmentor();
+        $augmentor->setCookieForAnyRequest($augmentor->newCookie(
+            self::SESSION_NAME, $outputId, null, true
+        ));
     }
 
     public function destroy(user\session\IController $controller)
     {
-        $runner = Legacy::getHttpRunner();
+        $augmentor = Legacy::getHttpResponseAugmentor();
 
-        if ($runner instanceof link\http\IResponseAugmentorProvider) {
-            $augmentor = $runner->getResponseAugmentor();
+        // Remove session cookie
+        $augmentor->removeCookieForAnyRequest($augmentor->newCookie(
+            self::SESSION_NAME, 'deleted', null, true
+        ));
 
-            // Remove session cookie
-            $augmentor->removeCookieForAnyRequest($augmentor->newCookie(
-                self::SESSION_NAME, 'deleted', null, true
-            ));
-
-            // Set remember cookie to ''
-            $augmentor->setCookieForAnyRequest($augmentor->newCookie(
-                self::REMEMBER_NAME, '', null, true
-            ));
-        }
+        // Set remember cookie to ''
+        $augmentor->setCookieForAnyRequest($augmentor->newCookie(
+            self::REMEMBER_NAME, '', null, true
+        ));
 
         return $this;
     }
 
     public function handleDeadPublicKey($publicKey)
     {
-        $runner = Legacy::getHttpRunner();
-        $cookies = $runner->getHttpRequest()->cookies;
-        $isRoot = $runner->getRouter()->isBaseRoot();
+        $cookies = Legacy::getHttpRequest()->cookies;
+        $isRoot = Legacy::getHttpRouter()->isBaseRoot();
 
         if (!$isRoot && !$cookies->has(self::JOIN_NAME)) {
             $this->_joinRoot();
@@ -137,9 +126,8 @@ class Cookie implements user\session\IPerpetuator
         $key = $this->_generateJoinKey();
         $this->setJoinKey($key);
 
-        $runner = Legacy::getHttpRunner();
-        $httpRequest = $runner->getHttpRequest();
-        $router = $runner->getRouter();
+        $httpRequest = Legacy::getHttpRequest();
+        $router = Legacy::getHttpRouter();
 
         $request = $router->requestToUrl(arch\Request::factory('account/join-session?key='.bin2hex($key)));
         $request->query->rf = $router->urlToRequest($httpRequest->url)->encode();
@@ -150,25 +138,21 @@ class Cookie implements user\session\IPerpetuator
 
     public function perpetuateRecallKey(user\session\IController $controller, user\session\RecallKey $key)
     {
-        $runner = Legacy::getHttpRunner();
+        $augmentor = Legacy::getHttpResponseAugmentor();
 
-        if ($runner instanceof link\http\IResponseAugmentorProvider) {
-            $augmentor = $runner->getResponseAugmentor();
-
-            $augmentor->setCookieForAnyRequest($augmentor->newCookie(
-                self::REMEMBER_NAME,
-                $key->getInterlaceKey(),
-                '+1 month',
-                true
-            ));
-        }
+        $augmentor->setCookieForAnyRequest($augmentor->newCookie(
+            self::REMEMBER_NAME,
+            $key->getInterlaceKey(),
+            '+1 month',
+            true
+        ));
 
         return $this;
     }
 
     public function getRecallKey(user\session\IController $controller)
     {
-        $httpRequest = Legacy::getHttpRunner()->getHttpRequest();
+        $httpRequest = Legacy::getHttpRequest();
 
         if (!$httpRequest->hasCookieData()) {
             return null;
@@ -186,15 +170,11 @@ class Cookie implements user\session\IPerpetuator
 
     public function destroyRecallKey(user\session\IController $controller)
     {
-        $runner = Legacy::getHttpRunner();
+        $augmentor = Legacy::getHttpResponseAugmentor();
 
-        if ($runner instanceof link\http\IResponseAugmentorProvider) {
-            $augmentor = $runner->getResponseAugmentor();
-
-            $augmentor->removeCookieForAnyRequest($augmentor->newCookie(
-                self::REMEMBER_NAME, '', null, true
-            ));
-        }
+        $augmentor->removeCookieForAnyRequest($augmentor->newCookie(
+            self::REMEMBER_NAME, '', null, true
+        ));
 
         return $this;
     }
@@ -202,33 +182,25 @@ class Cookie implements user\session\IPerpetuator
 
     public function setJoinKey($key)
     {
-        $runner = Legacy::getHttpRunner();
+        $augmentor = Legacy::getHttpResponseAugmentor();
 
-        if ($runner instanceof link\http\IResponseAugmentorProvider) {
-            $augmentor = $runner->getResponseAugmentor();
-
-            $augmentor->setCookieForAnyRequest($augmentor->newCookie(
-                self::JOIN_NAME,
-                bin2hex($key),
-                '+3 minutes',
-                true
-            ));
-        }
+        $augmentor->setCookieForAnyRequest($augmentor->newCookie(
+            self::JOIN_NAME,
+            bin2hex($key),
+            '+3 minutes',
+            true
+        ));
 
         return $this;
     }
 
     public function destroyJoinKey()
     {
-        $runner = Legacy::getHttpRunner();
+        $augmentor = Legacy::getHttpResponseAugmentor();
 
-        if ($runner instanceof link\http\IResponseAugmentorProvider) {
-            $augmentor = $runner->getResponseAugmentor();
-
-            $augmentor->removeCookieForAnyRequest($augmentor->newCookie(
-                self::JOIN_NAME, '', null, true
-            ));
-        }
+        $augmentor->removeCookieForAnyRequest($augmentor->newCookie(
+            self::JOIN_NAME, '', null, true
+        ));
 
         return $this;
     }

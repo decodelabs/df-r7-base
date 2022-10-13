@@ -58,7 +58,7 @@ class Manager implements IManager
             $config->shouldDetectClientLocale() &&
             Genesis::$kernel->getMode() === 'Http'
         ) {
-            $request = Legacy::getHttpRunner()->getHttpRequest();
+            $request = Legacy::getHttpRequest();
 
             if (isset($request->headers['accept-language'])) {
                 $default = \Locale::acceptFromHttp($request->headers['accept-language']);

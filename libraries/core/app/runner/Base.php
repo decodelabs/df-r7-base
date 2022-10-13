@@ -14,8 +14,6 @@ use DecodeLabs\Exceptional;
 abstract class Base implements core\IRunner
 {
     protected $_isRunning = false;
-    protected $_dispatchException;
-
 
     public static function factory(string $name): core\IRunner
     {
@@ -28,17 +26,5 @@ abstract class Base implements core\IRunner
         }
 
         return new $class();
-    }
-
-
-    // Dispatch
-    public function setDispatchException(\Throwable $e)
-    {
-        $this->_dispatchException = $e;
-    }
-
-    public function getDispatchException(): ?\Throwable
-    {
-        return $this->_dispatchException;
     }
 }
