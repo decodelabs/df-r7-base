@@ -27,9 +27,6 @@ use Throwable;
 
 class Task implements Kernel
 {
-    /**
-     * @use KernelTrait<TaskRunner>
-     */
     use KernelTrait;
 
 

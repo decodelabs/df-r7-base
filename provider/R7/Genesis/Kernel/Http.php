@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Genesis\Kernel;
 
+use df\core\app\runner\Base as RunnerBase;
 use df\core\app\runner\Http as HttpRunner;
 
 use DecodeLabs\Genesis\Kernel;
@@ -14,9 +15,6 @@ use DecodeLabs\R7\Genesis\KernelTrait;
 
 class Http implements Kernel
 {
-    /**
-     * @use KernelTrait<HttpRunner>
-     */
     use KernelTrait;
 
     protected HttpRunner $runner;
@@ -27,7 +25,14 @@ class Http implements Kernel
      */
     public function initialize(): void
     {
-        $this->runner = $this->loadRunner();
+        // Load runner
+        /** @var HttpRunner $runner */
+        $runner = RunnerBase::factory('Http');
+        $this->runner = $runner;
+
+        // Add runner to container
+        $this->context->container->bindShared(RunnerBase::class, $this->runner)
+            ->alias('app.runner');
     }
 
     /**
