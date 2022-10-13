@@ -13,6 +13,7 @@ use df\fire;
 use df\arch;
 use df\aura;
 
+use DecodeLabs\R7\Legacy;
 use DecodeLabs\Tagged as Html;
 
 class ContentSlot extends arch\node\form\Delegate implements
@@ -359,7 +360,7 @@ class ContentSlot extends arch\node\form\Delegate implements
         }
 
         $this->_state->setStore('blockTypes', $types);
-        return $this->http->redirect('#'.$this->elementId($delegateId));
+        return Legacy::$http->redirect('#'.$this->elementId($delegateId));
     }
 
     protected function onAddBlockEvent()
@@ -397,7 +398,7 @@ class ContentSlot extends arch\node\form\Delegate implements
 
         $types[$delegateId] = $block->getName();
         $this->_state->setStore('blockTypes', $types);
-        return $this->http->redirect('#'.$this->elementId($delegateId));
+        return Legacy::$http->redirect('#'.$this->elementId($delegateId));
     }
 
     protected function onRemoveBlockEvent($delegateId)
@@ -408,7 +409,7 @@ class ContentSlot extends arch\node\form\Delegate implements
         $this->unloadDelegate($delegateId);
 
         $this->_state->setStore('blockTypes', $types);
-        return $this->http->redirect('#'.$this->elementId('add-selector'));
+        return Legacy::$http->redirect('#'.$this->elementId('add-selector'));
     }
 
     protected function onMoveBlockUpEvent($delegateId)
@@ -434,7 +435,7 @@ class ContentSlot extends arch\node\form\Delegate implements
         }
 
         $this->_state->setStore('blockTypes', $newTypes);
-        return $this->http->redirect('#'.$this->elementId($delegateId));
+        return Legacy::$http->redirect('#'.$this->elementId($delegateId));
     }
 
     protected function onMoveBlockDownEvent($delegateId)
@@ -462,7 +463,7 @@ class ContentSlot extends arch\node\form\Delegate implements
         }
 
         $this->_state->setStore('blockTypes', $newTypes);
-        return $this->http->redirect('#'.$this->elementId($delegateId));
+        return Legacy::$http->redirect('#'.$this->elementId($delegateId));
     }
 
 

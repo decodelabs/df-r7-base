@@ -115,7 +115,7 @@ class Base implements ITheme, Dumpable
         }
 
         $request = $view->context->request;
-        $router = Legacy::getHttpRouter();
+        $router = Legacy::$http->getRouter();
         //$view->setData('base', '/'.ltrim($router->getBaseUrl()->getPathString(), './'));
         $view->setData('base', $router->getBaseUrl());
 

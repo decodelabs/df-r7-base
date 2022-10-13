@@ -27,8 +27,8 @@ class Cookie implements user\session\IPerpetuator
 
     public function __construct()
     {
-        $cookies = Legacy::getHttpRequest()->cookies;
-        $router = Legacy::getHttpRouter();
+        $cookies = Legacy::$http->getCookies();
+        $router = Legacy::$http->getRouter();
         $isRoot = $router->isBaseInRoot();
 
         if (!$isRoot && !$cookies->has(self::SESSION_NAME) && !$cookies->has(self::JOIN_NAME)) {
@@ -88,7 +88,7 @@ class Cookie implements user\session\IPerpetuator
 
     protected function _setSessionCookie($outputId)
     {
-        $augmentor = Legacy::getHttpResponseAugmentor();
+        $augmentor = Legacy::$http->getResponseAugmentor();
         $augmentor->setCookieForAnyRequest($augmentor->newCookie(
             self::SESSION_NAME, $outputId, null, true
         ));
@@ -96,7 +96,7 @@ class Cookie implements user\session\IPerpetuator
 
     public function destroy(user\session\IController $controller)
     {
-        $augmentor = Legacy::getHttpResponseAugmentor();
+        $augmentor = Legacy::$http->getResponseAugmentor();
 
         // Remove session cookie
         $augmentor->removeCookieForAnyRequest($augmentor->newCookie(
@@ -113,8 +113,8 @@ class Cookie implements user\session\IPerpetuator
 
     public function handleDeadPublicKey($publicKey)
     {
-        $cookies = Legacy::getHttpRequest()->cookies;
-        $isRoot = Legacy::getHttpRouter()->isBaseRoot();
+        $cookies = Legacy::$http->getCookies();
+        $isRoot = Legacy::$http->getRouter()->isBaseRoot();
 
         if (!$isRoot && !$cookies->has(self::JOIN_NAME)) {
             $this->_joinRoot();
@@ -126,11 +126,11 @@ class Cookie implements user\session\IPerpetuator
         $key = $this->_generateJoinKey();
         $this->setJoinKey($key);
 
-        $httpRequest = Legacy::getHttpRequest();
-        $router = Legacy::getHttpRouter();
+        $httpRequest = Legacy::$http->getRequest();
+        $router = Legacy::$http->getRouter();
 
         $request = $router->requestToUrl(arch\Request::factory('account/join-session?key='.bin2hex($key)));
-        $request->query->rf = $router->urlToRequest($httpRequest->url)->encode();
+        $request->query->rf = $router->urlToRequest($httpRequest->getUrl())->encode();
         $redirect = new link\http\response\Redirect($request);
 
         throw new arch\ForcedResponse($redirect);
@@ -138,7 +138,7 @@ class Cookie implements user\session\IPerpetuator
 
     public function perpetuateRecallKey(user\session\IController $controller, user\session\RecallKey $key)
     {
-        $augmentor = Legacy::getHttpResponseAugmentor();
+        $augmentor = Legacy::$http->getResponseAugmentor();
 
         $augmentor->setCookieForAnyRequest($augmentor->newCookie(
             self::REMEMBER_NAME,
@@ -152,13 +152,13 @@ class Cookie implements user\session\IPerpetuator
 
     public function getRecallKey(user\session\IController $controller)
     {
-        $httpRequest = Legacy::getHttpRequest();
+        $httpRequest = Legacy::$http->getRequest();
 
         if (!$httpRequest->hasCookieData()) {
             return null;
         }
 
-        $value = $httpRequest->cookies->get(self::REMEMBER_NAME);
+        $value = $httpRequest->getCookies()->get(self::REMEMBER_NAME);
 
         if (!empty($value)) {
             return new user\session\RecallKey(
@@ -170,7 +170,7 @@ class Cookie implements user\session\IPerpetuator
 
     public function destroyRecallKey(user\session\IController $controller)
     {
-        $augmentor = Legacy::getHttpResponseAugmentor();
+        $augmentor = Legacy::$http->getResponseAugmentor();
 
         $augmentor->removeCookieForAnyRequest($augmentor->newCookie(
             self::REMEMBER_NAME, '', null, true
@@ -182,7 +182,7 @@ class Cookie implements user\session\IPerpetuator
 
     public function setJoinKey($key)
     {
-        $augmentor = Legacy::getHttpResponseAugmentor();
+        $augmentor = Legacy::$http->getResponseAugmentor();
 
         $augmentor->setCookieForAnyRequest($augmentor->newCookie(
             self::JOIN_NAME,
@@ -196,7 +196,7 @@ class Cookie implements user\session\IPerpetuator
 
     public function destroyJoinKey()
     {
-        $augmentor = Legacy::getHttpResponseAugmentor();
+        $augmentor = Legacy::$http->getResponseAugmentor();
 
         $augmentor->removeCookieForAnyRequest($augmentor->newCookie(
             self::JOIN_NAME, '', null, true

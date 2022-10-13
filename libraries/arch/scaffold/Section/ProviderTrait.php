@@ -19,6 +19,7 @@ use df\core\lang\Callback;
 
 use DecodeLabs\Dictum;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
 
 use Throwable;
 
@@ -47,7 +48,7 @@ trait ProviderTrait
                     $request->setNode($default);
 
                     $this->context->forceResponse(
-                        $this->context->http->redirect($request)
+                        Legacy::$http->redirect($request)
                     );
                 }
             }

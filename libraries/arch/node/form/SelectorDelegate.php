@@ -16,8 +16,9 @@ use df\mesh;
 use df\opal\query\ISelectQuery as SelectQuery;
 use df\arch\IComponent as Component;
 
-use DecodeLabs\Tagged as Html;
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Legacy;
+use DecodeLabs\Tagged as Html;
 
 abstract class SelectorDelegate extends Delegate implements
     arch\node\IInlineFieldRenderableModalSelectorDelegate,
@@ -824,7 +825,7 @@ abstract class SelectorDelegate extends Delegate implements
             }
         });
 
-        return $this->http->redirect('#'.$this->elementId('selector'));
+        return Legacy::$http->redirect('#'.$this->elementId('selector'));
     }
 
     protected function onEndSelectEvent()
@@ -833,7 +834,7 @@ abstract class SelectorDelegate extends Delegate implements
             $this->_state->removeStore('originalSelection');
         });
 
-        return $this->http->redirect('#'.$this->elementId('selector'));
+        return Legacy::$http->redirect('#'.$this->elementId('selector'));
     }
 
     protected function onBeginCreateEvent()
@@ -855,7 +856,7 @@ abstract class SelectorDelegate extends Delegate implements
             }
         });
 
-        return $this->http->redirect('#'.$this->elementId('selector'));
+        return Legacy::$http->redirect('#'.$this->elementId('selector'));
     }
 
     protected function onCreateEvent()
@@ -879,7 +880,7 @@ abstract class SelectorDelegate extends Delegate implements
             $this->_state->removeStore('originalSelection');
         });
 
-        return $this->http->redirect('#'.$this->elementId('selector'));
+        return Legacy::$http->redirect('#'.$this->elementId('selector'));
     }
 
     protected function onResetEvent()

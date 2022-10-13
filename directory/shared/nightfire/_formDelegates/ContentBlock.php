@@ -13,8 +13,9 @@ use df\arch;
 use df\fire;
 use df\aura;
 
-use DecodeLabs\Tagged as Html;
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Legacy;
+use DecodeLabs\Tagged as Html;
 
 class ContentBlock extends arch\node\form\Delegate implements
     arch\node\IInlineFieldRenderableDelegate,
@@ -252,7 +253,7 @@ class ContentBlock extends arch\node\form\Delegate implements
                 ->initialize();
         }
 
-        return $this->http->redirect('#'.$this->elementId('block'));
+        return Legacy::$http->redirect('#'.$this->elementId('block'));
     }
 
     public function apply()

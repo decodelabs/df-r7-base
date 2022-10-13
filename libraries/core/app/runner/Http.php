@@ -25,8 +25,6 @@ class Http extends Base implements
     core\IContextAware,
     core\IRunner
 {
-    private static $_init = false;
-
     protected $_httpRequest;
     protected $_baseUrl;
 
@@ -38,32 +36,6 @@ class Http extends Base implements
 
     public function __construct()
     {
-        if (!self::$_init) {
-            // If you're on apache, it sometimes hides some env variables = v. annoying
-            if (function_exists('apache_request_headers') && false !== ($apache = apache_request_headers())) {
-                foreach ($apache as $key => $value) {
-                    $_SERVER['HTTP_'.strtoupper(str_replace('-', '_', $key))] = $value;
-                }
-            }
-
-            if (isset($_SERVER['CONTENT_TYPE'])) {
-                $_SERVER['HTTP_CONTENT_TYPE'] = $_SERVER['CONTENT_TYPE'];
-            }
-
-            // Normalize REQUEST_URI
-            if (isset($_SERVER['HTTP_X_ORIGINAL_URL'])) {
-                $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_ORIGINAL_URL'];
-            }
-
-
-            // Normalize Cloudflare proxy
-            if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
-                $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
-            }
-
-            self::$_init = true;
-        }
-
         $config = namespace\http\Config::getInstance();
         $this->_sendFileHeader = $config->getSendFileHeader();
 
@@ -78,8 +50,8 @@ class Http extends Base implements
         $this->_credentials = $config->getCredentials();
 
         $this->_httpRequest = new link\http\request\Base(null, true);
-        Legacy::setHttpRequest($this->_httpRequest);
-        $this->_router = Legacy::getHttpRouter();
+        Legacy::$http->setRequest($this->_httpRequest);
+        $this->_router = Legacy::$http->getRouter();
 
         Glitch::setHeaderBufferSender([$this, 'sendGlitchDebugHeaders']);
     }
@@ -185,7 +157,7 @@ class Http extends Base implements
 
 
         // Apply
-        $augmentor = Legacy::getHttpResponseAugmentor();
+        $augmentor = Legacy::$http->getResponseAugmentor();
         $augmentor->setHeaderForAnyRequest('x-allow-ip', (string)$ip);
 
         foreach ($ranges as $range) {
@@ -253,7 +225,7 @@ class Http extends Base implements
         }
 
 
-        $url = clone $this->_httpRequest->url;
+        $url = clone Legacy::$http->getUrl();
         $url->query->authenticate = null;
 
         $response = new link\http\response\Stream(
@@ -286,7 +258,7 @@ class Http extends Base implements
             throw new arch\ForcedResponse($response);
         }
 
-        if ($this->_httpRequest->getMethod() == 'options') {
+        if (Legacy::$http->getMethod() == 'options') {
             throw new arch\ForcedResponse(
                 (new link\http\response\Stream('content'))->withHeaders(function ($headers) {
                     $headers->set('allow', 'OPTIONS, GET, HEAD, POST');
@@ -422,9 +394,9 @@ class Http extends Base implements
 
 
     // Dispatch request
-    protected function _dispatchRequest(arch\IRequest $request)
+    protected function _dispatchRequest(arch\Request $request)
     {
-        Legacy::setDispatchRequest(clone $request);
+        Legacy::$http->setDispatchRequest(clone $request);
 
         try {
             $response = $this->_dispatchNode($request);
@@ -437,7 +409,7 @@ class Http extends Base implements
             if ($e instanceof arch\IForcedResponse) {
                 $response = $this->_normalizeResponse($e->getResponse());
             } else {
-                Legacy::setDispatchException($e);
+                Legacy::$http->setDispatchException($e);
 
                 try {
                     $response = $this->_dispatchNode(new arch\Request('error/'));
@@ -460,7 +432,7 @@ class Http extends Base implements
     // Dispatch node
     protected function _dispatchNode(arch\IRequest $request)
     {
-        Legacy::getHttpResponseAugmentor()->resetCurrent();
+        Legacy::$http->getResponseAugmentor()->resetCurrent();
 
         $this->_context = null;
         /** @var arch\Context $c */
@@ -487,7 +459,7 @@ class Http extends Base implements
                 $context->location = $context->request = $this->_router->urlToRequest($testUrl);
 
                 if ($context->apex->nodeExists($context->request)) {
-                    return $context->http->redirect($context->request)
+                    return Legacy::$http->redirect($context->request)
                         //->isPermanent(true)
                         ;
                 }
@@ -531,7 +503,7 @@ class Http extends Base implements
 
         // Forwarding
         if ($response instanceof arch\IRequest) {
-            $response = $this->_context->http->redirect($response);
+            $response = Legacy::$http->redirect($response);
         }
 
         // Empty response
@@ -558,8 +530,8 @@ class Http extends Base implements
         $response->onDispatchComplete();
         $headers = $response->getHeaders();
 
-        if ($this->_context && $this->_context->http->isAjaxRequest()) {
-            $headers->set('x-response-url', $this->_httpRequest->url);
+        if (Legacy::$http->isAjaxRequest()) {
+            $headers->set('x-response-url', Legacy::$http->getUrl());
         }
 
 
@@ -601,7 +573,7 @@ class Http extends Base implements
     protected function _sendResponse(link\http\IResponse $response)
     {
         // Apply globally defined cookies, headers, etc
-        Legacy::getHttpResponseAugmentor()->apply($response);
+        Legacy::$http->getResponseAugmentor()->apply($response);
 
         // HSTS
         if (
@@ -645,7 +617,7 @@ class Http extends Base implements
 
 
         // HEAD request
-        if ($this->_httpRequest->getMethod() == 'head') {
+        if (Legacy::$http->getMethod() == 'head') {
             $sendData = false;
         }
 
@@ -696,7 +668,7 @@ class Http extends Base implements
     public function sendGlitchDebugHeaders()
     {
         try {
-            $augmentor = Legacy::getHttpResponseAugmentor();
+            $augmentor = Legacy::$http->getResponseAugmentor();
             $cookies = $augmentor->getCookieCollectionForCurrentRequest();
 
             foreach ($cookies->toArray() as $cookie) {

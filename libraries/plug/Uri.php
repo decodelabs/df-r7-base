@@ -31,7 +31,7 @@ class Uri implements arch\IDirectoryHelper
 
     public function requestToUrl(arch\IRequest $request)
     {
-        return Legacy::getHttpRouter()
+        return Legacy::$http->getRouter()
             ->requestToUrl($request);
     }
 
@@ -197,7 +197,7 @@ class Uri implements arch\IDirectoryHelper
                 $request = clone $this->context->request;
             } elseif (is_string($request) && preg_match('#^\.\.?/#', $request)) {
                 $request = $this->context->location->extractRelative($request);
-                $router = Legacy::getHttpRouter();
+                $router = Legacy::$http->getRouter();
                 $router->applyBaseMapToRelativeRequest($request);
             } else {
                 $request = arch\Request::factory($request);

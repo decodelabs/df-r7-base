@@ -24,12 +24,6 @@ use df\axis\unit\Config as ConfigUnit;
 use df\core\collection\Tree;
 use df\flex\Guid;
 
-use df\link\http\response\Redirect as RedirectResponse;
-use df\link\http\ICookie as Cookie;
-use df\link\http\IRequest as HttpRequest;
-use df\link\http\response\Augmentor as HttpResponseAugmentor;
-use df\core\app\runner\http\Router as HttpRouter;
-
 use df\flow\Manager as CommsManager;
 
 use df\mesh\job\IQueue as JobQueue;
@@ -65,21 +59,23 @@ use DateInterval;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy\Plugins\Http as HttpPlugin;
 use DecodeLabs\Systemic\Process;
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
 use DecodeLabs\Terminus\Session as TerminusSession;
+use DecodeLabs\Veneer\LazyLoad;
+use DecodeLabs\Veneer\Plugin;
 
 use Stringable;
 use Throwable;
 
 class Helper
 {
+    #[Plugin]
+    #[LazyLoad]
+    public HttpPlugin $http;
+
     protected ?Context $context = null;
-    protected ?HttpRequest $httpRequest = null;
-    protected HttpRouter $httpRouter;
-    protected HttpResponseAugmentor $httpResponseAugmentor;
-    protected ?Request $dispatchRequest = null;
-    protected ?Throwable $dispatchException = null;
 
 
     /**
@@ -109,88 +105,6 @@ class Helper
 
         return $loader;
     }
-
-
-    /**
-     * Set HTTP request
-     */
-    public function setHttpRequest(?HttpRequest $request): void
-    {
-        $this->httpRequest = $request;
-    }
-
-    /**
-     * Get HTTP request
-     */
-    public function getHttpRequest(): HttpRequest
-    {
-        if (!$this->httpRequest) {
-            throw Exceptional::Setup('No HTTP request available');
-        }
-
-        return $this->httpRequest;
-    }
-
-    /**
-     * Get HTTP router
-     */
-    public function getHttpRouter(): ?HttpRouter
-    {
-        if (!isset($this->httpRouter)) {
-            $this->httpRouter = new HttpRouter();
-        }
-
-        return $this->httpRouter;
-    }
-
-
-    /**
-     * Get response augmentor
-     */
-    public function getHttpResponseAugmentor(): HttpResponseAugmentor
-    {
-        if (!isset($this->httpResponseAugmentor)) {
-            $this->httpResponseAugmentor = new HttpResponseAugmentor($this->getHttpRouter());
-        }
-
-        return $this->httpResponseAugmentor;
-    }
-
-
-
-    /**
-     * Set dispatch request
-     */
-    public function setDispatchRequest(?Request $request): void
-    {
-        $this->dispatchRequest = $request;
-    }
-
-    /**
-     * Get dispatch request
-     */
-    public function getDispatchRequest(): ?Request
-    {
-        return $this->dispatchRequest;
-    }
-
-    /**
-     * Set dispatch exception
-     */
-    public function setDispatchException(?Throwable $exception): void
-    {
-        $this->dispatchException = $exception;
-    }
-
-    /**
-     * Get dispatch exception
-     */
-    public function getDispatchException(): ?Throwable
-    {
-        return $this->dispatchException;
-    }
-
-
 
 
 
@@ -313,34 +227,6 @@ class Helper
     }
 
 
-    /**
-     * Create redirect with active request
-     */
-    public function redirect(callable $builder): RedirectResponse
-    {
-        $context = $this->getContext();
-        return $context->http->redirect($builder(clone $context->request));
-    }
-
-    /**
-     * Apply redirect with active request
-     */
-    public function redirectNow(callable $builder): Throwable
-    {
-        return $this->getContext()->forceResponse(
-            $this->redirect($builder)
-        );
-    }
-
-
-    /**
-     * Is AJAX request?
-     */
-    public function isAjaxRequest(): bool
-    {
-        return $this->getContext()->http->isAjaxRequest();
-    }
-
 
     /**
      * Dispatch child node
@@ -372,60 +258,6 @@ class Helper
     {
         return $this->getContext()->uri->__invoke($uri, $from, $to, $asRequest);
     }
-
-
-
-    /**
-     * Set cookie
-     */
-    public function setCookie(string $key, ?string $value): Cookie
-    {
-        return $this->getContext()->http->setCookie($key, $value);
-    }
-
-    /**
-     * Get cookie
-     */
-    public function getCookie(string $key): ?string
-    {
-        try {
-            $http = $this->getContext()->http;
-        } catch (Throwable $e) {
-            return null;
-        }
-
-        return $http->getCookie($key);
-    }
-
-    /**
-     * Remove cookie
-     */
-    public function removeCookie(string $key): void
-    {
-        try {
-            $http = $this->getContext()->http;
-        } catch (Throwable $e) {
-            return;
-        }
-
-        $http->removeCookie($key);
-    }
-
-
-    /**
-     * Get cookies
-     */
-    public function getCookies(): Tree
-    {
-        try {
-            $http = $this->getContext()->http;
-        } catch (Throwable $e) {
-            return new Tree();
-        }
-
-        return $http->getCookies();
-    }
-
 
 
 

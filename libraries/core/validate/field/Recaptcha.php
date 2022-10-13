@@ -45,14 +45,13 @@ class Recaptcha extends Base implements core\validate\IRecaptchaField
     // Validate
     public function validate()
     {
-        $context = Legacy::getContext();
         $value = $this->data->getValue();
 
         if (
             $value === null &&
             Genesis::$kernel->getMode() === 'Http'
         ) {
-            $value = $context->http->post[self::KEY];
+            $value = Legacy::$http->getPostData()[self::KEY];
         }
 
         // Sanitize

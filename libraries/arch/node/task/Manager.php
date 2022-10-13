@@ -117,7 +117,7 @@ class Manager implements arch\node\ITaskManager
         $context = $this->_getActiveContext();
         $token = $context->data->task->invoke->prepareTask($request);
 
-        return $context->http->redirect(
+        return Legacy::$http->redirect(
             $context->uri->directoryRequest(
                 '~/tasks/invoke?token='.$token,
                 $context->uri->backRequest(null, true)

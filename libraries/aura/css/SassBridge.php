@@ -85,7 +85,7 @@ class SassBridge implements ISassBridge
     {
         $path = $this->getCompiledPath();
 
-        $output = $this->context->http->fileResponse($path);
+        $output = Legacy::$http->fileResponse($path);
         $output->setContentType('text/css');
         $headers = $output->getHeaders();
 
@@ -104,7 +104,7 @@ class SassBridge implements ISassBridge
     {
         $path = $this->getCompiledPath().'.map';
 
-        $output = $this->context->http->fileResponse($path);
+        $output = Legacy::$http->fileResponse($path);
         $output->setContentType('application/json');
         $headers = $output->getHeaders();
 

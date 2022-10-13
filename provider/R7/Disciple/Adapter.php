@@ -55,12 +55,10 @@ class Adapter implements
         switch ($mode = Genesis::$kernel->getMode()) {
             case 'Http':
                 try {
-                    $context = Legacy::getContext();
-
                     return new GenericClient(
                         'http',
-                        $context->http->getRequest()->getIp(),
-                        $context->http->getUserAgent()
+                        Legacy::$http->getRequest()->getIp(),
+                        Legacy::$http->getUserAgent()
                     );
                 } catch (Throwable $e) {
                     return new GenericClient(

@@ -268,7 +268,7 @@ class Base implements INode, Dumpable
         $type = $this->context->location->getType();
 
         if (Genesis::$kernel->getMode() == 'Http') {
-            $mode = ucfirst(strtolower(Legacy::getHttpRequest()->getMethod()));
+            $mode = ucfirst(strtolower(Legacy::$http->getMethod()));
 
             if ($mode == 'Head') {
                 $mode = 'Get';
@@ -311,7 +311,7 @@ class Base implements INode, Dumpable
     {
         if ($this->context->request->getType() == 'Htm') {
             $request = clone $this->context->request->setType('Html');
-            return $this->context->http->redirect($request);
+            return Legacy::$http->redirect($request);
         }
 
         throw Exceptional::NotFound([
@@ -341,11 +341,11 @@ class Base implements INode, Dumpable
                 }
 
                 if ($output instanceof aura\view\IView) {
-                    return $this->http->ajaxResponse($output);
+                    return Legacy::$http->ajaxResponse($output);
                 } elseif ($output instanceof link\http\IResponse) {
                     return $output;
                 } elseif ($output !== null) {
-                    return $this->http->stringResponse(
+                    return Legacy::$http->stringResponse(
                         $this->data->toJson([
                             'node' => $this->request->getLiteralPathString(),
                             'content' => (string)$output

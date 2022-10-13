@@ -125,7 +125,7 @@ class Model extends axis\Model
 
             try {
                 if (Genesis::$kernel->getMode() === 'Http') {
-                    $request = Legacy::getHttpRequest()->getUrl();
+                    $request = Legacy::$http->getRequest()->getUrl();
                 } else {
                     $request = Legacy::getContext()->request;
                 }
@@ -141,7 +141,7 @@ class Model extends axis\Model
 
             if ($request instanceof link\http\IUrl) {
                 $url = (string)$request;
-                $router = Legacy::getHttpRouter();
+                $router = Legacy::$http->getRouter();
                 $request = new core\uri\Url($request->getLocalString());
                 unset($request->query->cts);
                 $router->getRootMap()->mapPath($request->path);
@@ -173,7 +173,7 @@ class Model extends axis\Model
     public function getLogReferrer()
     {
         if (Genesis::$kernel->getMode() === 'Http') {
-            return Legacy::getContext()->http->getReferrer();
+            return Legacy::$http->getReferrer();
         }
 
         return null;

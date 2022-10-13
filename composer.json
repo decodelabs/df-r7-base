@@ -73,6 +73,12 @@
     "scripts": {
         "analyze": "phpstan analyze",
         "clear-phpstan": "phpstan clear-result-cache",
-        "veneer-stub": "vendor/bin/veneer-stub"
+        "veneer-stub": "php tests/veneer-stub.php",
+        "check": [
+            "@composer update",
+            "@veneer-stub",
+            "@clear-phpstan",
+            "@analyze"
+        ]
     }
 }

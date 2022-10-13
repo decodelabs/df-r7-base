@@ -3,20 +3,18 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\directory\shared\tasks\_nodes;
 
-use df;
-use df\core;
-use df\apex;
 use df\arch;
-use df\halo;
 
-use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Deliverance;
+use DecodeLabs\R7\Legacy;
+use DecodeLabs\Terminus as Cli;
 
 class HttpInvoke extends arch\node\Base
 {
-    const DEFAULT_ACCESS = arch\IAccess::ALL;
+    public const DEFAULT_ACCESS = arch\IAccess::ALL;
 
     public function executeAsHtml()
     {
@@ -28,7 +26,7 @@ class HttpInvoke extends arch\node\Base
 
     public function executeAsStream()
     {
-        return $this->http->generator('text/plain; charset=UTF-8', function ($generator) {
+        return Legacy::$http->generator('text/plain; charset=UTF-8', function ($generator) {
             $generator->headers->set('X-Accel-Buffering', 'no');
 
             $invoke = $this->data->task->invoke->authorize($this->request['token']);

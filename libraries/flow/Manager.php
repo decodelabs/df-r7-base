@@ -812,7 +812,7 @@ class Manager implements IManager, core\IShutdownAware
 
                 if (
                     Genesis::$kernel->getMode() == 'Http' &&
-                    !$context->http->isAjaxRequest()
+                    !Legacy::$http->isAjaxRequest()
                 ) {
                     $this->_flashDisabled = false;
                 } else {

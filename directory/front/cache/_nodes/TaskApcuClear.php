@@ -52,7 +52,7 @@ class TaskApcuClear extends arch\node\Task
         }
 
         if ($isHttp) {
-            $router = Legacy::getHttpRouter();
+            $router = Legacy::$http->getRouter();
             $url = clone $router->getRootUrl();
             $url->path->push('/cache/apcu-clear.json');
             $url->query->import($this->request->query);

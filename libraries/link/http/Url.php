@@ -210,7 +210,7 @@ class Url extends core\uri\Url implements IUrl
             unset($path[0]);
 
             if (Genesis::$kernel->getMode() === 'Http') {
-                $requestUrl = Legacy::getHttpRequest()->getUrl();
+                $requestUrl = Legacy::$http->getRequest()->getUrl();
 
                 $this->_scheme = $requestUrl->getScheme();
                 $this->_username = $requestUrl->getUsername();

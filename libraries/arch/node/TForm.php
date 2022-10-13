@@ -6,18 +6,17 @@
 
 namespace df\arch\node;
 
-use df;
 use df\core;
 use df\arch;
 use df\aura;
 use df\opal;
-use df\mesh;
 use df\link;
 
 use df\arch\scaffold\Loader as ScaffoldLoader;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch;
+use DecodeLabs\R7\Legacy;
 
 // BASE
 trait TForm
@@ -370,7 +369,7 @@ trait TForm
 
     protected function _getCompleteRedirect($default=null, $success=true)
     {
-        return $this->http->defaultRedirect(
+        return Legacy::$http->defaultRedirect(
             $default,
             $success,
             $this->_state->referrer ?? null,
@@ -823,7 +822,7 @@ trait TForm_ValueListSelectorDelegate
     protected function onClearEvent()
     {
         unset($this->values->selected);
-        return $this->http->redirect('#'.$this->elementId('selector'));
+        return Legacy::$http->redirect('#'.$this->elementId('selector'));
     }
 
     protected function onRemoveEvent($id)

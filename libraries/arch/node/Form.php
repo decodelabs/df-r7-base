@@ -118,7 +118,7 @@ abstract class Form extends Base implements IFormNode
             $request = clone $this->request;
             unset($request->query->reset);
 
-            return $this->http->redirect($request);
+            return Legacy::$http->redirect($request);
         }
 
         $response = $this->initWithSession();
@@ -147,14 +147,14 @@ abstract class Form extends Base implements IFormNode
 
 
         if ($this->_state->isNew()) {
-            if (($referrer = $this->http->getReferrerDirectoryRequest())
+            if (($referrer = Legacy::$http->getReferrerDirectoryRequest())
             && $referrer->matches($this->request)) {
                 $referrer = null;
             }
 
             $this->_state->referrer = $referrer;
 
-            $method = $this->http->getMethod();
+            $method = Legacy::$http->getMethod();
 
             if (!$this->_state->isOperating) {
                 $this->_state->isOperating = $method != 'get' && $method != 'head';
@@ -364,7 +364,7 @@ abstract class Form extends Base implements IFormNode
         $response = $this->event->getResponse();
 
         if (empty($response)) {
-            $response = $this->http->redirect()->isAlternativeContent(true);
+            $response = Legacy::$http->redirect()->isAlternativeContent(true);
         }
 
         return $response;
@@ -375,7 +375,7 @@ abstract class Form extends Base implements IFormNode
     // JSON Request
     public function handleJsonGetRequest()
     {
-        return $this->http->jsonResponse($this->_getJsonResponseData());
+        return Legacy::$http->jsonResponse($this->_getJsonResponseData());
     }
 
     public function handleJsonPostRequest()
@@ -387,7 +387,7 @@ abstract class Form extends Base implements IFormNode
             $data['redirect'] = $this->uri($this->event->getRedirect());
         }
 
-        return $this->http->jsonResponse($data);
+        return Legacy::$http->jsonResponse($data);
     }
 
     private function _getJsonResponseData()
@@ -412,7 +412,7 @@ abstract class Form extends Base implements IFormNode
     // AJAX Request
     public function handleAjaxGetRequest()
     {
-        return $this->http->jsonResponse($this->_getAjaxResponseData());
+        return Legacy::$http->jsonResponse($this->_getAjaxResponseData());
     }
 
     public function handleAjaxPostRequest()
@@ -421,7 +421,7 @@ abstract class Form extends Base implements IFormNode
             $this->_runPostRequest();
         }
 
-        return $this->http->jsonResponse($this->_getAjaxResponseData());
+        return Legacy::$http->jsonResponse($this->_getAjaxResponseData());
     }
 
     private function _getAjaxResponseData()
@@ -441,7 +441,7 @@ abstract class Form extends Base implements IFormNode
         }
 
         if ($content === null && $loadUi) {
-            $content = $this->http->getAjaxViewContent($this->_renderHtmlGetRequest());
+            $content = Legacy::$http->getAjaxViewContent($this->_renderHtmlGetRequest());
         }
 
         $redirect = $this->event->hasRedirect() ?
@@ -470,8 +470,7 @@ abstract class Form extends Base implements IFormNode
     private function _runPostRequest(core\collection\ITree $postData=null)
     {
         if ($postData === null) {
-            $httpRequest = Legacy::getHttpRequest();
-            $postData = clone $httpRequest->getPostData();
+            $postData = clone Legacy::$http->getPostData();
         }
 
         $event = null;
@@ -626,7 +625,7 @@ abstract class Form extends Base implements IFormNode
     // Node dispatch
     public function getDispatchMethodName(): ?string
     {
-        $method = ucfirst(strtolower(Legacy::getHttpRequest()->getMethod()));
+        $method = ucfirst(strtolower(Legacy::$http->getMethod()));
 
         if ($method == 'Head') {
             $method = 'Get';
@@ -642,13 +641,13 @@ abstract class Form extends Base implements IFormNode
     {
         if ($this->context->request->getType() == 'Htm') {
             $request = clone $this->context->request->setType('Html');
-            return $this->context->http->redirect($request)
+            return Legacy::$http->redirect($request)
                 ->isPermanent(true);
         }
 
         throw Exceptional::BadRequest([
             'message' => 'Form node '.$this->context->location->getLiteralPath().' does not support '.
-                Legacy::getHttpRequest()->getMethod().' http method',
+                Legacy::$http->getMethod().' http method',
             'http' => 405
         ]);
     }

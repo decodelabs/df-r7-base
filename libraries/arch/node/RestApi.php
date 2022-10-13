@@ -22,14 +22,6 @@ abstract class RestApi extends Base implements IRestApiNode
     public const CORS = false;
     public const REGENERATE_ACCESS_TOKEN = false;
 
-    protected $_httpRequest;
-
-    public function dispatch()
-    {
-        $this->_httpRequest = Legacy::getHttpRequest();
-        return parent::dispatch();
-    }
-
     public function getDispatchMethodName(): ?string
     {
         return '_handleRequest';
@@ -39,7 +31,7 @@ abstract class RestApi extends Base implements IRestApiNode
     {
         $this->authorizeRequest();
 
-        $httpMethod = $this->_httpRequest->getMethod();
+        $httpMethod = Legacy::$http->getMethod();
         $func = 'execute'.ucfirst(strtolower($httpMethod)).'As'.$this->request->getType();
 
         if (!method_exists($this, $func)) {

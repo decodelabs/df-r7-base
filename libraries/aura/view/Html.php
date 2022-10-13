@@ -16,6 +16,7 @@ use DecodeLabs\Elementary\Style\Sheet as StyleSheet;
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Genesis;
 use DecodeLabs\Tagged;
+use DecodeLabs\R7\Legacy;
 
 class Html extends Base implements IHtmlView, Dumpable
 {
@@ -776,7 +777,7 @@ class Html extends Base implements IHtmlView, Dumpable
         }
 
         if (Genesis::$kernel->getMode() == 'Http') {
-            if ($this->context->http->isAjaxRequest()) {
+            if (Legacy::$http->isAjaxRequest()) {
                 $this->_shouldRenderBase = false;
             }
         }

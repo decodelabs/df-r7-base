@@ -6,18 +6,14 @@
 
 namespace df\fire\block;
 
-use DecodeLabs\Dictum;
-use df;
-use df\core;
-use df\fire;
 use df\arch;
-use df\apex;
-use df\flex;
 use df\aura;
 
-use DecodeLabs\Tagged as Html;
+use DecodeLabs\Dictum;
+use DecodeLabs\R7\Legacy;
 use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
+use DecodeLabs\Tagged as Html;
 
 class LibraryImage extends Base
 {
@@ -207,7 +203,7 @@ class LibraryImage extends Base
                     $this->values->alt = $alt;
                 }
 
-                return $this->http->redirect('#'.$this->elementId('alt'));
+                return Legacy::$http->redirect('#'.$this->elementId('alt'));
             }
 
             public function apply()

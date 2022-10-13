@@ -6,7 +6,6 @@
 
 namespace df\plug;
 
-use df;
 use df\core;
 use df\arch;
 use df\axis;
@@ -16,6 +15,7 @@ use df\link;
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
 
 class Media implements arch\IDirectoryHelper
 {
@@ -131,7 +131,7 @@ class Media implements arch\IDirectoryHelper
         $isUrl = $filePath instanceof link\http\IUrl;
 
         if ($isUrl) {
-            $output = $this->context->http->redirect($filePath);
+            $output = Legacy::$http->redirect($filePath);
         } else {
             if (!is_file($filePath)) {
                 throw Exceptional::{'df/core/fs/NotFound'}([
@@ -140,7 +140,7 @@ class Media implements arch\IDirectoryHelper
                 ]);
             }
 
-            $output = $this->context->http->fileResponse($filePath)
+            $output = Legacy::$http->fileResponse($filePath)
                 ->setContentType($contentType)
                 ->setFileName($fileName, !$embed)
                 ;
@@ -210,7 +210,7 @@ class Media implements arch\IDirectoryHelper
         $location = $descriptor->getLocation();
 
         if (!$descriptor->isLocal()) {
-            $output = $this->context->http->redirect($location);
+            $output = Legacy::$http->redirect($location);
         } else {
             if ($transformation !== null) {
                 $namePath = core\uri\Path::factory($fileName);
@@ -220,7 +220,7 @@ class Media implements arch\IDirectoryHelper
                 );
             }
 
-            $output = $this->context->http->fileResponse($location)
+            $output = Legacy::$http->fileResponse($location)
                 ->setContentType($descriptor->getContentType())
                 ->setFileName($descriptor->getFileName());
 
@@ -247,7 +247,7 @@ class Media implements arch\IDirectoryHelper
                 break;
         }
 
-        $output = $this->context->http->stringResponse($file, $contentType)
+        $output = Legacy::$http->stringResponse($file, $contentType)
             ->setFileName($fileName);
 
         $output->getHeaders()

@@ -303,9 +303,11 @@ class EventDescriptor implements arch\node\IFormEventDescriptor
 
     public function getResponse()
     {
-        if ($this->_response === null
-        && $this->hasRedirect()) {
-            $this->_response = Legacy::getContext()->http->redirect($this->_redirect);
+        if (
+            $this->_response === null &&
+            $this->hasRedirect()
+        ) {
+            $this->_response = Legacy::$http->redirect($this->_redirect);
         }
 
         return $this->_response;
