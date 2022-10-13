@@ -22,7 +22,7 @@ class TaskRebuildTable extends arch\node\Task
     public function prepareArguments(): array
     {
         Cli::getCommandDefinition()
-            ->addArgument('unit', 'Unit to purge')
+            ->addArgument('?unit', 'Unit to purge')
             ->addArgument('-delete|d', 'Delete backup');
 
         return Cli::prepareArguments();

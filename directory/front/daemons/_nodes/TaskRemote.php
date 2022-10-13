@@ -21,8 +21,8 @@ class TaskRemote extends arch\node\Task
     public function prepareArguments(): array
     {
         Cli::getCommandDefinition()
-            ->addArgument('daemon', 'Daemon name')
-            ->addArgument('command', 'Command to call');
+            ->addArgument('?daemon', 'Daemon name')
+            ->addArgument('?command', 'Command to call');
 
         return Cli::prepareArguments();
     }
