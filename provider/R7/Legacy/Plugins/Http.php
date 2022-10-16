@@ -144,6 +144,22 @@ class Http
 
 
 
+    /**
+     * Get DF self key
+     */
+    public function getDfSelfKey(): string
+    {
+        return md5($this->helper->getPassKey());
+    }
+
+    /**
+     * Is DF self
+     */
+    public function isDfSelf(): bool
+    {
+        return $this->getHeader('x-df-self') === $this->getDfSelfKey();
+    }
+
 
     /**
      * Get URL

@@ -234,7 +234,7 @@ class Router implements core\IRegistryObject
     }
 
 
-    public function applyBaseMapToRelativeRequest(arch\IRequest $request)
+    public function applyBaseMapToRelativeRequest(Request $request)
     {
         if (!$this->_baseMap) {
             return $request;
@@ -260,7 +260,7 @@ class Router implements core\IRegistryObject
         return $this->_routeMatchCount;
     }
 
-    public function requestToUrl(arch\IRequest $request)
+    public function requestToUrl(Request $request)
     {
         $origRequest = $request;
         $request = $this->routeOut(clone $request);
@@ -316,7 +316,7 @@ class Router implements core\IRegistryObject
         return $request;
     }
 
-    public function routeIn(arch\IRequest $request)
+    public function routeIn(Request $request): Request
     {
         $this->_routeCount++;
         $location = $request->getDirectoryLocation();
@@ -333,7 +333,7 @@ class Router implements core\IRegistryObject
             $this->_routeMatchCount++;
             $output = $router->routeIn($request);
 
-            if ($output instanceof arch\IRequest) {
+            if ($output instanceof Request) {
                 $request = $output;
             }
         }
@@ -341,7 +341,7 @@ class Router implements core\IRegistryObject
         return $request;
     }
 
-    public function routeOut(arch\IRequest $request)
+    public function routeOut(Request $request)
     {
         $this->_routeCount++;
         $location = $request->getDirectoryLocation();
@@ -350,7 +350,7 @@ class Router implements core\IRegistryObject
             $this->_routeMatchCount++;
             $output = $router->routeOut($request);
 
-            if ($output instanceof arch\IRequest) {
+            if ($output instanceof Request) {
                 $request = $output;
             }
         }
@@ -358,7 +358,7 @@ class Router implements core\IRegistryObject
         return $request;
     }
 
-    protected function _getRouterFor(arch\IRequest $request, string $location): ?arch\IRouter
+    protected function _getRouterFor(Request $request, string $location): ?arch\IRouter
     {
         if (isset($this->_routerCache[$location])) {
             return $this->_routerCache[$location];
@@ -623,7 +623,7 @@ class Router_Map
         return $output;
     }
 
-    public function mapArea(arch\IRequest $request)
+    public function mapArea(Request $request)
     {
         if ($this->area !== '*' && $this->area !== 'front') {
             $path = $request->getPath();

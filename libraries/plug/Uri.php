@@ -29,7 +29,7 @@ class Uri implements arch\IDirectoryHelper
 
     protected $_defaultTheme;
 
-    public function requestToUrl(arch\IRequest $request)
+    public function requestToUrl(arch\Request $request)
     {
         return Legacy::$http->getRouter()
             ->requestToUrl($request);

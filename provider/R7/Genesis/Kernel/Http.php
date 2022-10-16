@@ -124,10 +124,10 @@ class Http implements Kernel
     public function run(): void
     {
         try {
-            $ip = $this->httpRequest->getIp();
             $request = $this->router->prepareDirectoryRequest($this->httpRequest);
             $this->prepareHttpRequest();
 
+            $ip = $this->httpRequest->getIp();
             $this->enforceCredentials($ip);
             $this->checkIpRanges($ip, $request);
 
@@ -187,20 +187,13 @@ class Http implements Kernel
             $credentials === null ||
             !isset($credentials['username']) ||
             !isset($credentials['password']) ||
-            $ip->isLoopback()
+            $ip->isLoopback() ||
+            Legacy::$http->isDfSelf()
         ) {
             return true;
         }
 
-        // Check for passthrough header
-        if ($this->httpRequest->getHeaders()->has('x-df-self')) {
-            $key = $this->httpRequest->getHeaders()->get('x-df-self');
-
-            if ($key === md5(Legacy::getPassKey())) {
-                return true;
-            }
-        }
-
+        // Check credentials
         if (
             !isset($_SERVER['PHP_AUTH_USER']) ||
             $_SERVER['PHP_AUTH_USER'] != $credentials['username'] ||
@@ -222,17 +215,11 @@ class Http implements Kernel
      */
     protected function checkIpRanges(
         Ip $ip,
-        Request $request=null
+        Request $request
     ): void {
         // Get ranges from config
         $config = HttpConfig::getInstance();
-
-        if ($request) {
-            $ranges = $config->getIpRangesForArea($request->getArea());
-        } else {
-            $ranges = $config->getIpRanges();
-        }
-
+        $ranges = $config->getIpRangesForArea($request->getArea());
 
         if (empty($ranges)) {
             return;
@@ -240,12 +227,8 @@ class Http implements Kernel
 
 
         // Check for passthrough header
-        if ($this->httpRequest->getHeaders()->has('x-df-self')) {
-            $key = $this->httpRequest->getHeaders()->get('x-df-self');
-
-            if ($key === md5(Legacy::getPassKey())) {
-                return;
-            }
+        if (Legacy::$http->isDfSelf()) {
+            return;
         }
 
 
@@ -279,47 +262,45 @@ class Http implements Kernel
         }
 
 
-        // Apply request
-        if ($request) {
-            // Test for passthrough requests
-            if ($request->matches('.well-known/pki-validation/')) {
+        // Test for passthrough requests
+        if ($request->matches('.well-known/pki-validation/')) {
+            return;
+        }
+
+        // Authenticate
+        if (
+            isset($request['authenticate']) &&
+            !isset($_COOKIE['ipbypass'])
+        ) {
+            setcookie('ipbypass', '1');
+        }
+
+        if (
+            isset($request['authenticate']) ||
+            isset($_SERVER['PHP_AUTH_USER']) ||
+            isset($_COOKIE['ipbypass'])
+        ) {
+            $context = new Context($request);
+            static $salt = '3efcf3200384a9968a58841812d78f94d88a61b2e0cc57849a19707e0ebed065';
+            static $username = 'e793f732b58b8c11ae4048214f9171392a864861d35c0881b3993d12001a78b0';
+            static $password = '016ede424aa10ae5895c21c33d200c7b08aa33d961c05c08bfcf946cb7c53619';
+
+            if (
+                isset($_SERVER['PHP_AUTH_USER']) &&
+                $context->data->hexHash($_SERVER['PHP_AUTH_USER'], $salt) == $username &&
+                $context->data->hexHash($_SERVER['PHP_AUTH_PW'], $salt) == $password
+            ) {
                 return;
-            }
-
-            // Authenticate
-            if (
-                isset($request['authenticate']) &&
-                !isset($_COOKIE['ipbypass'])
-            ) {
-                setcookie('ipbypass', '1');
-            }
-
-            if (
-                isset($request['authenticate']) ||
-                isset($_SERVER['PHP_AUTH_USER']) ||
-                isset($_COOKIE['ipbypass'])
-            ) {
-                $context = new Context($request);
-                static $salt = '3efcf3200384a9968a58841812d78f94d88a61b2e0cc57849a19707e0ebed065';
-                static $username = 'e793f732b58b8c11ae4048214f9171392a864861d35c0881b3993d12001a78b0';
-                static $password = '016ede424aa10ae5895c21c33d200c7b08aa33d961c05c08bfcf946cb7c53619';
-
-                if (
-                    isset($_SERVER['PHP_AUTH_USER']) &&
-                    $context->data->hexHash($_SERVER['PHP_AUTH_USER'], $salt) == $username &&
-                    $context->data->hexHash($_SERVER['PHP_AUTH_PW'], $salt) == $password
-                ) {
-                    return;
-                } else {
-                    header('WWW-Authenticate: Basic realm="Private Site"');
-                    header('HTTP/1.0 401 Unauthorized');
-                    echo 'You need to authenticate to view this site';
-                    exit;
-                }
+            } else {
+                header('WWW-Authenticate: Basic realm="Private Site"');
+                header('HTTP/1.0 401 Unauthorized');
+                echo 'You need to authenticate to view this site';
+                exit;
             }
         }
 
 
+        // Not resolved
         $url = clone Legacy::$http->getUrl();
         $url->query->authenticate = null;
 

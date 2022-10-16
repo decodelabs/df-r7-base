@@ -78,7 +78,7 @@ class TaskApcuClear extends arch\node\Task
                     'verify' => false,
                     'auth' => $auth,
                     'headers' => [
-                        'x-df-self' => md5(apex\App::PASS_KEY)
+                        'x-df-self' => Legacy::$http->getDfSelfKey()
                     ]
                 ]);
             } catch (\Exception $e) {

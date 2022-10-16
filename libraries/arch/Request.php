@@ -25,14 +25,14 @@ class Request extends core\uri\Url implements IRequest, Dumpable
     protected $_defaultAccess = null;
     protected $_accessSignifiers = null;
 
-    public static function factory($url): IRequest
+    public static function factory($url): static
     {
         if ($url instanceof IRequest) {
+            /** @var static $url */
             return $url;
         }
 
-        $class = get_called_class();
-        return new $class($url);
+        return new static($url);
     }
 
     public function import($url='')

@@ -149,7 +149,7 @@ class Handler implements IHandler
         }
 
         $request->setMethod($method);
-        //$request->getHeaders()->set('x-df-self', md5(Legacy::getPassKey()));
+        //$request->getHeaders()->set('x-df-self', Legacy::$http->getDfSelfKey());
 
         return $request;
     }
