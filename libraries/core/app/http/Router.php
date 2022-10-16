@@ -4,14 +4,19 @@
  * @license http://opensource.org/licenses/MIT
  */
 
-namespace df\core\app\runner\http;
+namespace df\core\app\http;
 
 use df;
 use df\core;
 use df\arch;
 use df\link;
 
+use df\arch\ForcedResponse;
+use df\arch\Request;
+use df\link\http\IRequest as HttpRequest;
+
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy;
 
 class Router implements core\IRegistryObject
@@ -395,6 +400,150 @@ class Router implements core\IRegistryObject
         }
 
         return $this->_rootNodeRouter;
+    }
+
+
+
+
+    /**
+     * Prepare directory request
+     */
+    public function prepareDirectoryRequest(
+        HttpRequest $httpRequest
+    ): Request {
+        $pathValid = $valid = true;
+        $redirectPath = '/';
+
+        $url = $httpRequest->getUrl();
+        $path = clone $url->getPath();
+
+        if (!$map = $this->lookupDomain($url->getDomain())) {
+            $tempMap = $this->getRootMap();
+
+            if (!$tempMap->mapPath($path)) {
+                $pathValid = false;
+            }
+
+            $valid = false;
+        } else {
+            if (
+                $map->mappedDomain !== null &&
+                $map->mappedDomain !== $url->getDomain()
+            ) {
+                $valid = false;
+            }
+
+            $this->setBase($map);
+
+            if (!$map->mapPath($path)) {
+                $pathValid = $valid = false;
+            }
+
+            if (
+                $pathValid &&
+                $valid &&
+                $map->area === '*'
+            ) {
+                $area = (string)$path->get(0);
+
+                if (substr($area, 0, 1) != '~') {
+                    $area = 'front';
+                } else {
+                    $area = substr($area, 1);
+                }
+
+                $mapOut = $this->getMapOut($area);
+
+                if (
+                    $mapOut &&
+                    $mapOut->area !== $map->area
+                ) {
+                    $valid = false;
+                }
+            }
+        }
+
+        if (
+            $pathValid &&
+            !$path->isEmpty()
+        ) {
+            $redirectPath = (string)$path;
+        }
+
+        if (!$valid) {
+            $redirectRequest = (new Request($redirectPath))
+                ->setQuery($url->getQuery());
+
+            if (
+                $map &&
+                $map->area !== '*'
+            ) {
+                $redirectRequest->setArea($map->area);
+                $redirectRequest->query->{$map->area} = $map->mappedKey;
+            }
+
+            $baseUrl = $this->requestToUrl($redirectRequest);
+
+            if ($this->shouldUseHttps()) {
+                $baseUrl->isSecure(true);
+            }
+
+            $baseUrl = (string)$baseUrl;
+
+            if (Genesis::$environment->isDevelopment()) {
+                $response = Legacy::$http->stringResponse(
+                    '<html><head><title>Bad request</title></head><body>'.
+                    '<p>Sorry, you are not in the right place!</p>'.
+                    '<p>Go here instead: <a href="'.$baseUrl.'">'.$baseUrl.'</a></p>',
+                    'text/html'
+                );
+
+                $response->getHeaders()->setStatusCode(404);
+            } else {
+                $response = Legacy::$http->redirect($baseUrl);
+                $response->isPermanent(true);
+            }
+
+            throw new ForcedResponse($response);
+        }
+
+
+        // Build init request
+        $request = new Request();
+
+        if ($path !== null) {
+            if (preg_match('/^\~[a-zA-Z0-9_]+$/i', (string)$path)) {
+                $orig = (string)$url;
+                $url->getPath()->shouldAddTrailingSlash(true);
+
+                if ((string)$url != $orig) {
+                    $response = Legacy::$http->redirect($url);
+                    //$response->isPermanent(true);
+                    throw new ForcedResponse($response);
+                }
+            }
+
+            $request->setPath($path);
+        }
+
+        $map->mapArea($request);
+
+        if ($url->hasQuery()) {
+            $request->setQuery(clone $url->getQuery());
+        }
+
+        if ($map->mappedKey) {
+            $request->query->{$map->area} = $map->mappedKey;
+        }
+
+        $request->setFragment($url->getFragment());
+
+        if ($httpRequest->getHeaders()->has('x-ajax-request-type')) {
+            $request->setType($httpRequest->getHeaders()->get('x-ajax-request-type'));
+        }
+
+        $request = $this->routeIn($request);
+        return $request;
     }
 }
 

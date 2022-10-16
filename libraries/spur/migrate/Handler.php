@@ -89,7 +89,7 @@ class Handler implements IHandler
             $this->_url->setPassword($url->getPassword());
         }
 
-        $this->_router = new core\app\runner\http\Router($this->_url);
+        $this->_router = new core\app\http\Router($this->_url);
     }
 
 

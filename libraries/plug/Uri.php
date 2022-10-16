@@ -410,7 +410,7 @@ class Uri implements arch\IDirectoryHelper
 
         if ($url instanceof arch\IRequest) {
             $url = $this->__invoke($url);
-            $config = core\app\runner\http\Config::getInstance();
+            $config = core\app\http\Config::getInstance();
             $credentials = $config->getCredentials(Genesis::$environment->getMode());
 
             $options = [

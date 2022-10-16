@@ -57,7 +57,7 @@ class TaskApcuClear extends arch\node\Task
             $url->path->push('/cache/apcu-clear.json');
             $url->query->import($this->request->query);
 
-            $config = core\app\runner\http\Config::getInstance();
+            $config = core\app\http\Config::getInstance();
             $credentials = $config->getCredentials(Genesis::$environment->getMode());
 
             //Cli::info($url);

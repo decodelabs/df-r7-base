@@ -4,7 +4,7 @@
  * @license http://opensource.org/licenses/MIT
  */
 
-namespace df\core\app\runner\http;
+namespace df\core\app\http;
 
 use df;
 use df\core;

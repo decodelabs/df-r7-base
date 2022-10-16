@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\plug;
 
 use df;
@@ -17,7 +18,7 @@ class Avatar implements arch\IDirectoryHelper
 {
     use arch\TDirectoryHelper;
 
-    const GRAVATAR_BASE = '//www.gravatar.com/avatar/';
+    public const GRAVATAR_BASE = '//www.gravatar.com/avatar/';
 
     public function getClientAvatarUrl($size=null)
     {
@@ -74,7 +75,7 @@ class Avatar implements arch\IDirectoryHelper
                 $path = new core\uri\Path($path);
                 $this->_defaultImageUrl = $this->context->uri->__invoke('avatar/download?user=default&type='.$path->getExtension());
 
-                $config = core\app\runner\http\Config::getInstance();
+                $config = core\app\http\Config::getInstance();
 
                 if ($credentials = $config->getCredentials()) {
                     $this->_defaultImageUrl->setCredentials(

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flow\mail;
 
 use df;
@@ -16,7 +17,7 @@ use DecodeLabs\Exceptional;
 
 class Config extends core\Config
 {
-    const ID = 'mail';
+    public const ID = 'mail';
 
     public function getDefaultValues(): array
     {
@@ -148,7 +149,7 @@ class Config extends core\Config
     protected function _getDefaultAdminAddress()
     {
         $name = Systemic::$process->getCurrent()->getOwnerName();
-        $rootUrl = core\app\runner\http\Config::getInstance()->getRootUrl();
+        $rootUrl = core\app\http\Config::getInstance()->getRootUrl();
 
         if ($rootUrl) {
             $domain = (new link\http\Url($rootUrl))->getDomain();

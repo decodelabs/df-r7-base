@@ -145,7 +145,7 @@ class Manager implements IManager, core\IShutdownAware
             if (isset($_SERVER['SERVER_NAME'])) {
                 $domain = $_SERVER['SERVER_NAME'];
             } else {
-                if ($url = core\app\runner\http\Config::getInstance()->getRootUrl()) {
+                if ($url = core\app\http\Config::getInstance()->getRootUrl()) {
                     $domain = df\link\http\Url::factory($url)->getDomain();
                 }
             }

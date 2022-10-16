@@ -10,12 +10,13 @@ namespace DecodeLabs\R7\Legacy\Plugins;
 use df\arch\Request;
 use df\arch\IAjaxDataProvider as AjaxDataProvider;
 use df\aura\view\IView as View;
-use df\core\app\runner\http\Router as HttpRouter;
+use df\core\app\http\Router as HttpRouter;
 use df\core\collection\Tree;
 use df\core\time\Date;
 use df\flex\csv\Builder as CsvBuilder;
 use df\link\http\ICookie;
 use df\link\http\IRequest as HttpRequest;
+use df\link\http\request\Base as HttpRequestBase;
 use df\link\http\response\Augmentor as HttpResponseAugmentor;
 use df\link\http\response\File as FileResponse;
 use df\link\http\response\Generator as GeneratorResponse;
@@ -47,6 +48,19 @@ class Http
     public function __construct(Helper $helper)
     {
         $this->helper = $helper;
+    }
+
+
+    /**
+     * Initialize request from environment
+     */
+    public function initializeRequest(): HttpRequest
+    {
+        if (!$this->request) {
+            $this->request = new HttpRequestBase(null, true);
+        }
+
+        return $this->request;
     }
 
     /**

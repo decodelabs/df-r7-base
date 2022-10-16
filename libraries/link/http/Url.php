@@ -21,7 +21,7 @@ class Url extends core\uri\Url implements IUrl
 
     protected $_directoryRequest;
 
-    public static function fromDirectoryRequest(arch\IRequest $request, $scheme, core\app\runner\http\Router_Map $map=null, arch\IRequest $routedRequest=null)
+    public static function fromDirectoryRequest(arch\IRequest $request, $scheme, core\app\http\Router_Map $map=null, arch\IRequest $routedRequest=null)
     {
         if ($request->isJustFragment()) {
             $output = new self('#'.$request->getFragment());
