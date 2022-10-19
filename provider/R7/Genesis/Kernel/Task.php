@@ -35,7 +35,13 @@ class Task implements Kernel
      */
     public function initialize(): void
     {
-        Terminus::getCommandDefinition()
+        $def = Terminus::getCommandDefinition();
+
+        if (strtolower((string)($_SERVER['argv'][1] ?? '')) === 'task') {
+            $def->addArgument('initiator', 'Initiator');
+        }
+
+        $def
             ->addArgument('task', 'Task path')
             ->addArgument('--df-source', 'Source mode');
 
