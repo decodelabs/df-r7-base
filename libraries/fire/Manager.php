@@ -62,16 +62,10 @@ class Manager implements IManager
         $this->_categories = [];
         $blockIndex = [];
 
-        foreach ((function () {
-            yield from Legacy::getLoader()->lookupClassList('fire/Category');
+        foreach (Archetype::scanClasses(fire\Category::class) as $path => $class) {
+            $parts = explode('\\', $class);
+            $name = array_pop($parts);
 
-            foreach (Archetype::scanClasses(fire\Category::class) as $path => $class) {
-                $parts = explode('\\', $class);
-                $name = array_pop($parts);
-
-                yield $name => $class;
-            }
-        })() as $name => $class) {
             try {
                 $category = fire\Category\Base::factory($name);
             } catch (\Throwable $e) {
