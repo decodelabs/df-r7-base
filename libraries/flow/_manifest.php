@@ -13,7 +13,7 @@ use df\user;
 
 interface IManager extends core\IManager
 {
-// Mail
+    // Mail
     public function sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null);
     public function forceSendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null);
 
@@ -30,7 +30,7 @@ interface IManager extends core\IManager
     public function getListAdapterSettingsFields(string $adapter): array;
     public function getListOptions(): array;
     public function getListGroupOptions(): array;
-    public function clearListCache();
+    public function refreshListCache(): void;
 
     public function getListExternalLinkFor($source, string $listId=null): ?string;
 

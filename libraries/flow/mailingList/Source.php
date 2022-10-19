@@ -63,8 +63,7 @@ class Source implements ISource
             $manifest = $this->_getManifestFromStore();
 
             if (($manifest['__manifest_version__'] ?? null) !== self::MANIFEST_VERSION) {
-                $this->_clearManifestStore();
-                $manifest = $this->_getManifestFromStore();
+                $manifest = $this->refetchManifest();
             }
 
             unset($manifest['__manifest_version__']);
@@ -74,22 +73,31 @@ class Source implements ISource
         return $manifest;
     }
 
+    public function refetchManifest(): array
+    {
+        $store = ApiStore::getInstance();
+
+        try {
+            $manifest = $this->_adapter->fetchManifest();
+        } catch (\Throwable $e) {
+            throw Exceptional::Api([
+                'message' => 'Unable to fetch manifest from adapter',
+                'previous' => $e
+            ]);
+        }
+
+        $manifest = $this->_normalizeManifest($manifest);
+        $store->set($this->_id, serialize($manifest));
+
+        return $manifest;
+    }
+
     protected function _getManifestFromStore(): array
     {
         $store = ApiStore::getInstance();
 
-        if (!$manifestFile = $store->get($this->_id, '2 days')) {
-            try {
-                $manifest = $this->_adapter->fetchManifest();
-            } catch (\Throwable $e) {
-                throw Exceptional::Api([
-                    'message' => 'Unable to fetch manifest from adapter',
-                    'previous' => $e
-                ]);
-            }
-
-            $manifest = $this->_normalizeManifest($manifest);
-            $store->set($this->_id, serialize($manifest));
+        if (!$manifestFile = $store->get($this->_id, '2 months')) {
+            $manifest = $this->refetchManifest();
         } else {
             $manifest = unserialize($manifestFile->getContents());
         }
@@ -156,6 +164,12 @@ class Source implements ISource
         $manifest['__manifest_version__'] = self::MANIFEST_VERSION;
 
         return $manifest;
+    }
+
+    public function getManifestTimestamp(): ?int
+    {
+        $store = ApiStore::getInstance();
+        return $store->getCreationTime($this->_id);
     }
 
 

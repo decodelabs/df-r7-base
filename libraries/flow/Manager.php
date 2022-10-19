@@ -419,13 +419,12 @@ class Manager implements IManager, core\IShutdownAware
         return $output;
     }
 
-    public function clearListCache()
+    public function refreshListCache(): void
     {
-        flow\mailingList\Cache::getInstance()->clear();
-        flow\mailingList\ApiStore::getInstance()->clear();
-        return $this;
+        foreach ($this->getListSources() as $source) {
+            $source->refetchManifest();
+        }
     }
-
 
 
 
