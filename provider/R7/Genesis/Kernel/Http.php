@@ -72,7 +72,7 @@ class Http implements Kernel
             false !== ($apache = apache_request_headers())
         ) {
             foreach ($apache as $key => $value) {
-                $_SERVER['HTTP_'.strtoupper(str_replace('-', '_', $key))] = $value;
+                $_SERVER['HTTP_'.strtoupper(str_replace('-', '_', (string)$key))] = $value;
             }
         }
 
