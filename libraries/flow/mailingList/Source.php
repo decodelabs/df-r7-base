@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flow\mailingList;
 
 use df;
@@ -15,7 +16,7 @@ use DecodeLabs\Exceptional;
 
 class Source implements ISource
 {
-    const MANIFEST_VERSION = 100;
+    public const MANIFEST_VERSION = 100;
 
     protected $_id;
     protected $_adapter;
@@ -77,7 +78,7 @@ class Source implements ISource
     {
         $store = ApiStore::getInstance();
 
-        if (!$manifestFile = $store->get($this->_id, '1 day')) {
+        if (!$manifestFile = $store->get($this->_id, '2 days')) {
             try {
                 $manifest = $this->_adapter->fetchManifest();
             } catch (\Throwable $e) {
