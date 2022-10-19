@@ -6,11 +6,9 @@
 
 namespace df\fire\slot;
 
-use df;
-use df\core;
 use df\fire;
-use df\aura;
-use df\arch;
+
+use DecodeLabs\R7\Nightfire\Category\Base as CategoryBase;
 
 class Definition implements fire\ISlotDefinition
 {
@@ -153,7 +151,7 @@ class Definition implements fire\ISlotDefinition
     // Category
     public function setCategory($category)
     {
-        $this->_category = fire\Category\Base::normalizeName($category);
+        $this->_category = CategoryBase::normalizeName($category);
         return $this;
     }
 

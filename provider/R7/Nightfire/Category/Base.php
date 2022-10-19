@@ -4,17 +4,15 @@
  * @license http://opensource.org/licenses/MIT
  */
 
-namespace df\fire\Category;
+namespace DecodeLabs\R7\Nightfire\Category;
 
-use df;
 use df\core;
 use df\fire;
-use df\aura;
 
-use df\fire\Category;
+use df\fire\IBlock as Block;
 
 use DecodeLabs\Archetype;
-use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Nightfire\Category;
 
 abstract class Base implements Category
 {
@@ -32,7 +30,10 @@ abstract class Base implements Category
         'audio' => 10
     ];
 
-    protected $_blocks = [];
+    /**
+     * @var array<string, bool>
+     */
+    protected array $_blocks = [];
 
     public static function factory(string $name): Category
     {
@@ -40,8 +41,9 @@ abstract class Base implements Category
         return new $class();
     }
 
-    public static function normalize($category): ?Category
-    {
+    public static function normalize(
+        string|Category|null $category
+    ): ?Category {
         if (
             $category instanceof Category ||
             $category === null
@@ -52,8 +54,9 @@ abstract class Base implements Category
         return static::factory($category);
     }
 
-    public static function normalizeName($category): ?string
-    {
+    public static function normalizeName(
+        string|Category|null $category
+    ): ?string {
         if ($category = self::normalize($category)) {
             return $category->getName();
         } else {
@@ -73,6 +76,9 @@ abstract class Base implements Category
         return $this->getName();
     }
 
+    /**
+     * @return array<string>
+     */
     public static function getDefaultBlockTypes(): array
     {
         return (array)static::DEFAULT_BLOCKS;
@@ -94,13 +100,13 @@ abstract class Base implements Category
         return null;
     }
 
-    public function setBlocks(array $blocks)
+    public function setBlocks(array $blocks): static
     {
         $this->_blocks = [];
         return $this->addBlocks($blocks);
     }
 
-    public function addBlocks(array $blocks)
+    public function addBlocks(array $blocks): static
     {
         foreach ($blocks as $block) {
             $this->addBlock($block);
@@ -109,8 +115,9 @@ abstract class Base implements Category
         return $this;
     }
 
-    public function addBlock($block)
-    {
+    public function addBlock(
+        string|Block $block
+    ): static {
         if ($block = fire\block\Base::normalize($block)) {
             $this->_blocks[$block->getName()] = true;
         }
@@ -128,7 +135,7 @@ abstract class Base implements Category
         return array_keys($this->_blocks);
     }
 
-    public function removeBlock(string $block)
+    public function removeBlock(string $block): static
     {
         unset($this->_blocks[ucfirst($block)]);
         return $this;

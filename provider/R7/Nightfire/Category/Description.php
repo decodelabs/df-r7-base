@@ -4,7 +4,7 @@
  * @license http://opensource.org/licenses/MIT
  */
 
-namespace df\fire\Category;
+namespace DecodeLabs\R7\Nightfire\Category;
 
 class Description extends Base
 {

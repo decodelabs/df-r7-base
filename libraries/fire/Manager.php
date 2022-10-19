@@ -11,6 +11,8 @@ use df\fire;
 
 use DecodeLabs\Archetype;
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\R7\Nightfire\Category;
+use DecodeLabs\R7\Nightfire\Category\Base as CategoryBase;
 
 class Manager implements IManager
 {
@@ -62,12 +64,16 @@ class Manager implements IManager
         $this->_categories = [];
         $blockIndex = [];
 
-        foreach (Archetype::scanClasses(fire\Category::class) as $path => $class) {
+        foreach (Archetype::scanClasses(Category::class) as $path => $class) {
             $parts = explode('\\', $class);
             $name = array_pop($parts);
 
+            if ($name === 'Base') {
+                continue;
+            }
+
             try {
-                $category = fire\Category\Base::factory($name);
+                $category = CategoryBase::factory($name);
             } catch (\Throwable $e) {
                 continue;
             }
@@ -171,7 +177,7 @@ class Manager implements IManager
             $output[$block->getFormat()][$block->getName()] = $block->getDisplayName();
         }
 
-        $formatWeights = fire\Category\Base::getFormatWeights();
+        $formatWeights = CategoryBase::getFormatWeights();
 
         uksort($output, function ($a, $b) use ($formatWeights) {
             return ($formatWeights[$a] ?? 0) <=> ($formatWeights[$b] ?? 0);
@@ -234,7 +240,7 @@ class Manager implements IManager
         if ($category = $this->getCategory($category)) {
             $formatWeights = $category->getFormatWeights();
         } else {
-            $formatWeights = fire\Category\Base::getFormatWeights();
+            $formatWeights = CategoryBase::getFormatWeights();
         }
 
         uksort($output, function ($a, $b) use ($formatWeights) {

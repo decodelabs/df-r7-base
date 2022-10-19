@@ -15,6 +15,7 @@ use df\apex;
 use df\flex;
 
 use DecodeLabs\Exemplar\Serializable as XmlSerializable;
+use DecodeLabs\R7\Nightfire\Category;
 
 // Manager
 interface IManager extends core\IManager

@@ -4,11 +4,14 @@
  * @license http://opensource.org/licenses/MIT
  */
 
-namespace df\fire;
+namespace DecodeLabs\R7\Nightfire;
+
+use df\fire\Category as FireCategory;
 
 use DecodeLabs\Archetype\Scanner;
 use DecodeLabs\Archetype\ScannerTrait;
 use DecodeLabs\R7\Legacy;
+
 use Generator;
 use ReflectionClass;
 
@@ -35,7 +38,22 @@ class CategoryArchetype implements Scanner
 
     public function resolve(string $name): ?string
     {
-        return Category::class.'\\'.$name;
+        $classes = [
+            FireCategory::class.'\\'.$name, /** @phpstan-ignore-line */
+            Category::class.'\\'.$name
+        ];
+
+        foreach (static::$namespaces as $namespace) {
+            $classes[] = $namespace.'\\'.$name;
+        }
+
+        foreach (array_reverse($classes) as $class) {
+            if (class_exists($class)) {
+                return $class;
+            }
+        }
+
+        return null;
     }
 
     public function scanClasses(): Generator
@@ -45,7 +63,9 @@ class CategoryArchetype implements Scanner
             yield $ref->getFileName() => $class;
         }
 
-        yield from $this->scanNamespaceClasses($this->getInterface());
+        yield from $this->scanNamespaceClasses(
+            Category::class
+        );
 
         foreach (static::$namespaces as $namespace) {
             yield from $this->scanNamespaceClasses($namespace);
