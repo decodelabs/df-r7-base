@@ -250,7 +250,7 @@ class Http
      */
     public function getPostData(): Tree
     {
-        return $this->getRequest()->getPostData();
+        return $this->getRequest()->getPostData() ?? new Tree();
     }
 
 
