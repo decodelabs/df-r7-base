@@ -22,7 +22,7 @@ interface IManager extends core\IManager
     public function getConfig(): Config;
 
     public function getCategories(): array;
-    public function getCategory(?string $name): ?ICategory;
+    public function getCategory(?string $name): ?Category;
 
     public function isBlockAvailable(string $name): bool;
     public function getAllBlocks(): array;
@@ -64,30 +64,6 @@ interface IBlockDelegate extends
     arch\node\IResultProviderDelegate
 {
 }
-
-
-
-// Category
-interface ICategory extends core\IStringProvider
-{
-    public static function factory(string $name): ICategory;
-    public static function normalize($category): ?ICategory;
-    public static function normalizeName($category): ?string;
-
-    public function getName(): string;
-
-    public static function getDefaultBlockTypes(): array;
-    public function getDefaultEditorBlockType(): ?string;
-    public static function getFormatWeights(): array;
-
-    public function setBlocks(array $blocks);
-    public function addBlocks(array $blocks);
-    public function addBlock($block);
-    public function hasBlock(string $block): bool;
-    public function getBlocks(): array;
-    public function removeBlock(string $block);
-}
-
 
 
 

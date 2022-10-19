@@ -3,23 +3,27 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\fire\category;
+
+namespace df\fire\Category;
 
 use df;
 use df\core;
 use df\fire;
 use df\aura;
 
+use df\fire\Category;
+
+use DecodeLabs\Archetype;
 use DecodeLabs\Exceptional;
 
-abstract class Base implements fire\ICategory
+abstract class Base implements Category
 {
     use core\TStringProvider;
 
-    const DEFAULT_BLOCKS = ['RawHtml'];
-    const DEFAULT_EDITOR_BLOCK = null;
+    public const DEFAULT_BLOCKS = ['RawHtml'];
+    public const DEFAULT_EDITOR_BLOCK = null;
 
-    const FORMAT_WEIGHTS = [
+    public const FORMAT_WEIGHTS = [
         'markup' => 100,
         'text' => 90,
         'structure' => 75,
@@ -30,27 +34,22 @@ abstract class Base implements fire\ICategory
 
     protected $_blocks = [];
 
-    public static function factory(string $name): fire\ICategory
+    public static function factory(string $name): Category
     {
-        $name = ucfirst($name);
-        $class = 'df\\fire\\category\\'.$name;
-
-        if (!class_exists($class)) {
-            throw Exceptional::NotFound(
-                'Content category '.$name.' could not be found'
-            );
-        }
-
+        $class = Archetype::resolve(Category::class, ucfirst($name));
         return new $class();
     }
 
-    public static function normalize($category): ?fire\ICategory
+    public static function normalize($category): ?Category
     {
-        if ($category instanceof fire\ICategory || $category === null) {
+        if (
+            $category instanceof Category ||
+            $category === null
+        ) {
             return $category;
         }
 
-        return self::factory($category);
+        return static::factory($category);
     }
 
     public static function normalizeName($category): ?string

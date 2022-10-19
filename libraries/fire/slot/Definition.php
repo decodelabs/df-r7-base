@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\fire\slot;
 
 use df;
@@ -11,8 +12,8 @@ use df\fire;
 use df\aura;
 use df\arch;
 
-class Definition implements fire\ISlotDefinition {
-
+class Definition implements fire\ISlotDefinition
+{
     protected $_id;
     protected $_name;
     protected $_isStatic = false;
@@ -22,8 +23,9 @@ class Definition implements fire\ISlotDefinition {
 
 
 
-// Interchange
-    public static function fromArray(array $values): fire\ISlotDefinition {
+    // Interchange
+    public static function fromArray(array $values): fire\ISlotDefinition
+    {
         $output = new self(
             $values['id'] ?? null,
             $values['name'] ?? null,
@@ -37,7 +39,8 @@ class Definition implements fire\ISlotDefinition {
         return $output;
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return [
             'id' => $this->_id,
             'name' => $this->_name,
@@ -48,23 +51,26 @@ class Definition implements fire\ISlotDefinition {
         ];
     }
 
-    public static function createDefault(): fire\ISlotDefinition {
+    public static function createDefault(): fire\ISlotDefinition
+    {
         return new self('default', 'Default');
     }
 
 
 
-// Construct
-    public function __construct(string $id=null, string $name=null, bool $isStatic=false) {
+    // Construct
+    public function __construct(string $id=null, string $name=null, bool $isStatic=false)
+    {
         $this->setId($id);
         $this->setName($name);
         $this->_isStatic = $isStatic;
     }
 
 
-// Id
-    public function setId(?string $id) {
-        if($id === null) {
+    // Id
+    public function setId(?string $id)
+    {
+        if ($id === null) {
             $id = 'primary';
         }
 
@@ -72,18 +78,21 @@ class Definition implements fire\ISlotDefinition {
         return $this;
     }
 
-    public function getId(): string {
+    public function getId(): string
+    {
         return $this->_id;
     }
 
-    public function isPrimary(): bool {
+    public function isPrimary(): bool
+    {
         return $this->_id == 'primary';
     }
 
 
-// Name
-    public function setName(?string $name) {
-        if($name === null) {
+    // Name
+    public function setName(?string $name)
+    {
+        if ($name === null) {
             $name = $this->_id;
         }
 
@@ -91,14 +100,16 @@ class Definition implements fire\ISlotDefinition {
         return $this;
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->_name;
     }
 
 
-// Static
-    public function isStatic(): bool {
-        if($this->isPrimary()) {
+    // Static
+    public function isStatic(): bool
+    {
+        if ($this->isPrimary()) {
             return true;
         }
 
@@ -106,18 +117,21 @@ class Definition implements fire\ISlotDefinition {
     }
 
 
-// Blocks
-    public function setMinBlocks(int $min) {
+    // Blocks
+    public function setMinBlocks(int $min)
+    {
         $this->_minBlocks = $min;
         return $this;
     }
 
-    public function getMinBlocks(): int {
+    public function getMinBlocks(): int
+    {
         return $this->_minBlocks;
     }
 
-    public function setMaxBlocks(?int $max) {
-        if($max <= 0) {
+    public function setMaxBlocks(?int $max)
+    {
+        if ($max <= 0) {
             $max = null;
         }
 
@@ -125,22 +139,26 @@ class Definition implements fire\ISlotDefinition {
         return $this;
     }
 
-    public function getMaxBlocks(): ?int {
+    public function getMaxBlocks(): ?int
+    {
         return $this->_maxBlocks;
     }
 
-    public function hasBlockLimit(): bool {
+    public function hasBlockLimit(): bool
+    {
         return $this->_maxBlocks !== null;
     }
 
 
-// Category
-    public function setCategory($category) {
-        $this->_category = fire\category\Base::normalizeName($category);
+    // Category
+    public function setCategory($category)
+    {
+        $this->_category = fire\Category\Base::normalizeName($category);
         return $this;
     }
 
-    public function getCategory(): ?string {
+    public function getCategory(): ?string
+    {
         return $this->_category;
     }
 }

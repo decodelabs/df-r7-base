@@ -6,10 +6,10 @@
 
 namespace df\fire;
 
-use df;
 use df\core;
 use df\fire;
 
+use DecodeLabs\Archetype;
 use DecodeLabs\R7\Legacy;
 
 class Manager implements IManager
@@ -32,7 +32,7 @@ class Manager implements IManager
         return $this->_categories;
     }
 
-    public function getCategory(?string $name): ?ICategory
+    public function getCategory(?string $name): ?Category
     {
         if ($name === null) {
             return null;
@@ -62,9 +62,18 @@ class Manager implements IManager
         $this->_categories = [];
         $blockIndex = [];
 
-        foreach (Legacy::getLoader()->lookupClassList('fire/category') as $name => $class) {
+        foreach ((function () {
+            yield from Legacy::getLoader()->lookupClassList('fire/Category');
+
+            foreach (Archetype::scanClasses(fire\Category::class) as $path => $class) {
+                $parts = explode('\\', $class);
+                $name = array_pop($parts);
+
+                yield $name => $class;
+            }
+        })() as $name => $class) {
             try {
-                $category = fire\category\Base::factory($name);
+                $category = fire\Category\Base::factory($name);
             } catch (\Throwable $e) {
                 continue;
             }
@@ -168,7 +177,7 @@ class Manager implements IManager
             $output[$block->getFormat()][$block->getName()] = $block->getDisplayName();
         }
 
-        $formatWeights = fire\category\Base::getFormatWeights();
+        $formatWeights = fire\Category\Base::getFormatWeights();
 
         uksort($output, function ($a, $b) use ($formatWeights) {
             return ($formatWeights[$a] ?? 0) <=> ($formatWeights[$b] ?? 0);
@@ -231,7 +240,7 @@ class Manager implements IManager
         if ($category = $this->getCategory($category)) {
             $formatWeights = $category->getFormatWeights();
         } else {
-            $formatWeights = fire\category\Base::getFormatWeights();
+            $formatWeights = fire\Category\Base::getFormatWeights();
         }
 
         uksort($output, function ($a, $b) use ($formatWeights) {
