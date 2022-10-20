@@ -3,57 +3,70 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+declare(strict_types=1);
 
-namespace df\fire\block;
+namespace DecodeLabs\R7\Nightfire\Block;
 
-use df;
-use df\core;
-use df\fire;
-use df\arch;
-use df\flex;
-use df\aura;
+use df\arch\IContext as Context;
+use df\arch\node\IDelegate as NodeDelegate;
+use df\arch\node\IFormState as FormState;
+use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
+use df\aura\html\widget\Field as FieldWidget;
 
-use DecodeLabs\Tagged as Html;
+use DecodeLabs\Coercion;
 use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
-use DecodeLabs\Tagged\Embed\Video;
+use DecodeLabs\R7\Nightfire\Block;
+use DecodeLabs\R7\Nightfire\BlockAbstract;
+use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
+use DecodeLabs\Tagged as Html;
+use DecodeLabs\Tagged\Markup;
 
-class VideoEmbed extends Base
+class VideoEmbed extends BlockAbstract
 {
     public const DEFAULT_CATEGORIES = ['Article', 'Description'];
 
-    protected $_embedCode;
+    protected ?string $embedCode = null;
 
     public function getFormat(): string
     {
         return 'video';
     }
 
-    public function setEmbedCode($code)
+    /**
+     * @return $this
+     */
+    public function setEmbedCode(?string $code): static
     {
-        $this->_embedCode = trim($code);
+        $code = trim((string)$code);
+
+        if (!strlen($code)) {
+            $code = null;
+        }
+
+        $this->embedCode = $code;
         return $this;
     }
 
-    public function getEmbedCode()
+    public function getEmbedCode(): ?string
     {
-        return $this->_embedCode;
+        return $this->embedCode;
     }
 
 
     public function isEmpty(): bool
     {
-        return !strlen(trim($this->_embedCode));
+        return $this->embedCode === null;
     }
 
-    public function getTransitionValue()
+    public function getTransitionValue(): ?string
     {
-        return $this->_embedCode;
+        return $this->embedCode;
     }
 
-    public function setTransitionValue($value)
+    public function setTransitionValue(mixed $value): static
     {
-        $this->_embedCode = $value;
+        $this->embedCode = Coercion::toStringOrNull($value);
         return $this;
     }
 
@@ -62,24 +75,24 @@ class VideoEmbed extends Base
     // Io
     protected function readXml(XmlElement $element): void
     {
-        $this->_embedCode = $element->getFirstCDataSection();
+        $this->embedCode = $element->getFirstCDataSection();
     }
 
     protected function writeXml(XmlWriter $writer): void
     {
-        $writer->writeCData($this->_embedCode);
+        $writer->writeCData($this->embedCode);
     }
 
 
     // Render
-    public function render()
+    public function render(): ?Markup
     {
         $view = $this->getView();
 
         if (!$view->consent->has('statistics')) {
             $output = $view->apex->template('cookies/#elements/VideoPlaceholder.html');
         } else {
-            $output = Html::$embed->video($this->_embedCode);
+            $output = Html::$embed->video($this->embedCode);
 
             if (!empty($output)) {
                 $output = $output->render();
@@ -97,23 +110,26 @@ class VideoEmbed extends Base
 
     // Form
     public function loadFormDelegate(
-        arch\IContext $context,
-        arch\node\IFormState $state,
-        arch\node\IFormEventDescriptor $event,
+        Context $context,
+        FormState $state,
+        FormEventDescriptor $event,
         string $id
-    ): arch\node\IDelegate {
-        return new class ($this, ...func_get_args()) extends Base_Delegate {
+    ): NodeDelegate {
+        /**
+         * @extends BlockDelegateAbstract<VideoEmbed>
+         */
+        return new class ($this, ...func_get_args()) extends BlockDelegateAbstract {
             /**
              * @var VideoEmbed
              */
-            protected $_block;
+            protected Block $_block;
 
-            protected function setDefaultValues()
+            protected function setDefaultValues(): void
             {
                 $this->values->embed = $this->_block->getEmbedCode();
             }
 
-            public function renderFieldContent(aura\html\widget\Field $field)
+            public function renderFieldContent(FieldWidget $field): void
             {
                 $field->push(
                     $this->html->textarea(
@@ -122,11 +138,9 @@ class VideoEmbed extends Base
                         )
                         ->isRequired($this->_isRequired)
                 );
-
-                return $this;
             }
 
-            public function apply()
+            public function apply(): Block
             {
                 $this->_block->setEmbedCode($this->values['embed']);
                 return $this->_block;

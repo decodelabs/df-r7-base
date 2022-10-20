@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\schema\field;
 
 use df;
@@ -14,11 +15,12 @@ use df\flex;
 
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Nightfire\Block;
+use DecodeLabs\R7\Nightfire\BlockAbstract;
 
 class ContentBlock extends Base
 {
-
-// Values
+    // Values
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
     {
         if (!isset($row[$key])) {
@@ -29,7 +31,7 @@ class ContentBlock extends Base
 
         if (!$forRecord) {
             return $output;
-            //return fire\block\Base::fromXmlString($output);
+            //return BlockAbstract::fromXmlString($output);
         }
 
         return new opal\record\valueContainer\LazyLoad($output, function ($value, $record, $fieldName) {
@@ -38,14 +40,14 @@ class ContentBlock extends Base
             }
 
             if ($value !== null) {
-                return fire\block\Base::fromXmlString($value);
+                return BlockAbstract::fromXmlString($value);
             }
         });
     }
 
     public function deflateValue($value)
     {
-        if ($value instanceof fire\IBlock) {
+        if ($value instanceof Block) {
             return $value->toXmlString(true);
         }
 
@@ -87,9 +89,9 @@ class ContentBlock extends Base
             );
         }
 
-        if (!$value instanceof fire\IBlock) {
+        if (!$value instanceof Block) {
             try {
-                $value = fire\block\Base::fromXml($value);
+                $value = BlockAbstract::fromXml($value);
                 // check block matches category and output types
             } catch (\Throwable $e) {
             }
@@ -107,8 +109,8 @@ class ContentBlock extends Base
         $value1 = $this->_extractFromLazyLoader($value1);
         $value2 = $this->_extractFromLazyLoader($value2);
 
-        if (!$value1 instanceof fire\IBlock
-        || !$value2 instanceof fire\IBlock) {
+        if (!$value1 instanceof Block
+        || !$value2 instanceof Block) {
             return false;
         }
 
@@ -137,7 +139,7 @@ class ContentBlock extends Base
         }
 
         if (is_string($value)) {
-            $value = fire\block\Base::fromXml($value);
+            $value = BlockAbstract::fromXml($value);
         }
 
         return $value;

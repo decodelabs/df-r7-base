@@ -166,9 +166,26 @@ interface ILoader
 
     public function findFile(string $path): ?string;
     public function getFileSearchPaths(string $path): array;
+
+    /**
+     * @return \Generator<string, string>
+     */
     public function lookupFileList(string $path, array $extensions=null): \Generator;
+
+    /**
+     * @return \Generator<string, string>
+     */
     public function lookupFileListRecursive(string $path, array $extensions=null, callable $folderCheck=null): \Generator;
+
+    /**
+     * @return \Generator<string, string>
+     * @phpstan-return \Generator<string, class-string>
+     */
     public function lookupClassList(string $path, bool $test=true): \Generator;
+
+    /**
+     * @return \Generator<string, string>
+     */
     public function lookupFolderList(string $path): \Generator;
     public function lookupLibraryList(): array;
 

@@ -3,18 +3,18 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+declare(strict_types=1);
 
-namespace DecodeLabs\R7\Nightfire\Category;
+namespace DecodeLabs\R7\Nightfire;
 
 use df\core;
 use df\fire;
 
-use df\fire\IBlock as Block;
-
 use DecodeLabs\Archetype;
-use DecodeLabs\R7\Nightfire\Category;
+use DecodeLabs\R7\Nightfire\Block;
+use DecodeLabs\R7\Nightfire\BlockAbstract;
 
-abstract class Base implements Category
+abstract class CategoryAbstract implements Category
 {
     use core\TStringProvider;
 
@@ -118,7 +118,7 @@ abstract class Base implements Category
     public function addBlock(
         string|Block $block
     ): static {
-        if ($block = fire\block\Base::normalize($block)) {
+        if ($block = BlockAbstract::normalize($block)) {
             $this->_blocks[$block->getName()] = true;
         }
 

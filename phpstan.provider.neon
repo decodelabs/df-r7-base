@@ -1,0 +1,8 @@
+includes:
+    - ./phpstan.base.neon
+parameters:
+    level: max
+    bootstrapFiles:
+        - %currentWorkingDirectory%/tests/bootstrap.php
+    paths:
+        - provider

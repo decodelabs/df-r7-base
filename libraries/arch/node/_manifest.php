@@ -18,6 +18,8 @@ use df\mesh;
 use df\opal;
 use df\user;
 
+use df\aura\html\widget\Field as FieldWidget;
+
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
 use DecodeLabs\Terminus\Session;
 
@@ -247,7 +249,7 @@ interface IInlineFieldRenderableDelegate
 {
     public function renderField($label=null);
     public function renderInlineFieldContent();
-    public function renderFieldContent(aura\html\widget\Field $field);
+    public function renderFieldContent(FieldWidget $field): void;
 }
 
 interface ISelfContainedRenderableDelegate

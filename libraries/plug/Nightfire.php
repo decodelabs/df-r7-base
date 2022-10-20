@@ -13,6 +13,8 @@ use df\fire;
 
 use DecodeLabs\Genesis;
 use DecodeLabs\Metamorph;
+use DecodeLabs\R7\Nightfire\Block;
+use DecodeLabs\R7\Nightfire\BlockAbstract;
 
 class Nightfire implements arch\IDirectoryHelper
 {
@@ -27,8 +29,8 @@ class Nightfire implements arch\IDirectoryHelper
             return null;
         }
 
-        if (!$block instanceof fire\IBlock) {
-            $block = fire\block\Base::fromXml($block);
+        if (!$block instanceof Block) {
+            $block = BlockAbstract::fromXml($block);
         }
 
         return $block;

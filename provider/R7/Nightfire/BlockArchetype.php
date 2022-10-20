@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Nightfire;
 
-use df\fire\Category as FireCategory;
+use df\fire\Block as FireBlock;
 
 use DecodeLabs\Archetype\Scanner;
 use DecodeLabs\Archetype\ScannerTrait;
@@ -16,7 +16,7 @@ use DecodeLabs\R7\Legacy;
 use Generator;
 use ReflectionClass;
 
-class CategoryArchetype implements Scanner
+class BlockArchetype implements Scanner
 {
     use ScannerTrait;
 
@@ -32,7 +32,7 @@ class CategoryArchetype implements Scanner
 
     public function getInterface(): string
     {
-        return Category::class;
+        return Block::class;
     }
 
     public function getPriority(): int
@@ -43,8 +43,8 @@ class CategoryArchetype implements Scanner
     public function resolve(string $name): ?string
     {
         $classes = [
-            FireCategory::class.'\\'.$name, /** @phpstan-ignore-line */
-            Category::class.'\\'.$name
+            FireBlock::class.'\\'.$name, /** @phpstan-ignore-line */
+            Block::class.'\\'.$name
         ];
 
         foreach (static::$namespaces as $namespace) {
@@ -62,13 +62,13 @@ class CategoryArchetype implements Scanner
 
     public function scanClasses(): Generator
     {
-        foreach (Legacy::getLoader()->lookupClassList('fire/Category') as $name => $class) {
+        foreach (Legacy::getLoader()->lookupClassList('fire/Block') as $name => $class) {
             $ref = new ReflectionClass($class);
             yield (string)$ref->getFileName() => $class;
         }
 
         yield from $this->scanNamespaceClasses(
-            Category::class
+            Block::class
         );
 
         foreach (static::$namespaces as $namespace) {

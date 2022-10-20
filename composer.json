@@ -22,7 +22,7 @@
         "decodelabs/elementary": "^0.2",
         "decodelabs/eventful": "^0.3",
         "decodelabs/exceptional": "^0.4",
-        "decodelabs/exemplar": "^0.3",
+        "decodelabs/exemplar": "^0.3.4",
         "decodelabs/genesis": "^0.6.1",
         "decodelabs/glitch": "^0.18.2",
         "decodelabs/idiom": "^0.2",
@@ -73,13 +73,15 @@
     "prefer-stable": true,
     "scripts": {
         "analyze": "phpstan analyze",
+        "analyze-provider": "phpstan analyze --configuration=phpstan.provider.neon",
         "clear-phpstan": "phpstan clear-result-cache",
         "veneer-stub": "php tests/veneer-stub.php",
         "prep": [
             "@composer update",
             "@veneer-stub",
             "@clear-phpstan",
-            "@analyze"
+            "@analyze",
+            "@analyze-provider"
         ]
     }
 }

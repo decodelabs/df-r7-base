@@ -239,7 +239,7 @@ abstract class SelectorDelegate extends Delegate implements
 
 
     // Render
-    public function renderFieldContent(aura\html\widget\Field $fa)
+    public function renderFieldContent(aura\html\widget\Field $fa): void
     {
         $fa->setId($this->elementId('selector'));
         $fa->isRequired($this->_isRequired);

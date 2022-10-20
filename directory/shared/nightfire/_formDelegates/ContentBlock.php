@@ -13,8 +13,12 @@ use df\arch;
 use df\fire;
 use df\aura;
 
+use DecodeLabs\R7\Nightfire\Block;
+use DecodeLabs\R7\Nightfire\BlockDelegate;
+
 use DecodeLabs\Exceptional;
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\R7\Nightfire\BlockAbstract;
 use DecodeLabs\Tagged as Html;
 
 class ContentBlock extends arch\node\form\Delegate implements
@@ -40,14 +44,14 @@ class ContentBlock extends arch\node\form\Delegate implements
         $this->_getAvailableBlockTypes();
 
         if (!$this->_block && ($type = $this->_state->getStore('blockType'))) {
-            $this->_block = fire\block\Base::factory($type)->isNested($this->_isNested);
+            $this->_block = BlockAbstract::factory($type)->setNested($this->_isNested);
         }
     }
 
     public function reloadDefaultValues(): void
     {
         if ($this->hasDelegate('block')) {
-            /** @var fire\IBlockDelegate $delegate */
+            /** @var BlockDelegate $delegate */
             $delegate = $this->proxyLoadDelegate('block', $this->_block);
             $delegate->isRequired($this->_isRequired);
         }
@@ -89,17 +93,26 @@ class ContentBlock extends arch\node\form\Delegate implements
         return $this->_state->getStore('availableBlockTypes');
     }
 
-    public function isNested(bool $flag=null)
+    /**
+     * Set nested
+     */
+    public function setNested(bool $nested): static
     {
-        if ($flag !== null) {
-            $this->_isNested = $flag;
-            return $this;
-        }
+        $this->_isNested = $nested;
+        return $this;
+    }
 
+    /**
+     * Is nested
+     */
+    public function isNested(): bool
+    {
         return $this->_isNested;
     }
 
-    public function setBlock(fire\IBlock $block=null)
+
+
+    public function setBlock(Block $block=null)
     {
         if ($block !== null) {
             $this->setBlockType($block);
@@ -131,13 +144,13 @@ class ContentBlock extends arch\node\form\Delegate implements
         if ($type === null) {
             $this->_state->removeStore('blockType');
         } else {
-            if (!$block = fire\block\Base::normalize($type)) {
+            if (!$block = BlockAbstract::normalize($type)) {
                 throw Exceptional::InvalidArgument(
                     'Cannot build block of type '.$type
                 );
             }
 
-            $block->isNested($this->_isNested);
+            $block->setNested($this->_isNested);
             $this->_block = $block;
             $this->_state->setStore('blockType', $this->_block->getName());
         }
@@ -173,13 +186,13 @@ class ContentBlock extends arch\node\form\Delegate implements
         }
 
         if ($this->_block) {
-            /** @var fire\IBlockDelegate $delegate */
+            /** @var BlockDelegate */
             $delegate = $this->proxyLoadDelegate('block', $this->_block);
             $delegate->isRequired($this->_isRequired);
         }
     }
 
-    public function renderFieldContent(aura\html\widget\Field $fa)
+    public function renderFieldContent(aura\html\widget\Field $fa): void
     {
         $fa->setId($this->elementId('block'));
         $fa->push(Html::raw('<div class="fire-block">'));
@@ -212,7 +225,9 @@ class ContentBlock extends arch\node\form\Delegate implements
         }
 
         if ($this->_block) {
-            $this['block']->renderFieldContent($fa);
+            /** @var BlockDelegate */
+            $delegate = $this['block'];
+            $delegate->renderFieldContent($fa);
         }
 
         $fa->push(Html::raw('</div>'));
@@ -227,7 +242,9 @@ class ContentBlock extends arch\node\form\Delegate implements
         }
 
         if (isset($this['block'])) {
-            $this['block']->apply();
+            /** @var BlockDelegate */
+            $delegate = $this['block'];
+            $delegate->apply();
         }
 
         $oldBlock = $this->_block;
@@ -245,11 +262,11 @@ class ContentBlock extends arch\node\form\Delegate implements
         if ($oldBlock && $oldBlock !== $this->_block) {
             $this->_block->setTransitionValue($oldBlock->getTransitionValue());
 
-            /** @var fire\IBlockDelegate $delegate */
+            /** @var BlockDelegate $delegate */
             $delegate = $this->proxyLoadDelegate('block', $this->_block);
             $delegate
                 ->isRequired($this->_isRequired)
-                ->isNested($this->_isNested)
+                ->setNested($this->_isNested)
                 ->initialize();
         }
 
@@ -268,6 +285,7 @@ class ContentBlock extends arch\node\form\Delegate implements
             return null;
         }
 
+        /** @var BlockDelegate */
         $delegate = $this['block'];
         $delegate->apply();
 

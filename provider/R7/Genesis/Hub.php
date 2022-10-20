@@ -63,7 +63,10 @@ class Hub implements HubInterface
         $this->analysis = true;
         $this->envId = 'analysis';
 
-        $appDir = getcwd();
+        if (!$appDir = getcwd()) {
+            throw Exceptional::Runtime('Unable to get current working directory');
+        }
+
         $hasAppFile = file_exists($appDir.'/App.php');
 
         if (!$hasAppFile) {
@@ -79,7 +82,7 @@ class Hub implements HubInterface
      */
     private function parseEntry(): void
     {
-        $entryPath = str_replace('\\', '/', realpath($_SERVER['SCRIPT_FILENAME']));
+        $entryPath = str_replace('\\', '/', (string)realpath($_SERVER['SCRIPT_FILENAME']));
         $parts = explode('/', $entryPath);
         $envId = array_pop($parts);
 
@@ -95,7 +98,7 @@ class Hub implements HubInterface
 
         $envParts = explode('.', $envId, 2);
 
-        $this->envId = array_shift($envParts);
+        $this->envId = (string)array_shift($envParts);
         $this->appPath = implode('/', $parts);
     }
 
@@ -133,7 +136,7 @@ class Hub implements HubInterface
         static $name;
 
         if (!isset($name)) {
-            $name = $this->context->container['app']::NAME;
+            $name = Legacy::app()::NAME;
         }
 
         return $name;
@@ -274,6 +277,7 @@ class Hub implements HubInterface
         /** @phpstan-ignore-next-line */
         $name = ucfirst(df\COMPILE_ENV_MODE ?? $conf->getMode());
 
+        /** @phpstan-var class-string<EnvConfig\Development|EnvConfig\Testing|EnvConfig\Production> */
         $class = EnvConfig::class.'\\'.$name;
         $output = new $class($this->envId);
 

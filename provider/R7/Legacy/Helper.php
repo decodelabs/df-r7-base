@@ -35,7 +35,6 @@ use df\core\uri\IUrl as Url;
 use df\core\time\Date;
 use df\core\time\Duration;
 
-use df\fire\IBlock as Block;
 use df\fire\ISlotContent as Slot;
 
 use df\opal\query\ISelectQuery as SelectQuery;
@@ -57,6 +56,7 @@ use DateInterval;
 
 use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy\Plugins\Http as HttpPlugin;
+use DecodeLabs\R7\Nightfire\Block;
 use DecodeLabs\Systemic\Process;
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
 use DecodeLabs\Terminus\Session as TerminusSession;
@@ -700,9 +700,9 @@ class Helper
     /**
      * Set registry object
      */
-    public function setRegistryObject(RegistryObject $object)
+    public function setRegistryObject(RegistryObject $object): void
     {
-        return $this->app()->setRegistryObject($object);
+        $this->app()->setRegistryObject($object);
     }
 
     /**
@@ -724,9 +724,9 @@ class Helper
     /**
      * Remove registry object
      */
-    public function removeRegistryObject(string $key)
+    public function removeRegistryObject(string $key): void
     {
-        return $this->app()->removeRegistryObject($key);
+        $this->app()->removeRegistryObject($key);
     }
 
     /**

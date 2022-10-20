@@ -11,8 +11,10 @@ use df\fire;
 
 use DecodeLabs\Archetype;
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\R7\Nightfire\Block;
+use DecodeLabs\R7\Nightfire\BlockAbstract;
 use DecodeLabs\R7\Nightfire\Category;
-use DecodeLabs\R7\Nightfire\Category\Base as CategoryBase;
+use DecodeLabs\R7\Nightfire\CategoryAbstract;
 
 class Manager implements IManager
 {
@@ -68,12 +70,8 @@ class Manager implements IManager
             $parts = explode('\\', $class);
             $name = array_pop($parts);
 
-            if ($name === 'Base') {
-                continue;
-            }
-
             try {
-                $category = CategoryBase::factory($name);
+                $category = CategoryAbstract::factory($name);
             } catch (\Throwable $e) {
                 continue;
             }
@@ -177,7 +175,7 @@ class Manager implements IManager
             $output[$block->getFormat()][$block->getName()] = $block->getDisplayName();
         }
 
-        $formatWeights = CategoryBase::getFormatWeights();
+        $formatWeights = CategoryAbstract::getFormatWeights();
 
         uksort($output, function ($a, $b) use ($formatWeights) {
             return ($formatWeights[$a] ?? 0) <=> ($formatWeights[$b] ?? 0);
@@ -240,7 +238,7 @@ class Manager implements IManager
         if ($category = $this->getCategory($category)) {
             $formatWeights = $category->getFormatWeights();
         } else {
-            $formatWeights = CategoryBase::getFormatWeights();
+            $formatWeights = CategoryAbstract::getFormatWeights();
         }
 
         uksort($output, function ($a, $b) use ($formatWeights) {
@@ -262,9 +260,12 @@ class Manager implements IManager
 
         $this->_blocks = [];
 
-        foreach (Legacy::getLoader()->lookupClassList('fire/block') as $name => $class) {
+        foreach (Archetype::scanClasses(Block::class) as $path => $class) {
+            $parts = explode('\\', $class);
+            $name = array_pop($parts);
+
             try {
-                $block = fire\block\Base::factory($name);
+                $block = BlockAbstract::factory($name);
             } catch (\Throwable $e) {
                 continue;
             }

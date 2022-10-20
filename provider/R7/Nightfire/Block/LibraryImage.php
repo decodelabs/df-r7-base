@@ -3,25 +3,37 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+declare(strict_types=1);
 
-namespace df\fire\block;
+namespace DecodeLabs\R7\Nightfire\Block;
 
 use df\arch;
 use df\aura;
 
+use df\arch\IContext as Context;
+use df\arch\node\IDelegate as NodeDelegate;
+use df\arch\node\IFormState as FormState;
+use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
+use df\arch\scaffold\Node\Form\SelectorDelegate;
+use df\aura\html\widget\Field as FieldWidget;
+
 use DecodeLabs\Dictum;
-use DecodeLabs\R7\Legacy;
 use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
+use DecodeLabs\R7\Legacy;
+use DecodeLabs\R7\Nightfire\Block;
+use DecodeLabs\R7\Nightfire\BlockAbstract;
+use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
 use DecodeLabs\Tagged as Html;
+use DecodeLabs\Tagged\Markup;
 
-class LibraryImage extends Base
+class LibraryImage extends BlockAbstract
 {
     public const DEFAULT_CATEGORIES = ['Description'];
 
-    protected $_imageId;
-    protected $_alt;
-    protected $_link;
+    protected ?string $imageId = null;
+    protected ?string $alt = null;
+    protected ?string $link = null;
 
     public function getFormat(): string
     {
@@ -29,78 +41,90 @@ class LibraryImage extends Base
     }
 
     // Image
-    public function setImageId($id)
+
+    /**
+     * @return $this
+     */
+    public function setImageId(?string $id): static
     {
-        $this->_imageId = $id;
+        $this->imageId = $id;
         return $this;
     }
 
-    public function getImageId()
+    public function getImageId(): ?string
     {
-        return $this->_imageId;
+        return $this->imageId;
     }
 
 
     // Alt
-    public function setAltText(?string $alt)
+
+    /**
+     * @return $this
+     */
+    public function setAltText(?string $alt): static
     {
-        $this->_alt = $alt;
+        $this->alt = $alt;
         return $this;
     }
 
     public function getAltText(): ?string
     {
-        return $this->_alt;
+        return $this->alt;
     }
 
 
     // Link
-    public function setLink(string $link=null)
+
+    /**
+     * @return $this
+     */
+    public function setLink(?string $link): ?static
     {
-        $this->_link = $link;
+        $this->link = $link;
         return $this;
     }
 
-    public function getLink()
+    public function getLink(): ?string
     {
-        return $this->_link;
+        return $this->link;
     }
 
 
     // IO
     public function isEmpty(): bool
     {
-        return empty($this->_imageId);
+        return empty($this->imageId);
     }
 
     protected function readXml(XmlElement $element): void
     {
-        $this->_imageId = $element['image'];
-        $this->_alt = $element['alt'];
-        $this->setLink($element['href']);
+        $this->imageId = $element->getAttribute('image');
+        $this->alt = $element->getAttribute('alt');
+        $this->setLink($element->getAttribute('href'));
     }
 
     protected function writeXml(XmlWriter $writer): void
     {
-        $writer['image'] = $this->_imageId;
-        $writer['alt'] = $this->_alt;
+        $writer['image'] = $this->imageId;
+        $writer['alt'] = $this->alt;
 
-        if ($this->_link) {
-            $writer['href'] = $this->_link;
+        if ($this->link) {
+            $writer['href'] = $this->link;
         }
     }
 
 
     // Render
-    public function render()
+    public function render(): ?Markup
     {
         $view = $this->getView();
 
-        $url = $view->media->getImageUrl($this->_imageId);
-        $output = Html::image($url, $this->_alt);
+        $url = $view->media->getImageUrl($this->imageId);
+        $output = Html::image($url, $this->alt);
 
-        if ($this->_link) {
-            $output = $view->html->link($this->_link, $output);
+        if ($this->link) {
+            $output = $view->html->link($this->link, $output);
         }
 
         $output
@@ -113,42 +137,48 @@ class LibraryImage extends Base
 
     // Form
     public function loadFormDelegate(
-        arch\IContext $context,
-        arch\node\IFormState $state,
-        arch\node\IFormEventDescriptor $event,
+        Context $context,
+        FormState $state,
+        FormEventDescriptor $event,
         string $id
-    ): arch\node\IDelegate {
-        return new class ($this, ...func_get_args()) extends Base_Delegate {
+    ): NodeDelegate {
+        /**
+         * @extends BlockDelegateAbstract<LibraryImage>
+         */
+        return new class ($this, ...func_get_args()) extends BlockDelegateAbstract {
             /**
              * @var LibraryImage
              */
-            protected $_block;
+            protected Block $_block;
 
-            protected function loadDelegates()
+            protected function loadDelegates(): void
             {
-                /**
-                 * Image
-                 * @var arch\scaffold\Node\Form\SelectorDelegate $image
-                 */
+                /** @var SelectorDelegate */
                 $image = $this->loadDelegate('image', '~admin/media/ImageSelector');
                 $image
                     ->isForOne(true)
                     ->isRequired(true);
             }
 
-            protected function setDefaultValues()
+            protected function setDefaultValues(): void
             {
-                $this['image']->setSelected($this->_block->getImageId());
+                /** @var SelectorDelegate */
+                $image = $this['image'];
+                $image->setSelected($this->_block->getImageId());
+
                 $this->values->alt = $this->_block->getAltText();
                 $this->values->link = $this->_block->getLink();
             }
 
-            public function renderFieldContent(aura\html\widget\Field $field)
+            public function renderFieldContent(FieldWidget $field): void
             {
                 $fa = $field->addField($this->_('Library image'))->push($this['image']);
 
-                if ($this['image']->hasSelection()) {
-                    $fileId = $this['image']->getSelected();
+                /** @var SelectorDelegate */
+                $image = $this['image'];
+
+                if ($image->hasSelection()) {
+                    $fileId = $image->getSelected();
 
                     $fa->add(
                         'div.link',
@@ -177,11 +207,9 @@ class LibraryImage extends Base
                 $field->addField($this->_('Link URL'))->push(
                     $this->html->textbox($this->fieldName('link'), $this->values->link)
                 );
-
-                return $this;
             }
 
-            protected function onUseFileNameEvent()
+            protected function onUseFileNameEvent(): mixed
             {
                 $val = $this->data->newValidator()
                     // Image
@@ -206,7 +234,7 @@ class LibraryImage extends Base
                 return Legacy::$http->redirect('#'.$this->elementId('alt'));
             }
 
-            public function apply()
+            public function apply(): Block
             {
                 $validator = $this->data->newValidator()
                     // Image

@@ -3,57 +3,71 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+declare(strict_types=1);
 
-namespace df\fire\block;
+namespace DecodeLabs\R7\Nightfire\Block;
 
-use df;
-use df\core;
-use df\fire;
-use df\arch;
-use df\flex;
-use df\aura;
+use df\arch\IContext as Context;
+use df\arch\node\IDelegate as NodeDelegate;
+use df\arch\node\IFormState as FormState;
+use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
+use df\aura\html\widget\Field as FieldWidget;
 
-use DecodeLabs\Metamorph;
-use DecodeLabs\Tagged as Html;
+use DecodeLabs\Coercion;
 use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
+use DecodeLabs\Metamorph;
+use DecodeLabs\R7\Nightfire\Block;
+use DecodeLabs\R7\Nightfire\BlockAbstract;
+use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
+use DecodeLabs\Tagged as Html;
+use DecodeLabs\Tagged\Markup;
 
-class Markdown extends Base
+class Markdown extends BlockAbstract
 {
     public const DEFAULT_CATEGORIES = ['Description'];
 
-    protected $_body;
+    protected ?string $body = null;
 
     public function getFormat(): string
     {
         return 'markup';
     }
 
-    public function setBody($body)
+    /**
+     * @return $this
+     */
+    public function setBody(?string $body): static
     {
-        $this->_body = trim($body);
+        $body = trim((string)$body);
+
+        if (!strlen($body)) {
+            $body = null;
+        }
+
+        $this->body = $body;
         return $this;
     }
 
-    public function getBody()
+    public function getBody(): ?string
     {
-        return $this->_body;
+        return $this->body;
     }
 
 
     public function isEmpty(): bool
     {
-        return !strlen(trim($this->_body));
+        return $this->body === null;
     }
 
-    public function getTransitionValue()
+    public function getTransitionValue(): mixed
     {
-        return $this->_body;
+        return $this->body;
     }
 
-    public function setTransitionValue($value)
+    public function setTransitionValue(mixed $value): static
     {
-        $this->_body = $value;
+        $this->body = Coercion::toStringOrNull($value);
         return $this;
     }
 
@@ -62,44 +76,47 @@ class Markdown extends Base
     // Io
     protected function readXml(XmlElement $element): void
     {
-        $this->_body = $element->getFirstCDataSection();
+        $this->body = $element->getFirstCDataSection();
     }
 
     protected function writeXml(XmlWriter $writer): void
     {
-        $writer->writeCData($this->_body);
+        $writer->writeCData($this->body);
     }
 
 
     // Render
-    public function render()
+    public function render(): ?Markup
     {
         $view = $this->getView();
 
-        return Html::{'div.block'}(Metamorph::{'markdown.safe'}($this->_body))
+        return Html::{'div.block'}(Metamorph::{'markdown.safe'}($this->body))
             ->setDataAttribute('type', $this->getName());
     }
 
 
     // Form
     public function loadFormDelegate(
-        arch\IContext $context,
-        arch\node\IFormState $state,
-        arch\node\IFormEventDescriptor $event,
+        Context $context,
+        FormState $state,
+        FormEventDescriptor $event,
         string $id
-    ): arch\node\IDelegate {
-        return new class ($this, ...func_get_args()) extends Base_Delegate {
+    ): NodeDelegate {
+        /**
+         * @extends BlockDelegateAbstract<Markdown>
+         */
+        return new class ($this, ...func_get_args()) extends BlockDelegateAbstract {
             /**
              * @var Markdown
              */
-            protected $_block;
+            protected Block $_block;
 
-            protected function setDefaultValues()
+            protected function setDefaultValues(): void
             {
                 $this->values->body = $this->_block->getBody();
             }
 
-            public function renderFieldContent(aura\html\widget\Field $field)
+            public function renderFieldContent(FieldWidget $field): void
             {
                 $this->view
                     ->linkCss('asset://lib/simplemde/simplemde.min.css', 100)
@@ -113,11 +130,9 @@ class Markdown extends Base
                         ->addClass('editor markdown')
                         ->setDataAttribute('editor', 'markdown')
                 );
-
-                return $this;
             }
 
-            public function apply()
+            public function apply(): Block
             {
                 $validator = $this->data->newValidator()
                     ->addField('body', 'text')

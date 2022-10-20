@@ -6,13 +6,11 @@
 
 namespace df\fire;
 
-use df;
 use df\core;
-use df\fire;
 use df\aura;
 use df\arch;
-use df\apex;
-use df\flex;
+
+use DecodeLabs\R7\Nightfire\Block;
 
 use DecodeLabs\Exemplar\Serializable as XmlSerializable;
 use DecodeLabs\R7\Nightfire\Category;
@@ -35,36 +33,6 @@ interface IManager extends core\IManager
 }
 
 
-
-// Block
-interface IBlock extends
-    XmlSerializable,
-    aura\view\IDeferredRenderable,
-    arch\node\IDelegateProxy
-{
-    public static function factory(string $name): static;
-    public static function normalize($block): ?static;
-
-    public function getName(): string;
-    public function getDisplayName(): string;
-    public function isNested(bool $flag=null);
-
-    public function getVersion(): int;
-    public function getFormat(): string;
-    public static function getDefaultCategories(): array;
-
-    public function isEmpty(): bool;
-    public function isHidden(): bool;
-    public function getTransitionValue();
-    public function setTransitionValue($value);
-}
-
-interface IBlockDelegate extends
-    arch\node\IDelegate,
-    arch\node\IInlineFieldRenderableDelegate,
-    arch\node\IResultProviderDelegate
-{
-}
 
 
 
@@ -103,15 +71,20 @@ interface ISlotContent extends
     public function getId(): ?string;
     public function isPrimary(): bool;
 
-    public function isNested(bool $flag=null);
+    /**
+     * @return $this
+     */
+    public function setNested(bool $nested): static;
+    public function isNested(): bool;
+
     public function hasChanged(bool $flag=null);
 
     public function setBlocks(array $blocks);
     public function addBlocks(array $blocks);
-    public function setBlock(int $index, IBlock $block);
-    public function putBlock(int $index, IBlock $block);
-    public function addBlock(IBlock $block);
-    public function getBlock(int $index): ?IBlock;
+    public function setBlock(int $index, Block $block);
+    public function putBlock(int $index, Block $block);
+    public function addBlock(Block $block);
+    public function getBlock(int $index): ?Block;
     public function getBlocks(): array;
     public function hasBlock(int $index): bool;
     public function removeBlock(int $index);

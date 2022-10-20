@@ -26,6 +26,7 @@ use df\link\http\Url;
 use df\link\http\request\HeaderCollection;
 
 use DecodeLabs\Atlas\File;
+use DecodeLabs\Coercion;
 use DecodeLabs\Deliverance\Channel;
 use DecodeLabs\Exceptional;
 use DecodeLabs\R7\Legacy\Helper;
@@ -86,7 +87,7 @@ class Http
     /**
      * Get HTTP router
      */
-    public function getRouter(): ?HttpRouter
+    public function getRouter(): HttpRouter
     {
         if (!isset($this->router)) {
             $this->router = new HttpRouter();
@@ -208,7 +209,7 @@ class Http
      */
     public function getUserAgent(): string
     {
-        return (string)$this->getHeader('User-Agent');
+        return Coercion::toString($this->getHeader('User-Agent'));
     }
 
     /**
@@ -216,7 +217,7 @@ class Http
      */
     public function getReferrer(): ?string
     {
-        return $this->getHeader('Referer');
+        return Coercion::toStringOrNull($this->getHeader('Referer'));
     }
 
 
@@ -429,7 +430,7 @@ class Http
         bool $success = true,
         ?string $sectionReferrer = null,
         ?string $fallback = null
-    ) {
+    ): RedirectResponse {
         $request = $this->helper->getContext()->request;
 
         if ($success) {
@@ -485,7 +486,7 @@ class Http
     public function generator(
         string $contentType,
         callable $sender
-    ) {
+    ): GeneratorResponse {
         return new GeneratorResponse($contentType, $sender);
     }
 

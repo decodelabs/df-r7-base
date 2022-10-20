@@ -252,6 +252,9 @@ trait TForm
         $this->loadDelegate($id, $name);
     }
 
+    /**
+     * @return IDelegate
+     */
     public function offsetGet($id)
     {
         return $this->getDelegate($id);

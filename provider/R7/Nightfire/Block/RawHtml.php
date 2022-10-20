@@ -3,55 +3,69 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+declare(strict_types=1);
 
-namespace df\fire\block;
+namespace DecodeLabs\R7\Nightfire\Block;
 
-use df;
-use df\core;
-use df\fire;
-use df\flex;
-use df\arch;
-use df\aura;
+use df\arch\IContext as Context;
+use df\arch\node\IDelegate as NodeDelegate;
+use df\arch\node\IFormState as FormState;
+use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
+use df\aura\html\widget\Field as FieldWidget;
 
-use DecodeLabs\Tagged as Html;
+use DecodeLabs\Coercion;
 use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
+use DecodeLabs\R7\Nightfire\Block;
+use DecodeLabs\R7\Nightfire\BlockAbstract;
+use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
+use DecodeLabs\Tagged as Html;
+use DecodeLabs\Tagged\Markup;
 
-class RawHtml extends Base
+class RawHtml extends BlockAbstract
 {
     public const DEFAULT_CATEGORIES = ['Description'];
 
-    protected $_content;
+    protected ?string $content;
 
     public function getFormat(): string
     {
         return 'markup';
     }
 
-    public function setHtmlContent($content)
+    /**
+     * @return $this
+     */
+    public function setHtmlContent(?string $content): static
     {
-        $this->_content = trim($content);
+        $content = trim((string)$content);
+
+        if (!strlen($content)) {
+            $content = null;
+        }
+
+        $this->content = $content;
         return $this;
     }
 
-    public function getHtmlContent()
+    public function getHtmlContent(): ?string
     {
-        return $this->_content;
+        return $this->content;
     }
 
     public function isEmpty(): bool
     {
-        return !strlen(trim($this->_content));
+        return $this->content === null;
     }
 
-    public function getTransitionValue()
+    public function getTransitionValue(): mixed
     {
-        return $this->_content;
+        return $this->content;
     }
 
-    public function setTransitionValue($value)
+    public function setTransitionValue(mixed $value): static
     {
-        $this->_content = $value;
+        $this->content = Coercion::toStringOrNull($value);
         return $this;
     }
 
@@ -59,24 +73,24 @@ class RawHtml extends Base
     // Io
     protected function readXml(XmlElement $element): void
     {
-        $this->_content = $element->getFirstCDataSection();
+        $this->content = $element->getFirstCDataSection();
     }
 
     protected function writeXml(XmlWriter $writer): void
     {
-        $writer->writeCData($this->_content);
+        $writer->writeCData($this->content);
     }
 
 
 
     // Render
-    public function render()
+    public function render(): ?Markup
     {
         $view = $this->getView();
 
         $content = preg_replace_callback('/ (href|src)\=\"([^\"]+)\"/', function ($matches) use ($view) {
             return ' '.$matches[1].'="'.$view->uri->__invoke($matches[2]).'"';
-        }, $this->_content);
+        }, (string)$this->content);
 
         return Html::{'div.block'}(Html::raw($content))
             ->setDataAttribute('type', $this->getName());
@@ -85,34 +99,35 @@ class RawHtml extends Base
 
     // Form
     public function loadFormDelegate(
-        arch\IContext $context,
-        arch\node\IFormState $state,
-        arch\node\IFormEventDescriptor $event,
+        Context $context,
+        FormState $state,
+        FormEventDescriptor $event,
         string $id
-    ): arch\node\IDelegate {
-        return new class ($this, ...func_get_args()) extends Base_Delegate {
+    ): NodeDelegate {
+        /**
+         * @extends BlockDelegateAbstract<RawHtml>
+         */
+        return new class ($this, ...func_get_args()) extends BlockDelegateAbstract {
             /**
              * @var RawHtml
              */
-            protected $_block;
+            protected Block $_block;
 
-            protected function setDefaultValues()
+            protected function setDefaultValues(): void
             {
                 $this->values->content = $this->_block->getHtmlContent();
             }
 
-            public function renderFieldContent(aura\html\widget\Field $field)
+            public function renderFieldContent(FieldWidget $field): void
             {
                 $field->push(
                     $this->html->textarea($this->fieldName('content'), $this->values->content)
                         ->isRequired($this->_isRequired)
                         ->addClass('editor html')
                 );
-
-                return $this;
             }
 
-            public function apply()
+            public function apply(): Block
             {
                 $validator = $this->data->newValidator()
                     ->addField('content', 'text')

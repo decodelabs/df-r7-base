@@ -152,9 +152,6 @@ class Base implements
         return [Genesis::$build->path.'/'.$path];
     }
 
-    /**
-     * @return \Generator<string, string>
-     */
     public function lookupFileList(string $path, array $extensions=null): \Generator
     {
         $paths = $this->getFileSearchPaths(rtrim($path, '/').'/');
@@ -218,10 +215,6 @@ class Base implements
         }
     }
 
-    /**
-     * @return \Generator<string, string>
-     * @phpstan-return \Generator<string, class-string>
-     */
     public function lookupClassList(string $path, bool $test=true): \Generator
     {
         $path = trim($path, '/');

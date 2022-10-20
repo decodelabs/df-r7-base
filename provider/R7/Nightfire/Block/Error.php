@@ -3,28 +3,36 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+declare(strict_types=1);
 
-namespace df\fire\block;
+namespace DecodeLabs\R7\Nightfire\Block;
 
-use df;
-use df\core;
-use df\fire;
-use df\flex;
 use df\arch;
 use df\aura;
+
+use df\arch\IContext as Context;
+use df\arch\node\IDelegate as NodeDelegate;
+use df\arch\node\IFormState as FormState;
+use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
+use df\aura\html\widget\Field as FieldWidget;
 
 use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Nightfire\Block;
+use DecodeLabs\R7\Nightfire\BlockAbstract;
+use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
+use DecodeLabs\Tagged\Markup;
+use Throwable;
 
-class Error extends Base
+class Error extends BlockAbstract
 {
     public const DEFAULT_CATEGORIES = [];
 
-    protected $_error;
-    protected $_type;
-    protected $_data;
+    protected ?Throwable $error = null;
+    protected ?string $type = null;
+    protected mixed $data = null;
 
     public function getFormat(): string
     {
@@ -36,42 +44,54 @@ class Error extends Base
         return true;
     }
 
-    public function setError(\Throwable $e=null)
+
+    /**
+     * @return $this
+     */
+    public function setError(Throwable $e = null): static
     {
-        $this->_error = $e;
+        $this->error = $e;
         return $this;
     }
 
-    public function getError()
+    public function getError(): ?Throwable
     {
-        return $this->_error;
+        return $this->error;
     }
 
-    public function setType($type)
+
+    /**
+     * @return $this
+     */
+    public function setType(?string $type): static
     {
-        $this->_type = $type;
+        $this->type = $type;
         return $this;
     }
 
-    public function getType()
+    public function getType(): ?string
     {
-        return $this->_type;
+        return $this->type;
     }
 
-    public function setData($data)
+
+    /**
+     * @return $this
+     */
+    public function setData(mixed $data): static
     {
-        $this->_data = $data;
-        return $this->_data;
+        $this->data = $data;
+        return $this;
     }
 
-    public function getData()
+    public function getData(): mixed
     {
-        return $this->_data;
+        return $this->data;
     }
 
-    public function getTransitionValue()
+    public function getTransitionValue(): mixed
     {
-        return $this->_data;
+        return $this->data;
     }
 
     public function isEmpty(): bool
@@ -95,7 +115,7 @@ class Error extends Base
 
 
     // Render
-    public function render()
+    public function render(): ?Markup
     {
         $view = $this->getView();
 
@@ -107,11 +127,11 @@ class Error extends Base
         }
 
         $output = $view->html->flashMessage($view->_(
-            'Error loading block type: '.$this->_type
+            'Error loading block type: '.$this->type
         ), 'error');
 
-        if ($this->_error) {
-            $output->setDescription($this->_error->getMessage());
+        if ($this->error) {
+            $output->setDescription($this->error->getMessage());
         }
 
         return $output;
@@ -121,18 +141,21 @@ class Error extends Base
 
     // Form
     public function loadFormDelegate(
-        arch\IContext $context,
-        arch\node\IFormState $state,
-        arch\node\IFormEventDescriptor $event,
+        Context $context,
+        FormState $state,
+        FormEventDescriptor $event,
         string $id
-    ): arch\node\IDelegate {
-        return new class ($this, ...func_get_args()) extends Base_Delegate {
+    ): NodeDelegate {
+        /**
+         * @extends BlockDelegateAbstract<Error>
+         */
+        return new class ($this, ...func_get_args()) extends BlockDelegateAbstract {
             /**
              * @var Error
              */
-            protected $_block;
+            protected Block $_block;
 
-            protected function setDefaultValues()
+            protected function setDefaultValues(): void
             {
                 $this->setStore('type', $this->_block->getType());
                 $this->setStore('data', $this->_block->getData());
@@ -142,13 +165,13 @@ class Error extends Base
                 }
             }
 
-            protected function afterInit()
+            protected function afterInit(): void
             {
                 $this->_block->setType($this->getStore('type'));
                 $this->_block->setData($this->getStore('data'));
             }
 
-            public function renderFieldContent(aura\html\widget\Field $field)
+            public function renderFieldContent(FieldWidget $field): void
             {
                 $output = $this->html->flashMessage($this->_(
                     'Error loading block type: '.$this->getStore('type')
@@ -158,13 +181,12 @@ class Error extends Base
                 $this->_block->setData($this->getStore('data'));
 
                 $field->push($output);
-
-                return $this;
             }
 
-            public function apply()
+            public function apply(): Block
             {
                 $this->values->addError('noentry', 'Must update block!');
+                return $this->_block;
             }
         };
     }

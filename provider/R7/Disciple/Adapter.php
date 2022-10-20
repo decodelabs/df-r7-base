@@ -23,8 +23,8 @@ use Throwable;
 class Adapter implements
     GateKeeperAdapter
 {
-    protected $manager;
-    protected $client;
+    protected Manager $manager;
+    protected ?Client $client = null;
 
     public function __construct()
     {

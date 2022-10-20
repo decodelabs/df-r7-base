@@ -6,6 +6,7 @@
 
 namespace DecodeLabs\R7\Disciple;
 
+use DecodeLabs\Coercion;
 use DecodeLabs\Disciple\GateKeeper as GateKeeperInterface;
 use DecodeLabs\Disciple\GateKeeperTrait;
 use DecodeLabs\Disciple\GateKeeper\Attempt;
@@ -30,6 +31,8 @@ class GateKeeper implements GateKeeperInterface
 
     /**
      * Fetch list of login attempts
+     *
+     * @return array<Attempt>
      */
     protected function fetchAttempts(
         string $identity,
@@ -44,7 +47,7 @@ class GateKeeper implements GateKeeperInterface
 
         foreach ($logins as $login) {
             $output[] = new Attempt(
-                Legacy::prepareDate($login['date']),
+                Legacy::prepareDate($login['date']) ?? new DateTime('now'),
                 $login['ip'],
                 $login['authenticated']
             );

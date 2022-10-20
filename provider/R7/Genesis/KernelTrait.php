@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace DecodeLabs\R7\Genesis;
 
 use DecodeLabs\Genesis\Context;
+use DecodeLabs\R7\Legacy;
 
 trait KernelTrait
 {
@@ -26,7 +27,7 @@ trait KernelTrait
         }
 
         $this->shutdown = true;
-        $this->context->container['app']->shutdown();
+        Legacy::app()->shutdown();
 
         exit;
     }

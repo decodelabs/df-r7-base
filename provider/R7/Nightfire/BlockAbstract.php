@@ -3,35 +3,32 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+declare(strict_types=1);
 
-namespace df\fire\block;
+namespace DecodeLabs\R7\Nightfire;
 
-use df;
-use df\core;
-use df\fire;
-use df\flex;
-use df\aura;
-use df\arch;
+use df\aura\view\TView_DeferredRenderable;
+use df\core\TStringProvider;
 
-use DecodeLabs\Exemplar\Consumer as XmlConsumer;
+use DecodeLabs\Archetype;
+use DecodeLabs\Dictum;
+use DecodeLabs\Exceptional;
 use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
 use DecodeLabs\Exemplar\Serializable as XmlSerializable;
 use DecodeLabs\Exemplar\SerializableTrait as XmlSerializableTrait;
-use DecodeLabs\Dictum;
 use DecodeLabs\Glitch;
-use DecodeLabs\Exceptional;
 
-abstract class Base implements fire\IBlock
+abstract class BlockAbstract implements Block
 {
     use XmlSerializableTrait;
-    use aura\view\TView_DeferredRenderable;
-    use core\TStringProvider;
+    use TView_DeferredRenderable;
+    use TStringProvider;
 
     public const VERSION = 1;
     public const DEFAULT_CATEGORIES = [];
 
-    protected $_isNested = false;
+    protected bool $_isNested = false;
 
     public static function fromXmlElement(XmlElement $element): static
     {
@@ -50,31 +47,29 @@ abstract class Base implements fire\IBlock
         }
 
         $output->xmlUnserialize($element);
+        /**
+         * @var static
+         */
         return $output;
     }
 
-    public static function factory(string $name): static
+    public static function factory(string $name): Block
     {
-        $class = 'df\\fire\\block\\'.ucfirst($name);
-
-        if (!class_exists($class)) {
-            throw Exceptional::NotFound(
-                'Block type '.$name.' could not be found'
-            );
-        }
-
-        /** @var static $output */
-        $output = new $class();
-        return $output;
+        $class = Archetype::resolve(Block::class, $name);
+        return new $class();
     }
 
-    public static function normalize($block): ?static
-    {
-        if ($block instanceof static || $block === null) {
+    public static function normalize(
+        Block|string|null $block
+    ): ?Block {
+        if (
+            $block instanceof Block ||
+            $block === null
+        ) {
             return $block;
         }
 
-        return static::factory($block);
+        return self::factory($block);
     }
 
 
@@ -87,7 +82,7 @@ abstract class Base implements fire\IBlock
 
     public function getDisplayName(): string
     {
-        return Dictum::name($this->getName());
+        return (string)Dictum::name($this->getName());
     }
 
     public function getVersion(): int
@@ -95,13 +90,20 @@ abstract class Base implements fire\IBlock
         return static::VERSION;
     }
 
-    public function isNested(bool $flag=null)
+    /**
+     * Set nested
+     */
+    public function setNested(bool $nested): static
     {
-        if ($flag !== null) {
-            $this->_isNested = $flag;
-            return $this;
-        }
+        $this->_isNested = $nested;
+        return $this;
+    }
 
+    /**
+     * Is nested
+     */
+    public function isNested(): bool
+    {
         return $this->_isNested;
     }
 
@@ -126,43 +128,36 @@ abstract class Base implements fire\IBlock
         return (string)$this->render();
     }
 
-    public function getTransitionValue()
+    public function getTransitionValue(): mixed
     {
         return null;
     }
 
-    public function setTransitionValue($value)
+    public function setTransitionValue(mixed $value): static
     {
         return $this;
     }
 
 
-    public function xmlUnserialize(XmlElement $element): void
+    final public function xmlUnserialize(XmlElement $element): void
     {
-        $this->_validateXmlReader($element);
+        $this->validateXmlReader($element);
         $this->readXml($element);
     }
 
-    public function xmlSerialize(XmlWriter $writer): void
+    final public function xmlSerialize(XmlWriter $writer): void
     {
-        $this->_startWriterBlockElement($writer);
+        $this->startWriterBlockElement($writer);
         $this->writeXml($writer);
-        $this->_endWriterBlockElement($writer);
+        $this->endWriterBlockElement($writer);
     }
 
 
-    protected function readXml(XmlElement $element): void
-    {
-        Glitch::incomplete();
-    }
-
-    protected function writeXml(XmlWriter $writer): void
-    {
-        Glitch::incomplete();
-    }
+    abstract protected function readXml(XmlElement $element): void;
+    abstract protected function writeXml(XmlWriter $writer): void;
 
 
-    protected function _validateXmlReader(/*XmlElement*/ $reader)
+    protected function validateXmlReader(XmlElement $reader): void
     {
         if ($reader->getTagName() != 'block') {
             throw Exceptional::UnexpectedValue(
@@ -176,7 +171,7 @@ abstract class Base implements fire\IBlock
             $type = $reader->getAttribute('type');
         }
 
-        if (strtolower($type) != strtolower($this->getName())) {
+        if (strtolower((string)$type) != strtolower($this->getName())) {
             throw Exceptional::UnexpectedValue(
                 'Block content is meant for a '.$reader->getAttribute('type').' block, not a '.$this->getName().' block'
             );
@@ -186,7 +181,7 @@ abstract class Base implements fire\IBlock
     }
 
 
-    protected function _startWriterBlockElement(/*XmlWriter*/ $writer)
+    protected function startWriterBlockElement(XmlWriter $writer): void
     {
         $writer->startElement('block');
         $writer->setAttribute('version', $this->getVersion());
@@ -197,47 +192,8 @@ abstract class Base implements fire\IBlock
         }
     }
 
-    protected function _endWriterBlockElement(/*XmlWriter*/ $writer)
+    protected function endWriterBlockElement(XmlWriter $writer): void
     {
         $writer->endElement();
-    }
-}
-
-
-
-// Form delegate
-abstract class Base_Delegate extends arch\node\form\Delegate implements fire\IBlockDelegate
-{
-    use arch\node\TForm_InlineFieldRenderableDelegate;
-    use core\constraint\TRequirable;
-
-    protected $_isNested = false;
-    protected $_block;
-
-    public function __construct(fire\IBlock $block, arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, $id)
-    {
-        $this->_block = $block;
-        parent::__construct($context, $state, $event, $id);
-    }
-
-    public function setBlock(fire\IBlock $block)
-    {
-        $this->_block = $block;
-        return $this;
-    }
-
-    public function getBlock()
-    {
-        return $this->_block;
-    }
-
-    public function isNested(bool $flag=null)
-    {
-        if ($flag !== null) {
-            $this->_isNested = $flag;
-            return $this;
-        }
-
-        return $this->_isNested;
     }
 }

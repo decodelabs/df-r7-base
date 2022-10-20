@@ -3,21 +3,29 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+declare(strict_types=1);
 
-namespace df\fire\block;
+namespace DecodeLabs\R7\Nightfire\Block;
 
-use df;
-use df\core;
-use df\fire;
-use df\flex;
 use df\arch;
 use df\aura;
 
-use DecodeLabs\Tagged as Html;
+use df\arch\IContext as Context;
+use df\arch\node\IDelegate as NodeDelegate;
+use df\arch\node\IFormState as FormState;
+use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
+use df\aura\html\widget\Field as FieldWidget;
+
+use DecodeLabs\Coercion;
 use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
+use DecodeLabs\R7\Nightfire\Block;
+use DecodeLabs\R7\Nightfire\BlockAbstract;
+use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
+use DecodeLabs\Tagged as Html;
+use DecodeLabs\Tagged\Markup;
 
-class Heading extends Base
+class Heading extends BlockAbstract
 {
     public const DEFAULT_CATEGORIES = ['Description'];
 
@@ -30,10 +38,14 @@ class Heading extends Base
         6 => 'h6'
     ];
 
-    protected $_heading;
-    protected $_level = 3;
-    protected $_class;
-    protected $_classOptions;
+    protected ?string $heading = null;
+    protected int $level = 3;
+    protected ?string $class = null;
+
+    /**
+     * @var array<string, string>
+     */
+    protected ?array $classOptions = null;
 
     public function getDisplayName(): string
     {
@@ -46,100 +58,126 @@ class Heading extends Base
     }
 
     // Heading
-    public function setHeading($heading)
+
+    /**
+     * @return $this
+     */
+    public function setHeading(?string $heading): static
     {
-        $this->_heading = $heading;
+        $this->heading = $heading;
         return $this;
     }
 
-    public function getHeading()
+    public function getHeading(): ?string
     {
-        return $this->_heading;
+        return $this->heading;
     }
 
-    public function setHeadingLevel($level)
-    {
-        $this->_level = (int)$level;
 
-        if ($this->_level < 1) {
-            $this->_level = 1;
-        } elseif ($this->_level > 6) {
-            $this->_level = 6;
+    /**
+     * @return $this
+     */
+    public function setHeadingLevel(int $level): static
+    {
+        $this->level = (int)$level;
+
+        if ($this->level < 1) {
+            $this->level = 1;
+        } elseif ($this->level > 6) {
+            $this->level = 6;
         }
 
         return $this;
     }
 
-    public function getHeadingLevel()
+    public function getHeadingLevel(): int
     {
-        return $this->_level;
+        return $this->level;
     }
 
-    public function setHeadingClass(?string $class)
+
+    /**
+     * @return $this
+     */
+    public function setHeadingClass(?string $class): static
     {
-        $this->_class = $class;
+        $this->class = $class;
         return $this;
     }
 
     public function getHeadingClass(): ?string
     {
-        return $this->_class;
+        return $this->class;
     }
 
-    public function setClassOptions(?array $options)
+
+    /**
+     * @param array<string, string>|null $options
+     * @return $this
+     */
+    public function setClassOptions(?array $options): static
     {
-        $this->_classOptions = $options;
+        $this->classOptions = $options;
         return $this;
     }
 
+    /**
+     * @return array<string, string>|null
+     */
     public function getClassOptions(): ?array
     {
-        return $this->_classOptions;
+        return $this->classOptions;
     }
 
 
     // IO
     public function isEmpty(): bool
     {
-        return !strlen(trim($this->_heading));
+        return !strlen(trim((string)$this->heading));
     }
 
-    public function getTransitionValue()
+    public function getTransitionValue(): mixed
     {
-        return $this->_heading;
+        return $this->heading;
     }
 
-    public function setTransitionValue($value)
+    public function setTransitionValue(mixed $value): static
     {
-        $this->_heading = str_replace("\n", ' ', $value);
+        $value = Coercion::toStringOrNull($value);
+
+        if ($value !== null) {
+            $value = (string)str_replace("\n", ' ', $value);
+        }
+
+        $this->heading = $value;
         return $this;
     }
 
 
     protected function readXml(XmlElement $element): void
     {
-        $this->_heading = $element->getFirstCDataSection();
-        $this->_level = $element['level'];
-        $this->_class = $element['class'];
+        $this->heading = $element->getFirstCDataSection();
+        $this->level = Coercion::toIntOrNull($element['level']) ?? 3;
+        $this->class = $element['class'];
     }
 
     protected function writeXml(XmlWriter $writer): void
     {
-        $writer['level'] = $this->_level;
+        $writer['level'] = $this->level;
 
-        if ($this->_class !== null) {
-            $writer['class'] = $this->_class;
+        if ($this->class !== null) {
+            $writer['class'] = $this->class;
         }
 
-        $writer->writeCData($this->_heading);
+        $writer->writeCData($this->heading);
     }
 
 
     // Render
-    public function render()
+    public function render(): ?Markup
     {
-        return Html::{'h'.$this->_level}($this->_heading)
-            ->addClass($this->_class)
+        return Html::{'h'.$this->level}($this->heading)
+            ->addClass($this->class)
             ->setDataAttribute('type', $this->getName());
     }
 
@@ -147,25 +185,28 @@ class Heading extends Base
 
     // Form
     public function loadFormDelegate(
-        arch\IContext $context,
-        arch\node\IFormState $state,
-        arch\node\IFormEventDescriptor $event,
+        Context $context,
+        FormState $state,
+        FormEventDescriptor $event,
         string $id
-    ): arch\node\IDelegate {
-        return new class ($this, ...func_get_args()) extends Base_Delegate {
+    ): NodeDelegate {
+        /**
+         * @extends BlockDelegateAbstract<Heading>
+         */
+        return new class ($this, ...func_get_args()) extends BlockDelegateAbstract {
             /**
              * @var Heading
              */
-            protected $_block;
+            protected Block $_block;
 
-            protected function setDefaultValues()
+            protected function setDefaultValues(): void
             {
                 $this->values->heading = $this->_block->getHeading();
                 $this->values->level = $this->_block->getHeadingLevel();
                 $this->values->class = $this->_block->getHeadingClass();
             }
 
-            public function renderFieldContent(aura\html\widget\Field $field)
+            public function renderFieldContent(FieldWidget $field): void
             {
                 // Main
                 $field->push(
@@ -200,11 +241,9 @@ class Heading extends Base
                             ->addClass('short')
                     );
                 }
-
-                return $this;
             }
 
-            public function apply()
+            public function apply(): Block
             {
                 $this->data->newValidator()
                     ->addRequiredField('heading', 'text')

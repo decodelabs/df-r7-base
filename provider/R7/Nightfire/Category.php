@@ -3,11 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+declare(strict_types=1);
 
 namespace DecodeLabs\R7\Nightfire;
 
 use df\core\IStringProvider;
-use df\fire\IBlock as Block;
+
+use DecodeLabs\R7\Nightfire\Block;
 
 interface Category extends IStringProvider
 {

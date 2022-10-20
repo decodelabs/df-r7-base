@@ -13,12 +13,14 @@ use df\flex;
 use df\arch;
 use df\aura;
 
+use DecodeLabs\Exceptional;
 use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
 use DecodeLabs\Exemplar\Serializable as XmlSerializable;
 use DecodeLabs\Exemplar\SerializableTrait as XmlSerializableTrait;
-
-use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Nightfire\Block;
+use DecodeLabs\R7\Nightfire\Block\Error as ErrorBlock;
+use DecodeLabs\R7\Nightfire\BlockAbstract;
 
 class Content implements fire\ISlotContent
 {
@@ -61,21 +63,29 @@ class Content implements fire\ISlotContent
         return $this->getAttribute('id') == 'primary';
     }
 
-    // Nesting
-    public function isNested(bool $flag=null)
+
+    /**
+     * Set nested
+     */
+    public function setNested(bool $nested): static
     {
-        if ($flag !== null) {
-            $this->_isNested = $flag;
+        $this->_isNested = $nested;
 
-            foreach ($this->blocks as $block) {
-                $block->isNested($this->_isNested);
-            }
-
-            return $this;
+        foreach ($this->blocks as $block) {
+            $block->setNested($this->_isNested);
         }
 
+        return $this;
+    }
+
+    /**
+     * Is nested
+     */
+    public function isNested(): bool
+    {
         return $this->_isNested;
     }
+
 
     // Changes
     public function hasChanged(bool $flag=null)
@@ -97,7 +107,7 @@ class Content implements fire\ISlotContent
     public function addBlocks(array $blocks)
     {
         foreach ($blocks as $block) {
-            if (!$block = fire\block\Base::normalize($block)) {
+            if (!$block = BlockAbstract::normalize($block)) {
                 continue;
             }
 
@@ -107,7 +117,7 @@ class Content implements fire\ISlotContent
         return $this;
     }
 
-    public function setBlock(int $index, fire\IBlock $block)
+    public function setBlock(int $index, Block $block)
     {
         if ($block !== $this->blocks->get($index)) {
             $this->_hasChanged = true;
@@ -117,21 +127,21 @@ class Content implements fire\ISlotContent
         return $this;
     }
 
-    public function putBlock(int $index, fire\IBlock $block)
+    public function putBlock(int $index, Block $block)
     {
         $this->_hasChanged = true;
         $this->blocks->put($index, $block);
         return $this;
     }
 
-    public function addBlock(fire\IBlock $block)
+    public function addBlock(Block $block)
     {
         $this->_hasChanged = true;
         $this->blocks->push($block);
         return $this;
     }
 
-    public function getBlock(int $index): ?fire\IBlock
+    public function getBlock(int $index): ?Block
     {
         return $this->blocks->get($index);
     }
@@ -191,9 +201,10 @@ class Content implements fire\ISlotContent
         if ($element->getTagName() != 'slot') {
             if ($element->getTagName() === 'block') {
                 try {
-                    $block = fire\block\Base::fromXml($element);
-                } catch (fire\block\NotFoundException $e) {
-                    $block = new fire\block\Error();
+                    $block = BlockAbstract::fromXml($element);
+                } catch (Exceptional\NotFoundException $e) {
+                    /** @var ErrorBlock */
+                    $block = BlockAbstract::factory('Error');
                     $block->setError($e);
                     $block->setType($element['type']);
                     $block->setData($element->getFirstCDataSection());
@@ -212,9 +223,10 @@ class Content implements fire\ISlotContent
 
         foreach ($element->block as $blockNode) {
             try {
-                $block = fire\block\Base::fromXml($blockNode);
-            } catch (fire\block\NotFoundException $e) {
-                $block = new fire\block\Error();
+                $block = BlockAbstract::fromXml($blockNode);
+            } catch (Exceptional\NotFoundException $e) {
+                /** @var ErrorBlock */
+                $block = BlockAbstract::factory('Error');
                 $block->setError($e);
                 $block->setType($blockNode['type']);
                 $block->setData($blockNode->getFirstCDataSection());

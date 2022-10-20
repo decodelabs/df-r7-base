@@ -33,7 +33,7 @@ use df\axis\unit\Enum as Ref19;
 use df\axis\unit\Cache as Ref20;
 use df\axis\unit\Config as Ref21;
 use df\opal\query\ISelectQuery as Ref22;
-use df\fire\IBlock as Ref23;
+use DecodeLabs\R7\Nightfire\Block as Ref23;
 use df\fire\ISlotContent as Ref24;
 use df\arch\mail\Base as Ref25;
 use DecodeLabs\Terminus\Session as Ref26;
@@ -191,18 +191,14 @@ class Legacy implements Proxy
     public static function getCurrencyNames(): array {
         return static::$instance->getCurrencyNames();
     }
-    public static function setRegistryObject(Ref29 $object){
-        return static::$instance->setRegistryObject(...func_get_args());
-    }
+    public static function setRegistryObject(Ref29 $object): void {}
     public static function getRegistryObject(string $key): ?Ref29 {
         return static::$instance->getRegistryObject(...func_get_args());
     }
     public static function hasRegistryObject(string $key): bool {
         return static::$instance->hasRegistryObject(...func_get_args());
     }
-    public static function removeRegistryObject(string $key){
-        return static::$instance->removeRegistryObject(...func_get_args());
-    }
+    public static function removeRegistryObject(string $key): void {}
     public static function findRegistryObjects(string $beginningWith): array {
         return static::$instance->findRegistryObjects(...func_get_args());
     }
