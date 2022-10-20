@@ -205,12 +205,11 @@ class ContentSlot extends arch\node\form\Delegate implements
 
 
     // Delegates
-    protected function loadDelegates()
+    protected function loadDelegates(): void
     {
         foreach ($this->_blocks as $delegateId => $block) {
-            /** @var BlockDelegate $delegate */
-            $delegate = $this->proxyLoadDelegate($delegateId, $block);
-            $delegate
+            $this->proxyLoadDelegate($delegateId, $block)
+                ->as(BlockDelegate::class)
                 ->isRequired($this->_isRequired)
                 ->setNested($this->_isNested);
         }
@@ -293,9 +292,8 @@ class ContentSlot extends arch\node\form\Delegate implements
                 ])
             ]);
 
-            /** @var BlockDelegate */
-            $delegate = $this[$delegateId];
-            $delegate->renderFieldContent($fa);
+            $this[$delegateId]->as(BlockDelegate::class)
+                ->renderFieldContent($fa);
 
             $fa->push(Html::raw('</div>'));
             $counter++;
@@ -343,9 +341,8 @@ class ContentSlot extends arch\node\form\Delegate implements
             return;
         }
 
-        /** @var BlockDelegate */
-        $delegate = $this[$delegateId];
-        $delegate->apply();
+        $this[$delegateId]->as(BlockDelegate::class)
+            ->apply();
 
         try {
             $block = BlockAbstract::factory($type);
@@ -363,9 +360,8 @@ class ContentSlot extends arch\node\form\Delegate implements
                 $block->setTransitionValue($oldBlock->getTransitionValue());
                 $this->_blocks[$delegateId] = $block;
 
-                /** @var BlockDelegate $delegate */
-                $delegate = $this->proxyLoadDelegate($delegateId, $block);
-                $delegate
+                $this->proxyLoadDelegate($delegateId, $block)
+                    ->as(BlockDelegate::class)
                     ->isRequired($this->_isRequired)
                     ->setNested($this->_isNested)
                     ->initialize();
@@ -486,9 +482,8 @@ class ContentSlot extends arch\node\form\Delegate implements
         $isEmpty = true;
 
         foreach ($this->_blocks as $delegateId => $block) {
-            /** @var BlockDelegate */
-            $delegate = $this[$delegateId];
-            $delegate->apply();
+            $this[$delegateId]->as(BlockDelegate::class)
+                ->apply();
 
             if ($isEmpty && !$block->isEmpty()) {
                 $isEmpty = false;
@@ -502,9 +497,8 @@ class ContentSlot extends arch\node\form\Delegate implements
 
             $this->onSelectBlockTypeEvent($delegateId);
 
-            /** @var BlockDelegate */
-            $delegate = $this[$delegateId];
-            $delegate->apply();
+            $this[$delegateId]->as(BlockDelegate::class)
+                ->apply();
         }
 
         $output = new fire\slot\Content($this->_slotDefinition->getId());

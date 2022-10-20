@@ -35,7 +35,7 @@ trait TForm
     protected function init()
     {
     }
-    protected function setDefaultValues()
+    protected function setDefaultValues(): void
     {
     }
 
@@ -54,7 +54,7 @@ trait TForm
         $this->_state->isNew(false);
     }
 
-    protected function loadDelegates()
+    protected function loadDelegates(): void
     {
     }
     protected function afterInit()

@@ -221,7 +221,7 @@ abstract class SelectorDelegate extends Delegate implements
 
 
     // Form
-    protected function setDefaultValues()
+    protected function setDefaultValues(): void
     {
         $parts = explode('.', $this->_delegateId);
         $id = array_pop($parts);

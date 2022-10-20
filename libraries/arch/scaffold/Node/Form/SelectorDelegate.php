@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\scaffold\Node\Form;
 
 use df\arch\Scaffold;
@@ -22,7 +23,7 @@ class SelectorDelegate extends SelectorDelegateBase
         parent::__construct($scaffold->getContext(), $state, $event, $id);
     }
 
-    protected function setDefaultValues()
+    protected function setDefaultValues(): void
     {
         $name = $this->scaffold->getRecordKeyName();
 

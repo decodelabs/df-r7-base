@@ -7,14 +7,11 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Nightfire\Block;
 
-use df\arch;
-use df\aura;
-
 use df\arch\IContext as Context;
 use df\arch\node\IDelegate as NodeDelegate;
 use df\arch\node\IFormState as FormState;
 use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
-use df\arch\scaffold\Node\Form\SelectorDelegate;
+use df\arch\node\form\SelectorDelegate;
 use df\aura\html\widget\Field as FieldWidget;
 
 use DecodeLabs\Exemplar\Element as XmlElement;
@@ -96,9 +93,8 @@ class Element extends BlockAbstract
 
             protected function loadDelegates(): void
             {
-                /** @var SelectorDelegate */
-                $element = $this->loadDelegate('element', '~/content/elements/ElementSelector');
-                $element
+                $this->loadDelegate('element', '~/content/elements/ElementSelector')
+                    ->as(SelectorDelegate::class)
                     ->isForOne(true)
                     ->isRequired($this->_isRequired);
             }
@@ -109,25 +105,23 @@ class Element extends BlockAbstract
                     ->where('slug', '=', $this->_block->getSlug())
                     ->toValue('id');
 
-                /** @var SelectorDelegate */
-                $element = $this['element'];
-                $element->setSelected($id);
+                $this['element']->as(SelectorDelegate::class)
+                    ->setSelected($id);
             }
 
             public function renderFieldContent(FieldWidget $field): void
             {
-                /** @var SelectorDelegate */
-                $element = $this['element'];
-                $element->renderFieldContent($field);
+                $this['element']->as(SelectorDelegate::class)
+                    ->renderFieldContent($field);
             }
 
             public function apply(): Block
             {
-                /** @var SelectorDelegate */
-                $element = $this['element'];
+                $id = $this['element']->as(SelectorDelegate::class)
+                    ->apply();
 
                 $slug = $this->data->content->element->select('slug')
-                    ->where('id', '=', $element->apply())
+                    ->where('id', '=', $id)
                     ->toValue('slug');
 
                 $this->_block->setSlug($slug);

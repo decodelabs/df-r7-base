@@ -175,7 +175,7 @@ class ContentBlock extends arch\node\form\Delegate implements
         return $this->_category;
     }
 
-    protected function loadDelegates()
+    protected function loadDelegates(): void
     {
         if (!$this->_block) {
             if ($this->_defaultType) {
@@ -186,9 +186,8 @@ class ContentBlock extends arch\node\form\Delegate implements
         }
 
         if ($this->_block) {
-            /** @var BlockDelegate */
-            $delegate = $this->proxyLoadDelegate('block', $this->_block);
-            $delegate->isRequired($this->_isRequired);
+            $this->proxyLoadDelegate('block', $this->_block)->as(BlockDelegate::class)
+                ->isRequired($this->_isRequired);
         }
     }
 
@@ -225,9 +224,8 @@ class ContentBlock extends arch\node\form\Delegate implements
         }
 
         if ($this->_block) {
-            /** @var BlockDelegate */
-            $delegate = $this['block'];
-            $delegate->renderFieldContent($fa);
+            $this['block']->as(BlockDelegate::class)
+                ->renderFieldContent($fa);
         }
 
         $fa->push(Html::raw('</div>'));
@@ -242,9 +240,8 @@ class ContentBlock extends arch\node\form\Delegate implements
         }
 
         if (isset($this['block'])) {
-            /** @var BlockDelegate */
-            $delegate = $this['block'];
-            $delegate->apply();
+            $this['block']->as(BlockDelegate::class)
+                ->apply();
         }
 
         $oldBlock = $this->_block;
@@ -262,9 +259,8 @@ class ContentBlock extends arch\node\form\Delegate implements
         if ($oldBlock && $oldBlock !== $this->_block) {
             $this->_block->setTransitionValue($oldBlock->getTransitionValue());
 
-            /** @var BlockDelegate $delegate */
-            $delegate = $this->proxyLoadDelegate('block', $this->_block);
-            $delegate
+            $this->proxyLoadDelegate('block', $this->_block)
+                ->as(BlockDelegate::class)
                 ->isRequired($this->_isRequired)
                 ->setNested($this->_isNested)
                 ->initialize();
@@ -285,9 +281,8 @@ class ContentBlock extends arch\node\form\Delegate implements
             return null;
         }
 
-        /** @var BlockDelegate */
-        $delegate = $this['block'];
-        $delegate->apply();
+        $this['block']->as(BlockDelegate::class)
+            ->apply();
 
         if (!$this->_isRequired && $this->_block->isEmpty()) {
             return null;

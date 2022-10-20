@@ -227,6 +227,13 @@ interface IWizard extends IFormNode
 
 interface IDelegate extends IActiveForm, core\IContextAware
 {
+    /**
+     * @template T of IDelegate
+     * @phpstan-param class-string<T> $type
+     * @phpstan-return T
+     */
+    public function as(string $type): IDelegate;
+
     public function getDelegateId(): string;
     public function getDelegateKey(): string;
 

@@ -233,7 +233,7 @@ class Base implements IMenu, \Serializable
         return $this;
     }
 
-    protected function loadDelegates()
+    protected function loadDelegates(): void
     {
     }
 

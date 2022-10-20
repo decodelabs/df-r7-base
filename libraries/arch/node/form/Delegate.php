@@ -3,22 +3,24 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\node\form;
 
-use df;
 use df\core;
 use df\arch;
 use df\aura;
-use df\flex;
+
+use df\arch\node\IDelegate;
 
 use DecodeLabs\Dictum;
+use DecodeLabs\Exceptional;
 
-class Delegate implements arch\node\IDelegate
+class Delegate implements IDelegate
 {
     use core\TContextAware;
     use arch\node\TForm;
 
-    const DEFAULT_REDIRECT = null;
+    public const DEFAULT_REDIRECT = null;
 
     protected $_delegateId;
     private $_isNew = false;
@@ -48,6 +50,15 @@ class Delegate implements arch\node\IDelegate
     {
         $parts = explode('.', $this->_delegateId);
         return (string)array_pop($parts);
+    }
+
+    public function as(string $type): IDelegate
+    {
+        if (!$this instanceof $type) {
+            throw Exceptional::Runtime('Delegate is not a '.$type);
+        }
+
+        return $this;
     }
 
     final public function initialize()

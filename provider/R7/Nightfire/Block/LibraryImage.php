@@ -7,14 +7,11 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Nightfire\Block;
 
-use df\arch;
-use df\aura;
-
 use df\arch\IContext as Context;
 use df\arch\node\IDelegate as NodeDelegate;
 use df\arch\node\IFormState as FormState;
 use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
-use df\arch\scaffold\Node\Form\SelectorDelegate;
+use df\arch\node\form\SelectorDelegate;
 use df\aura\html\widget\Field as FieldWidget;
 
 use DecodeLabs\Dictum;
@@ -153,18 +150,16 @@ class LibraryImage extends BlockAbstract
 
             protected function loadDelegates(): void
             {
-                /** @var SelectorDelegate */
-                $image = $this->loadDelegate('image', '~admin/media/ImageSelector');
-                $image
+                $this->loadDelegate('image', '~admin/media/ImageSelector')
+                    ->as(SelectorDelegate::class)
                     ->isForOne(true)
                     ->isRequired(true);
             }
 
             protected function setDefaultValues(): void
             {
-                /** @var SelectorDelegate */
-                $image = $this['image'];
-                $image->setSelected($this->_block->getImageId());
+                $this['image']->as(SelectorDelegate::class)
+                    ->setSelected($this->_block->getImageId());
 
                 $this->values->alt = $this->_block->getAltText();
                 $this->values->link = $this->_block->getLink();
@@ -174,8 +169,7 @@ class LibraryImage extends BlockAbstract
             {
                 $fa = $field->addField($this->_('Library image'))->push($this['image']);
 
-                /** @var SelectorDelegate */
-                $image = $this['image'];
+                $image = $this['image']->as(SelectorDelegate::class);
 
                 if ($image->hasSelection()) {
                     $fileId = $image->getSelected();

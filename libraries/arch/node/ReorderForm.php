@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\node;
 
 use df;
@@ -15,11 +16,11 @@ use DecodeLabs\Tagged as Html;
 
 abstract class ReorderForm extends Form
 {
-    const ITEM_NAME = 'item';
-    const PARENT_ITEM_NAME = 'parent';
-    const DEFAULT_EVENT = 'reorder';
+    public const ITEM_NAME = 'item';
+    public const PARENT_ITEM_NAME = 'parent';
+    public const DEFAULT_EVENT = 'reorder';
 
-    const WEIGHT_FIELD = 'weight';
+    public const WEIGHT_FIELD = 'weight';
 
     protected function getItemName()
     {
@@ -37,7 +38,7 @@ abstract class ReorderForm extends Form
     }
 
 
-    protected function setDefaultValues()
+    protected function setDefaultValues(): void
     {
         $this->values->items = array_keys($this->fetchNameList());
     }
