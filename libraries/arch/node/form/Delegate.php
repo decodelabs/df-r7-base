@@ -55,7 +55,7 @@ class Delegate implements IDelegate
     public function as(string $type): IDelegate
     {
         if (!$this instanceof $type) {
-            throw Exceptional::Runtime('Delegate is not a '.$type);
+            throw Exceptional::Runtime('Delegate '.$this->_delegateId.' is not a '.$type);
         }
 
         return $this;
