@@ -139,13 +139,13 @@ abstract class BlockAbstract implements Block
     }
 
 
-    final public function xmlUnserialize(XmlElement $element): void
+    public function xmlUnserialize(XmlElement $element): void
     {
         $this->validateXmlReader($element);
         $this->readXml($element);
     }
 
-    final public function xmlSerialize(XmlWriter $writer): void
+    public function xmlSerialize(XmlWriter $writer): void
     {
         $this->startWriterBlockElement($writer);
         $this->writeXml($writer);
