@@ -207,9 +207,9 @@ class Http
     /**
      * Get user agent
      */
-    public function getUserAgent(): string
+    public function getUserAgent(): ?string
     {
-        return Coercion::toString($this->getHeader('User-Agent'));
+        return Coercion::toStringOrNull($this->getHeader('User-Agent'));
     }
 
     /**
