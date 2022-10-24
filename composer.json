@@ -23,6 +23,7 @@
         "decodelabs/eventful": "^0.3",
         "decodelabs/exceptional": "^0.4",
         "decodelabs/exemplar": "^0.3.4",
+        "decodelabs/fluidity": "^0.3.3",
         "decodelabs/genesis": "^0.6.1",
         "decodelabs/glitch": "^0.18.2",
         "decodelabs/idiom": "^0.2",
@@ -67,6 +68,11 @@
     "extra": {
         "branch-alias": {
             "dev-develop": "0.x-dev"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true
         }
     },
     "minimum-stability": "dev",

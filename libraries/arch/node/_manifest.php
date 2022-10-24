@@ -6,13 +6,10 @@
 
 namespace df\arch\node;
 
-use df;
 use df\core;
 use df\aura;
 use df\arch;
 use df\flex;
-use df\flow;
-use df\halo;
 use df\link;
 use df\mesh;
 use df\opal;
@@ -20,6 +17,7 @@ use df\user;
 
 use df\aura\html\widget\Field as FieldWidget;
 
+use DecodeLabs\Fluidity\Cast;
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
 use DecodeLabs\Terminus\Session;
 
@@ -225,15 +223,11 @@ interface IWizard extends IFormNode
 }
 
 
-interface IDelegate extends IActiveForm, core\IContextAware
+interface IDelegate extends
+    IActiveForm,
+    core\IContextAware,
+    Cast
 {
-    /**
-     * @template T of IDelegate
-     * @phpstan-param class-string<T> $type
-     * @phpstan-return T
-     */
-    public function as(string $type): IDelegate;
-
     public function getDelegateId(): string;
     public function getDelegateKey(): string;
 

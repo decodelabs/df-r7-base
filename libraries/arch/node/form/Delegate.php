@@ -14,11 +14,13 @@ use df\arch\node\IDelegate;
 
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Fluidity\CastTrait;
 
 class Delegate implements IDelegate
 {
     use core\TContextAware;
     use arch\node\TForm;
+    use CastTrait;
 
     public const DEFAULT_REDIRECT = null;
 
@@ -50,15 +52,6 @@ class Delegate implements IDelegate
     {
         $parts = explode('.', $this->_delegateId);
         return (string)array_pop($parts);
-    }
-
-    public function as(string $type): IDelegate
-    {
-        if (!$this instanceof $type) {
-            throw Exceptional::Runtime('Delegate '.$this->_delegateId.' is not a '.$type);
-        }
-
-        return $this;
     }
 
     final public function initialize()
