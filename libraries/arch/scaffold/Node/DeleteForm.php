@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\scaffold\Node;
 
 use df\arch\node\DeleteForm as DeleteFormBase;
@@ -18,7 +19,7 @@ class DeleteForm extends DeleteFormBase
         parent::__construct($scaffold->getContext());
     }
 
-    protected function getInstanceId()
+    protected function getInstanceId(): ?string
     {
         return $this->scaffold->getRecordId();
     }

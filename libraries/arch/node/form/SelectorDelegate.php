@@ -91,7 +91,7 @@ abstract class SelectorDelegate extends Delegate implements
 
 
     // Modes
-    protected function _getDefaultMode()
+    protected function _getDefaultMode(): string
     {
         return 'details';
     }
@@ -883,11 +883,13 @@ abstract class SelectorDelegate extends Delegate implements
         return Legacy::$http->redirect('#'.$this->elementId('selector'));
     }
 
-    protected function onResetEvent()
+    protected function onResetEvent(): mixed
     {
         if ($this->_state->hasStore('originalSelection')) {
             $this->setSelected($this->_state->getStore('originalSelection'));
         }
+
+        return null;
     }
 
     protected function onPaginateEvent($query)

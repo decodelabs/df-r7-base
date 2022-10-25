@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\uri;
 
 use df;
@@ -83,7 +84,7 @@ class Url implements IGenericUrl, Dumpable
         return $this;
     }
 
-    public function reset()
+    public function reset(): static
     {
         $this->_resetScheme();
         $this->_resetPath();

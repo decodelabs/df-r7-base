@@ -12,7 +12,7 @@ use df\aura;
 
 use df\arch\IContext as Context;
 use df\arch\node\IDelegate as NodeDelegate;
-use df\arch\node\IFormState as FormState;
+use df\arch\node\form\State as FormState;
 use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
 use df\aura\html\widget\Field as FieldWidget;
 
@@ -223,9 +223,12 @@ class Heading extends BlockAbstract
                 $classes = $this->_block->getClassOptions();
 
                 if (!empty($classes)) {
-                    $current = $this->values['class'];
+                    $current = Coercion::toStringOrNull($this->values['class']);
 
-                    if (!empty($current) && !isset($classes[$current])) {
+                    if (
+                        !empty($current) &&
+                        !isset($classes[$current])
+                    ) {
                         $classes[$current] = ucfirst($current);
                     }
 
@@ -252,9 +255,9 @@ class Heading extends BlockAbstract
                     ->addField('class', 'text')
                     ->validate($this->values);
 
-                $this->_block->setHeading($this->values['heading']);
-                $this->_block->setHeadingLevel($this->values['level']);
-                $this->_block->setHeadingClass($this->values['class']);
+                $this->_block->setHeading(Coercion::toStringOrNull($this->values['heading']));
+                $this->_block->setHeadingLevel(Coercion::toIntOrNull($this->values['level']) ?? 3);
+                $this->_block->setHeadingClass(Coercion::toStringOrNull($this->values['class']));
 
                 return $this->_block;
             }

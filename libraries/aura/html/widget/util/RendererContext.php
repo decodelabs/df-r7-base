@@ -132,7 +132,7 @@ class RendererContext implements aura\html\widget\IRendererContext
         return $this->_nullToNa;
     }
 
-    public function reset()
+    public function reset(): static
     {
         $this->counter = 0;
         $this->clear();
@@ -276,13 +276,19 @@ class RendererContext implements aura\html\widget\IRendererContext
 
 
     // Store
-    public function setStore($key, $value)
-    {
+
+    /**
+     * @return $this
+     */
+    public function setStore(
+        string $key,
+        mixed $value
+    ): static {
         $this->_store[$key] = $value;
         return $this;
     }
 
-    public function hasStore(...$keys): bool
+    public function hasStore(string ...$keys): bool
     {
         foreach ($keys as $key) {
             if (isset($this->_store[$key])) {
@@ -293,8 +299,10 @@ class RendererContext implements aura\html\widget\IRendererContext
         return false;
     }
 
-    public function getStore($key, $default=null)
-    {
+    public function getStore(
+        string $key,
+        mixed $default=null
+    ): mixed {
         if (isset($this->_store[$key])) {
             return $this->_store[$key];
         }
@@ -302,7 +310,10 @@ class RendererContext implements aura\html\widget\IRendererContext
         return $default;
     }
 
-    public function removeStore(...$keys)
+    /**
+     * @return $this
+     */
+    public function removeStore(string ...$keys): static
     {
         foreach ($keys as $key) {
             unset($this->_store[$key]);

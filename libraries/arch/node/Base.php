@@ -225,7 +225,7 @@ class Base implements INode, Dumpable
 
         if (method_exists($this, '_beforeDispatch')) {
             try {
-                $output = $this->_beforeDispatch();
+                $this->_beforeDispatch();
             } catch (arch\IForcedResponse $e) {
                 $output = $e->getResponse();
             }
@@ -307,7 +307,7 @@ class Base implements INode, Dumpable
         return null;
     }
 
-    protected function _handleNoDispatchMethod()
+    protected function _handleNoDispatchMethod(): mixed
     {
         if ($this->context->request->getType() == 'Htm') {
             $request = clone $this->context->request->setType('Html');

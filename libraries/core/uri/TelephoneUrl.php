@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\uri;
 
 use df;
@@ -56,7 +57,7 @@ class TelephoneUrl implements ITelephoneUrl, Dumpable
         return $this;
     }
 
-    public function reset()
+    public function reset(): static
     {
         $this->_number = null;
         return $this;

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\component;
 
 use df;
@@ -15,7 +16,7 @@ use DecodeLabs\Exceptional;
 
 class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dumpable
 {
-    const DEFAULT_ERROR_MESSAGE = null;
+    public const DEFAULT_ERROR_MESSAGE = null;
 
     protected $collection;
     protected $errorMessage;
@@ -58,7 +59,10 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dump
         return $this->collection;
     }
 
-    public function setMode(string $mode)
+    /**
+     * @return $this
+     */
+    public function setMode(string $mode): static
     {
         switch ($mode) {
             case 'post':

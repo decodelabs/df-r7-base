@@ -117,7 +117,11 @@ interface IQueryContainer
 interface IUrl extends core\IStringProvider
 {
     public function import($url='');
-    public function reset();
+
+    /**
+     * @return $this
+     */
+    public function reset(): static;
 
     public function getScheme();
     public function toReadableString();

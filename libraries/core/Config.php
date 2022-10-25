@@ -126,7 +126,7 @@ abstract class Config implements IConfig, Dumpable
         return $this;
     }
 
-    public function reset()
+    public function reset(): static
     {
         $this->values = new core\collection\Tree($this->getDefaultValues());
         $this->_sanitizeValuesOnCreate();

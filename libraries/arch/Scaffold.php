@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch;
 
 use df\arch\IRequest as DirectoryRequest;
@@ -13,7 +14,7 @@ use df\arch\IComponent as Component;
 use df\arch\navigation\menu\IMenu as Menu;
 use df\arch\node\INode as Node;
 use df\arch\node\IDelegate as Delegate;
-use df\arch\node\IFormState as FormState;
+use df\arch\node\form\State as FormState;
 use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
 
 interface Scaffold extends

@@ -30,7 +30,7 @@ abstract class Task extends Base implements ITaskNode
         $this->init();
     }
 
-    protected function init()
+    protected function init(): void
     {
     }
 

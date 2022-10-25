@@ -339,13 +339,19 @@ class Queue implements IQueue
 
 
     // Store
-    public function setStore(string $key, $value)
-    {
+
+    /**
+     * @return $this
+     */
+    public function setStore(
+        string $key,
+        mixed $value
+    ): static {
         $this->_store[$key] = $value;
         return $this;
     }
 
-    public function getStore(string $key)
+    public function getStore(string $key): mixed
     {
         return $this->_store[$key] ?? null;
     }
@@ -355,13 +361,19 @@ class Queue implements IQueue
         return isset($this->_store[$key]);
     }
 
-    public function removeStore(string $key)
+    /**
+     * @return $this
+     */
+    public function removeStore(string $key): static
     {
         unset($this->_store[$key]);
         return $this;
     }
 
-    public function clearStore()
+    /**
+     * @return $this
+     */
+    public function clearStore(): static
     {
         $this->_store = [];
         return $this;

@@ -66,7 +66,7 @@ class DeleteSelectedForm extends AffectSelectedForm
         }
     }
 
-    protected function renderUi($fs)
+    protected function renderUi($fs): void
     {
         if ($this->requiresConfirmation()) {
             $this->createConfirmationUi($fs);

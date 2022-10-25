@@ -3,18 +3,19 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\scaffold\Node;
 
 use df\arch\node\Form as Form;
 
 abstract class AffectSelectedForm extends Form
 {
-    const AUTO_INSTANCE_ID_IGNORE = ['selected'];
+    public const AUTO_INSTANCE_ID_IGNORE = ['selected'];
 
     protected $scaffold;
     protected $ids = [];
 
-    protected function init()
+    protected function init(): void
     {
         if (!$this->scaffold) {
             $this->scaffold = $this->context->scaffold;
@@ -25,7 +26,7 @@ abstract class AffectSelectedForm extends Form
         }
     }
 
-    protected function getInstanceId()
+    protected function getInstanceId(): ?string
     {
         $output = parent::getInstanceId();
         $hash = md5($this->request['selected']);
@@ -39,7 +40,7 @@ abstract class AffectSelectedForm extends Form
         return $output;
     }
 
-    protected function createUi()
+    protected function createUi(): void
     {
         $form = $this->content->addForm();
         $this->renderHeader($form);
@@ -65,7 +66,7 @@ abstract class AffectSelectedForm extends Form
     {
     }
 
-    protected function renderUi($fs)
+    protected function renderUi($fs): void
     {
     }
 

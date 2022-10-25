@@ -28,7 +28,7 @@ class TaskSpool extends arch\node\Task
     protected $_outputReceiver;
     protected $_errorReceiver;
 
-    protected function _beforeDispatch()
+    protected function _beforeDispatch(): void
     {
         $this->_outputReceiver = Atlas::newMemoryFile();
         $this->_errorReceiver = Atlas::newMemoryFile();
@@ -170,7 +170,7 @@ class TaskSpool extends arch\node\Task
         return true;
     }
 
-    protected function _afterDispatch($output)
+    protected function _afterDispatch(mixed $output): mixed
     {
         $this->_finalizeLog();
         return $output;

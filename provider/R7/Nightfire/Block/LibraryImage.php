@@ -9,11 +9,12 @@ namespace DecodeLabs\R7\Nightfire\Block;
 
 use df\arch\IContext as Context;
 use df\arch\node\IDelegate as NodeDelegate;
-use df\arch\node\IFormState as FormState;
+use df\arch\node\form\State as FormState;
 use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
 use df\arch\node\form\SelectorDelegate;
 use df\aura\html\widget\Field as FieldWidget;
 
+use DecodeLabs\Coercion;
 use DecodeLabs\Dictum;
 use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
@@ -172,12 +173,15 @@ class LibraryImage extends BlockAbstract
                 $image = $this['image']->as(SelectorDelegate::class);
 
                 if ($image->hasSelection()) {
-                    $fileId = $image->getSelected();
+                    $fileId = Coercion::toString($image->getSelected());
 
                     $fa->add(
                         'div.link',
                         $this->html->link(
-                                $this->context->uri('~admin/media/files/edit?file='.$fileId, '~admin/media/files/details?file='.$fileId),
+                                $this->context->uri(
+                                    '~admin/media/files/edit?file='.$fileId,
+                                    '~admin/media/files/details?file='.$fileId
+                                ),
                                 $this->_('Edit file details')
                             )
                             ->setIcon('edit')

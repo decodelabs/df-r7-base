@@ -29,7 +29,12 @@ interface IRendererContext extends core\collection\IMappedCollection
     public function getDivider(): ?string;
 
     public function prepareRow($row);
-    public function reset();
+
+    /**
+     * @return $this
+     */
+    public function reset(): static;
+
     public function iterate($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null);
     public function iterateField($field, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null);
     public function renderCell($value, $renderer=null);

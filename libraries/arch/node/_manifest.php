@@ -15,11 +15,20 @@ use df\mesh;
 use df\opal;
 use df\user;
 
+use df\aura\html\widget\IContainerWidget;
 use df\aura\html\widget\Field as FieldWidget;
+use df\aura\html\widget\FieldSet as FieldSetWidget;
+use df\aura\view\IContentProvider as ViewContentProvider;
+use df\arch\node\form\State as FormState;
+use df\opal\record\IRecord;
+use df\opal\record\IPartial;
 
 use DecodeLabs\Fluidity\Cast;
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
+use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Terminus\Session;
+
+use Stringable;
 
 ##############################
 ## MAIN
@@ -116,11 +125,30 @@ interface IRestApiResult extends arch\IProxyResponse
 ##############################
 interface IStoreProvider
 {
-    public function setStore($key, $value);
-    public function hasStore(...$keys): bool;
-    public function getStore($key, $default=null);
-    public function removeStore(...$keys);
-    public function clearStore();
+    /**
+     * @return $this
+     */
+    public function setStore(
+        string $key,
+        mixed $value
+    ): static;
+
+    public function hasStore(string ...$keys): bool;
+
+    public function getStore(
+        string $key,
+        mixed $default=null
+    ): mixed;
+
+    /**
+     * @return $this
+     */
+    public function removeStore(string ...$keys): static;
+
+    /**
+     * @return $this
+     */
+    public function clearStore(): static;
 }
 
 interface IFormState extends IStoreProvider
@@ -128,10 +156,14 @@ interface IFormState extends IStoreProvider
     public function getSessionId(): string;
     public function getValues(): core\collection\IInputTree;
 
-    public function getDelegateState(string $id): IFormState;
+    public function getDelegateState(string $id): FormState;
 
     public function isNew(bool $flag=null);
-    public function reset();
+
+    /**
+     * @return $this
+     */
+    public function reset(): static;
     public function isOperating(): bool;
 }
 
@@ -169,17 +201,24 @@ interface IFormEventDescriptor
     public function hasResponse(): bool;
 }
 
-interface IForm extends IStoreProvider, core\lang\IChainable, \ArrayAccess
+interface IForm extends
+    IStoreProvider,
+    core\lang\IChainable,
+    \ArrayAccess
 {
     public function isRenderingInline(): bool;
-    public function getState(): IFormState;
+    public function getState(): FormState;
     public function reloadDefaultValues(): void;
     public function loadDelegate(string $id, string $path): IDelegate;
     public function directLoadDelegate(string $id, string $class): IDelegate;
     public function proxyLoadDelegate(string $id, IDelegateProxy $proxy): IDelegate;
     public function getDelegate(string $id): IDelegate;
     public function hasDelegate(string $id): bool;
-    public function unloadDelegate(string $id);
+
+    /**
+     * @return $this
+     */
+    public function unloadDelegate(string $id): static;
 
     public function isValid(): bool;
     public function countErrors(): int;
@@ -193,24 +232,48 @@ interface IActiveForm extends IForm
     public function isNew(): bool;
 
     public function handleEvent(string $name, array $args=[]): IFormEventDescriptor;
-    public function handleDelegateEvent(string $delegateId, string $event, array $args);
-    public function triggerPostEvent(IActiveForm $target, string $event, array $args);
-    public function handlePostEvent(IActiveForm $target, string $event, array $args);
+
+    public function handleDelegateEvent(
+        string $delegateId,
+        string $event,
+        array $args
+    ): void;
+
+    public function triggerPostEvent(
+        IActiveForm $target,
+        string $event,
+        array $args
+    ): void;
+
+    public function handlePostEvent(
+        IActiveForm $target,
+        string $event,
+        array $args
+    ): void;
+
     public function handleMissingDelegate(string $id, string $event, array $args): bool;
 
     public function getAvailableEvents(): array;
     public function getStateData(): array;
 
-    public function reset();
-    public function complete($success=true, $failure=null);
+    /**
+     * @return $this
+     */
+    public function reset(): static;
+
+    public function complete(
+        bool|object|array|string $success=true,
+        ?callable $failure=null
+    ): mixed;
+
     public function isComplete(): bool;
 }
 
 
 interface IFormNode extends INode, IActiveForm
 {
-    public function dispatchToRenderInline(aura\view\IView $view);
-    public function setComplete();
+    public function dispatchToRenderInline(aura\view\IView $view): ViewContentProvider;
+    public function setComplete(): void;
 }
 
 interface IWizard extends IFormNode
@@ -235,39 +298,51 @@ interface IDelegate extends
     public function beginInitialize();
     public function endInitialize();
 
-    public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content, $isRenderingInline=false);
-    public function setComplete();
+    /**
+     * @return $this
+     */
+    public function setRenderContext(
+        aura\view\IView $view,
+        aura\view\content\WidgetContentProvider $content,
+        bool $isRenderingInline=false
+    ): static;
+
+    public function setComplete(): void;
 }
 
 interface IModalDelegate
 {
     public function getAvailableModes(): array;
-    public function setDefaultMode(?string $mode);
+
+    /**
+     * @return $this
+     */
+    public function setDefaultMode(?string $mode): static;
     public function getDefaultMode(): ?string;
 }
 
 interface IInlineFieldRenderableDelegate
 {
-    public function renderField($label=null);
-    public function renderInlineFieldContent();
+    public function renderField(mixed $label=null): FieldWidget;
+    public function renderInlineFieldContent(): Markup;
     public function renderFieldContent(FieldWidget $field): void;
 }
 
 interface ISelfContainedRenderableDelegate
 {
-    public function renderFieldSet($legend=null);
-    public function renderContainer();
-    public function renderContainerContent(aura\html\widget\IContainerWidget $fieldSet);
+    public function renderFieldSet(mixed $legend=null): FieldSetWidget;
+    public function renderContainer(): Markup;
+    public function renderContainerContent(IContainerWidget $fieldSet);
 }
 
 interface IParentEventHandlerDelegate extends IDelegate
 {
-    public function apply();
+    public function apply(): mixed;
 }
 
 interface IParentUiHandlerDelegate extends IDelegate
 {
-    public function renderUi();
+    public function renderUi(): void;
 }
 
 interface IResultProviderDelegate extends core\constraint\IRequirable, IParentEventHandlerDelegate
@@ -284,11 +359,26 @@ interface ISelectorDelegate extends ISelectionProviderDelegate, IDependencyValue
 {
     public function getSourceEntityLocator(): mesh\entity\ILocator;
     public function isSelected(?string $id): bool;
-    public function setSelected($selected);
-    public function getSelected();
+
+    /**
+     * @return $this
+     */
+    public function setSelected(
+        string|Stringable|int|IRecord|IPartial|array|null $selected
+    ): static;
+
+    public function getSelected(): string|array|null;
     public function hasSelection(): bool;
-    public function removeSelected(?string $id);
-    public function clearSelection();
+
+    /**
+     * @return $this
+     */
+    public function removeSelected(?string $id): static;
+
+    /**
+     * @return $this
+     */
+    public function clearSelection(): static;
 }
 
 interface IInlineFieldRenderableSelectorDelegate extends IInlineFieldRenderableDelegate, ISelectorDelegate
@@ -303,24 +393,48 @@ interface IAdapterDelegate extends IParentUiHandlerDelegate, IParentEventHandler
 
 interface IDependencyValueProvider
 {
-    public function getDependencyValue();
+    public function getDependencyValue(): mixed;
     public function hasDependencyValue(): bool;
 }
 
 interface IDependentDelegate extends opal\query\IFilterConsumer
 {
-    public function addDependency($value, string $message=null, callable $filter=null, callable $callback=null);
-    public function setDependency(string $name, $value, string $message=null, callable $filter=null, callable $callback=null);
+    /**
+     * @return $this
+     */
+    public function addDependency(
+        mixed $value,
+        ?string $message=null,
+        ?callable $filter=null,
+        ?callable $callback=null
+    ): static;
+
+    /**
+     * @return $this
+     */
+    public function setDependency(
+        string $name,
+        mixed $value,
+        ?string $message=null,
+        ?callable $filter=null,
+        ?callable $callback=null
+    ): static;
+
     public function hasDependency(string $name): bool;
     public function getDependency(string $name): ?array;
-    public function removeDependency(string $name);
+    public function removeDependency(string $name): void;
     public function getDependencies(): array;
     public function getDependencyMessages(): array;
-    public function normalizeDependencyValues();
+    public function normalizeDependencyValues(): void;
 }
 
 
 interface IDelegateProxy
 {
-    public function loadFormDelegate(arch\IContext $context, IFormState $state, IFormEventDescriptor $event, string $id): IDelegate;
+    public function loadFormDelegate(
+        arch\IContext $context,
+        FormState $state,
+        IFormEventDescriptor $event,
+        string $id
+    ): IDelegate;
 }

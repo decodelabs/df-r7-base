@@ -3,21 +3,19 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\node;
 
-use df;
 use df\core;
-use df\arch;
-use df\aura;
 
 use DecodeLabs\Exceptional;
 
 abstract class Wizard extends Form
 {
-    const DEFAULT_EVENT = 'next';
-    const SECTIONS = [];
+    public const DEFAULT_EVENT = 'next';
+    public const SECTIONS = [];
 
-    protected function createUi()
+    protected function createUi(): void
     {
         $section = $this->getCurrentSection();
         $func = 'create'.ucfirst($section).'Ui';

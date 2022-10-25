@@ -11,7 +11,7 @@ use df\aura;
 
 use df\arch\IContext as Context;
 use df\arch\node\IDelegate as NodeDelegate;
-use df\arch\node\IFormState as FormState;
+use df\arch\node\form\State as FormState;
 use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
 use df\aura\html\widget\Field as FieldWidget;
 
@@ -135,7 +135,10 @@ class AudioEmbed extends BlockAbstract
 
             public function apply(): Block
             {
-                $this->_block->setEmbedCode($this->values['embed']);
+                $this->_block->setEmbedCode(
+                    Coercion::toStringOrNull($this->values['embed'])
+                );
+
                 return $this->_block;
             }
         };

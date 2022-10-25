@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\node;
 
 use df;
@@ -16,13 +17,13 @@ use DecodeLabs\Tagged as Html;
 
 abstract class DeleteForm extends Form
 {
-    const ITEM_NAME = 'item';
-    const IS_PERMANENT = true;
-    const IS_SHARED = false;
-    const IS_PARENT = false;
-    const REQUIRE_CONFIRMATION = false;
+    public const ITEM_NAME = 'item';
+    public const IS_PERMANENT = true;
+    public const IS_SHARED = false;
+    public const IS_PARENT = false;
+    public const REQUIRE_CONFIRMATION = false;
 
-    const DEFAULT_EVENT = 'delete';
+    public const DEFAULT_EVENT = 'delete';
 
     protected function getItemName()
     {
@@ -49,7 +50,7 @@ abstract class DeleteForm extends Form
         return static::REQUIRE_CONFIRMATION;
     }
 
-    protected function createUi()
+    protected function createUi(): void
     {
         $itemName = $this->getItemName();
         $form = $this->content->addForm();

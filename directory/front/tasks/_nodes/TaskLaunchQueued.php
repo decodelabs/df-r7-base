@@ -24,7 +24,7 @@ class TaskLaunchQueued extends arch\node\Task
     protected $_outputReceiver;
     protected $_errorReceiver;
 
-    protected function _beforeDispatch()
+    protected function _beforeDispatch(): void
     {
         $this->_outputReceiver = Atlas::newMemoryFile();
         $this->_errorReceiver = Atlas::newMemoryFile();
@@ -67,10 +67,12 @@ class TaskLaunchQueued extends arch\node\Task
         );
     }
 
-    protected function _afterDispatch($output)
+    protected function _afterDispatch(mixed $output): mixed
     {
         $this->_finalizeLog();
         $this->_entry->delete();
+
+        return $output;
     }
 
     public function handleException(\Throwable $e)

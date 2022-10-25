@@ -9,7 +9,7 @@ namespace DecodeLabs\R7\Nightfire;
 
 use df\arch\IContext as Context;
 use df\arch\node\form\Delegate as FormDelegate;
-use df\arch\node\IFormState as FormState;
+use df\arch\node\form\State as FormState;
 use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
 use df\arch\node\TForm_InlineFieldRenderableDelegate;
 use df\core\constraint\TRequirable;

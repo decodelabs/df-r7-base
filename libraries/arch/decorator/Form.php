@@ -61,7 +61,7 @@ abstract class Form implements IFormDecorator
         $this->init();
     }
 
-    protected function init()
+    protected function init(): void
     {
     }
 
@@ -71,13 +71,12 @@ abstract class Form implements IFormDecorator
     }
 
 
-    final public function renderUi()
+    final public function renderUi(): void
     {
         $this->createUi();
-        return $this;
     }
 
-    abstract protected function createUi();
+    abstract protected function createUi(): void;
 
 
     final public function isRenderingInline(): bool
@@ -85,7 +84,7 @@ abstract class Form implements IFormDecorator
         return $this->form->isRenderingInline();
     }
 
-    final public function getState(): arch\node\IFormState
+    final public function getState(): arch\node\form\State
     {
         return $this->form->getState();
     }
@@ -115,7 +114,10 @@ abstract class Form implements IFormDecorator
         return $this->form->hasDelegate($id);
     }
 
-    final public function unloadDelegate(string $id)
+    /**
+     * @return $this
+     */
+    final public function unloadDelegate(string $id): static
     {
         $this->form->unloadDelegate($id);
         return $this;
@@ -148,29 +150,43 @@ abstract class Form implements IFormDecorator
     }
 
     // Store
-    final public function setStore($key, $value)
-    {
+
+    /**
+     * @return $this
+     */
+    final public function setStore(
+        string $key,
+        mixed $value
+    ): static {
         $this->form->setStore($key, $value);
         return $this;
     }
 
-    final public function hasStore(...$keys): bool
+    final public function hasStore(string ...$keys): bool
     {
         return $this->form->hasStore(...$keys);
     }
 
-    final public function getStore($key, $default=null)
-    {
+    final public function getStore(
+        string $key,
+        mixed $default=null
+    ): mixed {
         return $this->form->getStore($key, $default);
     }
 
-    final public function removeStore(...$keys)
+    /**
+     * @return $this
+     */
+    final public function removeStore(string ...$keys): static
     {
         $this->form->removeStore(...$keys);
         return $this;
     }
 
-    final public function clearStore()
+    /**
+     * @return $this
+     */
+    final public function clearStore(): static
     {
         $this->form->clearStore();
         return $this;

@@ -28,8 +28,12 @@ class Delegate implements IDelegate
     private $_isNew = false;
     private $_isComplete = false;
 
-    public function __construct(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id)
-    {
+    public function __construct(
+        arch\IContext $context,
+        arch\node\form\State $state,
+        arch\node\IFormEventDescriptor $event,
+        string $id
+    ) {
         $this->context = $context;
         $this->_state = $state;
         $this->_delegateId = $id;
@@ -39,7 +43,7 @@ class Delegate implements IDelegate
         $this->afterConstruct();
     }
 
-    protected function afterConstruct()
+    protected function afterConstruct(): void
     {
     }
 
@@ -63,12 +67,7 @@ class Delegate implements IDelegate
 
     final public function beginInitialize()
     {
-        $response = $this->init();
-
-        if (!empty($response)) {
-            return $response;
-        }
-
+        $this->init();
         $this->loadDelegates();
 
         if ($this->_state->isNew()) {
@@ -108,8 +107,11 @@ class Delegate implements IDelegate
         return $this->_isNew;
     }
 
-    public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content, $isRenderingInline=false)
-    {
+    public function setRenderContext(
+        aura\view\IView $view,
+        aura\view\content\WidgetContentProvider $content,
+        $isRenderingInline=false
+    ): static {
         $this->view = $view;
         $this->content = $content;
         $this->_isRenderingInline = $isRenderingInline;
@@ -122,7 +124,7 @@ class Delegate implements IDelegate
     }
 
 
-    public function setComplete()
+    public function setComplete(): void
     {
         $this->_isComplete = true;
         $this->onComplete();
@@ -132,7 +134,6 @@ class Delegate implements IDelegate
         }
 
         $this->_state->reset();
-        return $this;
     }
 
     public function isComplete(): bool
@@ -145,14 +146,18 @@ class Delegate implements IDelegate
     }
 
 
-    protected function getDefaultRedirect()
+    protected function getDefaultRedirect(): ?string
     {
         return static::DEFAULT_REDIRECT;
     }
 
 
     // State
-    public function reset()
+
+    /**
+     * @return $this
+     */
+    public function reset(): static
     {
         $this->_state->reset();
 
@@ -175,14 +180,14 @@ class Delegate implements IDelegate
         return $this;
     }
 
-    protected function afterReset()
+    protected function afterReset(): void
     {
     }
 
 
 
     // Events
-    protected function onCancelEvent()
+    protected function onCancelEvent(): mixed
     {
         $this->setComplete();
         return $this->_getCompleteRedirect();

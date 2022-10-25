@@ -34,16 +34,19 @@ class ContentBlock extends arch\node\form\Delegate implements
     protected $_defaultType;
     protected $_manager;
 
-    protected function afterConstruct()
+    protected function afterConstruct(): void
     {
         $this->_manager = fire\Manager::getInstance();
     }
 
-    protected function init()
+    protected function init(): void
     {
         $this->_getAvailableBlockTypes();
 
-        if (!$this->_block && ($type = $this->_state->getStore('blockType'))) {
+        if (
+            !$this->_block &&
+            ($type = $this->_state->getStore('blockType'))
+        ) {
             $this->_block = BlockAbstract::factory($type)->setNested($this->_isNested);
         }
     }
@@ -269,7 +272,7 @@ class ContentBlock extends arch\node\form\Delegate implements
         return Legacy::$http->redirect('#'.$this->elementId('block'));
     }
 
-    public function apply()
+    public function apply(): ?Block
     {
         if (!$this->_block) {
             if ($this->_isRequired) {
@@ -281,7 +284,8 @@ class ContentBlock extends arch\node\form\Delegate implements
             return null;
         }
 
-        $this['block']->as(BlockDelegate::class)
+        $this['block']
+            ->as(BlockDelegate::class)
             ->apply();
 
         if (!$this->_isRequired && $this->_block->isEmpty()) {

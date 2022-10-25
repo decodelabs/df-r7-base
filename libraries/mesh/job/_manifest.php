@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\mesh\job;
 
 use df;
@@ -74,11 +75,27 @@ interface IQueue
 
     public static function getObjectId($object);
 
-    public function setStore(string $key, $value);
-    public function getStore(string $key);
+
+    /**
+     * @return $this
+     */
+    public function setStore(
+        string $key,
+        mixed $value
+    ): static;
+
+    public function getStore(string $key): mixed;
     public function hasStore(string $key): bool;
-    public function removeStore(string $key);
-    public function clearStore();
+
+    /**
+     * @return $this
+     */
+    public function removeStore(string $key): static;
+
+    /**
+     * @return $this
+     */
+    public function clearStore(): static;
 
     public function execute();
 }

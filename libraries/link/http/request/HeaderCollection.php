@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\http\request;
 
 use df;
@@ -28,7 +29,11 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         return $output;
     }
 
-    public function reset()
+
+    /**
+     * @return $this
+     */
+    public function reset(): static
     {
         $this->clear();
         $this->_httpVersion = '1.1';

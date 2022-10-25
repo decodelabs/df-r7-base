@@ -6,12 +6,15 @@
 
 namespace df\arch\node;
 
-use df;
 use df\core;
 use df\arch;
 use df\aura;
 use df\flex;
 use df\link;
+
+use df\aura\view\IContentProvider as ViewContentProvider;
+use df\aura\view\IView;
+use df\arch\node\form\State as FormState;
 
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
@@ -33,9 +36,9 @@ abstract class Form extends Base implements IFormNode
 
     public const QUERY_RESET = false;
 
-    private $_isNew = false;
-    private $_isComplete = false;
-    private $_sessionNamespace;
+    private bool $_isNew = false;
+    private bool $_isComplete = false;
+    private ?string $_sessionNamespace = null;
 
 
     public function __construct(arch\IContext $context)
@@ -52,20 +55,15 @@ abstract class Form extends Base implements IFormNode
         $this->afterConstruct();
     }
 
-    protected function afterConstruct()
+    protected function afterConstruct(): void
     {
     }
 
-    final protected function _beforeDispatch()
+    final protected function _beforeDispatch(): void
     {
-        $response = $this->init();
+        $this->init();
         $request = $this->context->request;
         $id = null;
-
-        if (!empty($response)) {
-            $this->event->parseOutput($response);
-            return $response;
-        }
 
         $this->_sessionNamespace = $this->_createSessionNamespace();
         $session = $this->context->getUserManager()->session->getBucket($this->_sessionNamespace);
@@ -115,34 +113,30 @@ abstract class Form extends Base implements IFormNode
 
         if (static::QUERY_RESET && isset($this->request->query->reset)) {
             $this->_state->reset();
-            $request = clone $this->request;
-            unset($request->query->reset);
 
-            return Legacy::$http->redirect($request);
+            throw Legacy::$http->redirectNow(function ($request) {
+                unset($request->query->reset);
+                return $request;
+            });
         }
 
-        $response = $this->initWithSession();
+        $this->initWithSession();
+        $this->loadDelegates();
 
-        if (!empty($response)) {
-            $this->event->parseOutput($response);
-        } else {
-            $this->loadDelegates();
+        if ($this->_isNew) {
+            $this->setDefaultValues();
+        }
 
-            if ($this->_isNew) {
-                $this->setDefaultValues();
+        foreach ($this->_delegates as $delegate) {
+            $response = $delegate->beginInitialize();
+
+            if (!empty($response)) {
+                throw $this->forceResponse($response);
             }
+        }
 
-            foreach ($this->_delegates as $delegate) {
-                $response = $delegate->beginInitialize();
-
-                if (!empty($response)) {
-                    return $response;
-                }
-            }
-
-            foreach ($this->_delegates as $delegate) {
-                $delegate->endInitialize();
-            }
+        foreach ($this->_delegates as $delegate) {
+            $delegate->endInitialize();
         }
 
 
@@ -177,12 +171,12 @@ abstract class Form extends Base implements IFormNode
         return $this->_isComplete;
     }
 
-    private function _createSessionId()
+    private function _createSessionId(): string
     {
         return flex\Generator::sessionId();
     }
 
-    private function _createSessionNamespace()
+    private function _createSessionNamespace(): string
     {
         $request = clone $this->context->request;
         $ext = $this->getSessionNamespaceExtension();
@@ -206,7 +200,7 @@ abstract class Form extends Base implements IFormNode
         return $this->context->request->getPath()->getExtension();
     }
 
-    protected function getInstanceId()
+    protected function getInstanceId(): ?string
     {
         $output = [];
         $ignore = array_unique(array_merge(self::AUTO_INSTANCE_ID_IGNORE, static::AUTO_INSTANCE_ID_IGNORE));
@@ -226,11 +220,11 @@ abstract class Form extends Base implements IFormNode
         return null;
     }
 
-    protected function initWithSession()
+    protected function initWithSession(): void
     {
     }
 
-    public function getState(): IFormState
+    public function getState(): FormState
     {
         if (!$this->_state) {
             throw Exceptional::{'NoState,NoContext'}(
@@ -241,7 +235,7 @@ abstract class Form extends Base implements IFormNode
         return $this->_state;
     }
 
-    public function dispatchToRenderInline(aura\view\IView $view)
+    public function dispatchToRenderInline(aura\view\IView $view): ViewContentProvider
     {
         $this->_beforeDispatch();
         $this->view = $view;
@@ -260,7 +254,11 @@ abstract class Form extends Base implements IFormNode
 
 
     // State
-    public function reset()
+
+    /**
+     * @return $this
+     */
+    public function reset(): static
     {
         $this->_state->reset();
 
@@ -284,7 +282,7 @@ abstract class Form extends Base implements IFormNode
         return $this;
     }
 
-    protected function afterReset()
+    protected function afterReset(): void
     {
     }
 
@@ -292,7 +290,7 @@ abstract class Form extends Base implements IFormNode
 
 
     // HTML Request
-    public function handleHtmlGetRequest()
+    public function handleHtmlGetRequest(): mixed
     {
         if ($this->event->hasResponse()) {
             return $this->event->getResponse();
@@ -301,7 +299,7 @@ abstract class Form extends Base implements IFormNode
         return $this->_renderHtmlGetRequest();
     }
 
-    private function _renderHtmlGetRequest()
+    private function _renderHtmlGetRequest(): IView
     {
         $setContentProvider = false;
 
@@ -354,7 +352,7 @@ abstract class Form extends Base implements IFormNode
         return $this->view;
     }
 
-    public function handleHtmlPostRequest()
+    public function handleHtmlPostRequest(): mixed
     {
         if ($this->event->hasResponse()) {
             return $this->event->getResponse();
@@ -373,7 +371,7 @@ abstract class Form extends Base implements IFormNode
 
 
     // JSON Request
-    public function handleJsonGetRequest()
+    public function handleJsonGetRequest(): mixed
     {
         return Legacy::$http->jsonResponse($this->_getJsonResponseData());
     }
@@ -390,7 +388,7 @@ abstract class Form extends Base implements IFormNode
         return Legacy::$http->jsonResponse($data);
     }
 
-    private function _getJsonResponseData()
+    private function _getJsonResponseData(): array
     {
         return array_merge(
             $this->getStateData(),
@@ -410,12 +408,12 @@ abstract class Form extends Base implements IFormNode
 
 
     // AJAX Request
-    public function handleAjaxGetRequest()
+    public function handleAjaxGetRequest(): mixed
     {
         return Legacy::$http->jsonResponse($this->_getAjaxResponseData());
     }
 
-    public function handleAjaxPostRequest()
+    public function handleAjaxPostRequest(): mixed
     {
         if (!$this->event->hasResponse()) {
             $this->_runPostRequest();
@@ -424,7 +422,7 @@ abstract class Form extends Base implements IFormNode
         return Legacy::$http->jsonResponse($this->_getAjaxResponseData());
     }
 
-    private function _getAjaxResponseData()
+    private function _getAjaxResponseData(): array
     {
         $response = $this->event->getResponse();
         $loadUi = $this->event->getEventName() !== null
@@ -467,7 +465,7 @@ abstract class Form extends Base implements IFormNode
 
 
 
-    private function _runPostRequest(core\collection\ITree $postData=null)
+    private function _runPostRequest(core\collection\ITree $postData=null): void
     {
         if ($postData === null) {
             $postData = clone Legacy::$http->getPostData();
@@ -479,6 +477,8 @@ abstract class Form extends Base implements IFormNode
             $event = $postData->get('formEvent');
             $postData->remove('formEvent');
         }
+
+        $matches = [];
 
         if (preg_match('/^\<[a-z]+ .*data\-button\-event\=\"([^"]+)\"/i', $event, $matches)) {
             $event = $matches[1];
@@ -563,10 +563,9 @@ abstract class Form extends Base implements IFormNode
     }
 
 
-    public function setComplete()
+    public function setComplete(): void
     {
         $this->_isComplete = true;
-        return $this;
     }
 
     public function getStateData(): array
@@ -605,18 +604,18 @@ abstract class Form extends Base implements IFormNode
 
 
     // Events
-    protected function onCancelEvent()
+    protected function onCancelEvent(): mixed
     {
         $this->setComplete();
         return $this->_getCompleteRedirect(null, false);
     }
 
-    protected function getDefaultRedirect()
+    protected function getDefaultRedirect(): ?string
     {
         return static::DEFAULT_REDIRECT;
     }
 
-    protected function getDefaultEvent()
+    protected function getDefaultEvent(): string
     {
         return static::DEFAULT_EVENT;
     }
@@ -637,10 +636,11 @@ abstract class Form extends Base implements IFormNode
             $func : null;
     }
 
-    protected function _handleNoDispatchMethod()
+    protected function _handleNoDispatchMethod(): mixed
     {
         if ($this->context->request->getType() == 'Htm') {
             $request = clone $this->context->request->setType('Html');
+
             return Legacy::$http->redirect($request)
                 ->isPermanent(true);
         }
@@ -652,11 +652,13 @@ abstract class Form extends Base implements IFormNode
         ]);
     }
 
-    protected function _afterDispatch($response)
+    protected function _afterDispatch(mixed $response): mixed
     {
-        if (!$this->_isComplete
-        && $this->_sessionNamespace
-        && $this->_state->isOperating()) {
+        if (
+            !$this->_isComplete &&
+            $this->_sessionNamespace &&
+            $this->_state->isOperating()
+        ) {
             $session = $this->context->getUserManager()->session->getBucket($this->_sessionNamespace);
             $session->set($this->_state->sessionId, $this->_state);
         }

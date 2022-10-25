@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\scaffold\Record;
 
 use df\arch\Scaffold;
@@ -15,7 +16,7 @@ use df\arch\component\RecordLink as RecordLinkComponent;
 use df\arch\node\Form as FormNode;
 use df\arch\node\IDelegate as Delegate;
 
-use df\arch\node\IFormState as FormState;
+use df\arch\node\form\State as FormState;
 use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
 
 use df\aura\view\IView as View;

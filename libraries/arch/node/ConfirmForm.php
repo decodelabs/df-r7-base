@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\node;
 
 use df;
@@ -16,16 +17,16 @@ use DecodeLabs\Tagged as Html;
 
 abstract class ConfirmForm extends Form
 {
-    const ITEM_NAME = 'item';
-    const DEFAULT_EVENT = 'confirm';
-    const DISPOSITION = 'positive';
+    public const ITEM_NAME = 'item';
+    public const DEFAULT_EVENT = 'confirm';
+    public const DISPOSITION = 'positive';
 
     protected function getItemName()
     {
         return static::ITEM_NAME;
     }
 
-    protected function createUi()
+    protected function createUi(): void
     {
         $itemName = $this->getItemName();
         $form = $this->content->addForm();

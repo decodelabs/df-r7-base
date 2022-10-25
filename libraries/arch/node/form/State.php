@@ -121,7 +121,7 @@ class State implements arch\node\IFormState, \Serializable
     }
 
 
-    public function getDelegateState(string $id): arch\node\IFormState
+    public function getDelegateState(string $id): State
     {
         if (!isset($this->_delegates[$id])) {
             $this->_delegates[$id] = new self($this->sessionId);
@@ -156,7 +156,7 @@ class State implements arch\node\IFormState, \Serializable
         return (bool)$this->_isNew;
     }
 
-    public function reset()
+    public function reset(): static
     {
         $this->values->clear();
         $this->_isNew = true;
@@ -188,14 +188,20 @@ class State implements arch\node\IFormState, \Serializable
 
 
     // Store
-    public function setStore($key, $value)
-    {
+
+    /**
+     * @return $this
+     */
+    public function setStore(
+        string $key,
+        mixed $value
+    ): static {
         $this->isOperating = true;
         $this->_store[$key] = $value;
         return $this;
     }
 
-    public function hasStore(...$keys): bool
+    public function hasStore(string ...$keys): bool
     {
         foreach ($keys as $key) {
             if (isset($this->_store[$key])) {
@@ -206,8 +212,10 @@ class State implements arch\node\IFormState, \Serializable
         return false;
     }
 
-    public function getStore($key, $default=null)
-    {
+    public function getStore(
+        string $key,
+        mixed $default=null
+    ): mixed {
         if (isset($this->_store[$key])) {
             return $this->_store[$key];
         }
@@ -215,7 +223,10 @@ class State implements arch\node\IFormState, \Serializable
         return $default;
     }
 
-    public function removeStore(...$keys)
+    /**
+     * @return $this
+     */
+    public function removeStore(string ...$keys): static
     {
         foreach ($keys as $key) {
             unset($this->_store[$key]);
@@ -224,7 +235,10 @@ class State implements arch\node\IFormState, \Serializable
         return $this;
     }
 
-    public function clearStore()
+    /**
+     * @return $this
+     */
+    public function clearStore(): static
     {
         $this->_store = [];
         return $this;

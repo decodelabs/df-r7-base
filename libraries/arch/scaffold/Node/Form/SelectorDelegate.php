@@ -8,7 +8,7 @@ namespace df\arch\scaffold\Node\Form;
 
 use df\arch\Scaffold;
 use df\arch\node\form\SelectorDelegate as SelectorDelegateBase;
-use df\arch\node\IFormState as FormState;
+use df\arch\node\form\State as FormState;
 use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
 use df\opal\query\ISelectQuery as SelectQuery;
 use df\arch\IComponent as Component;

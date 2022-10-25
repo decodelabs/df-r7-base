@@ -247,7 +247,7 @@ class Package
         $this->priority = $priority;
     }
 
-    public function init()
+    public function init(): void
     {
     }
 }
@@ -661,7 +661,11 @@ interface IConfig extends IRegistryObject, IValueMap, \ArrayAccess
     public function getConfigId(): string;
     public function getConfigValues(): array;
     public function tidyConfigValues(): void;
-    public function reset();
+
+    /**
+     * @return $this
+     */
+    public function reset(): static;
 }
 
 

@@ -31,12 +31,12 @@ class ContentSlot extends arch\node\form\Delegate implements
     protected $_defaultBlockType;
     protected $_manager;
 
-    protected function afterConstruct()
+    protected function afterConstruct(): void
     {
         $this->_manager = fire\Manager::getInstance();
     }
 
-    protected function init()
+    protected function init(): void
     {
         $this->getSlotDefinition();
 
@@ -477,7 +477,7 @@ class ContentSlot extends arch\node\form\Delegate implements
 
 
 
-    public function apply()
+    public function apply(): ?fire\slot\Content
     {
         $isEmpty = true;
 

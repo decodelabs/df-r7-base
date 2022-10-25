@@ -25,7 +25,7 @@ use df\arch\node\Form as FormNode;
 use df\arch\node\IDelegate as Delegate;
 use df\arch\scaffold\Node\Form\SelectorDelegate as ScaffoldSelectorDelegate;
 
-use df\arch\node\IFormState as FormState;
+use df\arch\node\form\State as FormState;
 use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
 
 use df\core\unit\Priority as PriorityUnit;

@@ -45,7 +45,7 @@ abstract class ReorderForm extends Form
 
     abstract protected function fetchNameList();
 
-    protected function createUi()
+    protected function createUi(): void
     {
         $form = $this->content->addForm();
         $itemName = $this->getItemName();

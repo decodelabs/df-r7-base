@@ -23,7 +23,7 @@ use df\aura\view\TView_CascadingHelperProvider as CascadingHelperProviderTrait;
 use df\arch\TDirectoryAccessLock as DirectoryAccessLockTrait;
 use df\arch\TOptionalDirectoryAccessLock as OptionalDirectoryAccessLockTrait;
 
-use df\arch\node\IFormState as FormState;
+use df\arch\node\form\State as FormState;
 use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
 use df\arch\navigation\menu\IMenu as Menu;
 use df\arch\scaffold\Navigation\Menu as ScaffoldMenu;

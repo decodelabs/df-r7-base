@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms;
 
 use df;
@@ -111,7 +112,12 @@ interface IStatement extends core\collection\IQueue, core\collection\IStreamColl
     public function prependSql($sql);
     public function appendSql($sql);
     public function getSql();
-    public function reset();
+
+    /**
+     * @return $this
+     */
+    public function reset(): static;
+
     public function isUnbuffered(bool $flag=null);
 
     public function generateUniqueKey();
@@ -281,8 +287,8 @@ interface IQueryExecutor
 
 interface IAlias
 {
-    const IDENTIFIER = true;
-    const NONE = false;
-    const DEFINITION = 'def';
-    const DEEP_DEFINITION = 'deepdef';
+    public const IDENTIFIER = true;
+    public const NONE = false;
+    public const DEFINITION = 'def';
+    public const DEEP_DEFINITION = 'deepdef';
 }

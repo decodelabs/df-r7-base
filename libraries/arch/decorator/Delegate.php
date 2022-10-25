@@ -65,7 +65,7 @@ abstract class Delegate implements IDelegateDecorator
     }
 
 
-    protected function init()
+    protected function init(): void
     {
     }
 
@@ -74,13 +74,12 @@ abstract class Delegate implements IDelegateDecorator
         $this->delegate->reloadDefaultValues();
     }
 
-    final public function renderUi()
+    final public function renderUi(): void
     {
         $this->createUi();
-        return $this;
     }
 
-    protected function createUi()
+    protected function createUi(): void
     {
         // add default message?
     }
@@ -91,7 +90,7 @@ abstract class Delegate implements IDelegateDecorator
         return $this->delegate->isRenderingInline();
     }
 
-    final public function getState(): arch\node\IFormState
+    final public function getState(): arch\node\form\State
     {
         return $this->delegate->getState();
     }
@@ -121,7 +120,10 @@ abstract class Delegate implements IDelegateDecorator
         return $this->delegate->hasDelegate($id);
     }
 
-    final public function unloadDelegate(string $id)
+    /**
+     * @return $this
+     */
+    final public function unloadDelegate(string $id): static
     {
         $this->delegate->unloadDelegate($id);
         return $this;
@@ -154,29 +156,43 @@ abstract class Delegate implements IDelegateDecorator
     }
 
     // Store
-    final public function setStore($key, $value)
-    {
+
+    /**
+     * @return $this
+     */
+    final public function setStore(
+        string $key,
+        mixed $value
+    ): static {
         $this->delegate->setStore($key, $value);
         return $this;
     }
 
-    final public function hasStore(...$keys): bool
+    final public function hasStore(string ...$keys): bool
     {
         return $this->delegate->hasStore(...$keys);
     }
 
-    final public function getStore($key, $default=null)
-    {
+    final public function getStore(
+        string $key,
+        mixed $default=null
+    ): mixed {
         return $this->delegate->getStore($key, $default);
     }
 
-    final public function removeStore(...$keys)
+    /**
+     * @return $this
+     */
+    final public function removeStore(string ...$keys): static
     {
         $this->delegate->removeStore(...$keys);
         return $this;
     }
 
-    final public function clearStore()
+    /**
+     * @return $this
+     */
+    final public function clearStore(): static
     {
         $this->delegate->clearStore();
         return $this;
