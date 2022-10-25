@@ -476,7 +476,7 @@ interface IElement extends ITag, IElementContentCollection
  * @method widget\DataList addDataList($id, $options=null)
  * @method widget\DatePicker addDatePicker($name, $value=null, $outputFormat=null)
  * @method widget\DateTimePicker addDateTimePicker($name, $value=null, $timezone=null)
- * @method widget\ButtonArea defaultButtonGroup($mainEvent=null, $mainEventText=null, $mainEventIcon=null)
+ * @method widget\ButtonArea addDefaultButtonGroup($mainEvent=null, $mainEventText=null, $mainEventIcon=null)
  * @method widget\Duration addDuration($name, $value=null)
  * @method widget\EmailTextbox addEmailTextbox($name, $value=null)
  * @method widget\EventButton addEventButton($event, $body=null)
