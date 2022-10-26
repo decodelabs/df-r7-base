@@ -115,11 +115,11 @@ class AudioEmbed extends BlockAbstract
             /**
              * @var AudioEmbed
              */
-            protected Block $_block;
+            protected Block $block;
 
             protected function setDefaultValues(): void
             {
-                $this->values->embed = $this->_block->getEmbedCode();
+                $this->values->embed = $this->block->getEmbedCode();
             }
 
             public function renderFieldContent(FieldWidget $field): void
@@ -135,11 +135,11 @@ class AudioEmbed extends BlockAbstract
 
             public function apply(): Block
             {
-                $this->_block->setEmbedCode(
+                $this->block->setEmbedCode(
                     Coercion::toStringOrNull($this->values['embed'])
                 );
 
-                return $this->_block;
+                return $this->block;
             }
         };
     }

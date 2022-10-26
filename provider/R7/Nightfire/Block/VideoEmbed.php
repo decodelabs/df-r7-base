@@ -122,11 +122,11 @@ class VideoEmbed extends BlockAbstract
             /**
              * @var VideoEmbed
              */
-            protected Block $_block;
+            protected Block $block;
 
             protected function setDefaultValues(): void
             {
-                $this->values->embed = $this->_block->getEmbedCode();
+                $this->values->embed = $this->block->getEmbedCode();
             }
 
             public function renderFieldContent(FieldWidget $field): void
@@ -142,11 +142,11 @@ class VideoEmbed extends BlockAbstract
 
             public function apply(): Block
             {
-                $this->_block->setEmbedCode(
+                $this->block->setEmbedCode(
                     Coercion::toStringOrNull($this->values['embed'])
                 );
 
-                return $this->_block;
+                return $this->block;
             }
         };
     }

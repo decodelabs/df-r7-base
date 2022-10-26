@@ -197,13 +197,13 @@ class Heading extends BlockAbstract
             /**
              * @var Heading
              */
-            protected Block $_block;
+            protected Block $block;
 
             protected function setDefaultValues(): void
             {
-                $this->values->heading = $this->_block->getHeading();
-                $this->values->level = $this->_block->getHeadingLevel();
-                $this->values->class = $this->_block->getHeadingClass();
+                $this->values->heading = $this->block->getHeading();
+                $this->values->level = $this->block->getHeadingLevel();
+                $this->values->class = $this->block->getHeadingClass();
             }
 
             public function renderFieldContent(FieldWidget $field): void
@@ -220,7 +220,7 @@ class Heading extends BlockAbstract
                 );
 
                 // Class
-                $classes = $this->_block->getClassOptions();
+                $classes = $this->block->getClassOptions();
 
                 if (!empty($classes)) {
                     $current = Coercion::toStringOrNull($this->values['class']);
@@ -255,11 +255,11 @@ class Heading extends BlockAbstract
                     ->addField('class', 'text')
                     ->validate($this->values);
 
-                $this->_block->setHeading(Coercion::toStringOrNull($this->values['heading']));
-                $this->_block->setHeadingLevel(Coercion::toIntOrNull($this->values['level']) ?? 3);
-                $this->_block->setHeadingClass(Coercion::toStringOrNull($this->values['class']));
+                $this->block->setHeading(Coercion::toStringOrNull($this->values['heading']));
+                $this->block->setHeadingLevel(Coercion::toIntOrNull($this->values['level']) ?? 3);
+                $this->block->setHeadingClass(Coercion::toStringOrNull($this->values['class']));
 
-                return $this->_block;
+                return $this->block;
             }
         };
     }

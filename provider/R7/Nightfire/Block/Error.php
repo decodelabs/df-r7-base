@@ -151,22 +151,22 @@ class Error extends BlockAbstract
             /**
              * @var Error
              */
-            protected Block $_block;
+            protected Block $block;
 
             protected function setDefaultValues(): void
             {
-                $this->setStore('type', $this->_block->getType());
-                $this->setStore('data', $this->_block->getData());
+                $this->setStore('type', $this->block->getType());
+                $this->setStore('data', $this->block->getData());
 
-                if ($error = $this->_block->getError()) {
+                if ($error = $this->block->getError()) {
                     $this->setStore('message', $error->getMessage());
                 }
             }
 
             protected function afterInit(): void
             {
-                $this->_block->setType(Coercion::toStringOrNull($this->getStore('type')));
-                $this->_block->setData($this->getStore('data'));
+                $this->block->setType(Coercion::toStringOrNull($this->getStore('type')));
+                $this->block->setData($this->getStore('data'));
             }
 
             public function renderFieldContent(FieldWidget $field): void
@@ -176,7 +176,7 @@ class Error extends BlockAbstract
                 ), 'error');
 
                 $output->setDescription($this->getStore('message'));
-                $this->_block->setData($this->getStore('data'));
+                $this->block->setData($this->getStore('data'));
 
                 $field->push($output);
             }
@@ -184,7 +184,7 @@ class Error extends BlockAbstract
             public function apply(): Block
             {
                 $this->values->addError('noentry', 'Must update block!');
-                return $this->_block;
+                return $this->block;
             }
         };
     }

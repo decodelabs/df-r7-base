@@ -29,7 +29,7 @@ abstract class BlockDelegateAbstract extends FormDelegate implements BlockDelega
     /**
      * @phpstan-var TBlock
      */
-    protected Block $_block;
+    protected Block $block;
 
     /**
      * @phpstan-param TBlock $block
@@ -41,7 +41,7 @@ abstract class BlockDelegateAbstract extends FormDelegate implements BlockDelega
         FormEventDescriptor $event,
         string $id
     ) {
-        $this->_block = $block;
+        $this->block = $block;
         parent::__construct($context, $state, $event, $id);
     }
 
@@ -50,7 +50,7 @@ abstract class BlockDelegateAbstract extends FormDelegate implements BlockDelega
      */
     public function setBlock(Block $block): static
     {
-        $this->_block = $block;
+        $this->block = $block;
         return $this;
     }
 
@@ -59,7 +59,7 @@ abstract class BlockDelegateAbstract extends FormDelegate implements BlockDelega
      */
     public function getBlock(): Block
     {
-        return $this->_block;
+        return $this->block;
     }
 
 

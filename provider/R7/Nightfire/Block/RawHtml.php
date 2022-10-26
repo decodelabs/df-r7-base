@@ -111,11 +111,11 @@ class RawHtml extends BlockAbstract
             /**
              * @var RawHtml
              */
-            protected Block $_block;
+            protected Block $block;
 
             protected function setDefaultValues(): void
             {
-                $this->values->content = $this->_block->getHtmlContent();
+                $this->values->content = $this->block->getHtmlContent();
             }
 
             public function renderFieldContent(FieldWidget $field): void
@@ -134,8 +134,8 @@ class RawHtml extends BlockAbstract
                         ->isRequired($this->_isRequired)
                     ->validate($this->values);
 
-                $this->_block->setHtmlContent($validator['content']);
-                return $this->_block;
+                $this->block->setHtmlContent($validator['content']);
+                return $this->block;
             }
         };
     }

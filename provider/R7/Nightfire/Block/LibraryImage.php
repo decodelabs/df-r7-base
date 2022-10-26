@@ -147,7 +147,7 @@ class LibraryImage extends BlockAbstract
             /**
              * @var LibraryImage
              */
-            protected Block $_block;
+            protected Block $block;
 
             protected function loadDelegates(): void
             {
@@ -160,10 +160,10 @@ class LibraryImage extends BlockAbstract
             protected function setDefaultValues(): void
             {
                 $this['image']->as(SelectorDelegate::class)
-                    ->setSelected($this->_block->getImageId());
+                    ->setSelected($this->block->getImageId());
 
-                $this->values->alt = $this->_block->getAltText();
-                $this->values->link = $this->_block->getLink();
+                $this->values->alt = $this->block->getAltText();
+                $this->values->link = $this->block->getLink();
             }
 
             public function renderFieldContent(FieldWidget $field): void
@@ -247,11 +247,11 @@ class LibraryImage extends BlockAbstract
 
                     ->validate($this->values);
 
-                $this->_block->setImageId($validator['image']);
-                $this->_block->setAltText($validator['alt']);
-                $this->_block->setLink($validator['link']);
+                $this->block->setImageId($validator['image']);
+                $this->block->setAltText($validator['alt']);
+                $this->block->setLink($validator['link']);
 
-                return $this->_block;
+                return $this->block;
             }
         };
     }

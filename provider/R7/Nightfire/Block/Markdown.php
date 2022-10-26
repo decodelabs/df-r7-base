@@ -109,11 +109,11 @@ class Markdown extends BlockAbstract
             /**
              * @var Markdown
              */
-            protected Block $_block;
+            protected Block $block;
 
             protected function setDefaultValues(): void
             {
-                $this->values->body = $this->_block->getBody();
+                $this->values->body = $this->block->getBody();
             }
 
             public function renderFieldContent(FieldWidget $field): void
@@ -139,8 +139,8 @@ class Markdown extends BlockAbstract
                         ->isRequired($this->_isRequired)
                     ->validate($this->values);
 
-                $this->_block->setBody($validator['body']);
-                return $this->_block;
+                $this->block->setBody($validator['body']);
+                return $this->block;
             }
         };
     }

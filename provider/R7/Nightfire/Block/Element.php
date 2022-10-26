@@ -89,7 +89,7 @@ class Element extends BlockAbstract
             /**
              * @var Element
              */
-            protected Block $_block;
+            protected Block $block;
 
             protected function loadDelegates(): void
             {
@@ -102,7 +102,7 @@ class Element extends BlockAbstract
             protected function setDefaultValues(): void
             {
                 $id = $this->data->content->element->select('id')
-                    ->where('slug', '=', $this->_block->getSlug())
+                    ->where('slug', '=', $this->block->getSlug())
                     ->toValue('id');
 
                 $this['element']->as(SelectorDelegate::class)
@@ -124,8 +124,8 @@ class Element extends BlockAbstract
                     ->where('id', '=', $id)
                     ->toValue('slug');
 
-                $this->_block->setSlug($slug);
-                return $this->_block;
+                $this->block->setSlug($slug);
+                return $this->block;
             }
         };
     }
