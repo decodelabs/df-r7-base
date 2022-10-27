@@ -322,10 +322,8 @@ class Helper
 
     /**
      * Normalize date
-     *
-     * @param string|Stringable|int|Date|DateTime|null $date
      */
-    public function normalizeDate($date): Date
+    public function normalizeDate(mixed $date): Date
     {
         /**
          * @var Date
@@ -335,10 +333,8 @@ class Helper
 
     /**
      * Normalize duration
-     *
-     * @param string|Stringable|int|Duration|DateInterval|null $duration
      */
-    public function normalizeDuration($duration): Duration
+    public function normalizeDuration(mixed $duration): Duration
     {
         /**
          * @var Duration

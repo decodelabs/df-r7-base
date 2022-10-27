@@ -112,10 +112,10 @@ class Legacy implements Proxy
     public static function dateToString(?Ref11 $date): ?string {
         return static::$instance->dateToString(...func_get_args());
     }
-    public static function normalizeDate($date): Ref11 {
+    public static function normalizeDate(mixed $date): Ref11 {
         return static::$instance->normalizeDate(...func_get_args());
     }
-    public static function normalizeDuration($duration): Ref12 {
+    public static function normalizeDuration(mixed $duration): Ref12 {
         return static::$instance->normalizeDuration(...func_get_args());
     }
     public static function prepareDate($date): ?Ref13 {
