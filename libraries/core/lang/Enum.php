@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\lang;
 
 use df;
@@ -29,7 +30,7 @@ abstract class Enum implements IStaticEnum, Dumpable
         return new static($value);
     }
 
-    public static function normalize($value)
+    public static function normalize($value): ?string
     {
         if (!strlen($value)) {
             return null;
@@ -65,7 +66,7 @@ abstract class Enum implements IStaticEnum, Dumpable
         return $value;
     }
 
-    public static function getOptions()
+    public static function getOptions(): array
     {
         $class = get_called_class();
 
@@ -87,21 +88,21 @@ abstract class Enum implements IStaticEnum, Dumpable
         return self::$_options[$class];
     }
 
-    public static function isOption($option)
+    public static function isOption($option): bool
     {
         $option = self::normalizeOption($option);
         $options = self::getOptions();
         return in_array($option, $options);
     }
 
-    public static function normalizeOption(?string $option)
+    public static function normalizeOption(?string $option): string
     {
         $option = (string)preg_replace('/([a-z])([A-Z])/u', '$1 $2', (string)$option);
         $option = str_replace(['_', '-'], ' ', $option);
         return lcfirst(str_replace(' ', '', ucwords(strtolower($option))));
     }
 
-    public static function getLabels()
+    public static function getLabels(): array
     {
         $class = get_called_class();
         $output = [];
@@ -174,22 +175,22 @@ abstract class Enum implements IStaticEnum, Dumpable
 
 
 
-    public function getIndex()
+    public function getIndex(): int
     {
         return $this->_index;
     }
 
-    public function getOption()
+    public function getOption(): string
     {
         return self::$_options[get_class($this)][$this->_index];
     }
 
-    public function getLabel()
+    public function getLabel(): string
     {
         return self::$_labels[get_class($this)][$this->_index];
     }
 
-    public static function label($option)
+    public static function label($option): string
     {
         if (!strlen($option)) {
             return null;
@@ -208,7 +209,7 @@ abstract class Enum implements IStaticEnum, Dumpable
         return self::$_options[get_class($this)][$this->_index];
     }
 
-    public function is($value)
+    public function is($value): bool
     {
         return $this->_index == self::factory($value)->_index;
     }

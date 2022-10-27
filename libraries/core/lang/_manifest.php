@@ -39,41 +39,41 @@ interface IEnumFactory
 interface IEnum extends core\IStringProvider, core\IStringValueProvider
 {
     //public static function factory($value);
-    public static function normalize($value);
+    public static function normalize($value): ?string;
 
-    public function getIndex();
-    public function getOption();
-    public function getLabel();
+    public function getIndex(): int;
+    public function getOption(): string;
+    public function getLabel(): string;
 
-    public function is($value);
+    public function is($value): bool;
 }
 
 interface IStaticEnum extends IEnum
 {
-    public static function getOptions();
-    public static function isOption($option);
-    public static function getLabels();
+    public static function getOptions(): array;
+    public static function isOption($option): bool;
+    public static function getLabels(): array;
 
     public static function getLt($option): array;
     public static function getLte($option): array;
     public static function getGt($option): array;
     public static function getGte($option): array;
 
-    public static function label($option);
+    public static function label($option): string;
 }
 
 interface IInstanceEnum extends IEnum
 {
-    public function getOptions();
-    public function isOption($option);
-    public function getLabels();
+    public function getOptions(): array;
+    public function isOption($option): bool;
+    public function getLabels(): array;
 
     public function getLt($option): array;
     public function getLte($option): array;
     public function getGt($option): array;
     public function getGte($option): array;
 
-    public function label($option);
+    public function label($option): string;
 }
 
 
