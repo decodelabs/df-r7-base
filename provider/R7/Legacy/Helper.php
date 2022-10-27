@@ -344,10 +344,8 @@ class Helper
 
     /**
      * Prepare internal date
-     *
-     * @param string|Stringable|int|Date|DateTime|null $date
      */
-    public function prepareDate($date): ?Carbon
+    public function prepareDate(mixed $date): ?Carbon
     {
         if ($date === null) {
             return null;
@@ -371,10 +369,8 @@ class Helper
 
     /**
      * Prepare internal interval
-     *
-     * @param string|Stringable|int|Duration|DateInterval|null $interval
      */
-    public function prepareInterval($interval): ?CarbonInterval
+    public function prepareInterval(mixed $interval): ?CarbonInterval
     {
         if ($interval === null) {
             return null;
