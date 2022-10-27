@@ -13,8 +13,10 @@ use df\opal;
 use df\user;
 use df\mesh;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Fluidity\Cast;
+use DecodeLabs\Fluidity\CastTrait;
+use DecodeLabs\Glitch;
 
 interface IAccess extends user\IState
 {
@@ -38,7 +40,11 @@ interface IUnitOptions
 
 
 
-interface IUnit extends mesh\entity\IEntity, user\IAccessLock, \Serializable
+interface IUnit extends
+    mesh\entity\IEntity,
+    user\IAccessLock,
+    Cast,
+    \Serializable
 {
     public const DEFAULT_ACCESS = axis\IAccess::GUEST;
 
@@ -57,6 +63,7 @@ interface IUnit extends mesh\entity\IEntity, user\IAccessLock, \Serializable
 
 trait TUnit
 {
+    use CastTrait;
     use user\TAccessLock;
 
     public static $actionAccess = [];
