@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\unit;
 
 use df;
@@ -29,7 +30,7 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
         return new Enum_Inst($this, $value);
     }
 
-    public function normalize($value)
+    public function normalize($value): string
     {
         if (!strlen($value)) {
             return null;
@@ -38,7 +39,7 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
         return $this->factory($value)->getOption();
     }
 
-    public function getOptions()
+    public function getOptions(): array
     {
         if (!$this->_options) {
             $reflection = new \ReflectionClass(get_called_class());
@@ -62,13 +63,13 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
         return $this->_options;
     }
 
-    public function isOption($option)
+    public function isOption($option): bool
     {
         $option = core\lang\Enum::normalizeOption($option);
         return in_array($option, $this->getOptions());
     }
 
-    public function getLabels()
+    public function getLabels(): array
     {
         $output = [];
 
@@ -79,12 +80,12 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
         return $output;
     }
 
-    public function getLabelList()
+    public function getLabelList(): array
     {
         return $this->_labels;
     }
 
-    public function label($option)
+    public function label($option): string
     {
         if (!strlen($option)) {
             return null;
@@ -203,18 +204,18 @@ class Enum_Inst implements core\lang\IInstanceEnum
         return $value;
     }
 
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->_options;
     }
 
-    public function isOption($option)
+    public function isOption($option): bool
     {
         $option = core\lang\Enum::normalizeOption($option);
         return in_array($option, $this->_options);
     }
 
-    public function getLabels()
+    public function getLabels(): array
     {
         return $this->_labels;
     }
@@ -239,24 +240,24 @@ class Enum_Inst implements core\lang\IInstanceEnum
         Glitch::incomplete();
     }
 
-    public function getIndex()
+    public function getIndex(): int
     {
         return $this->_index;
     }
 
-    public function getOption()
+    public function getOption(): string
     {
         return $this->_options[$this->_index];
     }
 
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->_labels[$this->_index];
     }
 
     public function toString(): string
     {
-        return (string)$this->_labels[$this->_index];
+        return $this->_labels[$this->_index];
     }
 
     public function getStringValue($default=''): string
@@ -265,12 +266,12 @@ class Enum_Inst implements core\lang\IInstanceEnum
     }
 
 
-    public function label($option)
+    public function label($option): string
     {
         Glitch::incomplete();
     }
 
-    public function is($value)
+    public function is($value): bool
     {
         return $this->_index == $this->_normalizeIndex($value);
     }
