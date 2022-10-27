@@ -59,7 +59,7 @@ interface IStaticEnum extends IEnum
     public static function getGt($option): array;
     public static function getGte($option): array;
 
-    public static function label($option): string;
+    public static function label($option): ?string;
 }
 
 interface IInstanceEnum extends IEnum

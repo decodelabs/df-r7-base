@@ -45,7 +45,7 @@ abstract class Enum implements IStaticEnum, Dumpable
         $this->_index = $this->_normalizeIndex($value);
     }
 
-    protected function _normalizeIndex($value)
+    protected function _normalizeIndex($value): int
     {
         $class = get_class($this);
 
@@ -190,7 +190,7 @@ abstract class Enum implements IStaticEnum, Dumpable
         return self::$_labels[get_class($this)][$this->_index];
     }
 
-    public static function label($option): string
+    public static function label($option): ?string
     {
         if (!strlen($option)) {
             return null;

@@ -30,7 +30,7 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
         return new Enum_Inst($this, $value);
     }
 
-    public function normalize($value): string
+    public function normalize($value): ?string
     {
         if (!strlen($value)) {
             return null;
@@ -85,7 +85,7 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
         return $this->_labels;
     }
 
-    public function label($option): string
+    public function label($option): ?string
     {
         if (!strlen($option)) {
             return null;
@@ -167,7 +167,7 @@ class Enum_Inst implements core\lang\IInstanceEnum
         );
     }
 
-    public static function normalize($value)
+    public static function normalize($value): ?string
     {
         throw Exceptional::Implementation(
             'Unit enum normalize is not accessible'
