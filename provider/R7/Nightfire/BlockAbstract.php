@@ -10,6 +10,11 @@ namespace DecodeLabs\R7\Nightfire;
 use df\aura\view\TView_DeferredRenderable;
 use df\core\TStringProvider;
 
+use df\arch\IContext as Context;
+use df\arch\node\IDelegate as NodeDelegate;
+use df\arch\node\form\State as FormState;
+use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
+
 use DecodeLabs\Archetype;
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
@@ -17,7 +22,6 @@ use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
 use DecodeLabs\Exemplar\Serializable as XmlSerializable;
 use DecodeLabs\Exemplar\SerializableTrait as XmlSerializableTrait;
-use DecodeLabs\Glitch;
 
 abstract class BlockAbstract implements Block
 {
@@ -195,5 +199,22 @@ abstract class BlockAbstract implements Block
     protected function endWriterBlockElement(XmlWriter $writer): void
     {
         $writer->endElement();
+    }
+
+
+    public function loadFormDelegate(
+        Context $context,
+        FormState $state,
+        FormEventDescriptor $event,
+        string $id
+    ): NodeDelegate {
+        $class = get_class($this).'\\FormDelegate';
+
+        if (!class_exists($class)) {
+            throw Exceptional::Setup('Unable to find form delegate for Nightfire Block: '.$this->getName());
+        }
+
+        /** @phpstan-var class-string<NodeDelegate> $class */
+        return new $class($this, $context, $state, $event, $id);
     }
 }

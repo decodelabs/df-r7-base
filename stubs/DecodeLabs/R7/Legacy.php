@@ -118,10 +118,10 @@ class Legacy implements Proxy
     public static function normalizeDuration(mixed $duration): Ref12 {
         return static::$instance->normalizeDuration(...func_get_args());
     }
-    public static function prepareDate($date): ?Ref13 {
+    public static function prepareDate(mixed $date): ?Ref13 {
         return static::$instance->prepareDate(...func_get_args());
     }
-    public static function prepareInterval($interval): ?Ref14 {
+    public static function prepareInterval(mixed $interval): ?Ref14 {
         return static::$instance->prepareInterval(...func_get_args());
     }
     public static function formatDuration($duration, int $maxUnits = 1, bool $shortUnits = false, $maxUnit = 7, bool $roundLastUnit = true): ?string {

@@ -7,8 +7,6 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Nightfire;
 
-use df\fire\Block as FireBlock;
-
 use DecodeLabs\Archetype\Scanner;
 use DecodeLabs\Archetype\ScannerTrait;
 use DecodeLabs\R7\Legacy;
@@ -43,7 +41,6 @@ class BlockArchetype implements Scanner
     public function resolve(string $name): ?string
     {
         $classes = [
-            FireBlock::class.'\\'.$name, /** @phpstan-ignore-line */
             Block::class.'\\'.$name
         ];
 
@@ -62,17 +59,10 @@ class BlockArchetype implements Scanner
 
     public function scanClasses(): Generator
     {
-        foreach (Legacy::getLoader()->lookupClassList('fire/Block') as $name => $class) {
-            $ref = new ReflectionClass($class);
-            yield (string)$ref->getFileName() => $class;
-        }
-
-        yield from $this->scanNamespaceClasses(
-            Block::class
-        );
+        yield from $this->scanNamespaceClasses(Block::class, Block::class);
 
         foreach (static::$namespaces as $namespace) {
-            yield from $this->scanNamespaceClasses($namespace);
+            yield from $this->scanNamespaceClasses($namespace, Block::class);
         }
     }
 }
