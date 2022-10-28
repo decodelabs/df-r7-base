@@ -18,7 +18,7 @@ class RawHtml extends BlockAbstract
 {
     public const DEFAULT_CATEGORIES = ['Description'];
 
-    protected ?string $content;
+    protected ?string $content = null;
 
     public function getFormat(): string
     {
