@@ -105,9 +105,8 @@ PHP;
 
 
 
-    public static function setupVeneerBindings(): void
+    public static function initializePlatform(): void
     {
-        Veneer::register(Legacy\Helper::class, Legacy::class);
     }
 
 

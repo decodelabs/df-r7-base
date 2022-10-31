@@ -245,8 +245,8 @@ class Hub implements HubInterface
         }
 
 
-        // Init custom Veneer bindings
-        $app->setupVeneerBindings();
+        // Veneer bindings
+        Veneer::register(Legacy\Helper::class, Legacy::class);
     }
 
 
@@ -325,6 +325,9 @@ class Hub implements HubInterface
                 return $url;
             }
         });
+
+
+        $this->context->container->get(AppBase::class)->initializePlatform();
     }
 
 
