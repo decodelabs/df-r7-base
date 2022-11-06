@@ -277,22 +277,24 @@ class Container extends Base implements
         return $this->_children->getIterator();
     }
 
-    public function offsetSet($index, $value): void
-    {
+    public function offsetSet(
+        mixed $index,
+        mixed $value
+    ): void {
         $this->_children->offsetSet($index, $value);
     }
 
-    public function offsetGet($index)
+    public function offsetGet(mixed $index): mixed
     {
         return $this->_children->offsetGet($index);
     }
 
-    public function offsetExists($index): bool
+    public function offsetExists(mixed $index): bool
     {
         return $this->_children->offsetExists($index);
     }
 
-    public function offsetUnset($index): void
+    public function offsetUnset(mixed $index): void
     {
         $this->_children->offsetUnset($index);
     }

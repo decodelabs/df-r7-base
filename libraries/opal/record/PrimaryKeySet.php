@@ -340,24 +340,28 @@ class PrimaryKeySet implements IPrimaryKeySet, Dumpable
 
 
     // Array access
-    public function offsetSet($key, $value): void
-    {
+    public function offsetSet(
+        mixed $key,
+        mixed $value
+    ): void {
         $this->_keys[$key] = $value;
     }
 
-    public function offsetGet($key)
+    public function offsetGet(mixed $key): mixed
     {
         if (isset($this->_keys[$key])) {
             return $this->_keys[$key];
         }
+
+        return null;
     }
 
-    public function offsetExists($key): bool
+    public function offsetExists(mixed $key): bool
     {
         return isset($this->_keys[$key]);
     }
 
-    public function offsetUnset($key): void
+    public function offsetUnset(mixed $key): void
     {
         unset($this->_keys[$key]);
     }

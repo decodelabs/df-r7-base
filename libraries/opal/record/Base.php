@@ -970,8 +970,10 @@ class Base implements IRecord, \Serializable, Dumpable
         return $this;
     }
 
-    public function offsetSet($key, $value): void
-    {
+    public function offsetSet(
+        mixed $key,
+        mixed $value
+    ): void {
         // Sanitize value from record
         $value = $this->_sanitizeValue($key, $value);
 
@@ -1028,7 +1030,7 @@ class Base implements IRecord, \Serializable, Dumpable
         $this->onValueChange($key, $oldVal, $value);
     }
 
-    public function offsetGet($key, $default=null)
+    public function offsetGet(mixed $key, $default=null): mixed
     {
         if ($key == '@primary') {
             return $this->getPrimaryKeySet();
@@ -1074,7 +1076,7 @@ class Base implements IRecord, \Serializable, Dumpable
         return $value;
     }
 
-    public function offsetExists($key): bool
+    public function offsetExists(mixed $key): bool
     {
         if (array_key_exists($key, $this->_changes) && $this->_changes[$key] !== null) {
             if ($this->_changes[$key] instanceof IValueContainer) {
@@ -1103,7 +1105,7 @@ class Base implements IRecord, \Serializable, Dumpable
         return false;
     }
 
-    public function offsetUnset($key): void
+    public function offsetUnset(mixed $key): void
     {
         $output = null;
 

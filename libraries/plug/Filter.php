@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\plug;
 
 use df;
@@ -39,11 +40,13 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
 
 
     // Query access
-    public function offsetSet($key, $value)
-    {
+    public function offsetSet(
+        mixed $key,
+        mixed $value
+    ): void {
     }
 
-    public function offsetGet($key): callable
+    public function offsetGet(mixed $key): callable
     {
         if ($nullable = substr($key, 0, 1) == '?') {
             $key = substr($key, 1);
@@ -51,7 +54,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
 
         $value = $this->context->request[$key];
 
-        return new class($this, $key, $value, $nullable) {
+        return new class ($this, $key, $value, $nullable) {
             public $value;
             public $nullable = false;
 
@@ -88,12 +91,12 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
         };
     }
 
-    public function offsetExists($key): bool
+    public function offsetExists(mixed $key): bool
     {
         return $this->context->request->offsetExists($key);
     }
 
-    public function offsetUnset($key)
+    public function offsetUnset(mixed $key): void
     {
     }
 

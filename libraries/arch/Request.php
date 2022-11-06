@@ -428,22 +428,24 @@ class Request extends core\uri\Url implements IRequest, Dumpable
 
 
     // Query
-    public function offsetSet($key, $value): void
-    {
+    public function offsetSet(
+        mixed $key,
+        mixed $value
+    ): void {
         $this->getQuery()->{$key} = $value;
     }
 
-    public function offsetGet($key)
+    public function offsetGet(mixed $key): mixed
     {
         return $this->getQuery()->offsetGet($key);
     }
 
-    public function offsetExists($key): bool
+    public function offsetExists(mixed $key): bool
     {
         return $this->getQuery()->__isset($key);
     }
 
-    public function offsetUnset($key): void
+    public function offsetUnset(mixed $key): void
     {
         unset($this->getQuery()->{$key});
     }

@@ -381,8 +381,10 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
         return $this;
     }
 
-    public function offsetSet($key, $value): void
-    {
+    public function offsetSet(
+        mixed $key,
+        mixed $value
+    ): void {
         if ($key === null) {
             $this->push($value);
             return;

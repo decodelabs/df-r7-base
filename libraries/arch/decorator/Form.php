@@ -193,22 +193,24 @@ abstract class Form implements IFormDecorator
     }
 
     // ArrayAccess
-    final public function offsetSet($key, $value): void
-    {
+    final public function offsetSet(
+        mixed $key,
+        mixed $value
+    ): void {
         $this->form->offsetSet($key, $value);
     }
 
-    final public function offsetGet($key)
+    final public function offsetGet(mixed $key): mixed
     {
         return $this->form->offsetGet($key);
     }
 
-    final public function offsetExists($key): bool
+    final public function offsetExists(mixed $key): bool
     {
         return $this->form->offsetExists($key);
     }
 
-    final public function offsetUnset($key): void
+    final public function offsetUnset(mixed $key): void
     {
         $this->form->offsetUnset($key);
     }

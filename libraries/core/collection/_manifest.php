@@ -35,22 +35,24 @@ trait TExtractList
 
 trait TValueMapArrayAccess
 {
-    public function offsetSet($index, $value): void
-    {
+    public function offsetSet(
+        mixed $index,
+        mixed $value
+    ): void {
         $this->set($index, $value);
     }
 
-    public function offsetGet($index)
+    public function offsetGet(mixed $index): mixed
     {
         return $this->get($index);
     }
 
-    public function offsetExists($index): bool
+    public function offsetExists(mixed $index): bool
     {
         return $this->has($index);
     }
 
-    public function offsetUnset($index): void
+    public function offsetUnset(mixed $index): void
     {
         $this->remove($index);
     }
@@ -602,22 +604,24 @@ trait TAttributeContainer
 
 trait TAttributeContainerArrayAccessProxy
 {
-    public function offsetSet($key, $value): void
-    {
+    public function offsetSet(
+        mixed $key,
+        mixed $value
+    ): void {
         $this->setAttribute($key, $value);
     }
 
-    public function offsetGet($key)
+    public function offsetGet(mixed $key): mixed
     {
         return $this->getAttribute($key);
     }
 
-    public function offsetExists($key): bool
+    public function offsetExists(mixed $key): bool
     {
         return $this->hasAttribute($key);
     }
 
-    public function offsetUnset($key): void
+    public function offsetUnset(mixed $key): void
     {
         $this->removeAttribute($key);
     }

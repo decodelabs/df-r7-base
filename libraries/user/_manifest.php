@@ -144,29 +144,33 @@ trait TSessionBackedHelper
     protected $_sessionDataNew = false;
     protected $_sessionDataChanged = false;
 
-    public function offsetSet($key, $value): void
-    {
+    public function offsetSet(
+        mixed $key,
+        mixed $value
+    ): void {
         $this->_ensureSessionData();
         $this->_sessionData[$key] = $value;
         $this->_sessionDataChanged = true;
     }
 
-    public function offsetGet($key)
+    public function offsetGet(mixed $key): mixed
     {
         $this->_ensureSessionData();
 
         if (isset($this->_sessionData[$key])) {
             return $this->_sessionData[$key];
         }
+
+        return null;
     }
 
-    public function offsetExists($key): bool
+    public function offsetExists(mixed $key): bool
     {
         $this->_ensureSessionData();
         return isset($this->_sessionData[$key]);
     }
 
-    public function offsetUnset($key): void
+    public function offsetUnset(mixed $key): void
     {
         $this->_ensureSessionData();
         unset($this->_sessionData[$key]);

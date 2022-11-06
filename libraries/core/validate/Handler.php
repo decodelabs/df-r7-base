@@ -199,22 +199,24 @@ class Handler implements IHandler
         return true;
     }
 
-    public function offsetSet($offset, $value): void
-    {
+    public function offsetSet(
+        mixed $offset,
+        mixed $value
+    ): void {
         $this->setValue($offset, $value);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->getValue($offset);
     }
 
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
         return array_key_exists($offset, $this->_values);
     }
 
-    public function offsetUnset($offset): void
+    public function offsetUnset(mixed $offset): void
     {
         throw Exceptional::BadMethodCall(
             'Validator values cannot be set via array access'

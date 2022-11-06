@@ -469,14 +469,19 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
 
 
     // Array access
-    public function offsetSet($key, $value)
-    {
+    public function offsetSet(
+        mixed $key,
+        mixed $value
+    ): void {
         throw Exceptional::Runtime(
             'Client objects are read only'
         );
     }
 
-    public function offsetGet($key)
+    /**
+     * @param string $key
+     */
+    public function offsetGet(mixed $key): mixed
     {
         switch ($key) {
             case 'id': return $this->_id;
@@ -492,9 +497,11 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
             case 'country': return $this->_country;
             case 'timezone': return $this->_timezone;
         }
+
+        return null;
     }
 
-    public function offsetExists($key)
+    public function offsetExists(mixed $key): bool
     {
         return in_array($key, [
             'id', 'email', 'fullName', 'nickName', 'firstName', 'surname',
@@ -502,7 +509,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
         ]);
     }
 
-    public function offsetUnset($key)
+    public function offsetUnset(mixed $key): void
     {
         throw Exceptional::Runtime(
             'Client objects are read only'

@@ -199,22 +199,24 @@ abstract class Delegate implements IDelegateDecorator
     }
 
     // ArrayAccess
-    final public function offsetSet($key, $value): void
-    {
+    final public function offsetSet(
+        mixed $key,
+        mixed $value
+    ): void {
         $this->delegate->offsetSet($key, $value);
     }
 
-    final public function offsetGet($key)
+    final public function offsetGet(mixed $key): mixed
     {
         return $this->delegate->offsetGet($key);
     }
 
-    final public function offsetExists($key): bool
+    final public function offsetExists(mixed $key): bool
     {
         return $this->delegate->offsetExists($key);
     }
 
-    final public function offsetUnset($key): void
+    final public function offsetUnset(mixed $key): void
     {
         $this->delegate->offsetUnset($key);
     }

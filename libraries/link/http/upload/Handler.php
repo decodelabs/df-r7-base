@@ -241,23 +241,27 @@ class Handler implements link\http\IUploadHandler
     }
 
     // Array access
-    public function offsetSet($offset, $value)
-    {
+    public function offsetSet(
+        mixed $offset,
+        mixed $value
+    ): void {
     }
 
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): ?File
     {
         if (isset($this->_files[$offset])) {
             return new File($this, $offset, $this->_files[$offset]);
         }
+
+        return null;
     }
 
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return isset($this->_files[$offset]);
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->_files[$offset]);
     }

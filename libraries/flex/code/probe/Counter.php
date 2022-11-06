@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flex\code\probe;
 
 use df;
@@ -17,13 +18,13 @@ class Counter implements flex\code\IProbe, core\lang\IAcceptTypeProcessor, \Arra
     use flex\code\TProbe;
     use core\lang\TAcceptTypeProcessor;
 
-    const TEXT_TYPES = [
+    public const TEXT_TYPES = [
         'as', 'atom', 'cgi', 'css', 'cs', 'dtd', 'htaccess', 'htc', 'htm', 'html', 'js', 'json',
         'less', 'mathml', 'php', 'rdf', 'sass', 'scss', 'smd', 'sh', 'style', 'svg', 'sql',
         'template', 'txt', 'xhtml', 'xht', 'xsd', 'xsl', 'xslt', 'xml', 'yml'
     ];
 
-    const BLACKLIST = ['gitignore', 'loc'];
+    public const BLACKLIST = ['gitignore', 'loc'];
 
     protected $_types = [];
     protected $_totals;
@@ -154,24 +155,26 @@ class Counter implements flex\code\IProbe, core\lang\IAcceptTypeProcessor, \Arra
         return $this;
     }
 
-    public function offsetSet($key, $value)
-    {
+    public function offsetSet(
+        mixed $key,
+        mixed $value
+    ): void {
         throw Exceptional::Logic(
             'Counter probe is read only'
         );
     }
 
-    public function offsetGet($key)
+    public function offsetGet(mixed $key): mixed
     {
         return $this->getType($key);
     }
 
-    public function offsetExists($key)
+    public function offsetExists(mixed $key): bool
     {
         return $this->hasType($key);
     }
 
-    public function offsetUnset($key)
+    public function offsetUnset(mixed $key): void
     {
         throw Exceptional::Logic(
             'Counter probe is read only'
