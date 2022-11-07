@@ -43,8 +43,7 @@ interface IUnitOptions
 interface IUnit extends
     mesh\entity\IEntity,
     user\IAccessLock,
-    Cast,
-    \Serializable
+    Cast
 {
     public const DEFAULT_ACCESS = axis\IAccess::GUEST;
 
@@ -78,15 +77,6 @@ trait TUnit
         $this->_model = $model;
     }
 
-    public function serialize()
-    {
-        return $this->getUnitId();
-    }
-
-    public function unserialize(string $data): void
-    {
-        axis\Model::loadUnitFromId($data);
-    }
 
     public function _setUnitName($name)
     {

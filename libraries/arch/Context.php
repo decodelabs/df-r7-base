@@ -100,6 +100,18 @@ class Context implements IContext, \Serializable, Dumpable
         }
     }
 
+    public function __serialize(): array
+    {
+        return [
+            (string)$this->location
+        ];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->unserialize($data[0]);
+    }
+
 
 
     // Application

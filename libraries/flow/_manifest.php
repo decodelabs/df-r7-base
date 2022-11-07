@@ -130,6 +130,11 @@ class FlashQueue implements \Serializable
 
     public function serialize()
     {
+        return serialize($this->__serialize());
+    }
+
+    public function __serialize(): array
+    {
         $data = ['l' => $this->limit];
 
         if (!empty($this->constant)) {
@@ -144,12 +149,17 @@ class FlashQueue implements \Serializable
             $data['i'] = $this->instant;
         }
 
-        return serialize($data);
+        return $data;
     }
 
     public function unserialize(string $data): void
     {
         $data = unserialize($data);
+        $this->__unserialize($data);
+    }
+
+    public function __unserialize(array $data): void
+    {
         $this->limit = $data['l'];
 
         if (isset($data['c'])) {

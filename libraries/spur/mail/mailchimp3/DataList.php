@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\mail\mailchimp3;
 
 use df;
@@ -62,9 +63,9 @@ class DataList extends core\collection\Tree implements IDataList
 
 
     // Serialize
-    protected function _getSerializeValues()
+    public function __serialize(): array
     {
-        $output = parent::_getSerializeValues();
+        $output = parent::__serialize();
         $output['tl'] = $this->_total;
 
         if ($this->_filter) {
@@ -74,12 +75,12 @@ class DataList extends core\collection\Tree implements IDataList
         return $output;
     }
 
-    protected function _setUnserializedValues(array $values)
+    public function __unserialize(array $data): void
     {
-        parent::_setUnserializedValues($values);
+        parent::__unserialize($data);
 
-        $this->_total = $values['tl'] ?? 0;
-        $this->_filter = $values['fl'] ?? null;
+        $this->_total = $data['tl'] ?? 0;
+        $this->_filter = $data['fl'] ?? null;
     }
 
     /**

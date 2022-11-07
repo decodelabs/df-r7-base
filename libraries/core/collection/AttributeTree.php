@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\collection;
 
 use df;
@@ -12,27 +13,24 @@ class AttributeTree extends Tree implements IAttributeContainer
 {
     use core\collection\TAttributeContainer;
 
-    protected function _getSerializeValues()
+    public function __serialize(): array
     {
-        $output = parent::_getSerializeValues();
+        $output = parent::__serialize();
 
         if (!empty($this->_attributes)) {
-            if ($output === null) {
-                $output = [];
-            }
-
+            $output = [];
             $output['at'] = $this->_attributes;
         }
 
         return $output;
     }
 
-    protected function _setUnserializedValues(array $values)
+    public function __unserialize(array $data): void
     {
-        parent::_setUnserializedValues($values);
+        parent::__unserialize($data);
 
-        if (isset($values['at'])) {
-            $this->_attributes = $values['at'];
+        if (isset($data['at'])) {
+            $this->_attributes = $data['at'];
         }
     }
 

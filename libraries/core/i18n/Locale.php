@@ -69,9 +69,19 @@ class Locale implements ILocale, \Serializable, Dumpable
         return $this->toString();
     }
 
+    public function __serialize(): array
+    {
+        return [$this->toString()];
+    }
+
     public function unserialize(string $data): void
     {
         $this->__construct($data);
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->__construct($data[0]);
     }
 
 

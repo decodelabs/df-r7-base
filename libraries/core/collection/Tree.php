@@ -125,10 +125,10 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
     // Serialize
     public function serialize()
     {
-        return serialize($this->_getSerializeValues());
+        return serialize($this->__serialize());
     }
 
-    protected function _getSerializeValues()
+    public function __serialize(): array
     {
         $output = [];
 
@@ -142,7 +142,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
             $children = [];
 
             foreach ($this->_collection as $key => $child) {
-                $children[$key] = $child->_getSerializeValues();
+                $children[$key] = $child->__serialize();
                 $childClass = get_class($child);
 
                 if ($class != $childClass) {
@@ -154,7 +154,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
         }
 
         if (empty($output)) {
-            $output = null;
+            $output = [];
         }
 
         return $output;
@@ -163,20 +163,20 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
     public function unserialize(string $data): void
     {
         if (is_array($values = unserialize($data))) {
-            $this->_setUnserializedValues($values);
+            $this->__unserialize($values);
         }
     }
 
-    protected function _setUnserializedValues(array $values)
+    public function __unserialize(array $data): void
     {
-        if (isset($values['vl'])) {
-            $this->_value = $values['vl'];
+        if (isset($data['vl'])) {
+            $this->_value = $data['vl'];
         }
 
-        if (isset($values['cd'])) {
+        if (isset($data['cd'])) {
             $parentClass = get_class($this);
 
-            foreach ($values['cd'] as $key => $childData) {
+            foreach ($data['cd'] as $key => $childData) {
                 $ref = new \ReflectionClass($childData['cl'] ?? $parentClass);
                 $child = $ref->newInstanceWithoutConstructor();
 
@@ -187,7 +187,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
                 }
 
                 if (!empty($childData)) {
-                    $child->_setUnserializedValues($childData);
+                    $child->__unserialize($childData);
                 }
 
                 $this->_collection[$key] = $child;

@@ -106,6 +106,19 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
         $this->import($data);
     }
 
+    public function __serialize(): array
+    {
+        return [
+            $this->toString()
+        ];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->import($data[0]);
+    }
+
+
     // Parameters
     public function setSeparator($separator)
     {

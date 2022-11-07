@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\navigation\menu;
 
 use df;
@@ -20,10 +21,10 @@ class Dynamic extends Base
     protected $_entries = [];
 
 
-    protected function _getStorageArray()
+    public function __serialize(): array
     {
         return array_merge(
-            parent::_getStorageArray(),
+            parent::__serialize(),
             [
                 'recordId' => $this->_recordId,
                 'displayName' => $this->_displayName,
@@ -32,9 +33,9 @@ class Dynamic extends Base
         );
     }
 
-    protected function _setStorageArray(array $data)
+    public function __unserialize(array $data): void
     {
-        parent::_setStorageArray($data);
+        parent::__unserialize($data);
 
         $this->_recordId = $data['recordId'];
         $this->_displayName = $data['displayName'];

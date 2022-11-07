@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur;
 
 use df;
@@ -69,18 +70,18 @@ class DataObject extends core\collection\Tree implements IDataObject
 
 
     // Serialize
-    protected function _getSerializeValues()
+    public function __serialize(): array
     {
-        $output = parent::_getSerializeValues();
+        $output = parent::__serialize();
         $output['ty'] = $this->_type;
 
         return $output;
     }
 
-    protected function _setUnserializedValues(array $values)
+    public function __unserialize(array $data): void
     {
-        parent::_setUnserializedValues($values);
-        $this->_type = $values['ty'] ?? 'object';
+        parent::__unserialize($data);
+        $this->_type = $data['ty'] ?? 'object';
     }
 
     /**
@@ -124,7 +125,7 @@ trait TFilter
     public static function normalize(IFilter &$filter=null, callable $callback=null, array $extra=null): array
     {
         if (!$filter) {
-            $filter = new static;
+            $filter = new static();
         }
 
         if ($callback) {

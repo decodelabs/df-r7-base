@@ -89,19 +89,29 @@ class Base implements IRecord, \Serializable, Dumpable
 
     public function serialize()
     {
-        return serialize([
+        return serialize($this->__serialize());
+    }
+
+    public function __serialize(): array
+    {
+        return [
             'adapter' => $this->_adapter->getQuerySourceId(),
             'values' => $this->getValuesForStorage()
-        ]);
+        ];
     }
 
     public function unserialize(string $data): void
     {
-        $values = unserialize($data);
-        $adapter = mesh\Manager::getInstance()->fetchEntity($values['adapter']);
+        $data = unserialize($data);
+        $this->__unserialize($data);
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $adapter = mesh\Manager::getInstance()->fetchEntity($data['adapter']);
 
         $this->__construct($adapter);
-        $this->populateWithRawData($values['values']);
+        $this->populateWithRawData($data['values']);
     }
 
     public function isNew()

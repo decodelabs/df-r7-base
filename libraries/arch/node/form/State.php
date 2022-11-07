@@ -30,10 +30,16 @@ class State implements arch\node\IFormState, \Serializable
 
     public function serialize()
     {
-        return serialize($this->_getSerializeValues());
+        return serialize($this->__serialize());
     }
 
-    protected function _getSerializeValues($withId=true)
+    public function __serialize(): array
+    {
+        return $this->_getSerializeValues(true);
+    }
+
+
+    protected function _getSerializeValues(bool $withId=true): array
     {
         $output = [];
 
@@ -73,8 +79,13 @@ class State implements arch\node\IFormState, \Serializable
     public function unserialize(string $data): void
     {
         if (is_array($values = unserialize($data))) {
-            $this->_setUnserializedValues($values, $values['id']);
+            $this->__unserialize($values);
         }
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->_setUnserializedValues($data, $data['id']);
     }
 
     protected function _setUnserializedValues(array $values, string $id)

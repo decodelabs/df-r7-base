@@ -47,9 +47,20 @@ class TypeRef implements ITypeRef, \Serializable, Dumpable
         return $this->_class;
     }
 
+    public function __serialize(): array
+    {
+        return [$this->_class];
+    }
+
     public function unserialize(string $data): void
     {
         $this->_class = $data;
+        $this->_reflection = new \ReflectionClass($this->_class);
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->_class = $data[0];
         $this->_reflection = new \ReflectionClass($this->_class);
     }
 

@@ -34,16 +34,16 @@ class Menu extends MenuBase
         }
     }
 
-    protected function _getStorageArray()
+    public function __serialize(): array
     {
-        return array_merge(parent::_getStorageArray(), [
+        return array_merge(parent::__serialize(), [
             'name' => $this->name
         ]);
     }
 
-    protected function _setStorageArray(array $data)
+    public function __unserialize(array $data): void
     {
-        parent::_setStorageArray($data);
+        parent::__unserialize($data);
 
         $this->name = $data['name'];
 

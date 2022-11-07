@@ -215,9 +215,19 @@ class Date implements IDate, Dumpable
         return $this->__toString();
     }
 
+    public function __serialize(): array
+    {
+        return [$this->__toString()];
+    }
+
     public function unserialize(string $string): void
     {
         $this->_date = new \DateTime($string);
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->_date = new \DateTime($data[0]);
     }
 
 

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\collection;
 
 use df;
@@ -21,27 +22,24 @@ class InputTree extends Tree implements IInputTree
         return new self($input);
     }
 
-    protected function _getSerializeValues()
+    public function __serialize(): array
     {
-        $output = parent::_getSerializeValues();
+        $output = parent::__serialize();
 
         if (!empty($this->_errors)) {
-            if ($output === null) {
-                $output = [];
-            }
-
+            $output = [];
             $output['er'] = $this->_errors;
         }
 
         return $output;
     }
 
-    protected function _setUnserializedValues(array $values)
+    public function __unserialize(array $data): void
     {
-        parent::_setUnserializedValues($values);
+        parent::__unserialize($data);
 
-        if (isset($values['er'])) {
-            $this->_errors = $values['er'];
+        if (isset($data['er'])) {
+            $this->_errors = $data['er'];
         }
     }
 

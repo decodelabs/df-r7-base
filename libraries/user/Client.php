@@ -133,7 +133,12 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
 
     public function serialize()
     {
-        return json_encode([
+        return json_encode($this->__serialize());
+    }
+
+    public function __serialize(): array
+    {
+        return [
             'id' => $this->_id,
             'em' => $this->_email,
             'fn' => $this->_fullName,
@@ -148,12 +153,17 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
             'as' => $this->_authState,
             'kr' => $this->_keyring,
             'kt' => $this->_keyringTimestamp
-        ]);
+        ];
     }
 
     public function unserialize(string $data): void
     {
         $data = json_decode($data, true);
+        $this->__unserialize($data);
+    }
+
+    public function __unserialize(array $data): void
+    {
         $this->_id = $data['id'];
         $this->_email = $data['em'];
         $this->_fullName = $data['fn'];

@@ -94,12 +94,22 @@ abstract class Base implements axis\schema\IField, \Serializable, Dumpable
     // Serialize
     public function serialize()
     {
-        return json_encode($this->toStorageArray());
+        return json_encode($this->__serialize());
+    }
+
+    public function __serialize(): array
+    {
+        return $this->toStorageArray();
     }
 
     public function unserialize(string $data): void
     {
         $data = json_decode($data, true);
+        $this->__unserialize($data);
+    }
+
+    public function __unserialize(array $data): void
+    {
         $this->_name = $data['nam'];
         $this->_importStorageArray($data);
     }

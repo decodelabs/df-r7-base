@@ -55,6 +55,11 @@ class FlashMessage implements IFlashMessage, \Serializable
 
     public function serialize()
     {
+        return json_encode($this->__serialize());
+    }
+
+    public function __serialize(): array
+    {
         $data = [
             'id' => $this->_id,
             'dp' => $this->_isDisplayed,
@@ -79,13 +84,17 @@ class FlashMessage implements IFlashMessage, \Serializable
             $data['lw'] = $this->_linkNewWindow;
         }
 
-        return json_encode($data);
+        return $data;
     }
 
     public function unserialize(string $data): void
     {
         $data = json_decode($data, true);
+        $this->__unserialize($data);
+    }
 
+    public function __unserialize(array $data): void
+    {
         $this->_id = $data['id'];
         $this->_isDisplayed = $data['dp'];
         $this->_displayCount = $data['dc'];

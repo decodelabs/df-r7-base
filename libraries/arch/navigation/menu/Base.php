@@ -150,17 +150,10 @@ class Base implements IMenu, \Serializable
 
     public function serialize()
     {
-        return serialize($this->_getStorageArray());
+        return serialize($this->__serialize());
     }
 
-    public function unserialize(string $data): void
-    {
-        /** @var array $unserialized */
-        $unserialized = unserialize($data);
-        $this->_setStorageArray($unserialized);
-    }
-
-    protected function _getStorageArray()
+    public function __serialize(): array
     {
         return [
             'id' => $this->_id,
@@ -170,7 +163,14 @@ class Base implements IMenu, \Serializable
         ];
     }
 
-    protected function _setStorageArray(array $data)
+    public function unserialize(string $data): void
+    {
+        /** @var array $unserialized */
+        $unserialized = unserialize($data);
+        $this->__unserialize($unserialized);
+    }
+
+    public function __unserialize(array $data): void
     {
         $this->_id = $data['id'];
         $this->_subId = $data['subId'];
