@@ -228,7 +228,7 @@ trait TEntryList
         return $this->getEntries();
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->_entries);
     }

@@ -6,7 +6,8 @@
 
 namespace df\opal\query;
 
-use df;
+use ArrayIterator;
+
 use df\core;
 use df\opal;
 use df\user;
@@ -452,9 +453,9 @@ trait TQuery_Distinct
 
 
 
- /****************************
- * Correlations
- */
+/****************************
+* Correlations
+*/
 
 trait TQuery_Correlatable
 {
@@ -598,9 +599,9 @@ trait TQuery_Correlatable
 
 
 
- /****************************
- * Joins
- */
+/****************************
+* Joins
+*/
 trait TQuery_JoinProvider
 {
     protected $_joins = [];
@@ -653,17 +654,17 @@ trait TQuery_JoinProvider
         if ($field instanceof opal\schema\IBridgedRelationField) {
             // Field is bridged
             Glitch::incomplete($field);
-        /*
-        $bridgeAdapter = $field->getBridgeQueryAdapter();
-        $bridgeAlias = $fieldName.'Bridge';
-        $localAlias = $source->getAlias();
-        $localName = $field->getBridgeLocalFieldName();
-        $targetName = $field->getBridgeTargetFieldName();
+            /*
+            $bridgeAdapter = $field->getBridgeQueryAdapter();
+            $bridgeAlias = $fieldName.'Bridge';
+            $localAlias = $source->getAlias();
+            $localName = $field->getBridgeLocalFieldName();
+            $targetName = $field->getBridgeTargetFieldName();
 
-        $correlation = $this->correlate($aggregateType.'('.$bridgeAlias.'.'.$targetName.')', $alias)
-            ->from($bridgeAdapter, $bridgeAlias)
-            ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
-        */
+            $correlation = $this->correlate($aggregateType.'('.$bridgeAlias.'.'.$targetName.')', $alias)
+                ->from($bridgeAdapter, $bridgeAlias)
+                ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
+            */
         } elseif (
             $field instanceof opal\schema\IInverseRelationField &&
             (
@@ -2221,12 +2222,12 @@ trait TQuery_Read
         return $this->_isUnbuffered;
     }
 
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
         $data = $this->_fetchSourceData();
 
         if (is_array($data)) {
-            $data = new \ArrayIterator($data);
+            $data = new ArrayIterator($data);
         }
 
         return $data;
@@ -2405,9 +2406,9 @@ trait TQuery_Write
 }
 
 
- /**************************
- * Insert data
- */
+/**************************
+* Insert data
+*/
 trait TQuery_DataInsert
 {
     protected $_shouldReplace = false;

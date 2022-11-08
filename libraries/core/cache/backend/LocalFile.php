@@ -229,7 +229,7 @@ class LocalFile implements core\cache\IBackend
         return true;
     }
 
-    public function count()
+    public function count(): int
     {
         return $this->_dir->countFiles();
     }

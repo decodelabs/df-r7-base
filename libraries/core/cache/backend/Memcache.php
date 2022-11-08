@@ -187,7 +187,7 @@ class Memcache implements core\cache\IBackend
         return $this;
     }
 
-    public function count()
+    public function count(): int
     {
         $output = 0;
         $allSlabs = $this->_connection->getExtendedStats('slabs');

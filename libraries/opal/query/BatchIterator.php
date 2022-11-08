@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\query;
 
 use df;
@@ -15,7 +16,7 @@ class BatchIterator implements IBatchIterator
 {
     use core\collection\TExtractList;
 
-    const DEFAULT_BATCH_SIZE = 50;
+    public const DEFAULT_BATCH_SIZE = 50;
 
     protected $_isForFetch = false;
     protected $_populates = [];
@@ -260,7 +261,7 @@ class BatchIterator implements IBatchIterator
     }
 
 
-    public function count()
+    public function count(): int
     {
         return count($this->_batchData) + $this->_countResult();
     }
@@ -292,27 +293,27 @@ class BatchIterator implements IBatchIterator
     }
 
     // Iterator
-    public function current()
+    public function current(): mixed
     {
         return $this->extract();
     }
 
-    public function next()
+    public function next(): void
     {
         $this->_currentKey = null;
     }
 
-    public function key()
+    public function key(): mixed
     {
         return $this->_currentKey;
     }
 
-    public function valid()
+    public function valid(): bool
     {
         return !$this->isEmpty();
     }
 
-    public function rewind()
+    public function rewind(): void
     {
     }
 }

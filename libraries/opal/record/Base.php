@@ -619,7 +619,7 @@ class Base implements IRecord, \Serializable, Dumpable
         Glitch::incomplete();
     }
 
-    public function count()
+    public function count(): int
     {
         return count(array_merge($this->_values, $this->_changes));
     }

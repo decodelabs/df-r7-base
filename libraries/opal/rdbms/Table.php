@@ -277,7 +277,7 @@ class Table implements ITable, Dumpable
 
 
     // Count
-    public function count()
+    public function count(): int
     {
         return QueryExecutor::factory($this->_adapter)->countTable($this->_name);
     }

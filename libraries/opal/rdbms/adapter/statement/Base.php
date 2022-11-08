@@ -16,6 +16,8 @@ use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
 
+use Traversable;
+
 abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpable
 {
     use core\collection\TExtractList;
@@ -339,14 +341,14 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
         return $output;
     }
 
-    public function count()
+    public function count(): int
     {
         throw Exceptional::Runtime(
             'This collection is streamed and cannot be counted'
         );
     }
 
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         if (!$this->_isExecuted) {
             $this->executeRead();

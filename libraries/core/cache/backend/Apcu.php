@@ -216,7 +216,7 @@ class Apcu implements core\cache\IBackend
         return $this;
     }
 
-    public function count()
+    public function count(): int
     {
         $output = 0;
 

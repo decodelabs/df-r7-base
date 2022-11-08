@@ -95,7 +95,7 @@ class ListBase implements opal\query\IClauseList, Dumpable
         return empty($this->_clauses);
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->_clauses);
     }

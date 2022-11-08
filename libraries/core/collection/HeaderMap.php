@@ -374,7 +374,7 @@ class HeaderMap implements IHeaderMap, Dumpable
 
 
     // Iterator
-    public function current()
+    public function current(): mixed
     {
         $output = current($this->_collection);
 
@@ -400,7 +400,7 @@ class HeaderMap implements IHeaderMap, Dumpable
         next($this->_collection);
     }
 
-    public function key()
+    public function key(): mixed
     {
         return key($this->_collection);
     }

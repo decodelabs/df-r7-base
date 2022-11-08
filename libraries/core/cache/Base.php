@@ -181,7 +181,7 @@ abstract class Base implements ICache
         return $this;
     }
 
-    public function count()
+    public function count(): int
     {
         return $this->_backend->count();
     }

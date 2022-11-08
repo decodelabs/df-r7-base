@@ -6,7 +6,8 @@
 
 namespace df\link\http\upload;
 
-use df;
+use ArrayIterator;
+
 use df\core;
 use df\link;
 use df\flex;
@@ -223,13 +224,13 @@ class Handler implements link\http\IUploadHandler
 
 
     // Countable
-    public function count()
+    public function count(): int
     {
         return count($this->_files);
     }
 
     // Iterator
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
         $output = [];
 
@@ -237,7 +238,7 @@ class Handler implements link\http\IUploadHandler
             $output[$key] = new File($this, $key, $set);
         }
 
-        return new \ArrayIterator($output);
+        return new ArrayIterator($output);
     }
 
     // Array access

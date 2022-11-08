@@ -253,39 +253,39 @@ class MultiPart implements IMultiPart, Dumpable
         return $output;
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->_parts);
     }
 
 
     // Iterator
-    public function rewind()
+    public function rewind(): void
     {
         reset($this->_parts);
     }
 
-    public function current()
+    public function current(): ?IPart
     {
         return current($this->_parts);
     }
 
-    public function key()
+    public function key(): int
     {
         return key($this->_parts);
     }
 
-    public function next()
+    public function next(): void
     {
         next($this->_parts);
     }
 
-    public function valid()
+    public function valid(): bool
     {
         return ($this->current() !== false);
     }
 
-    public function hasChildren()
+    public function hasChildren(): bool
     {
         return !empty($this->_parts);
     }

@@ -302,7 +302,7 @@ class Url extends core\uri\Url implements IUrl
     // Scheme
     public function setScheme($scheme)
     {
-        $scheme = strtolower($scheme);
+        $scheme = strtolower((string)$scheme);
 
         if ($scheme !== 'http' && $scheme !== 'https') {
             $scheme = 'http';

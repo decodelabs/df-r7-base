@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\collection;
 
 use df;
@@ -17,27 +18,27 @@ class SeekableIterator implements \Iterator
         $this->_collection = $collection;
     }
 
-    public function current()
+    public function current(): mixed
     {
         return $this->_collection->getCurrent();
     }
 
-    public function next()
+    public function next(): void
     {
         $this->_collection->seekNext();
     }
 
-    public function key()
+    public function key(): int
     {
         return $this->_collection->getSeekPosition();
     }
 
-    public function valid()
+    public function valid(): bool
     {
         return !$this->_collection->hasSeekEnded();
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         $this->_collection->seekFirst();
     }

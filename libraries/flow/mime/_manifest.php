@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flow\mime;
 
 use df;
@@ -11,8 +12,8 @@ use df\flow;
 
 interface IPart extends core\IStringProvider, core\collection\IHeaderMapProvider
 {
-    const LINE_LENGTH = 74;
-    const LINE_END = "\r\n";
+    public const LINE_LENGTH = 74;
+    public const LINE_END = "\r\n";
 
     public function isMultiPart();
 
@@ -48,13 +49,13 @@ interface IContentPart extends IPart
 }
 
 
-interface IMultiPart extends IPart, \Countable, \RecursiveIterator
+interface IMultiPart extends IPart, \Countable, \Iterator
 {
-    const ALTERNATIVE = 'multipart/alternative';
-    const MIXED = 'multipart/mixed';
-    const RELATED = 'multipart/related';
-    const PARALLEL = 'multipart/parallel';
-    const DIGEST = 'multipart/digest';
+    public const ALTERNATIVE = 'multipart/alternative';
+    public const MIXED = 'multipart/mixed';
+    public const RELATED = 'multipart/related';
+    public const PARALLEL = 'multipart/parallel';
+    public const DIGEST = 'multipart/digest';
 
     public function setBoundary($boundary);
     public function getBoundary();

@@ -279,12 +279,12 @@ class Reader implements IReader
         $this->_rowCount = 0;
     }
 
-    public function current()
+    public function current(): ?array
     {
         return $this->getRow();
     }
 
-    public function key()
+    public function key(): int
     {
         return $this->_rowCount;
     }

@@ -63,7 +63,7 @@ class Select implements ISelectQuery, Dumpable
 
 
     // Output
-    public function count()
+    public function count(): int
     {
         return $this->_sourceManager->executeQuery($this, function ($adapter) {
             return (int)$adapter->countSelectQuery($this);

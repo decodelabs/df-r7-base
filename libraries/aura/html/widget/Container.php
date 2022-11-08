@@ -13,6 +13,7 @@ use df\arch;
 
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Tagged as Html;
+use Traversable;
 
 class Container extends Base implements
     IContainerWidget,
@@ -272,7 +273,7 @@ class Container extends Base implements
         return $this->_children->count();
     }
 
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return $this->_children->getIterator();
     }

@@ -96,7 +96,7 @@ class CookieCollection implements ICookieCollection, Dumpable
         return array_shift($this->_set);
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->_set);
     }

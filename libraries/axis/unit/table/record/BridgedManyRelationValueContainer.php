@@ -6,7 +6,8 @@
 
 namespace df\axis\unit\table\record;
 
-use df;
+use ArrayIterator;
+
 use df\core;
 use df\axis;
 use df\opal;
@@ -132,14 +133,14 @@ class BridgedManyRelationValueContainer implements
         return array_merge($this->_current, $this->_new);
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->toArray());
     }
 
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
-        return new \ArrayIterator($this->toArray());
+        return new ArrayIterator($this->toArray());
     }
 
     public function getPopulated()

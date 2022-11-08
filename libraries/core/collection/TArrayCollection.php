@@ -3,9 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\collection;
 
-use df;
+use ArrayIterator;
+
 use df\core;
 
 use DecodeLabs\Exceptional;
@@ -37,14 +39,14 @@ trait TArrayCollection
         return $this->_collection;
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->_collection);
     }
 
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
-        return new \ArrayIterator($this->_collection);
+        return new ArrayIterator($this->_collection);
     }
 
     protected function _normalizeValue($value, $key=null)
@@ -941,9 +943,9 @@ trait TArrayCollection_Stack
     use TArrayCollection_Shiftable;
     use TArrayCollection_IndexedMovable;
 
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
-        return new \ArrayIterator(array_reverse($this->_collection, true));
+        return new ArrayIterator(array_reverse($this->_collection, true));
     }
 
     public function extract()

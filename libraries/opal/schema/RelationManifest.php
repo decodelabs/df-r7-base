@@ -3,10 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\schema;
 
-use df;
-use df\core;
+use ArrayIterator;
+
 use df\opal;
 
 use DecodeLabs\Glitch\Dumpable;
@@ -132,9 +133,9 @@ class RelationManifest implements IRelationManifest, Dumpable
         return $output;
     }
 
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
-        return new \ArrayIterator($this->_fields);
+        return new ArrayIterator($this->_fields);
     }
 
     public function toArray(): array

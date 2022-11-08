@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\vcs\git;
 
 use df;
@@ -47,7 +48,7 @@ class Status implements IStatus, Dumpable
         }
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->_tracked) + count($this->_untracked);
     }
