@@ -188,7 +188,11 @@ class HeaderMap implements IHeaderMap, Dumpable
 
     public function getBase($key, $default=null)
     {
-        $parts = explode(';', $this->get($key, $default), 2);
+        if (null === ($output = $this->get($key, $default))) {
+            return null;
+        }
+
+        $parts = explode(';', (string)$output, 2);
         return array_shift($parts);
     }
 

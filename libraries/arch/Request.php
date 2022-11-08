@@ -121,7 +121,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
             return static::DEFAULT_AREA;
         }
 
-        $area = $this->_path->get(0);
+        $area = (string)$this->_path->get(0);
 
         if (substr($area, 0, 1) != static::AREA_MARKER) {
             return static::DEFAULT_AREA;
@@ -345,7 +345,10 @@ class Request extends core\uri\Url implements IRequest, Dumpable
 
     public function getType()
     {
-        if (!$this->_path || !strlen($extension = $this->_path->getExtension())) {
+        if (
+            !$this->_path ||
+            !strlen((string)($extension = $this->_path->getExtension()))
+        ) {
             $extension = static::DEFAULT_TYPE;
         }
 
@@ -524,7 +527,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
         if (substr($rpString, -1) == '/') {
             if (($rpString == '~front/' && $rpString != $tpString)
             || 0 !== stripos($tpString, $rpString)
-            //|| dirname($tpString.'-').'/' != $rpString
+                //|| dirname($tpString.'-').'/' != $rpString
             ) {
                 return false;
             }
@@ -774,13 +777,15 @@ class Request extends core\uri\Url implements IRequest, Dumpable
             return $this;
         }
 
-        if (substr($this->_path[0], 0, 1) == self::AREA_MARKER
-        && substr($this->_path[0], 1) == self::DEFAULT_AREA) {
+        if (
+            substr((string)$this->_path[0], 0, 1) == self::AREA_MARKER &&
+            substr((string)$this->_path[0], 1) == self::DEFAULT_AREA
+        ) {
             $this->_path->remove(0);
         }
 
         if (!$this->_path->shouldAddTrailingSlash()) {
-            $isDefaultExtension = strtolower($this->_path->getExtension()) == self::DEFAULT_TYPE;
+            $isDefaultExtension = strtolower((string)$this->_path->getExtension()) == self::DEFAULT_TYPE;
 
             if ($this->_path->getFileName() == self::DEFAULT_NODE && $isDefaultExtension) {
                 $this->_path->pop();

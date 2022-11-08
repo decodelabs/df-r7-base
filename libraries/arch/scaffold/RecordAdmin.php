@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\scaffold;
 
 use df\arch\scaffold\Index\Decorator as IndexDecorator;
@@ -39,33 +40,33 @@ abstract class RecordAdmin extends Generic implements
     use SectionDecoratorTrait;
     use SectionProviderTrait;
 
-    const ADAPTER = null;
-    const KEY_NAME = null;
-    const ITEM_NAME = null;
-    const URL_KEY = null;
+    public const ADAPTER = null;
+    public const KEY_NAME = null;
+    public const ITEM_NAME = null;
+    public const URL_KEY = null;
 
-    const ID_FIELD = 'id';
-    const NAME_FIELD = null;
+    public const ID_FIELD = 'id';
+    public const NAME_FIELD = null;
 
-    const DEFAULT_SECTION = 'details';
+    public const DEFAULT_SECTION = 'details';
 
-    const CAN_ADD = true;
-    const CAN_PREVIEW = false;
-    const CAN_EDIT = true;
-    const CAN_DELETE = true;
-    const CONFIRM_DELETE = true;
-    const DELETE_PERMANENT = true;
-    const IS_PARENT = false;
-    const IS_SHARED = false;
+    public const CAN_ADD = true;
+    public const CAN_PREVIEW = false;
+    public const CAN_EDIT = true;
+    public const CAN_DELETE = true;
+    public const CONFIRM_DELETE = true;
+    public const DELETE_PERMANENT = true;
+    public const IS_PARENT = false;
+    public const IS_SHARED = false;
 
-    const CAN_SEARCH = true;
-    const CAN_SELECT = false;
+    public const CAN_SEARCH = true;
+    public const CAN_SELECT = false;
 
-    const SECTIONS = null;
+    public const SECTIONS = null;
 
-    const DETAILS_FIELDS = null;
-    const LIST_FIELDS = null;
-    const SEARCH_FIELDS = null;
+    public const DETAILS_FIELDS = null;
+    public const LIST_FIELDS = null;
+    public const SEARCH_FIELDS = null;
 
 
     // Nodes
@@ -88,7 +89,7 @@ abstract class RecordAdmin extends Generic implements
         if (static::CAN_SEARCH && $controls) {
             $search = $this->request->getQueryTerm('search');
 
-            if (strlen($search)) {
+            if (strlen((string)$search)) {
                 $this->searchRecordList($query, $search);
             }
         }

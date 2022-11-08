@@ -377,8 +377,10 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
             return $this;
         }
 
-        if (strlen($extension = $this->getExtension())
-        || substr($this->getLast(), -1) == '.') {
+        if (
+            strlen((string)($extension = $this->getExtension())) ||
+            substr($this->getLast(), -1) == '.'
+        ) {
             $fileName .= '.'.$extension;
         }
 

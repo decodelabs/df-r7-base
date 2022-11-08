@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\validate\field;
 
 use df;
@@ -102,7 +103,7 @@ abstract class Base implements core\validate\IField
         $this->data->setValue($value);
         $required = $this->_isRequiredAfterToggle($value);
 
-        if (!$length = mb_strlen($value)) {
+        if (!$length = mb_strlen((string)$value)) {
             $value = null;
 
             if ($required) {

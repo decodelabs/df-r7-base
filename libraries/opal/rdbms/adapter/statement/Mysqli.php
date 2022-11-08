@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms\adapter\statement;
 
 use df;
@@ -11,7 +12,6 @@ use df\opal;
 
 class Mysqli extends Base
 {
-    protected static $_timer;
     protected $_affectedRows = 0;
     protected $_result;
 

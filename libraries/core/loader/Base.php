@@ -16,23 +16,7 @@ class Base implements
     core\ILoader,
     Loader
 {
-    private static $_includeAttempts = 0;
-    private static $_includeMisses = 0;
-
     protected $_packages = [];
-
-
-    // Stats
-    public static function getTotalIncludeAttempts(): int
-    {
-        return self::$_includeAttempts;
-    }
-
-    public static function getTotalIncludeMisses(): int
-    {
-        return self::$_includeMisses;
-    }
-
 
 
     public function getPriority(): int
@@ -57,8 +41,6 @@ class Base implements
             $included = get_included_files();
 
             foreach ($paths as $path) {
-                self::$_includeAttempts++;
-
                 if (
                     file_exists($path) &&
                     !in_array($path, $included)
@@ -76,8 +58,6 @@ class Base implements
                         break;
                     }
                 }
-
-                self::$_includeMisses++;
             }
         }
 

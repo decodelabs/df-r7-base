@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\mmdb;
 
 use df;
@@ -14,7 +15,7 @@ use DecodeLabs\Exceptional;
 
 class Decoder implements IDecoder
 {
-    const POINTER_VALUE_OFFSET = [
+    public const POINTER_VALUE_OFFSET = [
         1 => 0,
         2 => 2048,
         3 => 526336,
@@ -262,7 +263,7 @@ class Decoder implements IDecoder
 
     protected function _zeroPadLeft($content, $length)
     {
-        return str_pad($content, $length, "\x00", \STR_PAD_LEFT);
+        return str_pad((string)$content, $length, "\x00", \STR_PAD_LEFT);
     }
 
     protected function _switchByteOrder($bytes)

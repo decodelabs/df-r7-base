@@ -15,6 +15,7 @@ use df\mesh;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Exceptional;
+use Traversable;
 
 trait TQuery_AdapterAware
 {
@@ -2222,7 +2223,7 @@ trait TQuery_Read
         return $this->_isUnbuffered;
     }
 
-    public function getIterator(): ArrayIterator
+    public function getIterator(): Traversable
     {
         $data = $this->_fetchSourceData();
 

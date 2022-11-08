@@ -65,8 +65,6 @@ trait TUnit
     use CastTrait;
     use user\TAccessLock;
 
-    public static $actionAccess = [];
-
     private $_unitName;
     private $_unitSettings;
 
@@ -221,14 +219,6 @@ trait TUnit
 
     public function getDefaultAccess($action=null)
     {
-        if ($action === null) {
-            return static::DEFAULT_ACCESS;
-        }
-
-        if (isset(static::$actionAccess[$action])) {
-            return static::$actionAccess[$action];
-        }
-
         return static::DEFAULT_ACCESS;
     }
 

@@ -192,7 +192,7 @@ class Descriptor implements IDescriptor
             }
 
             $path = new core\uri\Path($this->_fileName);
-            $origExt = strtolower($path->getExtension());
+            $origExt = strtolower((string)$path->getExtension());
 
 
             if ($origExt === 'jpeg') {

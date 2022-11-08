@@ -22,8 +22,6 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
 {
     use core\collection\TExtractList;
 
-    protected static $_queryCount = 0;
-
     protected $_sql;
     protected $_bindings = [];
     protected $_isExecuted = false;
@@ -35,11 +33,6 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
     protected $_adapter;
 
     private $_keyIndex = 0;
-
-    public static function getQueryCount()
-    {
-        return self::$_queryCount;
-    }
 
     public function __construct(opal\rdbms\IAdapter $adapter, $sql=null)
     {
@@ -210,7 +203,6 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
         try {
             //$timer = new core\time\Timer();
             $result = $this->_execute();
-            self::$_queryCount++;
         } catch (\Throwable $e) {
             // void profiler
             throw $e;
@@ -235,7 +227,6 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
         try {
             //$timer = new core\time\Timer();
             $this->_execute();
-            self::$_queryCount++;
         } catch (\Throwable $e) {
             // void profiler
             throw $e;
@@ -269,7 +260,6 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
         try {
             //$timer = new core\time\Timer();
             $result = $this->_execute(true);
-            self::$_queryCount++;
         } catch (\Throwable $e) {
             // void profiler
             throw $e;

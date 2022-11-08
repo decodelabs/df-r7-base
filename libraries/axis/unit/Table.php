@@ -41,6 +41,8 @@ abstract class Table implements
     private $_recordClass;
     private $_schema;
 
+    private array $_defaultSearchFields;
+
     public function __construct(axis\IModel $model)
     {
         $this->_model = $model;
@@ -441,9 +443,7 @@ abstract class Table implements
 
     public function getDefaultSearchFields()
     {
-        static $fields;
-
-        if (!isset($fields)) {
+        if (!isset($this->_defaultSearchFields)) {
             $fields = static::SEARCH_FIELDS;
 
             if (empty($fields)) {
@@ -455,9 +455,11 @@ abstract class Table implements
                     $fields['id'] = 10;
                 }
             }
+
+            $this->_defaultSearchFields = $fields;
         }
 
-        return $fields;
+        return $this->_defaultSearchFields;
     }
 
     public function getQueryResultValueProcessors(array $fields=null)

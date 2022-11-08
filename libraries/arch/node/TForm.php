@@ -467,10 +467,10 @@ trait TForm
         array $args=[]
     ): EventDescriptor {
         $this->event->setTarget(
-                $this instanceof IDelegate ?
-                    $this->getDelegateId() :
-                    null
-            )
+            $this instanceof IDelegate ?
+                $this->getDelegateId() :
+                null
+        )
             ->setEventName($name)
             ->setEventArgs($args);
 

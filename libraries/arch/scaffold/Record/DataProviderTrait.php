@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\scaffold\Record;
 
 use df\arch\scaffold\Section\Provider as SectionProvider;
@@ -50,6 +51,9 @@ trait DataProviderTrait
     protected $record;
     protected $row;
 
+    private $recordAdapter;
+    private string $recordNameField;
+
 
     // Key names
     public function getRecordKeyName(): string
@@ -86,26 +90,24 @@ trait DataProviderTrait
 
     public function getRecordNameField(): string
     {
-        static $output;
-
-        if (!isset($output)) {
+        if (!isset($this->recordNameField)) {
             if (
                 defined('static::NAME_FIELD') &&
                 static::NAME_FIELD !== null
             ) {
-                $output = static::NAME_FIELD;
+                $this->recordNameField = static::NAME_FIELD;
             } else {
                 $adapter = $this->getRecordAdapter();
 
                 if ($adapter instanceof SchemaBasedStorageUnit) {
-                    $output = $adapter->getRecordNameField();
+                    $this->recordNameField = $adapter->getRecordNameField();
                 } else {
-                    $output = 'name';
+                    $this->recordNameField = 'name';
                 }
             }
         }
 
-        return $output;
+        return $this->recordNameField;
     }
 
     public function getRecordNameFieldMaxLength(): int
@@ -146,10 +148,8 @@ trait DataProviderTrait
     // Adapter
     public function getRecordAdapter()
     {
-        static $output;
-
-        if (isset($output)) {
-            return $output;
+        if (isset($this->recordAdapter)) {
+            return $this->recordAdapter;
         }
 
         if (
@@ -159,11 +159,10 @@ trait DataProviderTrait
             $adapter = $this->data->fetchEntity(static::ADAPTER);
 
             if ($adapter instanceof Unit) {
-                $output = $adapter;
-                return $output;
+                return $this->recordAdapter = $adapter;
             }
-        } elseif ($output = $this->generateRecordAdapter()) {
-            return $output;
+        } elseif ($adapter = $this->generateRecordAdapter()) {
+            return $this->recordAdapter = $adapter;
         }
 
         throw Exceptional::Definition(

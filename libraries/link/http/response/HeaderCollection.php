@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\http\response;
 
 use df;
@@ -15,7 +16,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
 {
     use link\http\THeaderCollection;
 
-    const MESSAGES = [
+    public const MESSAGES = [
         // Informational 1xx
         100 => 'Continue',
         101 => 'Switching Protocols',
@@ -157,7 +158,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
             $output->add(trim(
                 (string)strtok(trim($line), ':')),
                 trim((string)strtok('')
-            ));
+                ));
         }
 
         return $output;
@@ -442,7 +443,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
             return $this;
         }
 
-        return strtolower($this->getBase('content-disposition')) == 'attachment';
+        return strtolower((string)$this->getBase('content-disposition')) == 'attachment';
     }
 
     public function setAttachmentFileName($fileName)

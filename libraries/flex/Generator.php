@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flex;
 
 use df;
@@ -84,16 +85,16 @@ abstract class Generator implements IGenerator
     }
 
 
-    const RANDOM_URANDOM = 1;
-    const RANDOM_COM = 2;
-    const RANDOM_MT = 3;
+    public const RANDOM_URANDOM = 1;
+    public const RANDOM_COM = 2;
+    public const RANDOM_MT = 3;
 
     private static $_randomSource;
     private static $_randomGen;
 
     public static function randomBytes($bytes)
     {
-        if (self::$_randomSource === null) {
+        if (!isset(self::$_randomSource)) {
             if (is_readable('/dev/urandom')) {
                 self::$_randomGen = fopen('/dev/urandom', 'rb');
                 self::$_randomSource = self::RANDOM_URANDOM;
@@ -105,7 +106,7 @@ abstract class Generator implements IGenerator
                 }
             }
 
-            if (self::$_randomSource === null) {
+            if (!isset(self::$_randomSource)) {
                 self::$_randomSource = self::RANDOM_MT;
             }
         }

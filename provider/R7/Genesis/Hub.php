@@ -282,6 +282,7 @@ class Hub implements HubInterface
         $output = new $class($this->envId);
 
         $output->setUmask(0);
+
         return $output;
     }
 
@@ -290,6 +291,10 @@ class Hub implements HubInterface
      */
     public function initializePlatform(): void
     {
+        // Turn off deprecation errors
+        $errorReporting = error_reporting() ^ E_DEPRECATED;
+        //error_reporting($errorReporting);
+
         // Setup Glitch
         Glitch::setStartTime($this->context->getstartTime())
             ->setRunMode($this->context->environment->getMode())
