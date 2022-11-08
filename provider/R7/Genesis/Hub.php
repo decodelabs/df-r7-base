@@ -291,10 +291,6 @@ class Hub implements HubInterface
      */
     public function initializePlatform(): void
     {
-        // Turn off deprecation errors
-        $errorReporting = error_reporting() ^ E_DEPRECATED;
-        //error_reporting($errorReporting);
-
         // Setup Glitch
         Glitch::setStartTime($this->context->getstartTime())
             ->setRunMode($this->context->environment->getMode())
