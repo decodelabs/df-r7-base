@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\fuse;
 
 use df;
@@ -31,8 +32,8 @@ class Dependency
         $version = array_shift($parts);
 
         if (!is_array($data)) {
-            if (false !== strpos($data, '#')) {
-                $parts = explode('#', $data, 2);
+            if (false !== strpos((string)$data, '#')) {
+                $parts = explode('#', (string)$data, 2);
 
                 $data = [
                     'version' => array_pop($parts),
