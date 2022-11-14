@@ -16,30 +16,36 @@ use df\arch\Context as Ref2;
 use df\core\collection\Tree as Ref3;
 use df\arch\Request as Ref4;
 use df\aura\view\IHtmlView as Ref5;
-use df\core\uri\IUrl as Ref6;
-use df\flow\Manager as Ref7;
-use df\aura\view\content\Template as Ref8;
-use df\mesh\job\IQueue as Ref9;
-use df\mesh\job\IJob as Ref10;
-use df\core\time\Date as Ref11;
-use df\core\time\Duration as Ref12;
-use Carbon\Carbon as Ref13;
-use Carbon\CarbonInterval as Ref14;
-use df\user\Manager as Ref15;
-use df\user\IClientDataObject as Ref16;
-use df\flex\Guid as Ref17;
-use df\axis\unit\Table as Ref18;
-use df\axis\unit\Enum as Ref19;
-use df\axis\unit\Cache as Ref20;
-use df\axis\unit\Config as Ref21;
-use df\opal\query\ISelectQuery as Ref22;
-use DecodeLabs\R7\Nightfire\Block as Ref23;
-use df\fire\ISlotContent as Ref24;
-use df\arch\mail\Base as Ref25;
-use DecodeLabs\Terminus\Session as Ref26;
-use DecodeLabs\Systemic\Process\Result as Ref27;
-use DecodeLabs\Systemic\Process as Ref28;
-use df\core\IRegistryObject as Ref29;
+use Stringable as Ref6;
+use df\core\uri\IUrl as Ref7;
+use df\flow\Manager as Ref8;
+use df\aura\view\content\Template as Ref9;
+use df\mesh\entity\Locator as Ref10;
+use df\mesh\job\IQueue as Ref11;
+use df\mesh\job\IJob as Ref12;
+use df\core\time\Date as Ref13;
+use df\core\time\Duration as Ref14;
+use Carbon\Carbon as Ref15;
+use Carbon\CarbonInterval as Ref16;
+use DateInterval as Ref17;
+use df\user\Manager as Ref18;
+use df\user\IClientDataObject as Ref19;
+use df\flex\Guid as Ref20;
+use df\axis\unit\Table as Ref21;
+use df\axis\unit\Enum as Ref22;
+use df\axis\unit\Cache as Ref23;
+use df\axis\unit\Config as Ref24;
+use df\opal\record\IRecord as Ref25;
+use df\opal\record\IPartial as Ref26;
+use df\axis\IUnit as Ref27;
+use df\opal\query\ISelectQuery as Ref28;
+use DecodeLabs\R7\Nightfire\Block as Ref29;
+use df\fire\ISlotContent as Ref30;
+use df\arch\mail\Base as Ref31;
+use DecodeLabs\Terminus\Session as Ref32;
+use DecodeLabs\Systemic\Process\Result as Ref33;
+use DecodeLabs\Systemic\Process as Ref34;
+use df\core\IRegistryObject as Ref35;
 
 class Legacy implements Proxy
 {
@@ -95,104 +101,110 @@ class Legacy implements Proxy
     public static function getRequestRedirectTo(): ?Ref4 {
         return static::$instance->getRequestRedirectTo();
     }
-    public static function dispatchChildNode(Ref5 $view, string $name){
+    public static function getThemeIdFor(string $area): string {
+        return static::$instance->getThemeIdFor(...func_get_args());
+    }
+    public static function getThemeMap(): array {
+        return static::$instance->getThemeMap();
+    }
+    public static function dispatchChildNode(Ref5 $view, string $name): mixed {
         return static::$instance->dispatchChildNode(...func_get_args());
     }
-    public static function uri($uri, $from = NULL, $to = NULL, bool $asRequest = false): Ref6 {
+    public static function uri(Ref6|Ref7|string $uri, Ref6|Ref7|string|bool|null $from = NULL, Ref6|Ref7|string|bool|null $to = NULL, bool $asRequest = false): Ref7 {
         return static::$instance->uri(...func_get_args());
     }
     public static function flashMessage(string $id, string $message, string $type = 'info'): void {}
-    public static function getCommsManager(): Ref7 {
+    public static function getCommsManager(): Ref8 {
         return static::$instance->getCommsManager();
     }
-    public static function loadTemplate(string $path, $slots = NULL): Ref8 {
+    public static function loadTemplate(string $path, callable|array|null $slots = NULL): Ref9 {
         return static::$instance->loadTemplate(...func_get_args());
     }
-    public static function emitEvent($entity, string $action, ?array $data = NULL, ?Ref9 $jobQueue = NULL, ?Ref10 $job = NULL): void {}
-    public static function dateToString(?Ref11 $date): ?string {
+    public static function emitEvent(Ref10|string $entity, string $action, ?array $data = NULL, ?Ref11 $jobQueue = NULL, ?Ref12 $job = NULL): void {}
+    public static function dateToString(?Ref13 $date): ?string {
         return static::$instance->dateToString(...func_get_args());
     }
-    public static function normalizeDate(mixed $date): Ref11 {
+    public static function normalizeDate(mixed $date): Ref13 {
         return static::$instance->normalizeDate(...func_get_args());
     }
-    public static function normalizeDuration(mixed $duration): Ref12 {
+    public static function normalizeDuration(mixed $duration): Ref14 {
         return static::$instance->normalizeDuration(...func_get_args());
     }
-    public static function prepareDate(mixed $date): ?Ref13 {
+    public static function prepareDate(mixed $date): ?Ref15 {
         return static::$instance->prepareDate(...func_get_args());
     }
-    public static function prepareInterval(mixed $interval): ?Ref14 {
+    public static function prepareInterval(mixed $interval): ?Ref16 {
         return static::$instance->prepareInterval(...func_get_args());
     }
-    public static function formatDuration($duration, int $maxUnits = 1, bool $shortUnits = false, $maxUnit = 7, bool $roundLastUnit = true): ?string {
+    public static function formatDuration(Ref6|Ref14|Ref17|string|int|null $duration, int $maxUnits = 1, bool $shortUnits = false, string|int $maxUnit = 7, bool $roundLastUnit = true): ?string {
         return static::$instance->formatDuration(...func_get_args());
     }
-    public static function getUserManager(): Ref15 {
+    public static function getUserManager(): Ref18 {
         return static::$instance->getUserManager();
     }
-    public static function getClient(): Ref16 {
+    public static function getClient(): Ref19 {
         return static::$instance->getClient();
     }
-    public static function guid($guid): Ref17 {
+    public static function guid(Ref20|string|null $guid): Ref20 {
         return static::$instance->guid(...func_get_args());
     }
-    public static function newGuid(): Ref17 {
+    public static function newGuid(): Ref20 {
         return static::$instance->newGuid();
     }
-    public static function shortenGuid($guid): string {
+    public static function shortenGuid(Ref20|string $guid): string {
         return static::$instance->shortenGuid(...func_get_args());
     }
     public static function unshortenGuid(string $id): string {
         return static::$instance->unshortenGuid(...func_get_args());
     }
-    public static function getTable(string $id): Ref18 {
+    public static function getTable(string $id): Ref21 {
         return static::$instance->getTable(...func_get_args());
     }
-    public static function getEnum(string $id): Ref19 {
+    public static function getEnum(string $id): Ref22 {
         return static::$instance->getEnum(...func_get_args());
     }
-    public static function getCache(string $id): Ref20 {
+    public static function getCache(string $id): Ref23 {
         return static::$instance->getCache(...func_get_args());
     }
-    public static function getConfig(string $id): Ref21 {
+    public static function getConfig(string $id): Ref24 {
         return static::$instance->getConfig(...func_get_args());
     }
-    public static function getRelationId($record, string $field, ?string $idField = NULL): ?string {
+    public static function getRelationId(Ref25|Ref26|array|null $record, string $field, ?string $idField = NULL): ?string {
         return static::$instance->getRelationId(...func_get_args());
     }
-    public static function selectForAction($source, $fields, $primary = NULL, ?callable $queryChain = NULL): array {
+    public static function selectForAction(Ref27|string $source, array|string $fields, mixed $primary = NULL, ?callable $queryChain = NULL): array {
         return static::$instance->selectForAction(...func_get_args());
     }
-    public static function queryForAction(Ref22 $query, ?callable $chain = NULL): array {
+    public static function queryForAction(Ref28 $query, ?callable $chain = NULL): array {
         return static::$instance->queryForAction(...func_get_args());
     }
-    public static function queryByPrimaryForAction(Ref22 $query, $primary, ?callable $chain = NULL): array {
+    public static function queryByPrimaryForAction(Ref28 $query, mixed $primary, ?callable $chain = NULL): array {
         return static::$instance->queryByPrimaryForAction(...func_get_args());
     }
-    public static function normalizeBlock($block): ?Ref23 {
+    public static function normalizeBlock(mixed $block): ?Ref29 {
         return static::$instance->normalizeBlock(...func_get_args());
     }
-    public static function normalizeSlot($slot): ?Ref24 {
+    public static function normalizeSlot(mixed $slot): ?Ref30 {
         return static::$instance->normalizeSlot(...func_get_args());
     }
     public static function sendPreparedMail(string $path, ?array $slots = NULL, bool $forceSend = false): void {}
-    public static function prepareMail(string $path, ?array $slots = NULL, bool $forceSend = false): Ref25 {
+    public static function prepareMail(string $path, ?array $slots = NULL, bool $forceSend = false): Ref31 {
         return static::$instance->prepareMail(...func_get_args());
     }
     public static function renderMail(string $path, ?array $slots = NULL, bool $forceSend = false): string {
         return static::$instance->renderMail(...func_get_args());
     }
-    public static function launchTask(string $request, ?Ref26 $session = NULL, ?string $user = NULL, bool $dfSource = false, ?bool $decoratable = NULL): Ref27 {
+    public static function launchTask(string $request, ?Ref32 $session = NULL, ?string $user = NULL, bool $dfSource = false, ?bool $decoratable = NULL): Ref33 {
         return static::$instance->launchTask(...func_get_args());
     }
-    public static function launchBackgroundTask(string $request, ?string $user = NULL, bool $dfSource = false, ?bool $decoratable = NULL): Ref28 {
+    public static function launchBackgroundTask(string $request, ?string $user = NULL, bool $dfSource = false, ?bool $decoratable = NULL): Ref34 {
         return static::$instance->launchBackgroundTask(...func_get_args());
     }
     public static function getCurrencyNames(): array {
         return static::$instance->getCurrencyNames();
     }
-    public static function setRegistryObject(Ref29 $object): void {}
-    public static function getRegistryObject(string $key): ?Ref29 {
+    public static function setRegistryObject(Ref35 $object): void {}
+    public static function getRegistryObject(string $key): ?Ref35 {
         return static::$instance->getRegistryObject(...func_get_args());
     }
     public static function hasRegistryObject(string $key): bool {

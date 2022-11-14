@@ -41,13 +41,14 @@ class Base implements ITheme, Dumpable
     {
         if ($id instanceof ITheme) {
             return $id;
-        } elseif (is_string($id) && substr($id, 0, 1) == '~') {
-            $config = Config::getInstance();
-            $id = $config->getThemeIdFor($id);
+        } elseif (
+            is_string($id) &&
+            substr($id, 0, 1) == '~'
+        ) {
+            $id = Legacy::getThemeIdFor($id);
         } elseif ($id instanceof arch\IContext) {
             $context = $id;
-            $config = Config::getInstance();
-            $id = $config->getThemeIdFor($context->location->getArea());
+            $id = Legacy::getThemeIdFor($context->location->getArea());
         }
 
         $id = lcfirst($id);

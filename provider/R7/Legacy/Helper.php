@@ -13,6 +13,7 @@ use df\arch\mail\Base as ArchMail;
 
 use df\aura\view\content\Template;
 use df\aura\view\IHtmlView as View;
+use df\aura\theme\Config as StaticThemeConfig;
 
 use df\axis\Model;
 use df\axis\IUnit as Unit;
@@ -57,6 +58,7 @@ use DateInterval;
 use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy\Plugins\Http as HttpPlugin;
 use DecodeLabs\R7\Nightfire\Block;
+use DecodeLabs\R7\Theme\Config as ThemeConfig;
 use DecodeLabs\Systemic\Process;
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
 use DecodeLabs\Terminus\Session as TerminusSession;
@@ -224,13 +226,59 @@ class Helper
 
 
 
+
+
+
+    /**
+     * Get theme ID for area
+     */
+    public function getThemeIdFor(string $area): string
+    {
+        return $this->getThemeConfig()->getThemeIdFor($area);
+    }
+
+    /**
+     * Get theme map
+     *
+     * @return array<string, string>
+     */
+    public function getThemeMap(): array
+    {
+        return $this->getThemeConfig()->getThemeMap();
+    }
+
+
+    /**
+     * Get theme config
+     */
+    protected function getThemeConfig(): ThemeConfig
+    {
+        static $output;
+
+        if (!isset($output)) {
+            if (Genesis::$container->has(ThemeConfig::class)) {
+                $output = Genesis::$container[ThemeConfig::class];
+            } else {
+                /** @var StaticThemeConfig */
+                $output = StaticThemeConfig::getInstance();
+            }
+        }
+
+        return $output;
+    }
+
+
+
+
     /**
      * Dispatch child node
      *
      * @return mixed
      */
-    public function dispatchChildNode(View $view, string $name)
-    {
+    public function dispatchChildNode(
+        View $view,
+        string $name
+    ): mixed {
         $context = $this->getContext();
 
         $request = clone $context->request;
@@ -245,13 +293,13 @@ class Helper
 
     /**
      * Expand a URI
-     *
-     * @param string|Stringable|Url $uri
-     * @param string|Stringable|Url|bool|null $from
-     * @param string|Stringable|Url|bool|null $to
      */
-    public function uri($uri, $from=null, $to=null, bool $asRequest=false): Url
-    {
+    public function uri(
+        string|Stringable|Url $uri,
+        string|Stringable|Url|bool|null $from=null,
+        string|Stringable|Url|bool|null $to=null,
+        bool $asRequest=false
+    ): Url {
         return $this->getContext()->uri->__invoke($uri, $from, $to, $asRequest);
     }
 
@@ -260,8 +308,11 @@ class Helper
     /**
      * Show a flash message
      */
-    public function flashMessage(string $id, string $message, string $type='info'): void
-    {
+    public function flashMessage(
+        string $id,
+        string $message,
+        string $type='info'
+    ): void {
         $this->getContext()->comms->flash($id, $message, $type);
     }
 
@@ -281,8 +332,10 @@ class Helper
      *
      * @param array<string, mixed>|callable|null $slots
      */
-    public function loadTemplate(string $path, $slots=null): Template
-    {
+    public function loadTemplate(
+        string $path,
+        array|callable|null $slots=null
+    ): Template {
         return $this->getContext()->apex->template($path, $slots);
     }
 
@@ -291,11 +344,10 @@ class Helper
     /**
      * Emit mesh event
      *
-     * @param string|EntityLocator $entity
      * @param array<string, mixed>|null $data
      */
     public function emitEvent(
-        $entity,
+        string|EntityLocator $entity,
         string $action,
         array $data=null,
         JobQueue $jobQueue=null,
@@ -398,15 +450,12 @@ class Helper
 
     /**
      * Format legacy duration
-     *
-     * @param string|Stringable|int|Duration|DateInterval|null $duration
-     * @param int|string $maxUnit
      */
     public function formatDuration(
-        $duration,
+        string|Stringable|int|Duration|DateInterval|null $duration,
         int $maxUnits=1,
         bool $shortUnits=false,
-        $maxUnit=Duration::YEARS,
+        int|string $maxUnit=Duration::YEARS,
         bool $roundLastUnit=true
     ): ?string {
         return $this->getContext()->date->formatDuration(
@@ -439,11 +488,10 @@ class Helper
 
     /**
      * Ensure GUID
-     *
-     * @param string|Guid|null $guid
      */
-    public function guid($guid): Guid
-    {
+    public function guid(
+        string|Guid|null $guid
+    ): Guid {
         return Guid::factory($guid);
     }
 
@@ -459,11 +507,10 @@ class Helper
 
     /**
      * Shorten Guid
-     *
-     * @param string|Guid $guid
      */
-    public function shortenGuid($guid): string
-    {
+    public function shortenGuid(
+        string|Guid $guid
+    ): string {
         return Guid::shorten((string)$guid);
     }
 
@@ -527,8 +574,11 @@ class Helper
      *
      * @param array<string, mixed>|Record|Partial|null $record
      */
-    public function getRelationId($record, string $field, ?string $idField=null): ?string
-    {
+    public function getRelationId(
+        array|Record|Partial|null $record,
+        string $field,
+        ?string $idField=null
+    ): ?string {
         $output = $this->getContext()->data->getRelationId($record, $field, $idField);
 
         if ($output !== null) {
@@ -543,13 +593,15 @@ class Helper
     /**
      * Select row from unit or die
      *
-     * @param string|Unit $source
      * @param string|array<string> $fields
-     * @param mixed $primary
      * @return array<string, mixed>
      */
-    public function selectForAction($source, $fields, $primary=null, ?callable $queryChain=null): array
-    {
+    public function selectForAction(
+        string|Unit $source,
+        string|array $fields,
+        mixed $primary=null,
+        ?callable $queryChain=null
+    ): array {
         return $this->getContext()->data->selectForAction(
             $source, $fields, $primary, $queryChain
         );
@@ -562,8 +614,10 @@ class Helper
      * @param SelectQuery<array<string, mixed>> $query
      * @return array<string, mixed>
      */
-    public function queryForAction(SelectQuery $query, ?callable $chain=null): array
-    {
+    public function queryForAction(
+        SelectQuery $query,
+        ?callable $chain=null
+    ): array {
         return $this->getContext()->data->queryForAction($query, $chain);
     }
 
@@ -571,11 +625,13 @@ class Helper
      * Apply query for action with primary clause
      *
      * @param SelectQuery<array<string, mixed>> $query
-     * @param mixed $primary
      * @return array<string, mixed>
      */
-    public function queryByPrimaryForAction(SelectQuery $query, $primary, ?callable $chain=null): array
-    {
+    public function queryByPrimaryForAction(
+        SelectQuery $query,
+        mixed $primary,
+        ?callable $chain=null
+    ): array {
         return $this->getContext()->data->queryByPrimaryForAction(
             $query, $primary, $chain
         );
@@ -586,20 +642,16 @@ class Helper
 
     /**
      * Normalize block
-     *
-     * @param mixed $block
      */
-    public function normalizeBlock($block): ?Block
+    public function normalizeBlock(mixed $block): ?Block
     {
         return $this->getContext()->nightfire->normalizeBlock($block);
     }
 
     /**
      * Normalize slot
-     *
-     * @param mixed $slot
      */
-    public function normalizeSlot($slot): ?Slot
+    public function normalizeSlot(mixed $slot): ?Slot
     {
         return $this->getContext()->nightfire->normalizeSlot($slot);
     }

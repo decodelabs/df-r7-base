@@ -204,7 +204,7 @@ class Context implements IContext, \Serializable, Dumpable
         }
 
         if ($themeId === null && $findDefault) {
-            $themeId = aura\theme\Config::getInstance()->getThemeIdFor($this->location->getArea());
+            $themeId = Legacy::getThemeIdFor($this->location->getArea());
         }
 
         return $themeId;

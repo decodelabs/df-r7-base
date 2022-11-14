@@ -326,8 +326,9 @@ class Uri implements arch\IDirectoryHelper
             return $this->view->getTheme()->getId();
         } else {
             if (!$this->_defaultTheme) {
-                $config = aura\theme\Config::getInstance();
-                $this->_defaultTheme = $config->getThemeIdFor($this->context->location->getArea());
+                $this->_defaultTheme = Legacy::getThemeIdFor(
+                    $this->context->location->getArea()
+                );
             }
 
             return $this->_defaultTheme;

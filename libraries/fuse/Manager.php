@@ -15,6 +15,7 @@ use df\spur;
 use DecodeLabs\Atlas;
 use DecodeLabs\Genesis;
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Legacy;
 use DecodeLabs\Terminus\Session;
 
 class Manager implements IManager
@@ -147,8 +148,7 @@ class Manager implements IManager
 
     public function installAllDependencies(Session $session=null)
     {
-        $config = aura\theme\Config::getInstance();
-        $themes = array_unique($config->getThemeMap());
+        $themes = array_unique(Legacy::getThemeMap());
         $dependencies = [];
         $themeDeps = [];
 
