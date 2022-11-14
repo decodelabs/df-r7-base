@@ -428,8 +428,8 @@ class Base implements ITheme, Dumpable
 
         $facets = $this->_normalizeFacetList(static::DEFAULT_FACETS);
 
-        if (is_array(static::FACETS)) {
-            $facets = $this->_normalizeFacetList(static::FACETS, $facets);
+        if (null !== ($custom = $this->_getCustomFacetConfig())) {
+            $facets = $this->_normalizeFacetList($custom, $facets);
         }
 
         $this->_facets = [];
@@ -437,6 +437,15 @@ class Base implements ITheme, Dumpable
         foreach ($facets as $name => $config) {
             $this->loadFacet($name, $config);
         }
+    }
+
+    protected function _getCustomFacetConfig(): ?array
+    {
+        if (is_array(static::FACETS)) {
+            return static::FACETS;
+        }
+
+        return null;
     }
 
     protected function _normalizeFacetList(array $list, array $current=[])
