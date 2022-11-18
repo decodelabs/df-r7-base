@@ -296,7 +296,6 @@ class SassBridge implements ISassBridge
             default:
                 $outputType = 'compressed';
                 break;
-
         }
 
         if ($isC) {
@@ -338,7 +337,7 @@ class SassBridge implements ISassBridge
         }
 
 
-        if (false !== stripos($output, 'error')) {
+        if (false !== stripos((string)$output, 'error')) {
             throw Exceptional::Runtime(
                 $output
             );
