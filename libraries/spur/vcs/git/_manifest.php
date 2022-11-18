@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\vcs\git;
 
 use df;
@@ -166,7 +167,7 @@ trait TRepository
             }
         }
 
-        $launcher = Systemic::$process->newLauncher(basename(self::$_gitPath), $args, dirname(self::$_gitPath))
+        $launcher = Systemic::$process->newLauncher(self::$_gitPath, $args)
             ->setUser($user)
             ->thenIf($session !== null, function ($launcher) use ($session) {
                 $launcher->setBroker($session->getBroker());
