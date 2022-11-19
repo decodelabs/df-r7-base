@@ -78,16 +78,6 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "analyze": "phpstan analyze",
-        "analyze-provider": "phpstan analyze --configuration=phpstan.provider.neon",
-        "clear-phpstan": "phpstan clear-result-cache",
-        "veneer-stub": "php tests/veneer-stub.php",
-        "prep": [
-            "@composer update",
-            "@veneer-stub",
-            "@clear-phpstan",
-            "@analyze",
-            "@analyze-provider"
-        ]
+        "analyze-provider": "phpstan analyze --configuration=phpstan.provider.neon"
     }
 }
