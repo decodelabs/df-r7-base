@@ -5,10 +5,6 @@
  */
 namespace df\opal\query;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Glitch\Dumpable;
 
 class Correlation implements ICorrelationQuery, Dumpable
@@ -29,7 +25,7 @@ class Correlation implements ICorrelationQuery, Dumpable
     protected $_fieldAlias;
     protected $_applicator;
 
-    public function __construct(ISourceProvider $parent, ISourceManager $sourceManager, ISource $source, $fieldAlias=null)
+    public function __construct(ISourceProvider $parent, ISourceManager $sourceManager, ISource $source, $fieldAlias = null)
     {
         $this->_parent = $parent;
         $this->_source = $source;
@@ -83,7 +79,7 @@ class Correlation implements ICorrelationQuery, Dumpable
 
 
     // Applicator
-    public function setApplicator(callable $applicator=null)
+    public function setApplicator(callable $applicator = null)
     {
         $this->_applicator = $applicator;
         return $this;
@@ -94,7 +90,7 @@ class Correlation implements ICorrelationQuery, Dumpable
         return $this->_applicator;
     }
 
-    public function endCorrelation($fieldAlias=null)
+    public function endCorrelation($fieldAlias = null)
     {
         if ($fieldAlias !== null) {
             $this->_fieldAlias = $fieldAlias;
@@ -120,7 +116,7 @@ class Correlation implements ICorrelationQuery, Dumpable
         return $parent->getSource();
     }
 
-    public function getCorrelatedClauses(ISource $correlationSource=null)
+    public function getCorrelatedClauses(ISource $correlationSource = null)
     {
         if ($correlationSource === null) {
             $correlationSource = $this->getCorrelationSource();
@@ -134,7 +130,8 @@ class Correlation implements ICorrelationQuery, Dumpable
 
         if ($this->_whereClauseList) {
             $clauses = array_merge(
-                $clauses, $this->_whereClauseList->extractClausesFor($correlationSource)
+                $clauses,
+                $this->_whereClauseList->extractClausesFor($correlationSource)
             );
         }
 

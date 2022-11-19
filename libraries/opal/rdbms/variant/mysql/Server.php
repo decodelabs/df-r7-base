@@ -5,11 +5,9 @@
  */
 namespace df\opal\rdbms\variant\mysql;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Exceptional;
+
+use df\opal;
 
 class Server implements opal\rdbms\IServer
 {
@@ -48,7 +46,7 @@ class Server implements opal\rdbms\IServer
         return !$res->isEmpty();
     }
 
-    public function createDatabase($name, $checkExists=false)
+    public function createDatabase($name, $checkExists = false)
     {
         $sql = 'CREATE DATABASE';
 
@@ -56,7 +54,7 @@ class Server implements opal\rdbms\IServer
             $sql .= ' IF NOT EXISTS';
         }
 
-        $sql .= ' '.$this->_adapter->quoteIdentifier($name).' CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci';
+        $sql .= ' ' . $this->_adapter->quoteIdentifier($name) . ' CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci';
         $this->_adapter->executeSql($sql);
         return opal\rdbms\Database::factory($this->_adapter, $name);
     }
@@ -82,7 +80,7 @@ class Server implements opal\rdbms\IServer
         ]);
     }
 
-    public static function getQueryException(opal\rdbms\IAdapter $adapter, $number, $message, $sql=null)
+    public static function getQueryException(opal\rdbms\IAdapter $adapter, $number, $message, $sql = null)
     {
         if ($e = self::_getExceptionForError($adapter, $number, $message, $sql)) {
             return $e;
@@ -96,11 +94,10 @@ class Server implements opal\rdbms\IServer
         ]);
     }
 
-    private static function _getExceptionForError(opal\rdbms\IAdapter $adapter, $number, $message, $sql=null)
+    private static function _getExceptionForError(opal\rdbms\IAdapter $adapter, $number, $message, $sql = null)
     {
         switch ($number) {
-
-        // DB not found
+            // DB not found
             case 1049:
                 return Exceptional::{'df/opal/rdbms/DatabaseNotFound,NotFound'}($message, [
                     'code' => $number,
@@ -110,7 +107,7 @@ class Server implements opal\rdbms\IServer
                     ]
                 ]);
 
-        // Table already exists
+                // Table already exists
             case 1050:
                 $database = $table = null;
 
@@ -128,7 +125,7 @@ class Server implements opal\rdbms\IServer
                     ]
                 ]);
 
-        // Table not found
+                // Table not found
             case 1051:
             case 1146:
                 $database = $table = null;
@@ -147,7 +144,7 @@ class Server implements opal\rdbms\IServer
                     ]
                 ]);
 
-        // Field not found
+                // Field not found
             case 1054:
                 return Exceptional::{'df/opal/rdbms/FieldNotFound,NotFound'}($message, [
                     'code' => $number,
@@ -156,7 +153,7 @@ class Server implements opal\rdbms\IServer
                     ]
                 ]);
 
-        // Trigger already exists
+                // Trigger already exists
             case 1359:
                 return Exceptional::{'df/opal/rdbms/TriggerConflict'}($message, [
                     'code' => $number,
@@ -165,7 +162,7 @@ class Server implements opal\rdbms\IServer
                     ]
                 ]);
 
-        // Trigger not found
+                // Trigger not found
             case 1360:
                 return Exceptional::{'df/opal/rdbms/TriggerNotFound,NotFound'}($message, [
                     'code' => $number,
@@ -174,10 +171,10 @@ class Server implements opal\rdbms\IServer
                     ]
                 ]);
 
-        // Invalid trigger
+                // Invalid trigger
             case 1336:
 
-        // Constraint conflict
+                // Constraint conflict
             case 1062:
             case 1451:
                 return Exceptional::{'df/opal/rdbms/Constraint'}($message, [
@@ -188,13 +185,13 @@ class Server implements opal\rdbms\IServer
                 ]);
 
 
-        // Permissions
+                // Permissions
             case 1044:
             case 1045:
             case 1095:
             case 1131:
 
-        // Incorrect details
+                // Incorrect details
             case 1102:
             case 1103:
             case 1109:
@@ -206,7 +203,7 @@ class Server implements opal\rdbms\IServer
                     ]
                 ]);
 
-        // Server unavailable
+                // Server unavailable
             case 1053:
             case 1077:
             case 1078:
@@ -216,14 +213,14 @@ class Server implements opal\rdbms\IServer
             case 2013:
             case 2055:
 
-        // Socket
+                // Socket
             case 1081:
             case 2001:
             case 2002:
             case 2004:
             case 2011:
 
-        // Host
+                // Host
             case 1129:
             case 1130:
             case 2009:

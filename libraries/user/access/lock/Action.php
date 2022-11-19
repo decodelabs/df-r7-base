@@ -5,61 +5,67 @@
  */
 namespace df\user\access\lock;
 
-use df;
-use df\core;
 use df\user;
 
-
-class Action implements user\IAccessLock {
-
+class Action implements user\IAccessLock
+{
     protected $_parentLock;
     protected $_action;
 
-    public function __construct(user\IAccessLock $parentLock, $action) {
+    public function __construct(user\IAccessLock $parentLock, $action)
+    {
         $this->_parentLock = $parentLock;
         $this->_action = $action;
     }
 
-    public function getParentLock() {
+    public function getParentLock()
+    {
         return $this->_parentLock;
     }
 
-    public function getAction() {
+    public function getAction()
+    {
         return $this->_action;
     }
 
-    public function getAccessLockDomain() {
+    public function getAccessLockDomain()
+    {
         return $this->_parentLock->getAccessLockDomain();
     }
 
-    public function lookupAccessKey(array $keys, $action=null) {
-        if($action === null) {
+    public function lookupAccessKey(array $keys, $action = null)
+    {
+        if ($action === null) {
             $action = $this->_action;
         }
 
         return $this->_parentLock->lookupAccessKey($keys, $action);
     }
 
-    public function getDefaultAccess($action=null) {
-        if($action === null) {
+    public function getDefaultAccess($action = null)
+    {
+        if ($action === null) {
             $action = $this->_action;
         }
 
         return $this->_parentLock->getDefaultAccess($action);
     }
 
-    public function getAccessSignifiers(): array {
+    public function getAccessSignifiers(): array
+    {
         return $this->_parentLock->getAccessSignifiers();
     }
 
-    public function getActionLock($action) {
+    public function getActionLock($action)
+    {
         $output = clone $this;
         $output->_action = $action;
 
         return $output;
     }
 
-    public function getAccessLockId() {
-        return $this->_parentLock->getAccessLockId().'#'.$this->_action;
+    public function getAccessLockId()
+    {
+        return $this->_parentLock->getAccessLockId() . '#' . $this->_action;
     }
 }

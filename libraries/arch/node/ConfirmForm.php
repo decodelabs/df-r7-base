@@ -6,14 +6,10 @@
 
 namespace df\arch\node;
 
-use df;
-use df\core;
-use df\arch;
-use df\aura;
-use df\flex;
-
 use DecodeLabs\Dictum;
+
 use DecodeLabs\Tagged as Html;
+use df\aura;
 
 abstract class ConfirmForm extends Form
 {
@@ -42,16 +38,16 @@ abstract class ConfirmForm extends Form
 
 
         $mainButton = $this->html->eventButton(
-                $this->eventName('confirm'),
-                $this->_('Confirm')
-            )
+            $this->eventName('confirm'),
+            $this->_('Confirm')
+        )
             ->setIcon('accept')
             ->setDisposition(static::DISPOSITION);
 
         $cancelButton = $this->html->eventButton(
-                $this->eventName('cancel'),
-                $this->_('Cancel')
-            )
+            $this->eventName('cancel'),
+            $this->_('Cancel')
+        )
             ->setIcon('cancel');
 
         $this->customizeMainButton($mainButton);
@@ -59,7 +55,8 @@ abstract class ConfirmForm extends Form
 
 
         $fs->addButtonArea()->push(
-            $mainButton, $cancelButton
+            $mainButton,
+            $cancelButton
         );
     }
 
@@ -87,7 +84,7 @@ abstract class ConfirmForm extends Form
         if ($this->values->isValid()) {
             if ($message = $this->getFlashMessage()) {
                 $this->comms->flash(
-                    Dictum::id($this->getItemName()).'.confirm',
+                    Dictum::id($this->getItemName()) . '.confirm',
                     $message,
                     'success'
                 );

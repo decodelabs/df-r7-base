@@ -6,19 +6,13 @@
 
 namespace df\arch;
 
-use df;
-use df\core;
-use df\arch;
-use df\user;
-use df\link;
-use df\aura;
-
-use df\arch\Scaffold;
-use df\arch\scaffold\Loader as ScaffoldLoader;
-
-use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\R7\Legacy;
+
+use df\arch;
+
+use df\arch\scaffold\Loader as ScaffoldLoader;
+use df\core;
 
 class Context implements IContext, \Serializable, Dumpable
 {
@@ -28,7 +22,7 @@ class Context implements IContext, \Serializable, Dumpable
     public $request;
     public $location;
 
-    public static function factory($location=null, $request=null): IContext
+    public static function factory($location = null, $request = null): IContext
     {
         if (!empty($location)) {
             $location = arch\Request::factory($location);
@@ -41,7 +35,7 @@ class Context implements IContext, \Serializable, Dumpable
         return new self($location, $request);
     }
 
-    public function __construct(arch\IRequest $location, $request=null)
+    public function __construct(arch\IRequest $location, $request = null)
     {
         $this->location = $location;
 
@@ -62,7 +56,7 @@ class Context implements IContext, \Serializable, Dumpable
         $this->location = clone $this->location;
     }
 
-    public function spawnInstance($request=null, bool $copyRequest=false): IContext
+    public function spawnInstance($request = null, bool $copyRequest = false): IContext
     {
         if ($request === null) {
             return clone $this;
@@ -182,14 +176,14 @@ class Context implements IContext, \Serializable, Dumpable
             $parts[] = '';
             $location = $this->location->extractRelative($parts);
         } else {
-            $location = new arch\Request(implode('/', $parts).'/');
+            $location = new arch\Request(implode('/', $parts) . '/');
         }
 
         $path = trim($name, '/');
         return $location;
     }
 
-    public function extractThemeId(string &$path, bool $findDefault=false): ?string
+    public function extractThemeId(string &$path, bool $findDefault = false): ?string
     {
         $themeId = null;
 

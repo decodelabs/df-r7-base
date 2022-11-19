@@ -5,22 +5,21 @@
  */
 namespace df\core\validate;
 
-use df;
-use df\core;
-use df\opal;
+use DecodeLabs\Exceptional;
 use df\arch;
+use df\core;
 use df\mesh;
 
-use DecodeLabs\Exceptional;
+use df\opal;
 
 interface IHandler extends \ArrayAccess, core\lang\IChainable
 {
-    public function addField(string $name, string $type=null);
-    public function addRequiredField(string $name, string $type=null);
+    public function addField(string $name, string $type = null);
+    public function addRequiredField(string $name, string $type = null);
     public function addAutoField(string $key);
 
-    public function newField(string $name, string $type=null): IField;
-    public function newRequiredField(string $name, string $type=null): IField;
+    public function newField(string $name, string $type = null): IField;
+    public function newRequiredField(string $name, string $type = null): IField;
     public function newAutoField(string $key): IField;
 
     public function getTargetField(): ?IField;
@@ -40,14 +39,14 @@ interface IHandler extends \ArrayAccess, core\lang\IChainable
     public function setRequireGroupUnfulfilled(string $name, string $field);
     public function checkRequireGroup(string $name);
 
-    public function setDataMap(array $map=null);
+    public function setDataMap(array $map = null);
     public function getDataMap(): ?array;
     public function hasMappedField(string $name);
 
-    public function validate($data, array $fields=null);
+    public function validate($data, array $fields = null);
     public function getCurrentData(): ?core\collection\IInputTree;
     public function isValid(): bool;
-    public function applyTo(&$targetRecord, array $fields=null);
+    public function applyTo(&$targetRecord, array $fields = null);
 }
 
 
@@ -201,7 +200,7 @@ trait TMinLengthField
         }
     }
 
-    protected function _validateMinLength(string $value, int $length=null)
+    protected function _validateMinLength(string $value, int $length = null)
     {
         if ($length === null) {
             $length = mb_strlen($value);
@@ -263,7 +262,7 @@ trait TMaxLengthField
         }
     }
 
-    protected function _validateMaxLength(string $value, int $length=null)
+    protected function _validateMaxLength(string $value, int $length = null)
     {
         if ($length === null) {
             $length = mb_strlen($value);
@@ -311,7 +310,7 @@ trait TOptionProviderField
     {
         if ($type !== null) {
             if (is_string($type) && false === strpos($type, '://')) {
-                $type = 'type://'.$type;
+                $type = 'type://' . $type;
             }
 
             $type = mesh\Manager::getInstance()->fetchEntity($type);
@@ -359,7 +358,7 @@ trait TStorageAwareField
 
             if (!$adapter instanceof opal\query\IAdapter) {
                 throw Exceptional::InvalidArgument(
-                    'Invalid storage adapter for validator field '.$this->_name
+                    'Invalid storage adapter for validator field ' . $this->_name
                 );
             }
         }
@@ -432,7 +431,7 @@ trait TUniqueCheckerField
         return $this->_uniqueErrorMessage;
     }
 
-    protected function _validateUnique(&$value, $rename=false)
+    protected function _validateUnique(&$value, $rename = false)
     {
         if (!$this->_storageAdapter) {
             return;
@@ -446,7 +445,7 @@ trait TUniqueCheckerField
             $output = $value;
 
             while ($this->_getUniqueCheckQuery($fieldName, $output)->count()) {
-                $output = $value.'-'.(++$counter);
+                $output = $value . '-' . (++$counter);
                 $output = $this->_sanitizeValue($output);
             }
 
@@ -516,7 +515,7 @@ trait TRequiredValueField
     }
 
 
-    protected function _checkRequiredValue($value, $isRequired=null)
+    protected function _checkRequiredValue($value, $isRequired = null)
     {
         if ($isRequired === null) {
             $isRequired = $this->_isRequiredAfterToggle($value);
@@ -540,7 +539,8 @@ trait TRequiredValueField
         }
 
         if (!$isCorrect) {
-            $this->addError('incorrect',
+            $this->addError(
+                'incorrect',
                 is_bool($this->_requiredValue) ?
                     $this->validator->_('You must complete this field') :
                     $this->validator->_('Please enter the correct value')
@@ -564,23 +564,23 @@ interface ICurrencyField extends IField, IRangeField
 {
     public function setCurrency($unit);
     public function getCurrency();
-    public function allowSelection(bool $flag=null);
+    public function allowSelection(bool $flag = null);
     public function setCurrencyFieldName($name);
     public function getCurrencyFieldName();
 }
 
 interface IDateField extends IField, IRangeField
 {
-    public function shouldDefaultToNow(bool $flag=null);
-    public function mustBePast(bool $flag=null);
-    public function mustBeFuture(bool $flag=null);
+    public function shouldDefaultToNow(bool $flag = null);
+    public function mustBePast(bool $flag = null);
+    public function mustBeFuture(bool $flag = null);
     public function setExpectedFormat($format);
     public function getExpectedFormat();
 }
 
 interface IDelegateField extends IField
 {
-    public function fromForm(arch\node\IForm $form, string $name=null);
+    public function fromForm(arch\node\IForm $form, string $name = null);
     public function setDelegate(arch\node\IDelegate $delegate);
     public function getDelegate(): ?arch\node\IDelegate;
 }
@@ -617,7 +617,7 @@ interface IGuidField extends IField
 
 interface IIdListField extends IField
 {
-    public function shouldUseKeys(bool $flag=null);
+    public function shouldUseKeys(bool $flag = null);
 }
 
 interface ITextListField extends IField
@@ -634,7 +634,7 @@ interface IPasswordField extends IField, IMinLengthField
 {
     public function setMinStrength($strength);
     public function getMinStrength();
-    public function shouldCheckStrength(bool $flag=null);
+    public function shouldCheckStrength(bool $flag = null);
 }
 
 interface IRecaptchaField extends IField
@@ -647,18 +647,18 @@ interface ISetField extends IField, IOptionProviderField
 
 interface ISlugField extends IField, IUniqueCheckerField, IMinLengthField, IMaxLengthField
 {
-    public function allowPathFormat(bool $flag=null);
-    public function allowAreaMarker(bool $flag=null);
-    public function allowRoot(bool $flag=null);
-    public function setDefaultValueField($field, $sanitizer=null);
+    public function allowPathFormat(bool $flag = null);
+    public function allowAreaMarker(bool $flag = null);
+    public function allowRoot(bool $flag = null);
+    public function setDefaultValueField($field, $sanitizer = null);
     public function getDefaultValueField();
-    public function shouldGenerateIfEmpty(bool $flag=null);
-    public function shouldRenameOnConflict(bool $flag=null);
+    public function shouldGenerateIfEmpty(bool $flag = null);
+    public function shouldRenameOnConflict(bool $flag = null);
 }
 
 interface IStructureField extends IField
 {
-    public function shouldAllowEmpty(bool $flag=null);
+    public function shouldAllowEmpty(bool $flag = null);
 }
 
 interface ITextField extends IField, IUniqueCheckerField, IMinLengthField, IMaxLengthField
@@ -671,12 +671,12 @@ interface ITextField extends IField, IUniqueCheckerField, IMinLengthField, IMaxL
     public function setMaxWords($length);
     public function getMaxWords();
 
-    public function shouldTrim(bool $flag=null);
+    public function shouldTrim(bool $flag = null);
 }
 
 interface IUrlField extends IField
 {
-    public function allowInternal(bool $flag=null);
+    public function allowInternal(bool $flag = null);
 }
 
 interface IVideoEmbedField extends IField

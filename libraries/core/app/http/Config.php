@@ -6,12 +6,11 @@
 
 namespace df\core\app\http;
 
-use df;
-use df\core;
-use df\link;
-
 use DecodeLabs\Compass\Range;
 use DecodeLabs\Genesis;
+
+use df\core;
+use df\link;
 
 class Config extends core\Config
 {
@@ -32,7 +31,7 @@ class Config extends core\Config
     }
 
     // Base url
-    public function setRootUrl($url, $envMode=null)
+    public function setRootUrl($url, $envMode = null)
     {
         if ($envMode === null) {
             $envMode = Genesis::$environment->getMode();
@@ -45,10 +44,10 @@ class Config extends core\Config
             $port = $url->getPort();
 
             if (!empty($port) && $port != '80') {
-                $domain = $domain.':'.$port;
+                $domain = $domain . ':' . $port;
             }
 
-            $url = $domain.$url->getPathString();
+            $url = $domain . $url->getPathString();
         }
 
         if (!count($this->values->baseUrl->{$envMode})) {
@@ -60,7 +59,7 @@ class Config extends core\Config
         return $this;
     }
 
-    public function getRootUrl($envMode=null)
+    public function getRootUrl($envMode = null)
     {
         if (!isset($this->values->baseUrl)) {
             $this->values->baseUrl = $this->_generateRootUrlList();
@@ -92,7 +91,7 @@ class Config extends core\Config
         return trim($output, '/');
     }
 
-    public function getBaseUrlMap($envMode=null)
+    public function getBaseUrlMap($envMode = null)
     {
         if ($envMode === null) {
             $envMode = Genesis::$environment->getMode();
@@ -134,13 +133,13 @@ class Config extends core\Config
 
         $output[$envMode] = $baseUrl;
 
-        if (substr($baseUrl, 0, strlen($envMode) + 1) == $envMode.'.') {
+        if (substr($baseUrl, 0, strlen($envMode) + 1) == $envMode . '.') {
             $baseUrl = substr($baseUrl, strlen($envMode) + 1);
         }
 
         foreach ($output as $key => $val) {
             if ($val === null) {
-                $output[$key] = ['*' => $key.'.'.$baseUrl];
+                $output[$key] = ['*' => $key . '.' . $baseUrl];
             }
         }
 
@@ -154,13 +153,13 @@ class Config extends core\Config
         $host = $request->getUrl()->getHost();
         $path = $request->getUrl()->getPathString();
 
-        $baseUrl = $host.'/'.trim(dirname($_SERVER['SCRIPT_NAME']), '/').'/';
-        $currentUrl = $host.'/'.$path;
+        $baseUrl = $host . '/' . trim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/';
+        $currentUrl = $host . '/' . $path;
 
         if (substr($currentUrl, 0, strlen($baseUrl)) != $baseUrl) {
             $parts = explode('/', $currentUrl);
             array_pop($parts);
-            $baseUrl = implode('/', $parts).'/';
+            $baseUrl = implode('/', $parts) . '/';
         }
 
         return $baseUrl;
@@ -192,7 +191,7 @@ class Config extends core\Config
 
 
     // Https
-    public function isSecure(bool $flag=null)
+    public function isSecure(bool $flag = null)
     {
         if ($flag !== null) {
             $this->values->secure = $flag;
@@ -204,7 +203,7 @@ class Config extends core\Config
 
 
     // IP Ranges
-    public function setIpRanges(array $ranges=null)
+    public function setIpRanges(array $ranges = null)
     {
         if ($ranges !== null) {
             foreach ($ranges as $i => $range) {
@@ -240,7 +239,7 @@ class Config extends core\Config
 
 
     // Credentials
-    public function getCredentials($mode=null)
+    public function getCredentials($mode = null)
     {
         if ($mode === null) {
             $mode = Genesis::$environment->getMode();

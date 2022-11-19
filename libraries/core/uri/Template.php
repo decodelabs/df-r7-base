@@ -5,15 +5,14 @@
  */
 namespace df\core\uri;
 
-use df;
-use df\core;
-
 use DecodeLabs\Exceptional;
+
+use df\core;
 
 class Template implements ITemplate
 {
-    const OPERATORS = [
-        ''  => ['',  ',', false],
+    public const OPERATORS = [
+        '' => ['',  ',', false],
         '+' => ['',  ',', false],
         '#' => ['#', ',', false],
         '.' => ['.', '.', false],
@@ -23,18 +22,18 @@ class Template implements ITemplate
         '&' => ['&', '&', true]
     ];
 
-    const DELIMITERS = [
+    public const DELIMITERS = [
         ':', '/', '?', '#', '[', ']', '@', '!', '$',
         '&', '\'', '(', ')', '*', '+', ',', ';', '='
     ];
 
-    const ENCODED_DELIMITERS = [
+    public const ENCODED_DELIMITERS = [
         '%3A', '%2F', '%3F', '%23', '%5B', '%5D',
         '%40', '%21', '%24', '%26', '%27', '%28',
         '%29', '%2A', '%2B', '%2C', '%3B', '%3D'
     ];
 
-    const RFC_1738_TO_3986 = ['+' => '%20', '%7e' => '~'];
+    public const RFC_1738_TO_3986 = ['+' => '%20', '%7e' => '~'];
 
     protected $_template;
     protected $_values = [];
@@ -103,13 +102,13 @@ class Template implements ITemplate
                                     self::RFC_1738_TO_3986
                                 );
                             } else {
-                                $subValue = $key.'='.$subValue;
+                                $subValue = $key . '=' . $subValue;
                             }
                         } elseif ($key > 0 && $useQuery) {
-                            $subValue = $spec->key.'='.$subValue;
+                            $subValue = $spec->key . '=' . $subValue;
                         }
                     } elseif ($isAssoc) {
-                        $subValue = $key.','.$subValue;
+                        $subValue = $key . ',' . $subValue;
                     }
 
                     $values[$key] = $subValue;
@@ -143,7 +142,7 @@ class Template implements ITemplate
                 if (!$expanded && $delimiter != '&') {
                     $expanded = $spec->value;
                 } else {
-                    $expanded = $spec->value.'='.$expanded;
+                    $expanded = $spec->value . '=' . $expanded;
                 }
             }
 
@@ -153,7 +152,7 @@ class Template implements ITemplate
         $output = implode($delimiter, $output);
 
         if ($output && $prefix) {
-            $output = $prefix.$output;
+            $output = $prefix . $output;
         }
 
         return $output;

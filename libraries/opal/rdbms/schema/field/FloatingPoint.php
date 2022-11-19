@@ -5,61 +5,63 @@
  */
 namespace df\opal\rdbms\schema\field;
 
-use df\core;
 use df\opal;
 
-class FloatingPoint extends Base implements opal\schema\IFloatingPointNumericField {
-
-    const DEFAULT_VALUE = 0;
+class FloatingPoint extends Base implements opal\schema\IFloatingPointNumericField
+{
+    public const DEFAULT_VALUE = 0;
     
     use opal\schema\TField_FloatingPointNumeric;
 
-    protected function _init($precision=null, $scale=null) {
+    protected function _init($precision = null, $scale = null)
+    {
         $this->setPrecision($precision);
         $this->setScale($scale);
     }
 
 // String
-    public function toString(): string {
-        $output = $this->_name.' '.strtoupper($this->_type);
+    public function toString(): string
+    {
+        $output = $this->_name . ' ' . strtoupper($this->_type);
 
-        if($this->_precision !== null) {
-            $output .= '('.$this->_precision;
+        if ($this->_precision !== null) {
+            $output .= '(' . $this->_precision;
 
-            if($this->_scale !== null) {
-                $output .= ','.$this->_scale;
+            if ($this->_scale !== null) {
+                $output .= ',' . $this->_scale;
             }
 
             $output .= ')';
         }
 
-        if($this->_isUnsigned) {
+        if ($this->_isUnsigned) {
             $output .= ' UNSIGNED';
         }
 
-        if($this->_zerofill) {
+        if ($this->_zerofill) {
             $output .= ' ZEROFILL';
         }
 
-        if($this->_isNullable) {
+        if ($this->_isNullable) {
             $output .= ' NULL';
         }
 
-        if($this->_defaultValue !== null) {
-            $output .= ' DEFAULT \''.$this->_defaultValue.'\'';
+        if ($this->_defaultValue !== null) {
+            $output .= ' DEFAULT \'' . $this->_defaultValue . '\'';
         }
 
-        if($this->_collation) {
-            $output .= ' COLLATION '.$this->_collation;
+        if ($this->_collation) {
+            $output .= ' COLLATION ' . $this->_collation;
         }
 
-        $output .= ' ['.$this->_sqlVariant.']';
+        $output .= ' [' . $this->_sqlVariant . ']';
 
         return $output;
     }
 
 // Ext. serialize
-    public function toStorageArray() {
+    public function toStorageArray()
+    {
         return array_merge(
             $this->_getBaseStorageArray(),
             $this->_getFloatingPointNumericStorageArray()

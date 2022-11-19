@@ -6,11 +6,9 @@
 
 namespace df\user\authentication;
 
-use df;
-use df\core;
-use df\user;
-
 use DecodeLabs\R7\Legacy;
+
+use df\core;
 
 class Config extends core\Config
 {
@@ -31,7 +29,7 @@ class Config extends core\Config
         return $output;
     }
 
-    public function isAdapterEnabled($adapter, bool $flag=null)
+    public function isAdapterEnabled($adapter, bool $flag = null)
     {
         if ($adapter instanceof IAdapter) {
             $adapter = $adapter->getName();

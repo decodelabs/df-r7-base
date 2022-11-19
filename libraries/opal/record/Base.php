@@ -6,15 +6,14 @@
 
 namespace df\opal\record;
 
-use df;
-use df\core;
-use df\opal;
-use df\user;
-use df\mesh;
-
+use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
+
+use df\mesh;
+use df\opal;
+use df\user;
 
 class Base implements IRecord, \Serializable, Dumpable
 {
@@ -56,17 +55,17 @@ class Base implements IRecord, \Serializable, Dumpable
         }
 
         if ($isRecord) {
-            return '(#'.spl_object_hash($record).')';
+            return '(#' . spl_object_hash($record) . ')';
         }
 
         if (is_array($record)) {
-            return '{'.implode(PrimaryKeySet::COMBINE_SEPARATOR, $record).'}';
+            return '{' . implode(PrimaryKeySet::COMBINE_SEPARATOR, $record) . '}';
         }
 
         return (string)$record;
     }
 
-    public function __construct(opal\query\IAdapter $adapter, $row=null, array $fields=null)
+    public function __construct(opal\query\IAdapter $adapter, $row = null, array $fields = null)
     {
         $this->_adapter = $adapter;
         $fields = opal\schema\Introspector::getRecordFields($adapter, $fields);
@@ -119,7 +118,7 @@ class Base implements IRecord, \Serializable, Dumpable
         return !$this->_isPopulated;
     }
 
-    public function makeNew(array $newValues=null)
+    public function makeNew(array $newValues = null)
     {
         $this->_isPopulated = false;
 
@@ -143,14 +142,14 @@ class Base implements IRecord, \Serializable, Dumpable
         return $this;
     }
 
-    public function spawnNew(array $newValues=null)
+    public function spawnNew(array $newValues = null)
     {
         $output = clone $this;
         return $output->makeNew($newValues);
     }
 
 
-    protected function _buildPrimaryKeySet(array $fields, $includeChanges=true)
+    protected function _buildPrimaryKeySet(array $fields, $includeChanges = true)
     {
         $values = [];
 
@@ -196,7 +195,7 @@ class Base implements IRecord, \Serializable, Dumpable
         }
 
         throw Exceptional::Runtime(
-            'Records don\'t directly support "'.$name.'" jobs'
+            'Records don\'t directly support "' . $name . '" jobs'
         );
     }
 
@@ -365,7 +364,6 @@ class Base implements IRecord, \Serializable, Dumpable
                 }
 
                 $output[$key] = $this->_deflateValue($key, $value);
-                ;
             }
         }
 
@@ -408,7 +406,7 @@ class Base implements IRecord, \Serializable, Dumpable
         return $output;
     }
 
-    public function acceptChanges($insertId=null, array $insertData=null)
+    public function acceptChanges($insertId = null, array $insertData = null)
     {
         $oldValues = $this->_values;
         $this->_values = array_merge($this->_values, $this->_changes);
@@ -549,7 +547,7 @@ class Base implements IRecord, \Serializable, Dumpable
 
 
 
-    public function shouldBypassHooks(bool $flag=null)
+    public function shouldBypassHooks(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_bypassHooks = $flag;
@@ -674,7 +672,7 @@ class Base implements IRecord, \Serializable, Dumpable
     }
 
     // Storage
-    public function save(mesh\job\IQueue $queue=null)
+    public function save(mesh\job\IQueue $queue = null)
     {
         $execute = false;
 
@@ -692,7 +690,7 @@ class Base implements IRecord, \Serializable, Dumpable
         return $this;
     }
 
-    public function delete(mesh\job\IQueue $queue=null)
+    public function delete(mesh\job\IQueue $queue = null)
     {
         $execute = false;
 
@@ -771,7 +769,7 @@ class Base implements IRecord, \Serializable, Dumpable
             $funcPrefix = ucfirst($when);
         }
 
-        $func = 'on'.$funcPrefix.$jobName;
+        $func = 'on' . $funcPrefix . $jobName;
 
         if (method_exists($this, $func)) {
             $this->{$func}($queue, $job);
@@ -786,7 +784,7 @@ class Base implements IRecord, \Serializable, Dumpable
         if ($broadcast && !$this->_bypassHooks) {
             $event = new mesh\event\Event(
                 $this,
-                $funcPrefix.$jobName,
+                $funcPrefix . $jobName,
                 null,
                 $queue,
                 $job
@@ -797,7 +795,7 @@ class Base implements IRecord, \Serializable, Dumpable
         }
 
         if (in_array($jobName, ['Insert', 'Update', 'Replace'])) {
-            $func = 'on'.$funcPrefix.'Save';
+            $func = 'on' . $funcPrefix . 'Save';
 
             if (method_exists($this, $func)) {
                 $this->{$func}($queue, $job);
@@ -805,7 +803,7 @@ class Base implements IRecord, \Serializable, Dumpable
 
             /** @phpstan-ignore-next-line */
             if ($broadcast && !$this->_bypassHooks && $event && $meshManager) {
-                $event->setAction($funcPrefix.'Save');
+                $event->setAction($funcPrefix . 'Save');
                 $meshManager->emitEventObject($event);
             }
         }
@@ -907,19 +905,19 @@ class Base implements IRecord, \Serializable, Dumpable
             && $this->_values[$key] instanceof IValueContainer) {
                 $this->_values[$key]->setValue($value);
             } else {
-                $this->_values[$key] =  $value;
+                $this->_values[$key] = $value;
             }
         }
 
         return $this;
     }
 
-    public function get($key, $default=null)
+    public function get($key, $default = null)
     {
         return $this->offsetGet($key, $default);
     }
 
-    public function export($key, $default=null)
+    public function export($key, $default = null)
     {
         if ($key == '@primary') {
             return $this->getPrimaryKeySet();
@@ -1040,7 +1038,7 @@ class Base implements IRecord, \Serializable, Dumpable
         $this->onValueChange($key, $oldVal, $value);
     }
 
-    public function offsetGet(mixed $key, $default=null): mixed
+    public function offsetGet(mixed $key, $default = null): mixed
     {
         if ($key == '@primary') {
             return $this->getPrimaryKeySet();
@@ -1067,7 +1065,7 @@ class Base implements IRecord, \Serializable, Dumpable
         return $this->_prepareOutputValue($key, $output, $default);
     }
 
-    protected function _prepareOutputValue($key, $value, $default=null)
+    protected function _prepareOutputValue($key, $value, $default = null)
     {
         if ($value instanceof IValueContainer) {
             if ($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
@@ -1199,21 +1197,21 @@ class Base implements IRecord, \Serializable, Dumpable
 
             if (array_key_exists($key, $this->_changes)) {
                 if (!array_key_exists($key, $this->_values)) {
-                    $key = '+ '.$key;
+                    $key = '+ ' . $key;
                 } elseif ($this->_changes[$key] === null) {
                     if (isset($this->_values[$key])) {
                         $value = $this->_values[$key];
                     }
 
                     if ($value !== null) {
-                        $key = '- '.$key;
+                        $key = '- ' . $key;
                     }
                 } else {
                     $key .= ' *';
                 }
             }
 
-            yield 'value:'.$key => $value;
+            yield 'value:' . $key => $value;
         }
     }
 }

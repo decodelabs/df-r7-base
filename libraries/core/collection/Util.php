@@ -5,14 +5,13 @@
  */
 namespace df\core\collection;
 
-use df;
-use df\core;
-
 use DecodeLabs\Tagged\Markup;
+
+use df\core;
 
 class Util implements IUtil
 {
-    public static function flatten($data, bool $unique=true, bool $removeNull=false)
+    public static function flatten($data, bool $unique = true, bool $removeNull = false)
     {
         if (!self::isIterable($data)) {
             return [$data];
@@ -58,7 +57,7 @@ class Util implements IUtil
         }
     }
 
-    public static function leaves($data, bool $removeNull=false)
+    public static function leaves($data, bool $removeNull = false)
     {
         if (!self::isIterable($data)) {
             yield $data;
@@ -116,7 +115,7 @@ class Util implements IUtil
         }
     }
 
-    public static function normalizeEnumValue($value, array $map, $defaultValue=null)
+    public static function normalizeEnumValue($value, array $map, $defaultValue = null)
     {
         if (in_array($value, $map, true)) {
             return $value;
@@ -129,9 +128,9 @@ class Util implements IUtil
         return $defaultValue;
     }
 
-    public static function exportArray(array $values, $level=1)
+    public static function exportArray(array $values, $level = 1)
     {
-        $output = '['."\n";
+        $output = '[' . "\n";
 
         $i = 0;
         $count = count($values);
@@ -150,7 +149,7 @@ class Util implements IUtil
             $output .= str_repeat('    ', $level);
 
             if (!$isNumericIndex) {
-                $output .= '\''.addslashes($key).'\' => ';
+                $output .= '\'' . addslashes($key) . '\' => ';
             }
 
             if (is_object($val) || is_null($val)) {
@@ -166,7 +165,7 @@ class Util implements IUtil
                     $output .= 'false';
                 }
             } else {
-                $output .= '\''.addslashes($val).'\'';
+                $output .= '\'' . addslashes($val) . '\'';
             }
 
             if (++$i < $count) {
@@ -176,7 +175,7 @@ class Util implements IUtil
             $output .= "\n";
         }
 
-        $output .= str_repeat('    ', $level - 1).']';
+        $output .= str_repeat('    ', $level - 1) . ']';
 
         return $output;
     }

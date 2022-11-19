@@ -5,22 +5,20 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
+use DecodeLabs\Glitch\Dumpable;
 use df\arch;
 
-use DecodeLabs\Glitch\Dumpable;
+use df\aura;
 
 class DataList extends Base implements IUngroupedOptionWidget, Dumpable
 {
     use TWidget_UngroupedSelectionInput;
 
-    const PRIMARY_TAG = 'datalist';
+    public const PRIMARY_TAG = 'datalist';
 
     protected $_idDataAttribute = 'id';
 
-    public function __construct(arch\IContext $context, $id, $options=null)
+    public function __construct(arch\IContext $context, $id, $options = null)
     {
         parent::__construct($context);
 

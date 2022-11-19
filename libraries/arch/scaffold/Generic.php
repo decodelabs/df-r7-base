@@ -6,30 +6,29 @@
 
 namespace df\arch\scaffold;
 
-use df\arch\Scaffold;
-use df\arch\IComponent as Component;
-use df\arch\IRequest as DirectoryRequest;
-use df\arch\IContext as Context;
-use df\arch\node\INode as Node;
-use df\arch\node\Base as BaseNode;
-use df\arch\node\IDelegate as Delegate;
-use df\arch\scaffold\Record\DataProvider as RecordDataProvider;
-use df\arch\scaffold\Section\Provider as SectionProvider;
-use df\arch\scaffold\Component\Generic as GenericScaffoldComponent;
-
-use df\core\TContextAware as ContextAwareTrait;
-use df\aura\view\Base as ViewBase;
-use df\aura\view\TView_CascadingHelperProvider as CascadingHelperProviderTrait;
-use df\arch\TDirectoryAccessLock as DirectoryAccessLockTrait;
-use df\arch\TOptionalDirectoryAccessLock as OptionalDirectoryAccessLockTrait;
-
-use df\arch\node\form\State as FormState;
-use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
-use df\arch\navigation\menu\IMenu as Menu;
-use df\arch\scaffold\Navigation\Menu as ScaffoldMenu;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+use df\arch\IComponent as Component;
+use df\arch\IContext as Context;
+use df\arch\IRequest as DirectoryRequest;
+use df\arch\navigation\menu\IMenu as Menu;
+use df\arch\node\Base as BaseNode;
+use df\arch\node\form\State as FormState;
+use df\arch\node\IDelegate as Delegate;
+
+use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
+use df\arch\node\INode as Node;
+use df\arch\Scaffold;
+use df\arch\scaffold\Component\Generic as GenericScaffoldComponent;
+use df\arch\scaffold\Navigation\Menu as ScaffoldMenu;
+
+use df\arch\scaffold\Section\Provider as SectionProvider;
+use df\arch\TDirectoryAccessLock as DirectoryAccessLockTrait;
+use df\arch\TOptionalDirectoryAccessLock as OptionalDirectoryAccessLockTrait;
+use df\aura\view\Base as ViewBase;
+
+use df\aura\view\TView_CascadingHelperProvider as CascadingHelperProviderTrait;
+use df\core\TContextAware as ContextAwareTrait;
 
 abstract class Generic implements Scaffold
 {
@@ -61,7 +60,7 @@ abstract class Generic implements Scaffold
     // Registry
     public function getRegistryObjectKey(): string
     {
-        return 'scaffold('.$this->context->location->getPath()->getDirname().')';
+        return 'scaffold(' . $this->context->location->getPath()->getDirname() . ')';
     }
 
 
@@ -78,13 +77,13 @@ abstract class Generic implements Scaffold
     public function loadNode(): Node
     {
         $node = $this->context->request->getNode();
-        $method = lcfirst($node).$this->context->request->getType().'Node';
+        $method = lcfirst($node) . $this->context->request->getType() . 'Node';
 
         if (!method_exists($this, $method)) {
-            $method = lcfirst($node).'Node';
+            $method = lcfirst($node) . 'Node';
 
             if (!method_exists($this, $method)) {
-                $method = 'build'.ucfirst($node).'DynamicNode';
+                $method = 'build' . ucfirst($node) . 'DynamicNode';
 
                 if (method_exists($this, $method)) {
                     $node = $this->{$method}();
@@ -102,7 +101,7 @@ abstract class Generic implements Scaffold
                 }
 
                 throw Exceptional::{'df/arch/node/NotFound,NotFound'}(
-                    'Scaffold at '.$this->context->location.' cannot provide node '.$node
+                    'Scaffold at ' . $this->context->location . ' cannot provide node ' . $node
                 );
             }
         }
@@ -114,7 +113,7 @@ abstract class Generic implements Scaffold
     {
     }
 
-    public function loadComponent(string $name, array $args=null): Component
+    public function loadComponent(string $name, array $args = null): Component
     {
         $keyName = $this->getDirectoryKeyName();
         $origName = $name;
@@ -123,10 +122,10 @@ abstract class Generic implements Scaffold
             $name = substr($name, strlen($keyName));
         }
 
-        $method = 'generate'.$name.'Component';
+        $method = 'generate' . $name . 'Component';
 
         if (!method_exists($this, $method) && $origName !== $name) {
-            $method = 'generate'.$origName.'Component';
+            $method = 'generate' . $origName . 'Component';
             $activeName = $origName;
         } else {
             $activeName = $name;
@@ -136,10 +135,10 @@ abstract class Generic implements Scaffold
             return new GenericScaffoldComponent($this, $activeName, $args);
         }
 
-        $method = 'build'.$name.'Component';
+        $method = 'build' . $name . 'Component';
 
         if (!method_exists($this, $method) && $origName !== $name) {
-            $method = 'build'.$origName.'Component';
+            $method = 'build' . $origName . 'Component';
         }
 
         if (method_exists($this, $method)) {
@@ -147,7 +146,7 @@ abstract class Generic implements Scaffold
 
             if (!$output instanceof Component) {
                 throw Exceptional::{'df/arch/component/NotFound,NotFound'}(
-                    'Scaffold at '.$this->context->location.' attempted but failed to provide component '.$origName
+                    'Scaffold at ' . $this->context->location . ' attempted but failed to provide component ' . $origName
                 );
             }
 
@@ -155,7 +154,7 @@ abstract class Generic implements Scaffold
         }
 
         throw Exceptional::{'df/arch/component/NotFound,NotFound'}(
-            'Scaffold at '.$this->context->location.' cannot provide component '.$origName
+            'Scaffold at ' . $this->context->location . ' cannot provide component ' . $origName
         );
     }
 
@@ -168,11 +167,11 @@ abstract class Generic implements Scaffold
             $name = substr($name, strlen($keyName));
         }
 
-        $method = 'build'.$name.'FormDelegate';
+        $method = 'build' . $name . 'FormDelegate';
 
         if (!method_exists($this, $method)) {
             throw Exceptional::{'df/arch/node/NotFound,NotFound'}(
-                'Scaffold at '.$this->context->location.' cannot provide form delegate '.$origName
+                'Scaffold at ' . $this->context->location . ' cannot provide form delegate ' . $origName
             );
         }
 
@@ -180,7 +179,7 @@ abstract class Generic implements Scaffold
 
         if (!$output instanceof Delegate) {
             throw Exceptional::{'df/arch/node/NotFound,NotFound'}(
-                'Scaffold at '.$this->context->location.' attempted but failed to provide form delegate '.$origName
+                'Scaffold at ' . $this->context->location . ' attempted but failed to provide form delegate ' . $origName
             );
         }
 
@@ -189,11 +188,11 @@ abstract class Generic implements Scaffold
 
     public function loadMenu(string $name, $id): Menu
     {
-        $method = 'generate'.ucfirst($name).'Menu';
+        $method = 'generate' . ucfirst($name) . 'Menu';
 
         if (!method_exists($this, $method)) {
             throw Exceptional::{'df/arch/navigation/NotFound,NotFound'}(
-                'Scaffold at '.$this->context->location.' could not provider menu '.$name
+                'Scaffold at ' . $this->context->location . ' could not provider menu ' . $name
             );
         }
 
@@ -209,7 +208,7 @@ abstract class Generic implements Scaffold
         return (array)static::PROPAGATE_IN_QUERY;
     }
 
-    protected function buildQueryPropagationInputs(array $filter=[]): iterable
+    protected function buildQueryPropagationInputs(array $filter = []): iterable
     {
         $output = [];
         $vars = array_merge(
@@ -265,7 +264,7 @@ abstract class Generic implements Scaffold
 
 
     // Helpers
-    public function getNodeUri(string $node, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]): DirectoryRequest
+    public function getNodeUri(string $node, array $query = null, $redirFrom = null, $redirTo = null, array $propagationFilter = []): DirectoryRequest
     {
         $output = clone $this->context->location;
         $output->setNode($node);

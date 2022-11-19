@@ -5,11 +5,9 @@
  */
 namespace df\core\i18n\module;
 
-use df\core;
-
 class Scripts extends Base implements IScriptsModule
 {
-    const MODULE_NAME = 'scripts';
+    public const MODULE_NAME = 'scripts';
 
     public function getName($id)
     {
@@ -23,7 +21,7 @@ class Scripts extends Base implements IScriptsModule
         return $id;
     }
 
-    public function getList(array $ids=null)
+    public function getList(array $ids = null)
     {
         $this->_loadData();
         $output = $this->_data;

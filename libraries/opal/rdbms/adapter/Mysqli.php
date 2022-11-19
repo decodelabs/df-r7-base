@@ -5,17 +5,14 @@
  */
 namespace df\opal\rdbms\adapter;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Exceptional;
+
+use df\opal;
 
 class Mysqli extends opal\rdbms\adapter\Base
 {
-
-// Connection
-    protected function _connect($global=false)
+    // Connection
+    protected function _connect($global = false)
     {
         if ($this->_connection) {
             return;
@@ -74,7 +71,7 @@ class Mysqli extends opal\rdbms\adapter\Base
 
     protected function _createDb()
     {
-        $this->executeSql('CREATE DATABASE `'.$this->_dsn->getDatabase().'` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $this->executeSql('CREATE DATABASE `' . $this->_dsn->getDatabase() . '` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
     }
 
     protected function _closeConnection()
@@ -142,7 +139,7 @@ class Mysqli extends opal\rdbms\adapter\Base
     {
         if (!mysqli_autocommit($this->_connection, false)) {
             throw Exceptional::{'df/opal/rdbms/Transaction'}(
-                'Unable to begin transaction - '.mysqli_error($this->_connection)
+                'Unable to begin transaction - ' . mysqli_error($this->_connection)
             );
         }
     }
@@ -151,7 +148,7 @@ class Mysqli extends opal\rdbms\adapter\Base
     {
         if (!mysqli_commit($this->_connection)) {
             throw Exceptional::{'df/opal/rdbms/Transaction'}(
-                'Unable to commit transaction - '.mysqli_error($this->_connection)
+                'Unable to commit transaction - ' . mysqli_error($this->_connection)
             );
         }
 
@@ -162,7 +159,7 @@ class Mysqli extends opal\rdbms\adapter\Base
     {
         if (!mysqli_rollback($this->_connection)) {
             throw Exceptional::{'df/opal/rdbms/Transaction'}(
-                'Unable to roll back transaction - '.mysqli_error($this->_connection)
+                'Unable to roll back transaction - ' . mysqli_error($this->_connection)
             );
         }
 
@@ -173,7 +170,7 @@ class Mysqli extends opal\rdbms\adapter\Base
     public function lockTable($table)
     {
         try {
-            $this->executeSql('LOCK TABLE '.$table.' WRITE');
+            $this->executeSql('LOCK TABLE ' . $table . ' WRITE');
         } catch (opal\rdbms\Exception $e) {
             return false;
         }
@@ -199,7 +196,7 @@ class Mysqli extends opal\rdbms\adapter\Base
         return new opal\rdbms\adapter\statement\Mysqli($this, $sql);
     }
 
-    public function executeSql($sql, $forWrite=false)
+    public function executeSql($sql, $forWrite = false)
     {
         $output = mysqli_query($this->_connection, $sql);
 
@@ -242,7 +239,7 @@ class Mysqli extends opal\rdbms\adapter\Base
         $parts = explode('.', $identifier);
 
         foreach ($parts as $key => $part) {
-            $parts[$key] = '`'.trim($part, '`\'').'`';
+            $parts[$key] = '`' . trim($part, '`\'') . '`';
         }
 
         return implode('.', $parts);
@@ -250,17 +247,17 @@ class Mysqli extends opal\rdbms\adapter\Base
 
     public function quoteFieldAliasDefinition($alias)
     {
-        return '"'.trim($alias, '`\'').'"';
+        return '"' . trim($alias, '`\'') . '"';
     }
 
     public function quoteFieldAliasReference($alias)
     {
-        return '`'.trim($alias, '`\'').'`';
+        return '`' . trim($alias, '`\'') . '`';
     }
 
     public function quoteValue($value)
     {
-        return '\''.mysqli_real_escape_string($this->_connection, $value).'\'';
+        return '\'' . mysqli_real_escape_string($this->_connection, $value) . '\'';
     }
 
 

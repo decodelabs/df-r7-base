@@ -6,15 +6,13 @@
 
 namespace df\opal\schema;
 
-use df;
-use df\core;
 use df\opal;
 
 class GenericField implements opal\schema\IField
 {
     use opal\schema\TField;
 
-    public function __construct($name, array $args=[])
+    public function __construct($name, array $args = [])
     {
         $this->_setName($name);
         unset($args);

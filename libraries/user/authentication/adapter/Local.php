@@ -6,11 +6,10 @@
 
 namespace df\user\authentication\adapter;
 
-use df;
-use df\core;
-use df\user;
-
 use DecodeLabs\R7\Legacy;
+use df\core;
+
+use df\user;
 
 class Local implements user\authentication\IAdapter
 {

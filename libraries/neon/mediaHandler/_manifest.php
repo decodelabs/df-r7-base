@@ -5,9 +5,7 @@
  */
 namespace df\neon\mediaHandler;
 
-use df;
 use df\core;
-use df\neon;
 
 interface IMediaHandler extends core\IManager
 {
@@ -23,8 +21,8 @@ interface IMediaHandler extends core\IManager
     public function getDownloadUrl($fileId);
     public function getEmbedUrl($fileId);
     public function getVersionDownloadUrl($fileId, $versionId, $isActive);
-    public function getImageUrl($fileId, $transformation=null);
-    public function getVersionImageUrl($fileId, $versionId, $isActive, $transformation=null);
+    public function getImageUrl($fileId, $transformation = null);
+    public function getVersionImageUrl($fileId, $versionId, $isActive, $transformation = null);
     public function hashFile($fileId, $versionId, $isActive);
 
     public static function getDefaultConfig();

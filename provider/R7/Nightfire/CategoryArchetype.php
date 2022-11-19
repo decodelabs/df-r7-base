@@ -7,11 +7,11 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Nightfire;
 
-use df\fire\Category as FireCategory;
-
 use DecodeLabs\Archetype\Scanner;
+
 use DecodeLabs\Archetype\ScannerTrait;
 use DecodeLabs\R7\Legacy;
+use df\fire\Category as FireCategory;
 
 use Generator;
 use ReflectionClass;
@@ -43,12 +43,12 @@ class CategoryArchetype implements Scanner
     public function resolve(string $name): ?string
     {
         $classes = [
-            FireCategory::class.'\\'.$name, /** @phpstan-ignore-line */
-            Category::class.'\\'.$name
+            FireCategory::class . '\\' . $name, /** @phpstan-ignore-line */
+            Category::class . '\\' . $name
         ];
 
         foreach (static::$namespaces as $namespace) {
-            $classes[] = $namespace.'\\'.$name;
+            $classes[] = $namespace . '\\' . $name;
         }
 
         foreach (array_reverse($classes) as $class) {

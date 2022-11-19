@@ -5,19 +5,15 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-
-class EmailTextbox extends Textbox implements IOptionalMultipleValueInputWidget {
-
+class EmailTextbox extends Textbox implements IOptionalMultipleValueInputWidget
+{
     use TWidget_OptionalMultipleValueInput;
 
-    const PRIMARY_TAG = 'input.textbox.email';
-    const INPUT_TYPE = 'email';
+    public const PRIMARY_TAG = 'input.textbox.email';
+    public const INPUT_TYPE = 'email';
 
-    protected function _render() {
+    protected function _render()
+    {
         $this->_applyOptionalMultipleValueInputAttributes($this->getTag());
 
         return parent::_render();

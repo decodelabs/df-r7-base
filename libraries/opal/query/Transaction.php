@@ -5,19 +5,16 @@
  */
 namespace df\opal\query;
 
-use df;
-use df\core;
-use df\opal;
-use df\mesh;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\mesh;
 
 class Transaction extends mesh\job\Transaction implements ITransaction, Dumpable
 {
     protected $_source;
 
-    public function __construct($source=false)
+    public function __construct($source = false)
     {
         parent::__construct(true);
 
@@ -120,7 +117,7 @@ class Transaction extends mesh\job\Transaction implements ITransaction, Dumpable
         return $output;
     }
 
-    public function batchInsert($rows=[])
+    public function batchInsert($rows = [])
     {
         $output = Initiator::factory()
             ->setTransaction($this)
@@ -146,7 +143,7 @@ class Transaction extends mesh\job\Transaction implements ITransaction, Dumpable
         return $output;
     }
 
-    public function batchReplace($rows=[])
+    public function batchReplace($rows = [])
     {
         $output = Initiator::factory()
             ->setTransaction($this)
@@ -159,7 +156,7 @@ class Transaction extends mesh\job\Transaction implements ITransaction, Dumpable
         return $output;
     }
 
-    public function update(array $valueMap=null)
+    public function update(array $valueMap = null)
     {
         $output = Initiator::factory()
             ->setTransaction($this)

@@ -6,12 +6,12 @@
 
 namespace df\arch\scaffold\Node\Form;
 
-use df\arch\Scaffold;
+use df\arch\IComponent as Component;
 use df\arch\node\form\SelectorDelegate as SelectorDelegateBase;
 use df\arch\node\form\State as FormState;
 use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
+use df\arch\Scaffold;
 use df\opal\query\ISelectQuery as SelectQuery;
-use df\arch\IComponent as Component;
 
 class SelectorDelegate extends SelectorDelegateBase
 {
@@ -34,7 +34,7 @@ class SelectorDelegate extends SelectorDelegateBase
         }
     }
 
-    protected function getBaseQuery(array $fields=null): SelectQuery
+    protected function getBaseQuery(array $fields = null): SelectQuery
     {
         return $this->scaffold->queryRecordList('selector', $fields);
     }
@@ -46,7 +46,7 @@ class SelectorDelegate extends SelectorDelegateBase
 
     protected function renderCollectionList(?iterable $collection): ?Component
     {
-        return $this->apex->component(ucfirst($this->scaffold->getRecordKeyName().'List'), [
+        return $this->apex->component(ucfirst($this->scaffold->getRecordKeyName() . 'List'), [
                 'actions' => false
             ])
             ->setCollection($collection);

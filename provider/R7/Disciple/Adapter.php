@@ -6,22 +6,21 @@
 
 namespace DecodeLabs\R7\Disciple;
 
-use df\user\Manager;
-
 use DecodeLabs\Disciple\Adapter\GateKeeper as GateKeeperAdapter;
-use DecodeLabs\Disciple\Profile;
+
 use DecodeLabs\Disciple\Client;
 use DecodeLabs\Disciple\Client\Generic as GenericClient;
 use DecodeLabs\Disciple\GateKeeper as GateKeeperInterface;
-
+use DecodeLabs\Disciple\Profile;
 use DecodeLabs\Exceptional;
+
 use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy;
+use df\user\Manager;
 
 use Throwable;
 
-class Adapter implements
-    GateKeeperAdapter
+class Adapter implements GateKeeperAdapter
 {
     protected Manager $manager;
     protected ?Client $client = null;
@@ -62,7 +61,9 @@ class Adapter implements
                     );
                 } catch (Throwable $e) {
                     return new GenericClient(
-                        'http', '0.0.0.0', null
+                        'http',
+                        '0.0.0.0',
+                        null
                     );
                 }
 
@@ -74,7 +75,7 @@ class Adapter implements
                 );
 
             default:
-                throw Exceptional::UnexpectedValue('Unknown run mode '.$mode);
+                throw Exceptional::UnexpectedValue('Unknown run mode ' . $mode);
         }
     }
 

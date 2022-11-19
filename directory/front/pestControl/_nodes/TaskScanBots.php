@@ -6,12 +6,9 @@
 
 namespace df\apex\directory\front\pestControl\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-
 use DecodeLabs\Terminus as Cli;
+
+use df\arch;
 
 class TaskScanBots extends arch\node\Task
 {
@@ -35,7 +32,7 @@ class TaskScanBots extends arch\node\Task
             }
         }
 
-        Cli::success($count.' marked as bots');
+        Cli::success($count . ' marked as bots');
         Cli::{'yellow'}('Updating seen counts: ');
 
         $list = $this->data->pestControl->missLog->select('id', 'miss')
@@ -60,6 +57,6 @@ class TaskScanBots extends arch\node\Task
                 ->execute();
         }
 
-        Cli::success($count.' updated');
+        Cli::success($count . ' updated');
     }
 }

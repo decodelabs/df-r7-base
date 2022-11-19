@@ -5,15 +5,13 @@
  */
 namespace df\plug;
 
-use df;
 use df\core;
-use df\mint;
 
 class Date implements core\ISharedHelper
 {
     use core\TSharedHelper;
 
-    public function __invoke($date, $timezone=null)
+    public function __invoke($date, $timezone = null)
     {
         return core\time\Date::factory($date, $timezone);
     }
@@ -28,30 +26,30 @@ class Date implements core\ISharedHelper
         return new core\time\Date();
     }
 
-    public function fromCompressedString($string, $timezone=true)
+    public function fromCompressedString($string, $timezone = true)
     {
         return core\time\Date::fromCompressedString($string, $timezone);
     }
 
-    public function fromLocaleString($string, $timezone=true, $size=core\time\Date::SHORT, $locale=null)
+    public function fromLocaleString($string, $timezone = true, $size = core\time\Date::SHORT, $locale = null)
     {
         return core\time\Date::fromLocaleString($string, $timezone, $size, $locale);
     }
 
-    public function fromFormatString($date, $format, $timezone=true, $locale=null)
+    public function fromFormatString($date, $format, $timezone = true, $locale = null)
     {
         return core\time\Date::fromFormatString($date, $format, $timezone, $locale);
     }
 
 
 
-    public function getMonthList(int $startMonth=null)
+    public function getMonthList(int $startMonth = null)
     {
         if ($startMonth === null) {
             $startMonth = 1;
         }
 
-        $date = new core\time\Date($startMonth.'/1');
+        $date = new core\time\Date($startMonth . '/1');
         $output = [];
 
         for ($i = 0; $i < 12; $i++) {
@@ -62,7 +60,7 @@ class Date implements core\ISharedHelper
         return $output;
     }
 
-    public function getYearList(int $startYear=null, int $length=null)
+    public function getYearList(int $startYear = null, int $length = null)
     {
         if ($startYear === null) {
             $startYear = $this->now()->format('Y');
@@ -84,7 +82,7 @@ class Date implements core\ISharedHelper
         return $output;
     }
 
-    public function formatDuration($duration, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null)
+    public function formatDuration($duration, $maxUnits = 1, $shortUnits = false, $maxUnit = core\time\Duration::YEARS, $roundLastUnit = true, $locale = null)
     {
         if ($duration === null) {
             return null;
@@ -107,7 +105,7 @@ class Date implements core\ISharedHelper
         return $duration->toString($maxUnits, $shortUnits, $maxUnit, $roundLastUnit);
     }
 
-    public function formatGenericDuration($number, $locale=null)
+    public function formatGenericDuration($number, $locale = null)
     {
         if ($number === null) {
             return null;
@@ -126,7 +124,7 @@ class Date implements core\ISharedHelper
             ->formatDuration($number);
 
         if (preg_match('/([0-9]+) sec./', $output, $matches)) {
-            $output = '0:'.$matches[1];
+            $output = '0:' . $matches[1];
         }
 
         return $output;

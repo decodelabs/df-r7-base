@@ -5,11 +5,9 @@
  */
 namespace df\user\helper;
 
-use df;
-use df\core;
-use df\user;
-
 use DecodeLabs\Exceptional;
+
+use df\user;
 
 abstract class Base implements user\IHelper
 {
@@ -17,11 +15,11 @@ abstract class Base implements user\IHelper
 
     public static function factory(user\IManager $manager, $name)
     {
-        $class = 'df\\user\\helper\\'.ucfirst($name);
+        $class = 'df\\user\\helper\\' . ucfirst($name);
 
         if (!class_exists($class)) {
             throw Exceptional::Runtime(
-                'User helper '.$name.' could not be found'
+                'User helper ' . $name . ' could not be found'
             );
         }
 

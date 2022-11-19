@@ -6,30 +6,26 @@
 
 namespace df\aura\css\processor;
 
-use df;
-use df\core;
-use df\aura;
-use df\spur;
-use df\flex;
-
 use DecodeLabs\Atlas;
+
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\Overpass\Bridge;
 use DecodeLabs\Terminus\Session;
+use df\flex;
 
 class Autoprefixer extends Base
 {
     protected Bridge $bridge;
 
-    public function setup(?Session $session=null)
+    public function setup(?Session $session = null)
     {
-        $this->bridge = (new Bridge(Genesis::$hub->getLocalDataPath().'/node', $session))
+        $this->bridge = (new Bridge(Genesis::$hub->getLocalDataPath() . '/node', $session))
             ->ensurePackage('autoprefixer')
             ->ensurePackage('postcss');
     }
 
-    public function process($cssPath, ?Session $session=null)
+    public function process($cssPath, ?Session $session = null)
     {
         if (!isset($this->settings->cascade)) {
             $this->settings->cascade = true;
@@ -41,18 +37,20 @@ class Autoprefixer extends Base
 
         if (false === ($content = file_get_contents($cssPath))) {
             throw Exceptional::Runtime(
-                'Unable to read css file contents', null, $cssPath
+                'Unable to read css file contents',
+                null,
+                $cssPath
             );
         }
 
         $map = null;
 
         if (preg_match('/sourceMappingURL\=([^ ]+) \*/i', $content, $matches)) {
-            $map = file_get_contents($cssPath.'.map');
+            $map = file_get_contents($cssPath . '.map');
         }
 
 
-        $output = $this->bridge->run(__DIR__.'/autoprefixer.js', [
+        $output = $this->bridge->run(__DIR__ . '/autoprefixer.js', [
             'css' => $content,
             'map' => $map ? [
                 'prev' => $map,
@@ -66,7 +64,7 @@ class Autoprefixer extends Base
 
         if (isset($output['map'])) {
             Atlas::createFile(
-                $cssPath.'.map',
+                $cssPath . '.map',
                 flex\Json::toString($output['map'], \JSON_UNESCAPED_SLASHES)
             );
         }

@@ -6,16 +6,14 @@
 
 namespace df\arch;
 
-use df;
-use df\core;
-use df\arch;
-use df\user;
-use df\link;
-use df\flex;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\R7\Legacy;
+use df\arch;
+
+use df\core;
+use df\link;
+use df\user;
 
 class Request extends core\uri\Url implements IRequest, Dumpable
 {
@@ -35,7 +33,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
         return new static($url);
     }
 
-    public function import($url='')
+    public function import($url = '')
     {
         if ($url instanceof self) {
             $this->_scheme = $url->_scheme;
@@ -99,16 +97,16 @@ class Request extends core\uri\Url implements IRequest, Dumpable
     // Area
     public function setArea(string $area)
     {
-        $area = static::AREA_MARKER.trim($area, static::AREA_MARKER);
+        $area = static::AREA_MARKER . trim($area, static::AREA_MARKER);
         $path = $this->getPath();
 
         if (substr($path[0], 0, 1) == static::AREA_MARKER) {
-            if ($area == '~'.static::DEFAULT_AREA) {
+            if ($area == '~' . static::DEFAULT_AREA) {
                 $path->remove(0);
             } else {
                 $path->set(0, $area);
             }
-        } elseif ($area != '~'.static::DEFAULT_AREA) {
+        } elseif ($area != '~' . static::DEFAULT_AREA) {
             $path->put(0, $area);
         }
 
@@ -249,7 +247,9 @@ class Request extends core\uri\Url implements IRequest, Dumpable
                 $parts[$i] = lcfirst(
                     (string)str_replace(' ', '', ucwords(
                         (string)preg_replace('/[^a-zA-Z0-9_ ]/', '', str_replace(
-                            ['-', '.', '+'], ' ', (string)$part
+                            ['-', '.', '+'],
+                            ' ',
+                            (string)$part
                         ))
                     ))
                 );
@@ -260,7 +260,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
     }
 
     // Node
-    public function setNode(string $node=null)
+    public function setNode(string $node = null)
     {
         if (!strlen((string)$node)) {
             $node = static::DEFAULT_NODE;
@@ -314,7 +314,9 @@ class Request extends core\uri\Url implements IRequest, Dumpable
         return lcfirst(
             (string)str_replace(' ', '', ucwords(
                 (string)preg_replace('/[^a-zA-Z0-9_ ]/', '', str_replace(
-                    ['-', '.', '+'], ' ', (string)$node
+                    ['-', '.', '+'],
+                    ' ',
+                    (string)$node
                 ))
             ))
         );
@@ -323,7 +325,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
 
 
     // Type
-    public function setType(string $type=null)
+    public function setType(string $type = null)
     {
         if (empty($type)) {
             $type = null;
@@ -333,7 +335,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
 
         if ($path->shouldAddTrailingSlash()) {
             if ($type !== null) {
-                $path->setFileName(static::DEFAULT_NODE.'.'.$type);
+                $path->setFileName(static::DEFAULT_NODE . '.' . $type);
                 return $this;
             }
         } else {
@@ -374,7 +376,9 @@ class Request extends core\uri\Url implements IRequest, Dumpable
     {
         return (string)str_replace(' ', '', ucwords(
             (string)preg_replace('/[^a-zA-Z0-9_ ]/', '', str_replace(
-                ['-', '.', '+'], ' ', (string)$type
+                ['-', '.', '+'],
+                ' ',
+                (string)$type
             ))
         ));
     }
@@ -568,7 +572,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
 
         $tpString = $this->getLiteralPathString();
         $rpString = $request->getLiteralPathString();
-        $rpDirString = dirname($rpString).'/';
+        $rpDirString = dirname($rpString) . '/';
 
         if (0 !== stripos($tpString, $rpDirString)) {
             return false;
@@ -610,7 +614,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
         return new core\uri\Path($this->getLiteralPathArray(), false);
     }
 
-    public function getLiteralPathArray(bool $incType=true, bool $incNode=true)
+    public function getLiteralPathArray(bool $incType = true, bool $incNode = true)
     {
         if ($this->_path) {
             $parts = $this->_path->getRawCollection();
@@ -628,7 +632,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
                             $name = self::DEFAULT_NODE;
                         }
 
-                        $name .= '.'.$ext;
+                        $name .= '.' . $ext;
                     }
 
                     if ($incNode || $name != static::DEFAULT_NODE) {
@@ -644,7 +648,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
         }
 
         if (!isset($parts[0]) || substr($parts[0], 0, 1) != '~') {
-            array_unshift($parts, static::AREA_MARKER.static::DEFAULT_AREA);
+            array_unshift($parts, static::AREA_MARKER . static::DEFAULT_AREA);
         }
 
         if ($addTrailingSlash) {
@@ -652,7 +656,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
                 $name = static::DEFAULT_NODE;
 
                 if ($incType) {
-                    $name .= '.'.static::DEFAULT_TYPE;
+                    $name .= '.' . static::DEFAULT_TYPE;
                 }
 
                 $parts[] = $name;
@@ -672,14 +676,14 @@ class Request extends core\uri\Url implements IRequest, Dumpable
 
     public function toString(): string
     {
-        $output = 'directory://'.$this->_path;
+        $output = 'directory://' . $this->_path;
 
         if ($this->_query && !$this->_query->isEmpty()) {
-            $output .= '?'.$this->_query->toArrayDelimitedString();
+            $output .= '?' . $this->_query->toArrayDelimitedString();
         }
 
         if ($this->_fragment) {
-            $output .= '#'.$this->_fragment;
+            $output .= '#' . $this->_fragment;
         }
 
         return $output;
@@ -694,12 +698,12 @@ class Request extends core\uri\Url implements IRequest, Dumpable
             unset($query->{self::REDIRECT_FROM}, $query->{self::REDIRECT_TO});
 
             if (!$query->isEmpty()) {
-                $output .= '?'.$this->_query->toArrayDelimitedString();
+                $output .= '?' . $this->_query->toArrayDelimitedString();
             }
         }
 
         if ($this->_fragment) {
-            $output .= '#'.$this->_fragment;
+            $output .= '#' . $this->_fragment;
         }
 
         return urldecode($output);
@@ -710,7 +714,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
         $output = $this->getArea();
 
         if ($controller = $this->getController()) {
-            $output .= '/'.$controller;
+            $output .= '/' . $controller;
         }
 
         return $output;
@@ -718,7 +722,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
 
     public function getLibraryPath()
     {
-        $output = 'apex/directory/'.$this->getArea().'/';
+        $output = 'apex/directory/' . $this->getArea() . '/';
 
         if ($controller = $this->getController()) {
             $output .= $controller;
@@ -731,7 +735,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
     public function convertToHttpUrl($scheme, $domain, $port, array $basePath)
     {
         if ($this->isJustFragment()) {
-            return new link\http\Url('#'.$this->_fragment);
+            return new link\http\Url('#' . $this->_fragment);
         }
 
         $path = null;
@@ -739,7 +743,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
         if ($this->_path) {
             $path = clone $this->_path;
 
-            if ($path->get(0) == '~'.static::DEFAULT_AREA) {
+            if ($path->get(0) == '~' . static::DEFAULT_AREA) {
                 $path->shift();
             }
 
@@ -811,7 +815,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
     }
 
 
-    public function setRedirect($from, $to=null)
+    public function setRedirect($from, $to = null)
     {
         $this->setRedirectFrom($from);
         $this->setRedirectTo($to);
@@ -997,20 +1001,20 @@ class Request extends core\uri\Url implements IRequest, Dumpable
         return 'directory';
     }
 
-    public function lookupAccessKey(array $keys, $lockAction=null)
+    public function lookupAccessKey(array $keys, $lockAction = null)
     {
         $parts = $this->getLiteralPathArray(false, true);
         $node = array_pop($parts);
         $basePath = implode('/', $parts);
 
-        if (isset($keys[$basePath.'/'.$node])) {
-            return $keys[$basePath.'/'.$node];
-        } elseif (isset($keys[$basePath.'/%'])) {
-            return $keys[$basePath.'/%'];
+        if (isset($keys[$basePath . '/' . $node])) {
+            return $keys[$basePath . '/' . $node];
+        } elseif (isset($keys[$basePath . '/%'])) {
+            return $keys[$basePath . '/%'];
         }
 
         do {
-            $current = implode('/', $parts).'/*';
+            $current = implode('/', $parts) . '/*';
 
             if (isset($keys[$current])) {
                 return $keys[$current];
@@ -1028,7 +1032,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
         return $this;
     }
 
-    public function getDefaultAccess($lockAction=null)
+    public function getDefaultAccess($lockAction = null)
     {
         if ($this->_defaultAccess !== null) {
             return $this->_defaultAccess;

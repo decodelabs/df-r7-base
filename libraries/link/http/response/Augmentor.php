@@ -6,7 +6,6 @@
 
 namespace df\link\http\response;
 
-use df;
 use df\core;
 use df\link;
 
@@ -24,7 +23,7 @@ class Augmentor implements link\http\IResponseAugmentor
 
     protected $_statusCode;
 
-    public function __construct(core\app\http\Router $router=null)
+    public function __construct(core\app\http\Router $router = null)
     {
         $this->_router = $router;
 
@@ -46,7 +45,7 @@ class Augmentor implements link\http\IResponseAugmentor
                 }
 
                 if (substr($baseDomain, -strlen($rootDomain)) == $rootDomain) {
-                    $this->_cookieDomain = '.'.$rootDomain;
+                    $this->_cookieDomain = '.' . $rootDomain;
                 }
             }
 
@@ -163,7 +162,7 @@ class Augmentor implements link\http\IResponseAugmentor
 
 
     // Cookies
-    public function newCookie($name, $value, $expiry=null, $httpOnly=null, $secure=null)
+    public function newCookie($name, $value, $expiry = null, $httpOnly = null, $secure = null)
     {
         $output = new link\http\Cookie($name, $value, $expiry, $httpOnly, $secure);
 

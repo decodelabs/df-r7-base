@@ -6,11 +6,10 @@
 
 namespace df\core\i18n;
 
-use df;
-use df\core;
-
 use DecodeLabs\Genesis;
+
 use DecodeLabs\R7\Legacy;
+use df\core;
 
 class Manager implements IManager
 {
@@ -82,7 +81,7 @@ class Manager implements IManager
 
 
     // Modules
-    public function getModule($name, $locale=null)
+    public function getModule($name, $locale = null)
     {
         if ($locale === null) {
             $locale = $this->getLocale();
@@ -90,7 +89,7 @@ class Manager implements IManager
             $locale = Locale::factory($locale);
         }
 
-        $id = $name.':'.$locale;
+        $id = $name . ':' . $locale;
 
         if (!isset($this->_modules[$id])) {
             $this->_modules[$id] = core\i18n\module\Base::factory($this, $name, $locale);

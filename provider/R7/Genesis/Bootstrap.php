@@ -9,7 +9,6 @@ namespace DecodeLabs\R7\Genesis;
 
 use DecodeLabs\Genesis;
 use DecodeLabs\Genesis\Bootstrap as Base;
-use DecodeLabs\R7\Genesis\Hub;
 
 class Bootstrap extends Base
 {
@@ -41,17 +40,17 @@ class Bootstrap extends Base
         );
 
         if (!$sourceMode) {
-            $runPath = $this->appPath.'/data/local/run';
+            $runPath = $this->appPath . '/data/local/run';
 
             $paths = [
-                $runPath.'/active/Run.php' => $runPath.'/active/apex/vendor',
-                $runPath.'/active2/Run.php' => $runPath.'/active2/apex/vendor',
+                $runPath . '/active/Run.php' => $runPath . '/active/apex/vendor',
+                $runPath . '/active2/Run.php' => $runPath . '/active2/apex/vendor',
             ];
         } else {
             $paths = [];
         }
 
-        $paths[__FILE__] = $this->appPath.'/vendor';
+        $paths[__FILE__] = $this->appPath . '/vendor';
 
         return $paths;
     }

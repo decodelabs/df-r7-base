@@ -6,11 +6,10 @@
 
 namespace df\core\uri;
 
-use df;
-use df\core;
-use df\flow;
-
 use DecodeLabs\Glitch\Dumpable;
+use df\core;
+
+use df\flow;
 
 class MailtoUrl implements IMailtoUrl, Dumpable
 {
@@ -29,14 +28,14 @@ class MailtoUrl implements IMailtoUrl, Dumpable
         return new $class($url);
     }
 
-    public function __construct($url=null)
+    public function __construct($url = null)
     {
         if ($url !== null) {
             $this->import($url);
         }
     }
 
-    public function import($url='')
+    public function import($url = '')
     {
         if ($url !== null) {
             $this->reset();
@@ -115,7 +114,7 @@ class MailtoUrl implements IMailtoUrl, Dumpable
             return null;
         }
 
-        return $this->_username.'@'.$this->_domain;
+        return $this->_username . '@' . $this->_domain;
     }
 
     public function hasEmail(...$emails)
@@ -159,7 +158,7 @@ class MailtoUrl implements IMailtoUrl, Dumpable
     // Strings
     public function toString(): string
     {
-        $output = 'mailto:'.$this->getEmail();
+        $output = 'mailto:' . $this->getEmail();
         $output .= $this->_getQueryString();
 
         return $output;

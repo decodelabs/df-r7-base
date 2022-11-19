@@ -6,9 +6,9 @@
 
 namespace df\apex\models\pestControl\report;
 
-use df\axis;
-
 use DecodeLabs\Genesis;
+
+use df\axis;
 
 class Unit extends axis\unit\Table
 {

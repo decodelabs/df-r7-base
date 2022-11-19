@@ -6,14 +6,10 @@
 
 namespace df\apex\directory\front\theme\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\spur;
-use df\fuse;
-
 use DecodeLabs\Terminus as Cli;
+use df\arch;
+
+use df\fuse;
 
 class TaskReinstallDependencies extends arch\node\Task
 {

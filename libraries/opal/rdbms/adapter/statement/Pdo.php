@@ -6,17 +6,13 @@
 
 namespace df\opal\rdbms\adapter\statement;
 
-use df;
-use df\core;
-use df\opal;
-
 class Pdo extends Base
 {
     protected $_stmt;
     protected $_cache;
 
     // Execute
-    protected function _execute($forWrite=false)
+    protected function _execute($forWrite = false)
     {
         $options = [];
 
@@ -32,7 +28,7 @@ class Pdo extends Base
 
         try {
             $this->_stmt = $connection->prepare($this->_sql, $options);
-        } catch(\PDOException $e) {
+        } catch (\PDOException $e) {
             throw $this->_adapter->_getQueryException(
                 $e->errorInfo[1],
                 $e->getMessage(),
@@ -41,12 +37,12 @@ class Pdo extends Base
         }
 
         foreach ($this->_bindings as $key => $value) {
-            $this->_stmt->bindValue(':'.$key, $this->_adapter->normalizeValue($value));
+            $this->_stmt->bindValue(':' . $key, $this->_adapter->normalizeValue($value));
         }
 
         try {
             $this->_stmt->execute();
-        } catch(\PDOException $e) {
+        } catch (\PDOException $e) {
             throw $this->_adapter->_getQueryException(
                 $e->errorInfo[1],
                 $e->getMessage(),

@@ -5,16 +5,14 @@
  */
 namespace df\apex\models\user\accessPass;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
 
-class Unit extends axis\unit\Table {
+class Unit extends axis\unit\Table
+{
+    public const NAME_FIELD = 'id';
 
-    const NAME_FIELD = 'id';
-
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addField('user', 'One', 'client');
 

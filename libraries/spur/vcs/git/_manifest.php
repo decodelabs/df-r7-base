@@ -6,14 +6,9 @@
 
 namespace df\spur\vcs\git;
 
-use df;
-use df\core;
-use df\spur;
-use df\halo;
-
+use DecodeLabs\Exceptional;
 use DecodeLabs\Systemic;
 use DecodeLabs\Terminus\Session;
-use DecodeLabs\Exceptional;
 
 interface IRepository
 {
@@ -32,8 +27,8 @@ interface IRepository
 
 interface ILocalRepository extends IRepository
 {
-    public static function createNew($path, $isBare=false);
-    public static function createClone($repoUrl, $path, $isBare=false);
+    public static function createNew($path, $isBare = false);
+    public static function createClone($repoUrl, $path, $isBare = false);
     public static function getGitVersion();
 
     public function getRepositoryPath();
@@ -48,7 +43,7 @@ interface ILocalRepository extends IRepository
     public function getActiveBranchName();
     public function getActiveBranch();
     public function deleteBranch($branch);
-    public function setUpstream($remote, $remoteBranch='master', $localBranch='master');
+    public function setUpstream($remote, $remoteBranch = 'master', $localBranch = 'master');
 
     public function countRemoteBranches();
 
@@ -57,28 +52,28 @@ interface ILocalRepository extends IRepository
     public function addRemote($name, $url);
 
     public function getCommitStatus();
-    public function getCommitIds($target=null, $limit=null, $offset=null);
-    public function getCommits($target=null, $limit=null, $offset=null);
-    public function countCommits($target=null);
+    public function getCommitIds($target = null, $limit = null, $offset = null);
+    public function getCommits($target = null, $limit = null, $offset = null);
+    public function countCommits($target = null);
     public function getHeadCommitIds();
     public function getHeadCommits();
     public function getCommit($id);
 
-    public function countUnpushedCommits($remoteBranch=null);
-    public function getUnpushedCommitIds($remoteBranch=null);
-    public function getUnpushedCommits($remoteBranch=null);
+    public function countUnpushedCommits($remoteBranch = null);
+    public function getUnpushedCommitIds($remoteBranch = null);
+    public function getUnpushedCommits($remoteBranch = null);
 
-    public function countUnpulledCommits($remoteBranch=null);
-    public function getUnpulledCommitIds($remoteBranch=null);
-    public function getUnpulledCommits($remoteBranch=null);
+    public function countUnpulledCommits($remoteBranch = null);
+    public function getUnpulledCommitIds($remoteBranch = null);
+    public function getUnpulledCommits($remoteBranch = null);
 
     public function commitAllChanges($message);
 
     public function getTree($id);
 
-    public function updateRemote($remote=null);
-    public function pull($remoteBranch=null);
-    public function push($remoteBranch=null);
+    public function updateRemote($remote = null);
+    public function pull($remoteBranch = null);
+    public function push($remoteBranch = null);
 
     public function checkoutCommit($commitId);
 }
@@ -130,7 +125,7 @@ trait TRepository
         return $this->_session;
     }
 
-    protected static function _runCommandIn($path, $command, array $arguments=null, ?Session $session=null, string $user=null)
+    protected static function _runCommandIn($path, $command, array $arguments = null, ?Session $session = null, string $user = null)
     {
         $args = [$command];
 
@@ -146,10 +141,10 @@ trait TRepository
                 }
 
                 if (!is_bool($value) && substr($key, 0, 1) != '-') {
-                    $key = '-'.$key;
+                    $key = '-' . $key;
 
                     if (strlen($key) > 2) {
-                        $key = '-'.$key;
+                        $key = '-' . $key;
                     }
                 }
 
@@ -196,7 +191,7 @@ trait TRepository
                 throw Exceptional::Runtime($error);
             }
 
-            $output .= "\n".$error;
+            $output .= "\n" . $error;
         }
 
         return $output;
@@ -280,13 +275,13 @@ interface IStatus extends \Countable
     public function isTracked($path);
     public function isUntracked($path);
 
-    public function countUnpushedCommits($remoteBranch=null);
-    public function getUnpushedCommitIds($remoteBranch=null);
-    public function getUnpushedCommits($remoteBranch=null);
+    public function countUnpushedCommits($remoteBranch = null);
+    public function getUnpushedCommitIds($remoteBranch = null);
+    public function getUnpushedCommits($remoteBranch = null);
 
-    public function countUnpulledCommits($remoteBranch=null);
-    public function getUnpulledCommitIds($remoteBranch=null);
-    public function getUnpulledCommits($remoteBranch=null);
+    public function countUnpulledCommits($remoteBranch = null);
+    public function getUnpulledCommitIds($remoteBranch = null);
+    public function getUnpulledCommits($remoteBranch = null);
 }
 
 interface ITag

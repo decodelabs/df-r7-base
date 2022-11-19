@@ -6,11 +6,10 @@
 
 namespace df\core\collection;
 
-use df;
-use df\core;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
 
 class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
 {
@@ -33,8 +32,8 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
      */
     public static function fromArrayDelimitedString(
         ?string $string,
-        string $setDelimiter='&',
-        string $valueDelimiter='='
+        string $setDelimiter = '&',
+        string $valueDelimiter = '='
     ): Tree {
         $output = new self();
         $parts = explode($setDelimiter, (string)$string);
@@ -60,7 +59,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
         return new self($input);
     }
 
-    public function __construct($input=null, $value=null, $extractArray=false)
+    public function __construct($input = null, $value = null, $extractArray = false)
     {
         $this->setValue($value);
 
@@ -75,7 +74,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
         return $this->_import($input);
     }
 
-    protected function _import(array $input, $extractArray=true)
+    protected function _import(array $input, $extractArray = true)
     {
         foreach ($input as $data) {
             if ($data instanceof ITree) {
@@ -182,7 +181,9 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
 
                 if (!$child instanceof self) {
                     throw Exceptional::Runtime(
-                        'Invalid tree child', null, $child
+                        'Invalid tree child',
+                        null,
+                        $child
                     );
                 }
 
@@ -219,7 +220,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
     /**
      * @param non-empty-string $separator
      */
-    public function getNestedChild($parts, string $separator='.')
+    public function getNestedChild($parts, string $separator = '.')
     {
         if (!is_array($parts)) {
             $parts = explode($separator, (string)$parts);
@@ -258,7 +259,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
         return $this->_collection;
     }
 
-    public function contains($value, $includeChildren=false)
+    public function contains($value, $includeChildren = false)
     {
         foreach ($this->_collection as $child) {
             if ($child->_value == $value
@@ -276,7 +277,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
         return $this->_set($key, $value, false);
     }
 
-    public function _set($key, $value, $extractArray=false)
+    public function _set($key, $value, $extractArray = false)
     {
         if (isset($this->_collection[$key])) {
             $this->_collection[$key]->_collection = [];
@@ -327,7 +328,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
         return $this;
     }
 
-    public function get($key, $default=null)
+    public function get($key, $default = null)
     {
         if (!array_key_exists($key, $this->_collection)) {
             return $default;
@@ -468,7 +469,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
         return $this;
     }
 
-    public function getValue($default=null)
+    public function getValue($default = null)
     {
         if ($this->_value === null) {
             return $default;
@@ -483,7 +484,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
         return !empty($this->_value) || $this->_value === '0';
     }
 
-    public function hasAnyValue(array $checkKeys=null)
+    public function hasAnyValue(array $checkKeys = null)
     {
         if ($this->hasValue()) {
             return true;
@@ -502,7 +503,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
         return false;
     }
 
-    public function getStringValue($default=''): string
+    public function getStringValue($default = ''): string
     {
         return $this->_getStringValue($this->_value, $default);
     }
@@ -523,13 +524,13 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
         return $this->getStringValue();
     }
 
-    public function toArrayDelimitedString($setDelimiter='&', $valueDelimiter='=')
+    public function toArrayDelimitedString($setDelimiter = '&', $valueDelimiter = '=')
     {
         $output = [];
 
         foreach ($this->toUrlEncodedArrayDelimitedSet() as $key => $value) {
             if (!empty($value) || $value === '0' || $value === 0) {
-                $output[] = $key.$valueDelimiter.rawurlencode($value);
+                $output[] = $key . $valueDelimiter . rawurlencode($value);
             } else {
                 $output[] = $key;
             }
@@ -555,7 +556,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
         return $output;
     }
 
-    public function toArrayDelimitedSet($prefix=null)
+    public function toArrayDelimitedSet($prefix = null)
     {
         $output = [];
 
@@ -566,7 +567,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
 
         foreach ($this as $key => $child) {
             if ($prefix) {
-                $key = $prefix.'['.$key.']';
+                $key = $prefix . '[' . $key . ']';
             }
 
             $output = array_merge($output, $child->toArrayDelimitedSet($key));
@@ -575,7 +576,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
         return $output;
     }
 
-    public function toUrlEncodedArrayDelimitedSet($prefix=null)
+    public function toUrlEncodedArrayDelimitedSet($prefix = null)
     {
         $output = [];
 
@@ -586,7 +587,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
 
         foreach ($this as $key => $child) {
             if ($prefix) {
-                $key = $prefix.'['.rawurlencode($key).']';
+                $key = $prefix . '[' . rawurlencode($key) . ']';
             }
 
             foreach ($child->toUrlEncodedArrayDelimitedSet($key) as $innerKey => $innerVal) {
@@ -609,9 +610,9 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
 
         foreach ($this->_collection as $key => $child) {
             if ($child instanceof self && empty($child->_collection)) {
-                yield 'value:'.$key => $child->_value;
+                yield 'value:' . $key => $child->_value;
             } else {
-                yield 'value:'.$key => $child;
+                yield 'value:' . $key => $child;
             }
         }
     }

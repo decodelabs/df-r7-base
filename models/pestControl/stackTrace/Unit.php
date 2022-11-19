@@ -5,12 +5,9 @@
  */
 namespace df\apex\models\pestControl\stackTrace;
 
-use df;
-use df\core;
-use df\apex;
-use df\axis;
-
 use DecodeLabs\Glitch\Stack\Trace;
+
+use df\axis;
 
 class Unit extends axis\unit\Table
 {
@@ -29,7 +26,7 @@ class Unit extends axis\unit\Table
         return $this->logObject($stackTrace);
     }
 
-    public function logArray(array $trace, $rewind=0)
+    public function logArray(array $trace, $rewind = 0)
     {
         $stackTrace = Trace::fromArray($trace, $rewind);
         return $this->logObject($stackTrace);

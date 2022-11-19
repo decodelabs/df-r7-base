@@ -6,16 +6,16 @@
 
 namespace df\apex\directory\shared\nightfire\_formDelegates;
 
-use df\core;
-use df\fire;
-use df\arch;
-use df\aura;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\R7\Nightfire\BlockAbstract;
 use DecodeLabs\R7\Nightfire\BlockDelegate;
+
 use DecodeLabs\Tagged as Html;
+use df\arch;
+use df\aura;
+use df\core;
+use df\fire;
 
 class ContentSlot extends arch\node\form\Delegate implements
     arch\node\IInlineFieldRenderableDelegate,
@@ -52,7 +52,7 @@ class ContentSlot extends arch\node\form\Delegate implements
         parent::reloadDefaultValues();
     }
 
-    protected function _prepareBlockList(array $types=null)
+    protected function _prepareBlockList(array $types = null)
     {
         if ($types === null) {
             $types = $this->_state->getStore('blockTypes', []);
@@ -105,7 +105,7 @@ class ContentSlot extends arch\node\form\Delegate implements
 
 
 
-    public function setDefaultBlockType(string $type=null)
+    public function setDefaultBlockType(string $type = null)
     {
         $this->_defaultBlockType = $type;
         return $this;
@@ -141,7 +141,7 @@ class ContentSlot extends arch\node\form\Delegate implements
 
 
     // Slot content
-    public function setSlotContent(fire\ISlotContent $slotContent=null)
+    public function setSlotContent(fire\ISlotContent $slotContent = null)
     {
         if ($slotContent !== null) {
             $slotContent = clone $slotContent;
@@ -149,7 +149,7 @@ class ContentSlot extends arch\node\form\Delegate implements
             $counter = 1;
 
             foreach ($slotContent->getBlocks() as $block) {
-                $delegateId = 'block-'.$counter++;
+                $delegateId = 'block-' . $counter++;
                 $types[$delegateId] = $block->getName();
                 $this->_blocks[$delegateId] = clone $block;
             }
@@ -166,7 +166,7 @@ class ContentSlot extends arch\node\form\Delegate implements
     }
 
     // Block label
-    public function setBlockLabel(string $label=null)
+    public function setBlockLabel(string $label = null)
     {
         $this->_blockLabel = $label;
         return $this;
@@ -249,16 +249,16 @@ class ContentSlot extends arch\node\form\Delegate implements
             $fa->add('nav.buttons', [
                 Html::{'div.type'}([
                     $this->html->groupedSelect(
-                            $this->fieldName('blockType['.$delegateId.']'),
-                            $this->values->blockType->{$delegateId},
-                            $available
-                        )
+                        $this->fieldName('blockType[' . $delegateId . ']'),
+                        $this->values->blockType->{$delegateId},
+                        $available
+                    )
                         ->setNoSelectionLabel($this->_('-- select format --')),
 
                     $this->html->eventButton(
-                            $this->eventName('selectBlockType', $delegateId),
-                            $this->_('Change')
-                        )
+                        $this->eventName('selectBlockType', $delegateId),
+                        $this->_('Change')
+                    )
                         ->setIcon('refresh')
                         ->setDisposition('operative')
                         ->shouldValidate(false)
@@ -266,29 +266,29 @@ class ContentSlot extends arch\node\form\Delegate implements
 
                 Html::{'div.control'}([
                     $this->html->eventButton(
-                            $this->eventName('removeBlock', $delegateId),
-                            $this->_('Remove')
-                        )
-                        ->setIcon('remove')
-                        ->shouldValidate(false),
+                        $this->eventName('removeBlock', $delegateId),
+                        $this->_('Remove')
+                    )
+                    ->setIcon('remove')
+                    ->shouldValidate(false),
 
                     $this->html->eventButton(
-                            $this->eventName('moveBlockUp', $delegateId),
-                            $this->_('Up')
-                        )
-                        ->setIcon('arrow-up')
-                        ->shouldValidate(false)
-                        ->isDisabled($counter == 1)
-                        ->setDisposition('transitive'),
+                        $this->eventName('moveBlockUp', $delegateId),
+                        $this->_('Up')
+                    )
+                    ->setIcon('arrow-up')
+                    ->shouldValidate(false)
+                    ->isDisabled($counter == 1)
+                    ->setDisposition('transitive'),
 
                     $this->html->eventButton(
-                            $this->eventName('moveBlockDown', $delegateId),
-                            $this->_('Down')
-                        )
-                        ->setIcon('arrow-down')
-                        ->shouldValidate(false)
-                        ->isDisabled($counter == $blockCount)
-                        ->setDisposition('transitive')
+                        $this->eventName('moveBlockDown', $delegateId),
+                        $this->_('Down')
+                    )
+                    ->setIcon('arrow-down')
+                    ->shouldValidate(false)
+                    ->isDisabled($counter == $blockCount)
+                    ->setDisposition('transitive')
                 ])
             ]);
 
@@ -304,16 +304,15 @@ class ContentSlot extends arch\node\form\Delegate implements
                 ->setId($this->elementId('add-selector'))
                 ->push(
                     $this->html->groupedSelect(
-                            $this->fieldName('newBlockType'),
-                            $this->values->newBlockType,
-                            $available
-                        )
+                        $this->fieldName('newBlockType'),
+                        $this->values->newBlockType,
+                        $available
+                    )
                         ->setNoSelectionLabel($this->_('-- select format --')),
-
                     $this->html->eventButton(
-                            $this->eventName('addBlock'),
-                            $this->_('Add block')
-                        )
+                        $this->eventName('addBlock'),
+                        $this->_('Add block')
+                    )
                         ->setIcon('add')
                         ->setDisposition('positive')
                         ->shouldValidate(false)
@@ -369,7 +368,7 @@ class ContentSlot extends arch\node\form\Delegate implements
         }
 
         $this->_state->setStore('blockTypes', $types);
-        return Legacy::$http->redirect('#'.$this->elementId($delegateId));
+        return Legacy::$http->redirect('#' . $this->elementId($delegateId));
     }
 
     protected function onAddBlockEvent()
@@ -402,12 +401,12 @@ class ContentSlot extends arch\node\form\Delegate implements
 
             $parts = explode('-', $delegateId, 2);
             $key = array_pop($parts);
-            $delegateId = 'block-'.++$key;
+            $delegateId = 'block-' . ++$key;
         }
 
         $types[$delegateId] = $block->getName();
         $this->_state->setStore('blockTypes', $types);
-        return Legacy::$http->redirect('#'.$this->elementId($delegateId));
+        return Legacy::$http->redirect('#' . $this->elementId($delegateId));
     }
 
     protected function onRemoveBlockEvent($delegateId)
@@ -418,7 +417,7 @@ class ContentSlot extends arch\node\form\Delegate implements
         $this->unloadDelegate($delegateId);
 
         $this->_state->setStore('blockTypes', $types);
-        return Legacy::$http->redirect('#'.$this->elementId('add-selector'));
+        return Legacy::$http->redirect('#' . $this->elementId('add-selector'));
     }
 
     protected function onMoveBlockUpEvent($delegateId)
@@ -444,7 +443,7 @@ class ContentSlot extends arch\node\form\Delegate implements
         }
 
         $this->_state->setStore('blockTypes', $newTypes);
-        return Legacy::$http->redirect('#'.$this->elementId($delegateId));
+        return Legacy::$http->redirect('#' . $this->elementId($delegateId));
     }
 
     protected function onMoveBlockDownEvent($delegateId)
@@ -472,7 +471,7 @@ class ContentSlot extends arch\node\form\Delegate implements
         }
 
         $this->_state->setStore('blockTypes', $newTypes);
-        return Legacy::$http->redirect('#'.$this->elementId($delegateId));
+        return Legacy::$http->redirect('#' . $this->elementId($delegateId));
     }
 
 

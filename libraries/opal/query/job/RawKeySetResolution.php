@@ -5,10 +5,8 @@
  */
 namespace df\opal\query\job;
 
-use df;
-use df\core;
-use df\opal;
 use df\mesh;
+use df\opal;
 
 class RawKeySetResolution implements mesh\job\IResolution
 {
@@ -28,7 +26,7 @@ class RawKeySetResolution implements mesh\job\IResolution
     {
         if (
             !$subordinate instanceof opal\query\job\Update ||
-            !$dependency instanceof  opal\record\IJob
+            !$dependency instanceof opal\record\IJob
         ) {
             return $this;
         }
@@ -37,7 +35,7 @@ class RawKeySetResolution implements mesh\job\IResolution
         $values = [];
 
         foreach ($keySet->toArray() as $key => $value) {
-            $values[$this->_targetField.'_'.$key] = $value;
+            $values[$this->_targetField . '_' . $key] = $value;
         }
 
         $subordinate->setValues($values);

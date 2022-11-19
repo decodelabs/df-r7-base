@@ -5,12 +5,11 @@
  */
 namespace df\opal\query;
 
-use df;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
+
 use df\core;
 use df\opal;
-
-use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
 
 class Insert implements IInsertQuery, Dumpable
 {
@@ -23,7 +22,7 @@ class Insert implements IInsertQuery, Dumpable
     protected $_row;
     protected $_preparedRow;
 
-    public function __construct(ISourceManager $sourceManager, ISource $source, $row, $shouldReplace=false)
+    public function __construct(ISourceManager $sourceManager, ISource $source, $row, $shouldReplace = false)
     {
         $this->_sourceManager = $sourceManager;
         $this->_source = $source;

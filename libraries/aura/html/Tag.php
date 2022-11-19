@@ -5,16 +5,13 @@
  */
 namespace df\aura\html;
 
-use df;
-use df\core;
-use df\aura;
-use df\flex;
-
-use DecodeLabs\Tagged as Html;
 use DecodeLabs\Elementary\Style\Collection as StyleList;
 
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
+
+use DecodeLabs\Tagged as Html;
+use df\core;
 
 class Tag implements ITag, Dumpable
 {
@@ -22,13 +19,13 @@ class Tag implements ITag, Dumpable
     use core\collection\TArrayAccessedAttributeContainer;
     use core\TStringProvider;
 
-    const CLOSED_TAGS = [
+    public const CLOSED_TAGS = [
         'area', 'base', 'br', 'col', 'command', 'embed',
         'hr', 'img', 'input', 'keygen', 'link', 'meta',
         'param', 'source', 'wbr'
     ];
 
-    const INLINE_TAGS = [
+    public const INLINE_TAGS = [
         'a', 'br', 'bdo', 'abbr', 'blink', 'nextid', 'acronym', 'basefont',
         'b', 'em', 'big', 'cite', 'input', 'spacer', 'listing',
         'i', 'rp', 'del', 'code', 'label', 'strike', 'marquee',
@@ -40,7 +37,7 @@ class Tag implements ITag, Dumpable
                           'time',
     ];
 
-    const BOOLEAN_ATTRIBUTES = [
+    public const BOOLEAN_ATTRIBUTES = [
         'spellcheck'
     ];
 
@@ -60,7 +57,7 @@ class Tag implements ITag, Dumpable
         return in_array(strtolower($name), self::INLINE_TAGS);
     }
 
-    public function __construct($name, array $attributes=null)
+    public function __construct($name, array $attributes = null)
     {
         $this->setName($name);
 
@@ -191,7 +188,7 @@ class Tag implements ITag, Dumpable
         return $this;
     }
 
-    public function getAttribute($key, $default=null)
+    public function getAttribute($key, $default = null)
     {
         $key = strtolower($key);
 
@@ -260,15 +257,15 @@ class Tag implements ITag, Dumpable
 
     public function setDataAttribute($key, $value)
     {
-        $key = 'data-'.strtolower($key);
+        $key = 'data-' . strtolower($key);
         $this->_attributes[$key] = $value;
 
         return $this;
     }
 
-    public function getDataAttribute($key, $default=null)
+    public function getDataAttribute($key, $default = null)
     {
-        $key = 'data-'.strtolower($key);
+        $key = 'data-' . strtolower($key);
 
         if (isset($this->_attributes[$key])) {
             return $this->_attributes[$key];
@@ -279,12 +276,12 @@ class Tag implements ITag, Dumpable
 
     public function hasDataAttribute($key)
     {
-        return array_key_exists('data-'.strtolower($key), $this->_attributes);
+        return array_key_exists('data-' . strtolower($key), $this->_attributes);
     }
 
     public function removeDataAttribute($key)
     {
-        unset($this->_attributes['data-'.strtolower($key)]);
+        unset($this->_attributes['data-' . strtolower($key)]);
         return $this;
     }
 
@@ -312,7 +309,8 @@ class Tag implements ITag, Dumpable
     public function addClasses(...$classes)
     {
         $this->_classes = array_unique(array_merge(
-            $this->_classes, $this->_normalizeClassList($classes)
+            $this->_classes,
+            $this->_normalizeClassList($classes)
         ));
 
         return $this;
@@ -397,7 +395,7 @@ class Tag implements ITag, Dumpable
 
         if (preg_match('/[^a-zA-Z0-9\-_]/', $id)) {
             throw Exceptional::InvalidArgument(
-                'Invalid tag id '.$id.'!'
+                'Invalid tag id ' . $id . '!'
             );
         }
 
@@ -410,7 +408,7 @@ class Tag implements ITag, Dumpable
         return $this->getAttribute('id');
     }
 
-    public function isHidden(bool $flag=null)
+    public function isHidden(bool $flag = null)
     {
         if ($flag !== null) {
             if ($flag) {
@@ -460,7 +458,7 @@ class Tag implements ITag, Dumpable
         return $this;
     }
 
-    public function getStyle($key, $default=null)
+    public function getStyle($key, $default = null)
     {
         return $this->getAttribute('style')->get($key, $default);
     }
@@ -487,7 +485,7 @@ class Tag implements ITag, Dumpable
                 $attributes[] = $key;
             } elseif (is_bool($value)) {
                 if (substr($key, 0, 5) == 'data-' || in_array($key, self::BOOLEAN_ATTRIBUTES)) {
-                    $attributes[] = $key.'="'.($value ? 'true' : 'false').'"';
+                    $attributes[] = $key . '="' . ($value ? 'true' : 'false') . '"';
                 } else {
                     if ($value) {
                         $attributes[] = $key;
@@ -496,23 +494,23 @@ class Tag implements ITag, Dumpable
                     }
                 }
             } elseif ($value instanceof IElementRepresentation) {
-                $attributes[] = $key.'="'.(string)$value.'"';
+                $attributes[] = $key . '="' . (string)$value . '"';
             } else {
-                $attributes[] = $key.'="'.Html::esc($value).'"';
+                $attributes[] = $key . '="' . Html::esc($value) . '"';
             }
         }
 
         if (!empty($this->_classes)) {
-            $attributes[] = 'class="'.implode(' ', $this->_classes).'"';
+            $attributes[] = 'class="' . implode(' ', $this->_classes) . '"';
         }
 
         if ($attributes = implode(' ', $attributes)) {
-            $attributes = ' '.$attributes;
+            $attributes = ' ' . $attributes;
         }
 
         $this->_renderCount++;
 
-        $output = '<'.$this->_name.$attributes;
+        $output = '<' . $this->_name . $attributes;
 
         if (!$this->_isClosable) {
             $output .= ' /';
@@ -528,10 +526,10 @@ class Tag implements ITag, Dumpable
             return '';
         }
 
-        return '</'.$this->_name.'>';
+        return '</' . $this->_name . '>';
     }
 
-    public function renderWith($innerContent=null, $expanded=false)
+    public function renderWith($innerContent = null, $expanded = false)
     {
         if ($this->_isClosable && (!empty($innerContent) || $innerContent == '0')) {
             if (!$innerContent instanceof IElementContent) {
@@ -553,7 +551,7 @@ class Tag implements ITag, Dumpable
             }
 
             if ($expanded) {
-                $innerContent = "\n".$innerContent."\n";
+                $innerContent = "\n" . $innerContent . "\n";
             }
         } elseif (!$this->_renderIfEmpty) {
             return null;
@@ -561,7 +559,7 @@ class Tag implements ITag, Dumpable
             $innerContent = null;
         }
 
-        $string = $this->open().$innerContent.$this->close();
+        $string = $this->open() . $innerContent . $this->close();
 
         if ($expanded) {
             $string .= "\n";
@@ -580,7 +578,7 @@ class Tag implements ITag, Dumpable
         return (string)$this->open();
     }
 
-    public function shouldRenderIfEmpty(bool $flag=null)
+    public function shouldRenderIfEmpty(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_renderIfEmpty = $flag;

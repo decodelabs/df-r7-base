@@ -6,14 +6,12 @@
 
 namespace df\arch\node\form;
 
-use df;
-use df\core;
-use df\arch;
-use df\link;
-use df\flex;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\R7\Legacy;
+use df\arch;
+
+use df\core;
+use df\link;
 
 class EventDescriptor implements arch\node\IFormEventDescriptor
 {
@@ -38,7 +36,7 @@ class EventDescriptor implements arch\node\IFormEventDescriptor
         return new self($output);
     }
 
-    public function __construct($output=null)
+    public function __construct($output = null)
     {
         if ($output !== null) {
             $this->parseOutput($output);
@@ -101,8 +99,8 @@ class EventDescriptor implements arch\node\IFormEventDescriptor
 
                 if (property_exists($output, $attr)) {
                     $this->{$method}($output->{$attr});
-                } elseif (defined($class.'::'.$upperAttr)) {
-                    $this->{$method}(constant($class.'::'.$upperAttr));
+                } elseif (defined($class . '::' . $upperAttr)) {
+                    $this->{$method}(constant($class . '::' . $upperAttr));
                 }
             }
         } elseif (is_array($output)) {
@@ -156,7 +154,7 @@ class EventDescriptor implements arch\node\IFormEventDescriptor
             $output .= '.';
         }
 
-        return $output.$this->_eventName;
+        return $output . $this->_eventName;
     }
 
     public function getFullEventCall()
@@ -165,7 +163,7 @@ class EventDescriptor implements arch\node\IFormEventDescriptor
             return null;
         }
 
-        return $this->getFullEventName().'('.implode(',', (array)$this->getEventArgs()).')';
+        return $this->getFullEventName() . '(' . implode(',', (array)$this->getEventArgs()) . ')';
     }
 
     public function setEventArgs(array $args)
@@ -267,7 +265,7 @@ class EventDescriptor implements arch\node\IFormEventDescriptor
         return $this->_redirect !== null;
     }
 
-    public function shouldForceRedirect(bool $flag=null)
+    public function shouldForceRedirect(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_forceRedirect = $flag;
@@ -277,7 +275,7 @@ class EventDescriptor implements arch\node\IFormEventDescriptor
         return $this->_forceRedirect;
     }
 
-    public function shouldReload(bool $flag=null)
+    public function shouldReload(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_reload = $flag;

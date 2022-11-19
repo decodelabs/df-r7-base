@@ -6,11 +6,8 @@
 
 namespace df\core\lang;
 
-use df;
-use df\core;
-
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
 
 class TypeRef implements ITypeRef, \Serializable, Dumpable
 {
@@ -19,17 +16,17 @@ class TypeRef implements ITypeRef, \Serializable, Dumpable
 
     public static function __callStatic($method, array $args)
     {
-        if (method_exists(__CLASS__, '__'.$method)) {
+        if (method_exists(__CLASS__, '__' . $method)) {
             $class = __CLASS__;
-            return $class::{'__'.$method}(...$args);
+            return $class::{'__' . $method}(...$args);
         }
 
         throw Exceptional::BadMethodCall(
-            'Method '.$method.' is not available on class '.__CLASS__
+            'Method ' . $method . ' is not available on class ' . __CLASS__
         );
     }
 
-    public static function __factory($type, $extends=null)
+    public static function __factory($type, $extends = null)
     {
         if (!$type instanceof self) {
             $type = new self($type);
@@ -68,7 +65,7 @@ class TypeRef implements ITypeRef, \Serializable, Dumpable
     {
         if (false !== strpos($type, '/')) {
             $parts = explode('/', trim($type, '/'));
-            $type = 'df\\'.implode('\\', $parts);
+            $type = 'df\\' . implode('\\', $parts);
         }
 
         return $type;
@@ -84,7 +81,7 @@ class TypeRef implements ITypeRef, \Serializable, Dumpable
 
         if (!class_exists($class)) {
             throw Exceptional::InvalidArgument(
-                'Class '.$class.' could not be found'
+                'Class ' . $class . ' could not be found'
             );
         }
 
@@ -109,13 +106,13 @@ class TypeRef implements ITypeRef, \Serializable, Dumpable
             if (class_exists($checkType)) {
                 if (!$this->_reflection->isSubclassOf($checkType)) {
                     throw Exceptional::Runtime(
-                        $this->_class.' does not extend '.$checkType
+                        $this->_class . ' does not extend ' . $checkType
                     );
                 }
             } elseif (interface_exists($checkType)) {
                 if (!$this->_reflection->implementsInterface($checkType)) {
                     throw Exceptional::Runtime(
-                        $this->_class.' does not implement '.$checkType
+                        $this->_class . ' does not implement ' . $checkType
                     );
                 }
             }
@@ -138,7 +135,7 @@ class TypeRef implements ITypeRef, \Serializable, Dumpable
     {
         if (!$this->_reflection->hasMethod($method)) {
             throw Exceptional::BadMethodCall(
-                'Method '.$method.' is not available on class '.$this->_class
+                'Method ' . $method . ' is not available on class ' . $this->_class
             );
         }
 
@@ -146,7 +143,7 @@ class TypeRef implements ITypeRef, \Serializable, Dumpable
 
         if (!$method->isStatic() || !$method->isPublic()) {
             throw Exceptional::BadMethodCall(
-                'Method '.$method.' is not accessible on class '.$this->_class
+                'Method ' . $method . ' is not accessible on class ' . $this->_class
             );
         }
 

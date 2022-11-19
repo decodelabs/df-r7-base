@@ -8,9 +8,9 @@ namespace df\opal\schema;
 
 use ArrayIterator;
 
-use df\opal;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\opal;
 
 class RelationManifest implements IRelationManifest, Dumpable
 {
@@ -41,14 +41,14 @@ class RelationManifest implements IRelationManifest, Dumpable
         }
     }
 
-    public function getPrimitiveFieldNames($prefix=null)
+    public function getPrimitiveFieldNames($prefix = null)
     {
         if ($prefix !== null) {
             $output = [];
-            $prefix = rtrim($prefix, '_').'_';
+            $prefix = rtrim($prefix, '_') . '_';
 
             foreach ($this->_primitives as $name => $processor) {
-                $output[] = $prefix.$name;
+                $output[] = $prefix . $name;
             }
 
             return $output;
@@ -57,14 +57,14 @@ class RelationManifest implements IRelationManifest, Dumpable
         return array_keys($this->_primitives);
     }
 
-    public function getPrimitives($prefix=null)
+    public function getPrimitives($prefix = null)
     {
         if ($prefix !== null) {
             $output = [];
-            $prefix = rtrim($prefix, '_').'_';
+            $prefix = rtrim($prefix, '_') . '_';
 
             foreach ($this->_primitives as $name => $processor) {
-                $output[$prefix.$name] = $processor;
+                $output[$prefix . $name] = $processor;
             }
 
             return $output;
@@ -105,7 +105,7 @@ class RelationManifest implements IRelationManifest, Dumpable
             if ($returnVal && isset($row[$key])) {
                 $value = $row[$key];
             } else {
-                $testKey = $key.'_'.$name;
+                $testKey = $key . '_' . $name;
 
                 if (isset($row[$testKey])) {
                     $value = $row[$testKey];
@@ -144,7 +144,7 @@ class RelationManifest implements IRelationManifest, Dumpable
     }
 
 
-    public function toPrimaryKeySet($value=null)
+    public function toPrimaryKeySet($value = null)
     {
         $values = [];
 

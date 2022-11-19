@@ -5,11 +5,9 @@
  */
 namespace df\opal\schema;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Exceptional;
+
+use df\opal;
 
 trait TSchema
 {
@@ -25,7 +23,7 @@ trait TSchema
 
 
     // Audit
-    public function isAudited(bool $flag=null)
+    public function isAudited(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isAudited = $flag;
@@ -225,7 +223,7 @@ trait TSchema_FieldProvider
 
         if (isset($this->_fields[$name])) {
             throw Exceptional::Runtime(
-                'Field '.$name.' has already been defined, use replaceField() instead'
+                'Field ' . $name . ' has already been defined, use replaceField() instead'
             );
         }
 
@@ -251,13 +249,13 @@ trait TSchema_FieldProvider
     {
         if ($key !== null && !isset($this->_fields[$key])) {
             throw Exceptional::InvalidArgument(
-                'Field '.$key.' could not be found to place '.$field->getName().' after'
+                'Field ' . $key . ' could not be found to place ' . $field->getName() . ' after'
             );
         }
 
         if (isset($this->_fields[$name = $field->getName()])) {
             throw Exceptional::Runtime(
-                'Field '.$name.' has already been defined, use replaceField() instead'
+                'Field ' . $name . ' has already been defined, use replaceField() instead'
             );
         }
 
@@ -280,7 +278,7 @@ trait TSchema_FieldProvider
 
         if (!isset($this->_fields[$name])) {
             throw Exceptional::InvalidArgument(
-                'Field '.$name.' could not be found'
+                'Field ' . $name . ' could not be found'
             );
         }
 
@@ -354,7 +352,7 @@ trait TSchema_FieldProvider
 
         if (isset($this->_fields[$newName])) {
             throw Exceptional::Runtime(
-                'Cannot rename field '.$oldName.' to '.$newName.', a field with that name has already been defined'
+                'Cannot rename field ' . $oldName . ' to ' . $newName . ', a field with that name has already been defined'
             );
         }
 
@@ -418,7 +416,7 @@ trait TSchema_FieldProvider
         return isset($this->_fields[$name]) || isset($this->_addFields[$name]);
     }
 
-    protected function _remapFields($insertKey=null, opal\schema\IField $insertField=null)
+    protected function _remapFields($insertKey = null, opal\schema\IField $insertField = null)
     {
         $fields = $this->_fields;
         $this->_fields = [];
@@ -513,10 +511,10 @@ trait TSchema_FieldProvider
             $displayName = $name;
 
             if (isset($this->_addFields[$name])) {
-                $displayName = '+ '.$displayName;
+                $displayName = '+ ' . $displayName;
             } elseif ($field->hasChanged()) {
                 if (isset($this->_renameFields[$name])) {
-                    $displayName = $this->_renameFields[$name].' -> '.$name;
+                    $displayName = $this->_renameFields[$name] . ' -> ' . $name;
                 }
 
                 $displayName .= ' *';
@@ -526,7 +524,7 @@ trait TSchema_FieldProvider
         }
 
         foreach ($this->_removeFields as $name => $field) {
-            $fields['- '.$name] = $field;
+            $fields['- ' . $name] = $field;
         }
 
         return $fields;
@@ -563,17 +561,17 @@ trait TSchema_IndexProvider
         return null;
     }
 
-    public function createIndex($name, $fields=null)
+    public function createIndex($name, $fields = null)
     {
         return $this->_createIndex($name, $this->_normalizeIndexFieldInput($fields, $name));
     }
 
-    public function createUniqueIndex($name, $fields=null)
+    public function createUniqueIndex($name, $fields = null)
     {
         return $this->_createIndex($name, $this->_normalizeIndexFieldInput($fields, $name))->isUnique(true);
     }
 
-    public function addIndex($name, $fields=null)
+    public function addIndex($name, $fields = null)
     {
         return $this->addPreparedIndex(
             $this->_createIndex(
@@ -583,12 +581,12 @@ trait TSchema_IndexProvider
         );
     }
 
-    public function addUniqueIndex($name, $fields=null)
+    public function addUniqueIndex($name, $fields = null)
     {
         return $this->addIndex($name, $fields)->isUnique(true);
     }
 
-    public function addPrimaryIndex($name, $fields=null)
+    public function addPrimaryIndex($name, $fields = null)
     {
         $index = $this->addUniqueIndex($name, $fields);
         $this->setPrimaryIndex($index);
@@ -599,13 +597,13 @@ trait TSchema_IndexProvider
     {
         if (!$this->_validateIndex($index)) {
             throw Exceptional::Runtime(
-                'Index '.$index->getName().' is not valid for fields: '.implode(', ', array_keys($index->getFields()))
+                'Index ' . $index->getName() . ' is not valid for fields: ' . implode(', ', array_keys($index->getFields()))
             );
         }
 
         if (isset($this->_indexes[$index->getName()])) {
             throw Exceptional::Runtime(
-                'Index '.$index->getName().' has already been defined'
+                'Index ' . $index->getName() . ' has already been defined'
             );
         }
 
@@ -622,7 +620,7 @@ trait TSchema_IndexProvider
         return true;
     }
 
-    public function replaceIndex($name, $fields=null)
+    public function replaceIndex($name, $fields = null)
     {
         return $this->replacePreparedIndex(
             $this->_createIndex(
@@ -638,7 +636,7 @@ trait TSchema_IndexProvider
 
         if (!isset($this->_indexes[$name])) {
             throw Exceptional::InvalidArgument(
-                'Index '.$name.' could not be found'
+                'Index ' . $name . ' could not be found'
             );
         }
 
@@ -692,7 +690,7 @@ trait TSchema_IndexProvider
 
         if (isset($this->_indexes[$newName])) {
             throw Exceptional::Runtime(
-                'Cannot rename index '.$oldName.' to '.$newName.', an index with that name has already been defined'
+                'Cannot rename index ' . $oldName . ' to ' . $newName . ', an index with that name has already been defined'
             );
         }
 
@@ -723,13 +721,13 @@ trait TSchema_IndexProvider
                 }
             } elseif (!$index = $this->getIndex($index)) {
                 throw Exceptional::InvalidArgument(
-                    'Index '.$name.' could not be found in this schema'
+                    'Index ' . $name . ' could not be found in this schema'
                 );
             }
 
             if (!$index->isUnique()) {
                 throw Exceptional::InvalidArgument(
-                    'Primary indexes must be unique, '.$index->getName().' is not'
+                    'Primary indexes must be unique, ' . $index->getName() . ' is not'
                 );
             }
         }
@@ -846,7 +844,7 @@ trait TSchema_IndexProvider
         return isset($this->_indexes[$name]) || isset($this->_addIndexes[$name]);
     }
 
-    abstract public function _createIndex($name, $fields=null);
+    abstract public function _createIndex($name, $fields = null);
     abstract public function _createIndexFromStorageArray(array $data);
 
     public function getOriginalIndexNameFor($name)
@@ -858,7 +856,7 @@ trait TSchema_IndexProvider
         return $name;
     }
 
-    protected function _normalizeIndexFieldInput($fields, $name=null)
+    protected function _normalizeIndexFieldInput($fields, $name = null)
     {
         if ($fields === false) {
             return null;
@@ -995,14 +993,14 @@ trait TSchema_IndexProvider
             $displayName = $name;
 
             if ($index === $this->_primaryIndex) {
-                $displayName = '@ '.$displayName;
+                $displayName = '@ ' . $displayName;
             }
 
             if (isset($this->_addIndexes[$name])) {
-                $displayName = '+ '.$displayName;
+                $displayName = '+ ' . $displayName;
             } elseif ($index->hasChanged()) {
                 if (isset($this->_renameIndexes[$name])) {
-                    $displayName = $this->_renameIndexes[$name].' -> '.$name;
+                    $displayName = $this->_renameIndexes[$name] . ' -> ' . $name;
                 }
 
                 $displayName .= ' *';
@@ -1012,7 +1010,7 @@ trait TSchema_IndexProvider
         }
 
         foreach ($this->_removeIndexes as $name => $index) {
-            $indexes['- '.$name] = $index;
+            $indexes['- ' . $name] = $index;
         }
 
         return $indexes;
@@ -1107,7 +1105,7 @@ trait TSchema_ForeignKeyProvider
 
         if (isset($this->_foreignKeys[$name])) {
             throw Exceptional::Runtime(
-                'Foreign key '.$name.' has already been defined'
+                'Foreign key ' . $name . ' has already been defined'
             );
         }
 
@@ -1132,7 +1130,7 @@ trait TSchema_ForeignKeyProvider
 
         if (!isset($this->_foreignKeys[$name])) {
             throw Exceptional::InvalidArgument(
-                'Foreign key '.$name.' could not be found'
+                'Foreign key ' . $name . ' could not be found'
             );
         }
 
@@ -1181,7 +1179,7 @@ trait TSchema_ForeignKeyProvider
 
         if (isset($this->_foreignKeys[$newName])) {
             throw Exceptional::Runtime(
-                'Cannot rename foreign key '.$oldName.' to '.$newName.', a foreign key with that name has already been defined'
+                'Cannot rename foreign key ' . $oldName . ' to ' . $newName . ', a foreign key with that name has already been defined'
             );
         }
 
@@ -1325,10 +1323,10 @@ trait TSchema_ForeignKeyProvider
             $displayName = $name;
 
             if (isset($this->_addForeignKeys[$name])) {
-                $displayName = '+ '.$displayName;
+                $displayName = '+ ' . $displayName;
             } elseif ($key->hasChanged()) {
                 if (isset($this->_renameForeignKeys[$name])) {
-                    $displayName = $this->_renameForeignKeys[$name].' -> '.$name;
+                    $displayName = $this->_renameForeignKeys[$name] . ' -> ' . $name;
                 }
 
                 $displayName .= ' *';
@@ -1338,7 +1336,7 @@ trait TSchema_ForeignKeyProvider
         }
 
         foreach ($this->_removeForeignKeys as $name => $key) {
-            $keys['- '.$name] = $key;
+            $keys['- ' . $name] = $key;
         }
 
         return $keys;
@@ -1384,7 +1382,7 @@ trait TSchema_TriggerProvider
 
         if (isset($this->_triggers[$name])) {
             throw Exceptional::{'df/opal/rdbms/TriggerConflict'}(
-                'Trigger '.$name.' has already been defined'
+                'Trigger ' . $name . ' has already been defined'
             );
         }
 
@@ -1415,7 +1413,7 @@ trait TSchema_TriggerProvider
 
         if (!isset($this->_triggers[$name])) {
             throw Exceptional::UnexpectedValue(
-                'Trigger '.$name.' could not be found'
+                'Trigger ' . $name . ' could not be found'
             );
         }
 
@@ -1464,7 +1462,7 @@ trait TSchema_TriggerProvider
 
         if (isset($this->_triggers[$newName])) {
             throw Exceptional::{'df/opal/rdbms/TriggerConflict'}(
-                'Cannot rename trigger '.$oldName.' to '.$newName.', a field with that name has already been defined'
+                'Cannot rename trigger ' . $oldName . ' to ' . $newName . ', a field with that name has already been defined'
             );
         }
 
@@ -1609,10 +1607,10 @@ trait TSchema_TriggerProvider
             $displayName = $name;
 
             if (isset($this->_addTriggers[$name])) {
-                $displayName = '+ '.$displayName;
+                $displayName = '+ ' . $displayName;
             } elseif ($trigger->hasChanged()) {
                 if (isset($this->_renameTriggers[$name])) {
-                    $displayName = $this->_renameTriggers[$name].' -> '.$name;
+                    $displayName = $this->_renameTriggers[$name] . ' -> ' . $name;
                 }
 
                 $displayName .= ' *';
@@ -1622,7 +1620,7 @@ trait TSchema_TriggerProvider
         }
 
         foreach ($this->_removeTriggers as $name => $trigger) {
-            $triggers['- '.$name] = $trigger;
+            $triggers['- ' . $name] = $trigger;
         }
 
         return $triggers;

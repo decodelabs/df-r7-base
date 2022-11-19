@@ -5,12 +5,10 @@
  */
 namespace df\spur\vcs\git;
 
-use df;
-use df\core;
-use df\spur;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
 
 class Commit implements ICommit, Dumpable
 {
@@ -53,7 +51,7 @@ class Commit implements ICommit, Dumpable
 
         if ($key != array_shift($parts)) {
             throw Exceptional::UnexpectedValue(
-                'Commit description key \''.$key.'\' was not found on line: '.$line
+                'Commit description key \'' . $key . '\' was not found on line: ' . $line
             );
         }
 
@@ -205,7 +203,7 @@ class Commit implements ICommit, Dumpable
 
         if (!$commitId) {
             throw Exceptional::Runtime(
-                'Could not find commit '.$this->_id.' in repository'
+                'Could not find commit ' . $this->_id . ' in repository'
             );
         }
 
@@ -229,7 +227,7 @@ class Commit implements ICommit, Dumpable
         array_shift($result);
 
         while (!empty($result) && 0 === strpos($result[0], '   ')) {
-            $this->_message .= trim(array_shift($result))."\n";
+            $this->_message .= trim(array_shift($result)) . "\n";
         }
 
         $this->_message = rtrim($this->_message);

@@ -5,20 +5,19 @@
  */
 namespace df\core\i18n;
 
-use df;
 use df\core;
 
 interface ILocale extends core\IStringProvider
 {
-    public function getDisplayName($localeFormat=null);
+    public function getDisplayName($localeFormat = null);
     public function getLanguage();
-    public function getDisplayLanguage($localeFormat=null);
+    public function getDisplayLanguage($localeFormat = null);
     public function getScript();
-    public function getDisplayScript($localeFormat=null);
+    public function getDisplayScript($localeFormat = null);
     public function getRegion();
-    public function getDisplayRegion($localeFormat=null);
+    public function getDisplayRegion($localeFormat = null);
     public function getVariants();
-    public function getDisplayVariants($localeFormat=null);
+    public function getDisplayVariants($localeFormat = null);
     public function getKeywords();
 }
 

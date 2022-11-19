@@ -6,16 +6,13 @@
 
 namespace df\apex\directory\front\axis\_nodes;
 
-use df;
-use df\core;
-use df\apex;
+use DecodeLabs\Dictum;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Terminus as Cli;
+
 use df\arch;
 use df\axis;
 use df\opal;
-
-use DecodeLabs\Dictum;
-use DecodeLabs\Terminus as Cli;
-use DecodeLabs\Exceptional;
 
 class TaskRebuildTable extends arch\node\Task
 {
@@ -34,33 +31,33 @@ class TaskRebuildTable extends arch\node\Task
 
         if (!$unit = axis\Model::loadUnitFromId($unitId)) {
             throw Exceptional::{'df/axis/unit/NotFound'}(
-                'Unit '.$unitId.' not found'
+                'Unit ' . $unitId . ' not found'
             );
         }
 
         if ($unit->getUnitType() != 'table') {
             throw Exceptional::{'df/axis/unit/Domain'}(
-                'Unit '.$unitId.' is not a table'
+                'Unit ' . $unitId . ' is not a table'
             );
         }
 
         if (!$unit instanceof axis\ISchemaBasedStorageUnit) {
             throw Exceptional::{'df/axis/unit/Domain'}(
-                'Unit '.$unitId.' is not schemas based'
+                'Unit ' . $unitId . ' is not schemas based'
             );
         }
 
-        Cli::info('Rebuilding unit '.$unit->getUnitId());
+        Cli::info('Rebuilding unit ' . $unit->getUnitId());
         $adapter = $unit->getUnitAdapter();
 
         $parts = explode('\\', get_class($adapter));
         $adapterName = array_pop($parts);
 
-        $func = '_rebuild'.$adapterName.'Table';
+        $func = '_rebuild' . $adapterName . 'Table';
 
         if (!method_exists($this, $func)) {
             throw Exceptional::{'df/axis/unit/Domain'}(
-                'Table unit '.$unitId.' is using an adapter that doesn\'t currently support rebuilding'
+                'Table unit ' . $unitId . ' is using an adapter that doesn\'t currently support rebuilding'
             );
         }
 
@@ -86,20 +83,20 @@ class TaskRebuildTable extends arch\node\Task
         $currentTable = clone $adapter->getQuerySourceAdapter();
 
         if (!$currentTable->exists()) {
-            Cli::info('Unit rdbms table '.$currentTable->getName().' not found - nothing to do');
+            Cli::info('Unit rdbms table ' . $currentTable->getName() . ' not found - nothing to do');
             return;
         }
 
         $translator = new axis\schema\translator\Rdbms($unit, $connection, $axisSchema);
         $dbSchema = $translator->createFreshTargetSchema();
         $currentTableName = $dbSchema->getName();
-        $dbSchema->setName($currentTableName.'__rebuild__');
+        $dbSchema->setName($currentTableName . '__rebuild__');
 
         try {
             $newTable = $newConnection->createTable($dbSchema);
         } catch (opal\rdbms\TableConflictException $e) {
             throw Exceptional::{'df/axis/unit/Runtime'}(
-                'Table unit '.$unit->getUnitId().' is currently rebuilding in another process'
+                'Table unit ' . $unit->getUnitId() . ' is currently rebuilding in another process'
             );
         }
 
@@ -179,13 +176,13 @@ class TaskRebuildTable extends arch\node\Task
 
         Cli::newLine();
         Cli::{'yellow'}('Renaming tables: ');
-        $currentTable->rename($currentTableName.axis\IUnitOptions::BACKUP_SUFFIX.Dictum::$time->format('now', 'Ymd_his', 'UTC'));
+        $currentTable->rename($currentTableName . axis\IUnitOptions::BACKUP_SUFFIX . Dictum::$time->format('now', 'Ymd_his', 'UTC'));
         $newTable->rename($currentTableName);
         Cli::success('done');
 
 
         if ($this->request->query['delete'] === true) {
-            Cli::{'yellow'}('Deleting backup: '.$currentTable->getName().': ');
+            Cli::{'yellow'}('Deleting backup: ' . $currentTable->getName() . ': ');
             $currentTable->drop();
             Cli::success('done');
         }

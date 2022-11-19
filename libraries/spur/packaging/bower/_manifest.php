@@ -6,14 +6,10 @@
 
 namespace df\spur\packaging\bower;
 
-use df;
-use df\core;
-use df\spur;
-use df\fuse;
-use df\flex;
-use df\aura;
-
 use DecodeLabs\Terminus\Session;
+use df\flex;
+
+use df\spur;
 
 interface IBridge
 {
@@ -30,7 +26,7 @@ interface IBridge
 interface IInstaller
 {
     public function getInstallPath();
-    public function setCliSession(Session $session=null);
+    public function setCliSession(Session $session = null);
     public function getCliSession(): ?Session;
     public function installPackages(array $packages);
     public function installPackage(Package $package);
@@ -46,7 +42,7 @@ interface IInstaller
 interface IResolver
 {
     public function resolvePackageName(Package $package);
-    public function fetchPackage(Package $package, $cachePath, $currentVersion=null);
+    public function fetchPackage(Package $package, $cachePath, $currentVersion = null);
     public function getTargetVersion(Package $package, $cachePath);
 }
 

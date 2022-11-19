@@ -6,16 +6,16 @@
 
 namespace df\flow;
 
-use df;
-use df\core;
-use df\flow;
-use df\user;
-use df\flex;
-use df\axis;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy;
+use df;
+use df\axis;
+use df\core;
+
+use df\flex;
+use df\flow;
+use df\user;
 
 class Manager implements IManager, core\IShutdownAware
 {
@@ -36,17 +36,17 @@ class Manager implements IManager, core\IShutdownAware
 
 
     ## Mail
-    public function sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null)
+    public function sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport = null)
     {
         return $this->_sendMail($message, $transport);
     }
 
-    public function forceSendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null)
+    public function forceSendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport = null)
     {
         return $this->_sendMail($message, $transport, true);
     }
 
-    protected function _sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null, $forceSend=false)
+    protected function _sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport = null, $forceSend = false)
     {
         $context = new core\SharedContext();
 
@@ -124,7 +124,7 @@ class Manager implements IManager, core\IShutdownAware
             if (!$from->isValid()) {
                 $context->logs->logException(
                     Exceptional::UnexpectedValue(
-                        'Invalid from address: '.$from
+                        'Invalid from address: ' . $from
                     )
                 );
 
@@ -220,7 +220,7 @@ class Manager implements IManager, core\IShutdownAware
                     ->setEncoding('BASE64')
                     ->getHeaders()
                         ->set('X-Attachment-Id', $attachment->getContentId())
-                        ->set('Content-Id', '<'.$attachment->getContentId().'>');
+                        ->set('Content-Id', '<' . $attachment->getContentId() . '>');
             }
 
 
@@ -274,7 +274,7 @@ class Manager implements IManager, core\IShutdownAware
 
 
 
-    public function getDefaultMailTransportName($forceSend=false)
+    public function getDefaultMailTransportName($forceSend = false)
     {
         if (
             Genesis::$environment->isDevelopment() &&
@@ -366,7 +366,7 @@ class Manager implements IManager, core\IShutdownAware
 
         foreach ($this->getListSources() as $sourceId => $source) {
             foreach ($source->getManifest() as $listId => $list) {
-                $output[$sourceId.'/'.$listId] = array_merge([
+                $output[$sourceId . '/' . $listId] = array_merge([
                     'id' => $listId,
                     'source' => $sourceId
                 ], $list);
@@ -399,7 +399,7 @@ class Manager implements IManager, core\IShutdownAware
 
         foreach ($this->getListSources() as $sourceId => $source) {
             foreach ($source->getListOptions() as $listId => $name) {
-                $output[$sourceId.'/'.$listId] = $name;
+                $output[$sourceId . '/' . $listId] = $name;
             }
         }
 
@@ -412,7 +412,7 @@ class Manager implements IManager, core\IShutdownAware
 
         foreach ($this->getListSources() as $sourceId => $source) {
             foreach ($source->getGroupOptions() as $groupId => $name) {
-                $output[$sourceId.'/'.$groupId] = $name;
+                $output[$sourceId . '/' . $groupId] = $name;
             }
         }
 
@@ -428,7 +428,7 @@ class Manager implements IManager, core\IShutdownAware
 
 
 
-    public function getListExternalLinkFor($source, string $listId=null): ?string
+    public function getListExternalLinkFor($source, string $listId = null): ?string
     {
         if ($source = $this->getListSource($source)) {
             if ($listId !== null) {
@@ -455,7 +455,7 @@ class Manager implements IManager, core\IShutdownAware
         return $source->getGroupSetOptionsFor($listId);
     }
 
-    public function getGroupOptionsFor($source, ?string $listId, bool $nested=false, bool $showSets=true): array
+    public function getGroupOptionsFor($source, ?string $listId, bool $nested = false, bool $showSets = true): array
     {
         if (!$source = $this->getListSource($source)) {
             return [];
@@ -496,7 +496,7 @@ class Manager implements IManager, core\IShutdownAware
         return $source->getGroupSetOptionsFor($listId);
     }
 
-    public function getPrimaryGroupOptionsFor($source, bool $nested=false, bool $showSets=true): array
+    public function getPrimaryGroupOptionsFor($source, bool $nested = false, bool $showSets = true): array
     {
         if (!$source = $this->getListSource($source)) {
             return [];
@@ -524,53 +524,53 @@ class Manager implements IManager, core\IShutdownAware
 
 
 
-    public function subscribeClientToPrimaryList($source, array $groups=null, bool $replace=false, ?array $extraData=null): flow\mailingList\ISubscribeResult
+    public function subscribeClientToPrimaryList($source, array $groups = null, bool $replace = false, ?array $extraData = null): flow\mailingList\ISubscribeResult
     {
         $client = user\Manager::getInstance()->getClient();
         return $this->subscribeUserToPrimaryList($client, $source, $groups, $replace, $extraData);
     }
 
-    public function subscribeClientToList($source, $listId, array $groups=null, bool $replace=false, ?array $extraData=null): flow\mailingList\ISubscribeResult
+    public function subscribeClientToList($source, $listId, array $groups = null, bool $replace = false, ?array $extraData = null): flow\mailingList\ISubscribeResult
     {
         $client = user\Manager::getInstance()->getClient();
         return $this->subscribeUserToList($client, $source, $listId, $groups, $replace, $extraData);
     }
 
-    public function subscribeClientToGroups(array $compoundGroupIds, bool $replace=false, ?array $extraData=null): array
+    public function subscribeClientToGroups(array $compoundGroupIds, bool $replace = false, ?array $extraData = null): array
     {
         $client = user\Manager::getInstance()->getClient();
         return $this->subscribeUserToGroups($client, $compoundGroupIds, $replace, $extraData);
     }
 
-    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $source, array $groups=null, bool $replace=false, ?array $extraData=null): flow\mailingList\ISubscribeResult
+    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $source, array $groups = null, bool $replace = false, ?array $extraData = null): flow\mailingList\ISubscribeResult
     {
         if (!$source = $this->getListSource($sourceId = $source)) {
             throw Exceptional::{'df/flow/mailingList/Api,flow/mailingList/NotFound'}(
-                'List source '.$sourceId.' does not exist'
+                'List source ' . $sourceId . ' does not exist'
             );
         }
 
         if (!$listId = $source->getPrimaryListId()) {
             throw Exceptional::{'df/flow/mailingList/Api,flow/mailingList/NotFound'}(
-                'No primary list has been set for mailing list source '.$source->getId()
+                'No primary list has been set for mailing list source ' . $source->getId()
             );
         }
 
         return $this->subscribeUserToList($client, $source, $listId, $groups, $replace, $extraData);
     }
 
-    public function subscribeUserToList(user\IClientDataObject $client, $source, $listId, array $groups=null, bool $replace=false, ?array $extraData=null): flow\mailingList\ISubscribeResult
+    public function subscribeUserToList(user\IClientDataObject $client, $source, $listId, array $groups = null, bool $replace = false, ?array $extraData = null): flow\mailingList\ISubscribeResult
     {
         if (!$source = $this->getListSource($sourceId = $source)) {
             throw Exceptional::{'df/flow/mailingList/Api,flow/mailingList/NotFound'}(
-                'List source '.$sourceId.' does not exist'
+                'List source ' . $sourceId . ' does not exist'
             );
         }
 
         return $source->subscribeUserToList($client, $listId, $groups, $replace, $extraData);
     }
 
-    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, bool $replace=false, ?array $extraData=null): array
+    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, bool $replace = false, ?array $extraData = null): array
     {
         $manifest = $output = [];
 
@@ -602,7 +602,7 @@ class Manager implements IManager, core\IShutdownAware
 
         foreach ($this->getListSources() as $sourceId => $source) {
             foreach ($source->getClientManifest() as $listId => $groups) {
-                $output[$sourceId.'/'.$listId] = $groups;
+                $output[$sourceId . '/' . $listId] = $groups;
             }
         }
 
@@ -640,7 +640,7 @@ class Manager implements IManager, core\IShutdownAware
         return $source->getClientSubscribedGroupsIn($listId);
     }
 
-    public function isClientSubscribed($source, string $listId=null, string $groupId=null): bool
+    public function isClientSubscribed($source, string $listId = null, string $groupId = null): bool
     {
         if (!$source = $this->getListSource($source)) {
             return false;
@@ -747,7 +747,7 @@ class Manager implements IManager, core\IShutdownAware
     }
 
 
-    public function newFlashMessage($id, $message=null, $type=null)
+    public function newFlashMessage($id, $message = null, $type = null)
     {
         return FlashMessage::factory($id, $message, $type);
     }
@@ -863,7 +863,7 @@ class Manager implements IManager, core\IShutdownAware
 
 
     // Shortcuts
-    public function flash($id, $message=null, $type=null)
+    public function flash($id, $message = null, $type = null)
     {
         $message = $this->newFlashMessage($id, $message, $type);
 
@@ -874,7 +874,7 @@ class Manager implements IManager, core\IShutdownAware
         return $message;
     }
 
-    public function flashNow($id, $message=null, $type=null)
+    public function flashNow($id, $message = null, $type = null)
     {
         $message = $this->newFlashMessage($id, $message, $type);
 
@@ -885,7 +885,7 @@ class Manager implements IManager, core\IShutdownAware
         return $message;
     }
 
-    public function flashAlways($id, $message=null, $type=null)
+    public function flashAlways($id, $message = null, $type = null)
     {
         $message = $this->newFlashMessage($id, $message, $type);
 
@@ -957,7 +957,7 @@ class Manager implements IManager, core\IShutdownAware
     }
 
     // Queued
-    public function queueFlash(IFlashMessage $message, $instantIfSpace=false)
+    public function queueFlash(IFlashMessage $message, $instantIfSpace = false)
     {
         $this->_loadFlashQueue();
 

@@ -5,7 +5,6 @@
  */
 namespace df\mesh;
 
-use df;
 use df\core;
 use df\mesh;
 

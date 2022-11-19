@@ -6,36 +6,35 @@
 
 namespace df\link\http\request;
 
-use df;
-use df\core;
-use df\link;
-use df\flex;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Compass\Ip;
-use DecodeLabs\Deliverance\Channel;
-use DecodeLabs\Typify;
 
+use DecodeLabs\Deliverance\Channel;
+use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use DecodeLabs\Typify;
+
+use df\core;
+use df\flex;
+use df\link;
 
 class Base implements link\http\IRequest, Dumpable
 {
     use core\TStringProvider;
     use core\lang\TChainable;
 
-    public const GET     = 'get';
-    public const POST    = 'post';
-    public const PUT     = 'put';
-    public const PATCH   = 'patch';
-    public const HEAD    = 'head';
-    public const DELETE  = 'delete';
-    public const TRACE   = 'trace';
+    public const GET = 'get';
+    public const POST = 'post';
+    public const PUT = 'put';
+    public const PATCH = 'patch';
+    public const HEAD = 'head';
+    public const DELETE = 'delete';
+    public const TRACE = 'trace';
     public const OPTIONS = 'options';
     public const CONNECT = 'connect';
-    public const MERGE   = 'merge';
+    public const MERGE = 'merge';
 
     public $url;
     public $method = self::GET;
@@ -54,7 +53,9 @@ class Base implements link\http\IRequest, Dumpable
 
         if (false === ($parts = preg_split('|(?:\r?\n){2}|m', $string, 2))) {
             throw Exceptional::UnexpectedValue(
-                'Unable to parse request string', null, $string
+                'Unable to parse request string',
+                null,
+                $string
             );
         }
 
@@ -72,20 +73,24 @@ class Base implements link\http\IRequest, Dumpable
 
         if ($protocol !== 'HTTP') {
             throw Exceptional::UnexpectedValue(
-                'Protocol '.$protocol.' is not valid HTTP'
+                'Protocol ' . $protocol . ' is not valid HTTP'
             );
         }
 
         $headers->setHttpVersion(trim((string)strtok('')));
 
         foreach ($lines as $line) {
-            $headers->set(trim(
-                (string)strtok(trim($line), ':')),
-                trim((string)strtok('')
-            ));
+            $headers->set(
+                trim(
+                    (string)strtok(trim($line), ':')
+                ),
+                trim(
+                    (string)strtok('')
+                )
+            );
         }
 
-        $output->setUrl($headers->get('host').$url);
+        $output->setUrl($headers->get('host') . $url);
 
         if ($headers->has('cookie')) {
             $output->setCookieData($headers->get('cookie'));
@@ -103,7 +108,7 @@ class Base implements link\http\IRequest, Dumpable
         return new self($url);
     }
 
-    public function __construct($url=null, $envMode=false)
+    public function __construct($url = null, $envMode = false)
     {
         if ($url === true || $url === false) {
             $envMode = $url;
@@ -153,11 +158,11 @@ class Base implements link\http\IRequest, Dumpable
             $ips = '';
 
             if (isset($_SERVER['REMOTE_ADDR'])) {
-                $ips .= $_SERVER['REMOTE_ADDR'].',';
+                $ips .= $_SERVER['REMOTE_ADDR'] . ',';
             }
 
             if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-                $ips .= $_SERVER['HTTP_CLIENT_IP'].',';
+                $ips .= $_SERVER['HTTP_CLIENT_IP'] . ',';
             }
 
             if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -274,7 +279,7 @@ class Base implements link\http\IRequest, Dumpable
 
             default:
                 throw Exceptional::UnexpectedValue(
-                    $method.' is not a valid request method',
+                    $method . ' is not a valid request method',
                     ['http' => 405]
                 );
         }
@@ -567,7 +572,7 @@ class Base implements link\http\IRequest, Dumpable
         return $this;
     }
 
-    public function getCookie($key, $default=null)
+    public function getCookie($key, $default = null)
     {
         return $this->cookies->get($key, $default);
     }
@@ -617,7 +622,7 @@ class Base implements link\http\IRequest, Dumpable
 
     public function getSocketAddress()
     {
-        return (string)$this->getIp().':'.$this->url->getPort();
+        return (string)$this->getIp() . ':' . $this->url->getPort();
     }
 
 
@@ -630,7 +635,7 @@ class Base implements link\http\IRequest, Dumpable
 
         if (($url->isSecure() && $port !== 443)
         || (!$url->isSecure() && $port !== 80)) {
-            $host = $host.':'.$port;
+            $host = $host . ':' . $port;
         }
 
         $headers = $this->getHeaders();
@@ -680,7 +685,7 @@ class Base implements link\http\IRequest, Dumpable
 
     public function toString(): string
     {
-        $output = $this->getHeaderString()."\r\n\r\n";
+        $output = $this->getHeaderString() . "\r\n\r\n";
 
         if ($this->hasBodyData()) {
             $output .= $this->getBodyDataString();
@@ -689,12 +694,12 @@ class Base implements link\http\IRequest, Dumpable
         return $output;
     }
 
-    public function getHeaderString(array $skipKeys=null)
+    public function getHeaderString(array $skipKeys = null)
     {
         $this->prepareHeaders();
 
         $headers = $this->getHeaders();
-        $output = strtoupper($this->method).' '.$this->url->getLocalString().' HTTP/'.$headers->getHttpVersion()."\r\n";
+        $output = strtoupper($this->method) . ' ' . $this->url->getLocalString() . ' HTTP/' . $headers->getHttpVersion() . "\r\n";
         $output .= $headers->toString($skipKeys);
 
         return $output;

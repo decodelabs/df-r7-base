@@ -5,17 +5,15 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
 use df\arch;
+use df\aura;
 use df\flow;
 
 class FlashMessage extends Base
 {
     protected $_message;
 
-    public function __construct(arch\IContext $context, $message, $type=null)
+    public function __construct(arch\IContext $context, $message, $type = null)
     {
         parent::__construct($context);
 
@@ -63,7 +61,7 @@ class FlashMessage extends Base
     }
 
 
-    public function setMessage($message, $type=null)
+    public function setMessage($message, $type = null)
     {
         $this->_message = clone flow\FlashMessage::factory(uniqid(), $message, $type);
         return $this;
@@ -96,13 +94,13 @@ class FlashMessage extends Base
         return $this->_message->getDescription();
     }
 
-    public function setLink($link, $text=null)
+    public function setLink($link, $text = null)
     {
         $this->_message->setLink($link, $text);
         return $this;
     }
 
-    public function shouldLinkOpenInNewWindow(bool $flag=null)
+    public function shouldLinkOpenInNewWindow(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_message->shouldLinkOpenInNewWindow($flag);

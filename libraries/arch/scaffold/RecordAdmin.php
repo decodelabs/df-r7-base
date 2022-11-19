@@ -6,6 +6,8 @@
 
 namespace df\arch\scaffold;
 
+use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Tagged as Html;
 use df\arch\scaffold\Index\Decorator as IndexDecorator;
 use df\arch\scaffold\Index\DecoratorTrait as IndexDecoratorTrait;
 use df\arch\scaffold\Record\DataProvider as RecordDataProvider;
@@ -16,13 +18,10 @@ use df\arch\scaffold\Record\FilterProvider as RecordFilterProvider;
 use df\arch\scaffold\Record\FilterProviderTrait as RecordFilterProviderTrait;
 use df\arch\scaffold\Section\Decorator as SectionDecorator;
 use df\arch\scaffold\Section\DecoratorTrait as SectionDecoratorTrait;
+
+
 use df\arch\scaffold\Section\Provider as SectionProvider;
 use df\arch\scaffold\Section\ProviderTrait as SectionProviderTrait;
-
-use df\opal\query\ISelectQuery as SelectQuery;
-
-use DecodeLabs\Tagged as Html;
-use DecodeLabs\Glitch\Dumpable;
 
 abstract class RecordAdmin extends Generic implements
     IndexDecorator,
@@ -77,7 +76,7 @@ abstract class RecordAdmin extends Generic implements
 
 
     // Components
-    public function renderRecordList(?callable $filter=null, array $fields=null, ?string $contextKey=null, bool $controls=true)
+    public function renderRecordList(?callable $filter = null, array $fields = null, ?string $contextKey = null, bool $controls = true)
     {
         $queryMode = $this->request->getNode();
         $query = $this->queryRecordList($queryMode);
@@ -114,7 +113,7 @@ abstract class RecordAdmin extends Generic implements
             $fields = $this->mergeFilterListFields($fields, $contextKey);
         }
 
-        $list = $this->apex->component(ucfirst($keyName).'List', $fields)
+        $list = $this->apex->component(ucfirst($keyName) . 'List', $fields)
             ->setCollection($query)
             ->setSlot('scaffold', $this);
 

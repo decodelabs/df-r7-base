@@ -6,18 +6,17 @@
 
 namespace df\plug;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-use df\link;
-use df\fuse;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy;
+
+use df\arch;
+use df\aura;
+use df\core;
+use df\fuse;
+use df\link;
 
 use GuzzleHttp\Client as HttpClient;
 use Psr\Http\Message\ResponseInterface;
@@ -35,7 +34,7 @@ class Uri implements arch\IDirectoryHelper
             ->requestToUrl($request);
     }
 
-    public function __invoke($uri, $from=null, $to=null, $asRequest=false)
+    public function __invoke($uri, $from = null, $to = null, $asRequest = false)
     {
         if ($uri === null) {
             return $asRequest ?
@@ -105,7 +104,7 @@ class Uri implements arch\IDirectoryHelper
                         $this->asset($matches[3]);
 
                 case 'media':
-                    $uri = 'media/download/f'.$matches[3];
+                    $uri = 'media/download/f' . $matches[3];
                     break;
 
                 case 'data':
@@ -118,17 +117,17 @@ class Uri implements arch\IDirectoryHelper
             $this->directory($uri, $from, $to);
     }
 
-    public function current($from=null, $to=null)
+    public function current($from = null, $to = null)
     {
         return $this->directory($this->context->request, $from, $to);
     }
 
-    public function currentRequest($from=null, $to=null)
+    public function currentRequest($from = null, $to = null)
     {
         return $this->directoryRequest($this->context->request, $from, $to);
     }
 
-    public function mapCurrent(array $map, array $queryValues=null)
+    public function mapCurrent(array $map, array $queryValues = null)
     {
         $request = clone $this->context->request;
 
@@ -171,7 +170,7 @@ class Uri implements arch\IDirectoryHelper
         return $this->requestToUrl($request);
     }
 
-    public function queryToggle($request, $key, &$result=null)
+    public function queryToggle($request, $key, &$result = null)
     {
         $request = $this->directoryRequest($request);
         $result = isset($request->query->{$key});
@@ -185,12 +184,12 @@ class Uri implements arch\IDirectoryHelper
         return $this->requestToUrl($request);
     }
 
-    public function directory($request, $from=null, $to=null)
+    public function directory($request, $from = null, $to = null)
     {
         return $this->requestToUrl($this->directoryRequest($request, $from, $to));
     }
 
-    public function directoryRequest($request, $from=null, $to=null)
+    public function directoryRequest($request, $from = null, $to = null)
     {
         if (!$request instanceof arch\IRequest) {
             if ($request === null) {
@@ -211,7 +210,7 @@ class Uri implements arch\IDirectoryHelper
         return $request;
     }
 
-    protected function _applyRequestRedirect(arch\Request $request, $from=null, $to=null)
+    protected function _applyRequestRedirect(arch\Request $request, $from = null, $to = null)
     {
         if ($from !== null) {
             if ($from === true) {
@@ -233,12 +232,12 @@ class Uri implements arch\IDirectoryHelper
     }
 
     // Assets
-    public function asset($path, $attachment=false)
+    public function asset($path, $attachment = false)
     {
         return $this->directory($this->assetRequest($path, $attachment));
     }
 
-    public function assetRequest($path, $attachment=false)
+    public function assetRequest($path, $attachment = false)
     {
         $path = new core\uri\Url($path);
         $request = new arch\Request('assets/download?cts');
@@ -252,29 +251,29 @@ class Uri implements arch\IDirectoryHelper
         return $request;
     }
 
-    public function themeAsset($path, $theme=null)
+    public function themeAsset($path, $theme = null)
     {
         return $this->directory($this->themeAssetRequest($path, $theme));
     }
 
-    public function themeAssetRequest($path, $theme=null)
+    public function themeAssetRequest($path, $theme = null)
     {
         $theme = $this->_normalizeTheme($theme, $path);
 
         $path = new core\uri\Url($path);
-        $request = new arch\Request('theme/download?cts&theme='.$theme);
+        $request = new arch\Request('theme/download?cts&theme=' . $theme);
         $request->query->file = (string)$path->getPath();
         $request->query->import($path->getQuery());
 
         return $request;
     }
 
-    public function themeDependency($name, $theme=null)
+    public function themeDependency($name, $theme = null)
     {
         return $this->directory($this->themeDependencyRequest($name, $theme));
     }
 
-    public function themeDependencyRequest($name, $themeId=null)
+    public function themeDependencyRequest($name, $themeId = null)
     {
         $name = rtrim($name, '/');
         $themeId = $this->_normalizeTheme($themeId, $name);
@@ -296,19 +295,19 @@ class Uri implements arch\IDirectoryHelper
             } else {
                 if (!Genesis::$environment->isProduction()) {
                     throw Exceptional::{'df/fuse/Runtime'}(
-                        'Dependency '.$name.' does not have a main file'
+                        'Dependency ' . $name . ' does not have a main file'
                     );
                 }
 
-                $subPath = '--dependency-missing-'.$name;
+                $subPath = '--dependency-missing-' . $name;
             }
         }
 
-        $path = 'vendor/'.$dep->installName.'/'.$subPath;
+        $path = 'vendor/' . $dep->installName . '/' . $subPath;
         return $this->assetRequest($path);
     }
 
-    protected function _normalizeTheme($theme, &$input=null)
+    protected function _normalizeTheme($theme, &$input = null)
     {
         if ($theme !== null) {
             return $theme;
@@ -337,12 +336,12 @@ class Uri implements arch\IDirectoryHelper
 
 
     // Back
-    public function back($default=null, $success=true, $fallback=null)
+    public function back($default = null, $success = true, $fallback = null)
     {
         return $this->directory($this->backRequest($default, $success, $fallback));
     }
 
-    public function backRequest($default=null, $success=true, $fallback=null)
+    public function backRequest($default = null, $success = true, $fallback = null)
     {
         $request = $this->context->request;
 
@@ -395,7 +394,7 @@ class Uri implements arch\IDirectoryHelper
         $response = $this->_getDataResponse($url);
         $type = $response->getHeaderLine('Content-Type');
 
-        return 'data:'.$type.';base64,'.base64_encode((string)$response->getBody());
+        return 'data:' . $type . ';base64,' . base64_encode((string)$response->getBody());
     }
 
     public function fetch($url): File
@@ -426,7 +425,7 @@ class Uri implements arch\IDirectoryHelper
             return $httpClient->get((string)$url, $options);
         } catch (\Exception $e) {
             throw Exceptional::NotFound([
-                'message' => 'File not loadable: '.$url,
+                'message' => 'File not loadable: ' . $url,
             ]);
         }
     }

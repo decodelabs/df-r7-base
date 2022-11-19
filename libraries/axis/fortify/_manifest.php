@@ -5,10 +5,8 @@
  */
 namespace df\axis\fortify;
 
-use df;
-use df\core;
 use df\axis;
-use df\opal;
+use df\core;
 
 interface IFortify extends core\IContextAware
 {

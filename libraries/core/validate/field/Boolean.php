@@ -5,11 +5,9 @@
  */
 namespace df\core\validate\field;
 
-use df;
-use df\core;
-use df\flex;
-
 use DecodeLabs\Dictum;
+
+use df\core;
 
 class Boolean extends Base implements core\validate\IBooleanField
 {
@@ -20,7 +18,7 @@ class Boolean extends Base implements core\validate\IBooleanField
 
 
     // Options
-    public function shouldForceAnswer(bool $flag=null)
+    public function shouldForceAnswer(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_forceAnswer = $flag;

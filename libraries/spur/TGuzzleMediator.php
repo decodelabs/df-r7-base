@@ -5,13 +5,11 @@
  */
 namespace df\spur;
 
-use df;
+use DecodeLabs\Exceptional;
 use df\core;
-use df\spur;
-use df\link;
 use df\flex;
 
-use DecodeLabs\Exceptional;
+use df\link;
 
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Psr7\Request as HttpRequest;
@@ -37,23 +35,29 @@ trait TGuzzleMediator
     }
 
 
-    public function requestRaw(string $method, string $path, array $data=[], array $headers=[]): ResponseInterface
+    public function requestRaw(string $method, string $path, array $data = [], array $headers = []): ResponseInterface
     {
         return $this->sendRequest($this->createRequest(
-            $method, $path, $data, $headers
+            $method,
+            $path,
+            $data,
+            $headers
         ));
     }
 
-    public function requestJson(string $method, string $path, array $data=[], array $headers=[]): core\collection\ITree
+    public function requestJson(string $method, string $path, array $data = [], array $headers = []): core\collection\ITree
     {
         $response = $this->sendRequest($this->createRequest(
-            $method, $path, $data, $headers
+            $method,
+            $path,
+            $data,
+            $headers
         ));
 
         return flex\Json::stringToTree((string)$response->getBody());
     }
 
-    public function createRequest(string $method, string $path, array $data=[], array $headers=[]): link\http\IRequest
+    public function createRequest(string $method, string $path, array $data = [], array $headers = []): link\http\IRequest
     {
         $url = $this->createUrl($path);
         $request = link\http\request\Base::factory($url);

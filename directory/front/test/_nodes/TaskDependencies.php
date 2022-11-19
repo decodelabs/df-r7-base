@@ -6,14 +6,11 @@
 
 namespace df\apex\directory\front\test\_nodes;
 
-use df;
-use df\core;
-use df\apex;
+use DecodeLabs\R7\Legacy;
+use DecodeLabs\Terminus as Cli;
+
 use df\arch;
 use df\flex;
-
-use DecodeLabs\Terminus as Cli;
-use DecodeLabs\R7\Legacy;
 
 class TaskDependencies extends arch\node\Task
 {
@@ -32,7 +29,7 @@ class TaskDependencies extends arch\node\Task
         $errors = [];
 
         foreach ($scanner->locations as $location) {
-            Cli::{'brightMagenta'}(' '.$location->id);
+            Cli::{'brightMagenta'}(' ' . $location->id);
             $errors = array_merge($errors, $location->scan($scanner)['dependencies']->getErrors());
         }
 

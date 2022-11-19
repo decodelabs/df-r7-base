@@ -6,10 +6,9 @@
 
 namespace df\core\unit;
 
-use df;
-use df\core;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\core;
 
 class Ratio implements IRatio, Dumpable
 {
@@ -20,7 +19,7 @@ class Ratio implements IRatio, Dumpable
     protected $_numerator;
     protected $_denominator;
 
-    public static function factory($value, $denominator=null)
+    public static function factory($value, $denominator = null)
     {
         if ($value instanceof IRatio) {
             return $value;
@@ -29,7 +28,7 @@ class Ratio implements IRatio, Dumpable
         return new self($value, $denominator);
     }
 
-    public function __construct($value, $denominator=null)
+    public function __construct($value, $denominator = null)
     {
         $this->parse($value, $denominator);
     }
@@ -39,7 +38,7 @@ class Ratio implements IRatio, Dumpable
         return false;
     }
 
-    public function parse($value, $denominator=null)
+    public function parse($value, $denominator = null)
     {
         if (false !== strpos($value, '/')) {
             $parts = explode('/', $value, 2);
@@ -60,7 +59,7 @@ class Ratio implements IRatio, Dumpable
 
     public function toString(): string
     {
-        return $this->_numerator.'/'.$this->_denominator;
+        return $this->_numerator . '/' . $this->_denominator;
     }
 
     public function toCssString(): string

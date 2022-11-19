@@ -5,12 +5,10 @@
  */
 namespace df\spur\analytics\adapter;
 
-use df;
-use df\core;
-use df\spur;
+use DecodeLabs\Exceptional;
 use df\aura;
 
-use DecodeLabs\Exceptional;
+use df\spur;
 
 class Woopra extends Base
 {
@@ -31,18 +29,18 @@ class Woopra extends Base
             $script .= $this->_createVisitorAttributeString($key, $value);
         }
 
-        $script .= '        woopraTracker.track('.$this->_getTrackArgs($handler).');'."\n";
+        $script .= '        woopraTracker.track(' . $this->_getTrackArgs($handler) . ');' . "\n";
 
         foreach ($events as $event) {
-            $script .= '        var woopraEvent = new WoopraEvent('.$this->_encodeString($event->getName()).');'."\n".
-                $this->_createEventAttributeString('category', $event->getCategory()).
+            $script .= '        var woopraEvent = new WoopraEvent(' . $this->_encodeString($event->getName()) . ');' . "\n" .
+                $this->_createEventAttributeString('category', $event->getCategory()) .
                 $this->_createEventAttributeString('label', $event->getLabel());
 
             foreach ($event->getProperties() as $key => $value) {
                 $script .= $this->_createEventAttributeString($key, $value);
             }
 
-            $script .= '        woopraEvent.fire();'."\n";
+            $script .= '        woopraEvent.fire();' . "\n";
         }
 
         // TODO: add ecommerce
@@ -56,7 +54,7 @@ class Woopra extends Base
             return null;
         }
 
-        return '        woopraTracker.addVisitorProperty('.$this->_encodeString($key).', '.$this->_encodeString($value).');'."\n";
+        return '        woopraTracker.addVisitorProperty(' . $this->_encodeString($key) . ', ' . $this->_encodeString($value) . ');' . "\n";
     }
 
     protected function _createEventAttributeString($name, $value)
@@ -65,14 +63,16 @@ class Woopra extends Base
             return null;
         }
 
-        return '        woopraTracker.addProperty('.$this->_encodeString($name).', '.$this->_encodeString($value).');'."\n";
+        return '        woopraTracker.addProperty(' . $this->_encodeString($name) . ', ' . $this->_encodeString($value) . ');' . "\n";
     }
 
     protected function _encodeString($string)
     {
         if (false === ($json = json_encode($string))) {
             throw Exceptional::Runtime(
-                'Unable to encode json', null, $string
+                'Unable to encode json',
+                null,
+                $string
             );
         }
 
@@ -96,7 +96,7 @@ class Woopra extends Base
         }
 
         if ($title) {
-            $output .= ', '.$this->_encodeString($title);
+            $output .= ', ' . $this->_encodeString($title);
         }
 
         return $output;

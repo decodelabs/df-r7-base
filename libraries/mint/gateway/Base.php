@@ -5,21 +5,20 @@
  */
 namespace df\mint\gateway;
 
-use df;
-use df\core;
-use df\mint;
-
 use DecodeLabs\Exceptional;
+use df\core;
+
+use df\mint;
 
 abstract class Base implements mint\IGateway
 {
-    public static function factory(string $name, $settings=null): mint\IGateway
+    public static function factory(string $name, $settings = null): mint\IGateway
     {
-        $class = 'df\\mint\\gateway\\'.ucfirst($name);
+        $class = 'df\\mint\\gateway\\' . ucfirst($name);
 
         if (!class_exists($class)) {
             throw Exceptional::NotFound(
-                'Payment gateway '.$name.' could not be found'
+                'Payment gateway ' . $name . ' could not be found'
             );
         }
 
@@ -68,7 +67,7 @@ abstract class Base implements mint\IGateway
         }
     }
 
-    public function newStandaloneCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $description=null, string $email=null): mint\IChargeRequest
+    public function newStandaloneCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $description = null, string $email = null): mint\IChargeRequest
     {
         return new mint\charge\Request($amount, $card, $description, $email);
     }

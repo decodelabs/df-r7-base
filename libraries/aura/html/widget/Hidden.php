@@ -5,21 +5,18 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\arch;
 
 class Hidden extends Base implements IFormDataWidget, Dumpable
 {
     use TWidget_FormData;
 
-    const PRIMARY_TAG = 'input.hidden';
-    const ARRAY_INPUT = false;
+    public const PRIMARY_TAG = 'input.hidden';
+    public const ARRAY_INPUT = false;
 
-    public function __construct(arch\IContext $context, $name, $value=null)
+    public function __construct(arch\IContext $context, $name, $value = null)
     {
         parent::__construct($context);
 

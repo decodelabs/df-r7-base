@@ -6,11 +6,9 @@
 
 namespace df\neon\mediaHandler;
 
-use df;
-use df\core;
-use df\neon;
-
 use DecodeLabs\R7\Legacy;
+
+use df\core;
 
 class Config extends core\Config implements IConfig
 {

@@ -5,9 +5,6 @@
  */
 namespace df\core\archive;
 
-use df;
-use df\core;
-
 use DecodeLabs\Exceptional;
 
 class Snappy extends Base

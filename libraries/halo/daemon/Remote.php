@@ -6,16 +6,13 @@
 
 namespace df\halo\daemon;
 
-use df;
-use df\core;
-use df\halo;
-use df\flex;
-
 use DecodeLabs\Dictum;
+
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\Systemic;
 use DecodeLabs\Terminus\Session;
+use df\flex;
 
 class Remote implements IRemote
 {
@@ -96,7 +93,7 @@ class Remote implements IRemote
         $pid = null;
 
         if ($daemon::REPORT_STATUS) {
-            $path = Genesis::$hub->getLocalDataPath().'/daemons/'.Dictum::fileName($name).'.status';
+            $path = Genesis::$hub->getLocalDataPath() . '/daemons/' . Dictum::fileName($name) . '.status';
 
             if (!is_file($path)) {
                 return $this;
@@ -176,11 +173,11 @@ class Remote implements IRemote
 
             default:
                 throw Exceptional::InvalidArgument(
-                    $command.' is not a valid command'
+                    $command . ' is not a valid command'
                 );
         }
 
-        $path = Genesis::$hub->getApplicationPath().'/entry/'.Genesis::$environment->getName().'.php';
+        $path = Genesis::$hub->getApplicationPath() . '/entry/' . Genesis::$environment->getName() . '.php';
 
         return Systemic::$process->newScriptLauncher($path, [
                 'daemon', $this->_daemon->getName(), $command

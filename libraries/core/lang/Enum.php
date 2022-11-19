@@ -6,11 +6,10 @@
 
 namespace df\core\lang;
 
-use df;
-use df\core;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
 
 abstract class Enum implements IStaticEnum, Dumpable
 {
@@ -58,7 +57,7 @@ abstract class Enum implements IStaticEnum, Dumpable
                 $value = array_search($value, self::$_labels[$class]);
             } else {
                 throw Exceptional::{'Enum,InvalidArgument'}(
-                    $value.' is not a valid enum option'
+                    $value . ' is not a valid enum option'
                 );
             }
         }
@@ -122,7 +121,7 @@ abstract class Enum implements IStaticEnum, Dumpable
 
         if (false === ($key = array_search($option, $options, true))) {
             throw Exceptional::InvalidArgument(
-                'Invalid option: '.$option
+                'Invalid option: ' . $option
             );
         }
 
@@ -136,7 +135,7 @@ abstract class Enum implements IStaticEnum, Dumpable
 
         if (false === ($key = array_search($option, $options, true))) {
             throw Exceptional::InvalidArgument(
-                'Invalid option: '.$option
+                'Invalid option: ' . $option
             );
         }
 
@@ -150,7 +149,7 @@ abstract class Enum implements IStaticEnum, Dumpable
 
         if (false === ($key = array_search($option, $options, true))) {
             throw Exceptional::InvalidArgument(
-                'Invalid option: '.$option
+                'Invalid option: ' . $option
             );
         }
 
@@ -164,7 +163,7 @@ abstract class Enum implements IStaticEnum, Dumpable
 
         if (false === ($key = array_search($option, $options, true))) {
             throw Exceptional::InvalidArgument(
-                'Invalid option: '.$option
+                'Invalid option: ' . $option
             );
         }
 
@@ -204,7 +203,7 @@ abstract class Enum implements IStaticEnum, Dumpable
         return (string)self::$_labels[get_class($this)][$this->_index];
     }
 
-    public function getStringValue($default=''): string
+    public function getStringValue($default = ''): string
     {
         return self::$_options[get_class($this)][$this->_index];
     }
@@ -216,12 +215,12 @@ abstract class Enum implements IStaticEnum, Dumpable
 
     public static function __callStatic($name, array $args)
     {
-        if (defined('static::'.$name)) {
-            return new static(constant('static::'.$name));
+        if (defined('static::' . $name)) {
+            return new static(constant('static::' . $name));
         }
 
         throw Exceptional::Logic(
-            'Enum value '.$name.' has not been defined'
+            'Enum value ' . $name . ' has not been defined'
         );
     }
 
@@ -230,6 +229,6 @@ abstract class Enum implements IStaticEnum, Dumpable
      */
     public function glitchDump(): iterable
     {
-        yield 'definition' => self::$_options[get_class($this)][$this->_index].' ('.$this->_index.')';
+        yield 'definition' => self::$_options[get_class($this)][$this->_index] . ' (' . $this->_index . ')';
     }
 }

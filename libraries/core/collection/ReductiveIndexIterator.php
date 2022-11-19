@@ -6,9 +6,6 @@
 
 namespace df\core\collection;
 
-use df;
-use df\core;
-
 class ReductiveIndexIterator implements \Iterator
 {
     protected $_collection;

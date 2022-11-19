@@ -6,12 +6,9 @@
 
 namespace df\apex\directory\front\pestControl\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-
 use DecodeLabs\Terminus as Cli;
+
+use df\arch;
 
 class TaskPurgeAccessLogs extends arch\node\Task
 {
@@ -20,7 +17,7 @@ class TaskPurgeAccessLogs extends arch\node\Task
     public function execute(): void
     {
         $all = isset($this->request['all']);
-        $threshold = '-'.$this->data->pestControl->getPurgeThreshold();
+        $threshold = '-' . $this->data->pestControl->getPurgeThreshold();
         $loop = $total = 0;
 
         while (++$loop < self::MAX_LOOP) {
@@ -39,6 +36,6 @@ class TaskPurgeAccessLogs extends arch\node\Task
             usleep(50000);
         }
 
-        Cli::success('Purged '.$total.' access logs');
+        Cli::success('Purged ' . $total . ' access logs');
     }
 }

@@ -6,12 +6,10 @@
 
 namespace df\user\helper;
 
-use df;
-use df\core;
-use df\user;
-use df\flex;
-
 use DecodeLabs\R7\Legacy;
+use df\core;
+
+use df\flex;
 
 class Password extends Base
 {

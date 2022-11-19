@@ -5,14 +5,13 @@
  */
 namespace df\arch\navigation\menu;
 
-use df;
-use df\core;
 use df\arch;
+use df\core;
 
 class Config extends core\Config implements IConfig
 {
-    const ID = 'menus';
-    const STORE_IN_MEMORY = false;
+    public const ID = 'menus';
+    public const STORE_IN_MEMORY = false;
 
     public function getDefaultValues(): array
     {

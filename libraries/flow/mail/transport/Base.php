@@ -6,12 +6,10 @@
 
 namespace df\flow\mail\transport;
 
-use df;
-use df\core;
-use df\flow;
-
 use DecodeLabs\Exceptional;
+
 use DecodeLabs\R7\Legacy;
+use df\flow;
 
 abstract class Base implements flow\mail\ITransport
 {
@@ -35,7 +33,7 @@ abstract class Base implements flow\mail\ITransport
     {
         if (!$class = self::getTransportClass($name)) {
             throw Exceptional::Runtime(
-                'Mail transport '.$name.' could not be found'
+                'Mail transport ' . $name . ' could not be found'
             );
         }
 
@@ -47,7 +45,7 @@ abstract class Base implements flow\mail\ITransport
 
     public static function getTransportClass($name)
     {
-        $class = 'df\\flow\\mail\\transport\\'.$name;
+        $class = 'df\\flow\\mail\\transport\\' . $name;
 
         if (class_exists($class)) {
             return $class;

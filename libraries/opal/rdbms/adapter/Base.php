@@ -5,26 +5,25 @@
  */
 namespace df\opal\rdbms\adapter;
 
-use df;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
 use df\core;
-use df\opal;
-use df\mesh;
 use df\flex;
 
-use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\mesh;
+use df\opal;
 
 abstract class Base implements opal\rdbms\IAdapter, Dumpable
 {
-    const AUTO_INCREMENT = 1;
-    const SEQUENCES = 2;
-    const STORED_PROCEDURES = 3;
-    const VIEWS = 4;
-    const NESTED_TRANSACTIONS = 5;
-    const TRIGGERS = 6;
-    const FOREIGN_KEYS = 7;
-    const UPDATE_LIMIT = 8;
-    const DELETE_LIMIT = 9;
+    public const AUTO_INCREMENT = 1;
+    public const SEQUENCES = 2;
+    public const STORED_PROCEDURES = 3;
+    public const VIEWS = 4;
+    public const NESTED_TRANSACTIONS = 5;
+    public const TRIGGERS = 6;
+    public const FOREIGN_KEYS = 7;
+    public const UPDATE_LIMIT = 8;
+    public const DELETE_LIMIT = 9;
 
     private static $_connections = [];
 
@@ -34,7 +33,7 @@ abstract class Base implements opal\rdbms\IAdapter, Dumpable
     protected $_isClone = false;
     protected $_support = [];
 
-    public static function factory($dsn, $autoCreate=false)
+    public static function factory($dsn, $autoCreate = false)
     {
         $dsn = opal\rdbms\Dsn::factory($dsn);
         $hash = $dsn->getHash();
@@ -48,11 +47,11 @@ abstract class Base implements opal\rdbms\IAdapter, Dumpable
         }
 
         $adapterName = ucfirst($dsn->getAdapter());
-        $class = 'df\\opal\\rdbms\\adapter\\'.$adapterName;
+        $class = 'df\\opal\\rdbms\\adapter\\' . $adapterName;
 
         if (!class_exists($class)) {
             throw Exceptional::{'df/opal/rdbms/AdapterNotFound,NotFound'}(
-                'RDBMS adapter '.$adapterName.' could not be found'
+                'RDBMS adapter ' . $adapterName . ' could not be found'
             );
         }
 
@@ -72,7 +71,7 @@ abstract class Base implements opal\rdbms\IAdapter, Dumpable
     }
 
 
-    protected function __construct(opal\rdbms\IDsn $dsn, $autoCreate=false)
+    protected function __construct(opal\rdbms\IDsn $dsn, $autoCreate = false)
     {
         $this->_dsn = $dsn;
 
@@ -244,7 +243,7 @@ abstract class Base implements opal\rdbms\IAdapter, Dumpable
         return $this->quoteIdentifier($alias);
     }
 
-    public function prepareValue($value, opal\rdbms\schema\IField $field=null)
+    public function prepareValue($value, opal\rdbms\schema\IField $field = null)
     {
         if (is_bool($value)) {
             $value = (int)$value;
@@ -322,7 +321,7 @@ abstract class Base implements opal\rdbms\IAdapter, Dumpable
         return new opal\rdbms\Table($this, $name);
     }
 
-    public function createTable(opal\rdbms\schema\ISchema $schema, $dropIfExists=false)
+    public function createTable(opal\rdbms\schema\ISchema $schema, $dropIfExists = false)
     {
         $table = $this->getTable($schema->getName());
         $table->create($schema, $dropIfExists);
@@ -339,7 +338,7 @@ abstract class Base implements opal\rdbms\IAdapter, Dumpable
     // Mesh
     public function getEntityLocator()
     {
-        return new mesh\entity\Locator('opal://rdbms/'.$this->getAdapterName().':"'.$this->getDsn()->getConnectionString().'"');
+        return new mesh\entity\Locator('opal://rdbms/' . $this->getAdapterName() . ':"' . $this->getDsn()->getConnectionString() . '"');
     }
 
     public function fetchSubEntity(mesh\IManager $manager, array $node)
@@ -361,7 +360,7 @@ abstract class Base implements opal\rdbms\IAdapter, Dumpable
 
 
     // Stubs
-    abstract protected function _connect($global=false);
+    abstract protected function _connect($global = false);
     abstract protected function _createDb();
     abstract protected function _closeConnection();
     abstract protected function _supports($feature);
@@ -391,7 +390,7 @@ abstract class Base_Pdo extends opal\rdbms\adapter\Base
     protected $_affectedRows = 0;
 
     // Connection
-    protected function _connect($global=false)
+    protected function _connect($global = false)
     {
         if ($this->_connection) {
             return;
@@ -407,7 +406,7 @@ abstract class Base_Pdo extends opal\rdbms\adapter\Base
 
         if (!in_array($pdoType, \PDO::getAvailableDrivers())) {
             throw Exceptional::{'df/opal/rdbms/AdapterNotFound,NotFound'}(
-                'PDO adapter '.$pdoType.' is not currently available'
+                'PDO adapter ' . $pdoType . ' is not currently available'
             );
         }
 
@@ -427,11 +426,11 @@ abstract class Base_Pdo extends opal\rdbms\adapter\Base
         $this->_connection = $connection;
     }
 
-    abstract protected function _getPdoDsn($global=false);
+    abstract protected function _getPdoDsn($global = false);
     abstract protected function _getPdoOptions();
 
     abstract public function _getConnectionException($code, $message);
-    abstract public function _getQueryException($code, $message, $sql=null);
+    abstract public function _getQueryException($code, $message, $sql = null);
 
     protected function _closeConnection()
     {
@@ -464,7 +463,7 @@ abstract class Base_Pdo extends opal\rdbms\adapter\Base
         return new opal\rdbms\adapter\statement\Pdo($this, $sql);
     }
 
-    public function executeSql($sql, $forWrite=false)
+    public function executeSql($sql, $forWrite = false)
     {
         try {
             if ($forWrite) {

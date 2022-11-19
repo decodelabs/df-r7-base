@@ -81,7 +81,7 @@ class RawHtml extends BlockAbstract
         $view = $this->getView();
 
         $content = preg_replace_callback('/ (href|src)\=\"([^\"]+)\"/', function ($matches) use ($view) {
-            return ' '.$matches[1].'="'.$view->uri->__invoke($matches[2]).'"';
+            return ' ' . $matches[1] . '="' . $view->uri->__invoke($matches[2]) . '"';
         }, (string)$this->content);
 
         return Html::{'div.block'}(Html::raw($content))

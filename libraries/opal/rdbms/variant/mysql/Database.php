@@ -5,8 +5,6 @@
  */
 namespace df\opal\rdbms\variant\mysql;
 
-use df;
-use df\core;
 use df\opal;
 
 class Database extends opal\rdbms\Database
@@ -15,7 +13,7 @@ class Database extends opal\rdbms\Database
     {
         $stmt = $this->_adapter->prepare('SHOW TABLES');
         $res = $stmt->executeRead();
-        $key = 'Tables_in_'.$this->getName();
+        $key = 'Tables_in_' . $this->getName();
         $output = [];
 
         foreach ($res as $row) {
@@ -25,19 +23,19 @@ class Database extends opal\rdbms\Database
         return $output;
     }
 
-    public function rename($newName, $overwrite=false)
+    public function rename($newName, $overwrite = false)
     {
         $tableList = $this->getTableList();
         $oldName = $this->getName();
 
         if ($overwrite) {
-            $this->_adapter->executeSql('DROP DATABASE `'.$newName.'`');
+            $this->_adapter->executeSql('DROP DATABASE `' . $newName . '`');
         }
 
-        $this->_adapter->executeSql('CREATE DATABASE `'.$newName.'` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $this->_adapter->executeSql('CREATE DATABASE `' . $newName . '` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
 
         foreach ($tableList as $tableName) {
-            $stmt = $this->_adapter->prepare('RENAME TABLE `'.$oldName.'`.`'.$tableName.'` TO `'.$newName.'`.`'.$tableName.'`');
+            $stmt = $this->_adapter->prepare('RENAME TABLE `' . $oldName . '`.`' . $tableName . '` TO `' . $newName . '`.`' . $tableName . '`');
             $res = $stmt->executeWrite();
         }
 
@@ -46,9 +44,9 @@ class Database extends opal\rdbms\Database
         return $this;
     }
 
-    public function setCharacterSet($set, $collation=null)
+    public function setCharacterSet($set, $collation = null)
     {
-        $sql = 'ALTER DATABASE `'.$this->getName().'` CHARACTER SET :set';
+        $sql = 'ALTER DATABASE `' . $this->getName() . '` CHARACTER SET :set';
 
         if ($collation !== null) {
             $sql .= ' COLLATE :collation';
@@ -80,7 +78,7 @@ class Database extends opal\rdbms\Database
 
     public function setCollation($collation)
     {
-        $stmt = $this->_adapter->prepare('ALTER DATABASE `'.$this->getName().'` COLLATE :collation');
+        $stmt = $this->_adapter->prepare('ALTER DATABASE `' . $this->getName() . '` COLLATE :collation');
         $stmt->bind('collation', $collation);
         $stmt->executeWrite();
         return $this;

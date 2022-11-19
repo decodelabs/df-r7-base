@@ -6,14 +6,13 @@
 
 namespace DecodeLabs\R7\Disciple;
 
-use DecodeLabs\Coercion;
+use DateTime;
 use DecodeLabs\Disciple\GateKeeper as GateKeeperInterface;
-use DecodeLabs\Disciple\GateKeeperTrait;
 use DecodeLabs\Disciple\GateKeeper\Attempt;
 
-use DecodeLabs\R7\Legacy;
+use DecodeLabs\Disciple\GateKeeperTrait;
 
-use DateTime;
+use DecodeLabs\R7\Legacy;
 
 class GateKeeper implements GateKeeperInterface
 {

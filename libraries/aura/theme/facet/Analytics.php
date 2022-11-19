@@ -6,10 +6,10 @@
 
 namespace df\aura\theme\facet;
 
-use df\aura;
-use df\spur;
-
 use DecodeLabs\Genesis;
+use df\aura;
+
+use df\spur;
 
 class Analytics extends Base
 {

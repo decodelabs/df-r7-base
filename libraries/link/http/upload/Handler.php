@@ -8,13 +8,13 @@ namespace df\link\http\upload;
 
 use ArrayIterator;
 
-use df\core;
-use df\link;
-use df\flex;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Dir;
 use DecodeLabs\Genesis;
+
+use df\core;
+use df\flex;
+use df\link;
 
 class Handler implements link\http\IUploadHandler
 {
@@ -28,11 +28,11 @@ class Handler implements link\http\IUploadHandler
     protected $_clamAvSocket = 'unix:///var/run/clamav/clamd.ctl';
 
 
-    public static function createUploadTemp(?string $path=null): Dir
+    public static function createUploadTemp(?string $path = null): Dir
     {
         if ($path === null) {
             $path = Genesis::$hub->getSharedDataPath();
-            $path .= '/upload/'.flex\Guid::uuid1();
+            $path .= '/upload/' . flex\Guid::uuid1();
         }
 
         return Atlas::createDir($path);
@@ -100,12 +100,12 @@ class Handler implements link\http\IUploadHandler
         $this->setMaxFileSize('256mb');
     }
 
-    protected function _flattenArray(array $array, $currentKey='')
+    protected function _flattenArray(array $array, $currentKey = '')
     {
         $output = [];
 
         foreach ($array as $key => $var) {
-            $thisKey = $currentKey.'['.$key.']';
+            $thisKey = $currentKey . '[' . $key . ']';
             //$thisKey = $currentKey.'.'.$key;
 
             if (is_array($var)) {
@@ -181,7 +181,7 @@ class Handler implements link\http\IUploadHandler
     }
 
 
-    public function shouldAvScan(bool $flag=null)
+    public function shouldAvScan(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_avScan = $flag;
@@ -204,7 +204,7 @@ class Handler implements link\http\IUploadHandler
 
 
 
-    public function uploadAll($destination, core\collection\IInputTree $inputCollection, $conflictAction=link\http\IUploadFile::RENAME)
+    public function uploadAll($destination, core\collection\IInputTree $inputCollection, $conflictAction = link\http\IUploadFile::RENAME)
     {
         foreach ($this as $file) {
             $file->upload($destination, $inputCollection->{$file->getFieldName()}, $conflictAction);

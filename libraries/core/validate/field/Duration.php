@@ -5,20 +5,20 @@
  */
 namespace df\core\validate\field;
 
-use df;
 use df\core;
 
-class Duration extends Base implements core\validate\IDurationField {
-
+class Duration extends Base implements core\validate\IDurationField
+{
     use core\validate\TRangeField;
 
     protected $_inputUnit = null;
     protected $_unitSelectable = true;
 
 
-// Options
-    public function setInputUnit($unit) {
-        if($unit !== null) {
+    // Options
+    public function setInputUnit($unit)
+    {
+        if ($unit !== null) {
             $unit = core\time\Duration::normalizeUnitId($unit);
         }
 
@@ -26,12 +26,14 @@ class Duration extends Base implements core\validate\IDurationField {
         return $this;
     }
 
-    public function getInputUnit() {
+    public function getInputUnit()
+    {
         return $this->_inputUnit;
     }
 
-    public function shouldAllowUnitSelection(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldAllowUnitSelection(bool $flag = null)
+    {
+        if ($flag !== null) {
             $this->_unitSelectable = $flag;
             return $this;
         }
@@ -39,12 +41,14 @@ class Duration extends Base implements core\validate\IDurationField {
         return $this->_unitSelectable;
     }
 
-    public function setMin($min) {
+    public function setMin($min)
+    {
         $this->_min = $min;
         return $this;
     }
 
-    public function setMax($max) {
+    public function setMax($max)
+    {
         $this->_max = $max;
         return $this;
     }
@@ -52,21 +56,22 @@ class Duration extends Base implements core\validate\IDurationField {
 
 
 // Validate
-    public function validate() {
+    public function validate()
+    {
         $value = $this->data->getValue();
         $value = $this->_sanitizeValue($value);
 
-        if($this->_unitSelectable && ($unit = $this->data->unit->getValue())) {
+        if ($this->_unitSelectable && ($unit = $this->data->unit->getValue())) {
             $this->_inputUnit = $unit;
         }
 
-        if(!$length = $this->_checkRequired($value)) {
+        if (!$length = $this->_checkRequired($value)) {
             return null;
         }
 
         try {
             $duration = $this->_normalizeDuration($value);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $this->addError('invalid', $this->validator->_(
                 'This is not a valid duration'
             ));
@@ -82,8 +87,9 @@ class Duration extends Base implements core\validate\IDurationField {
         return $duration;
     }
 
-    protected function _normalizeDuration($value) {
-        if($this->_inputUnit) {
+    protected function _normalizeDuration($value)
+    {
+        if ($this->_inputUnit) {
             $duration = core\time\Duration::fromUnit($value, $this->_inputUnit);
         } else {
             $duration = core\time\Duration::factory($value);
@@ -92,15 +98,16 @@ class Duration extends Base implements core\validate\IDurationField {
         return $duration;
     }
 
-    protected function _validateRange($value) {
-        if(!$value instanceof core\time\IDuration) {
+    protected function _validateRange($value)
+    {
+        if (!$value instanceof core\time\IDuration) {
             $value = $this->_normalizeDuration($value);
         }
 
-        if($this->_min !== null) {
+        if ($this->_min !== null) {
             $min = core\time\Duration::factory($this->_min);
 
-            if($value->lt($min)) {
+            if ($value->lt($min)) {
                 $this->addError('min', $this->validator->_(
                     'This field must be at least %min%',
                     ['%min%' => $min]
@@ -108,10 +115,10 @@ class Duration extends Base implements core\validate\IDurationField {
             }
         }
 
-        if($this->_max !== null) {
+        if ($this->_max !== null) {
             $max = core\time\Duration::factory($this->_max);
 
-            if($value->gt($max)) {
+            if ($value->gt($max)) {
                 $this->addError('max', $this->validator->_(
                     'This field must not be more than %max%',
                     ['%max%' => $max]
@@ -122,8 +129,9 @@ class Duration extends Base implements core\validate\IDurationField {
 
 
 // Apply
-    public function applyValueTo(&$record, $value) {
-        if($value !== null) {
+    public function applyValueTo(&$record, $value)
+    {
+        if ($value !== null) {
             $value = $this->_normalizeDuration($value);
         }
 

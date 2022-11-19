@@ -5,21 +5,17 @@
  */
 namespace df\flex\stemmer;
 
-use df;
-use df\core;
-use df\flex;
-
 class En extends Base
 {
-    const CONSONANTS = '(?:[bcdfghjklmnpqrstvwxz]|(?<=[aeiou])y|^y)';
-    const VOWELS = '(?:[aeiou]|(?<![aeiou])y)';
+    public const CONSONANTS = '(?:[bcdfghjklmnpqrstvwxz]|(?<=[aeiou])y|^y)';
+    public const VOWELS = '(?:[aeiou]|(?<![aeiou])y)';
 
-    public function stem($phrase, $natural=false)
+    public function stem($phrase, $natural = false)
     {
         return $this->split($phrase, $natural);
     }
 
-    public function split($phrase, $natural=false)
+    public function split($phrase, $natural = false)
     {
         $phrase = (string)preg_replace('/[&][a-z]+[;]/', '', strtolower((string)$phrase));
         $phrase = str_replace(['-', '_'], ' ', $phrase);
@@ -41,7 +37,7 @@ class En extends Base
     }
 
 
-    public function stemWord($word, $natural=false)
+    public function stemWord($word, $natural = false)
     {
         if (strlen($word) <= 4) {
             return $word;
@@ -269,11 +265,11 @@ class En extends Base
             }
 
             //if(self::_measure(substr($word, 0, -1)) > 1) {
-                //self::_replace($word, 'e', '');
+            //self::_replace($word, 'e', '');
             //} else if(self::_measure(substr($word, 0, -1)) == 1) {
-                //if(!self::_cvc(substr($word, 0, -1))) {
-                    //self::_replace($word, 'e', '');
-                //}
+            //if(!self::_cvc(substr($word, 0, -1))) {
+            //self::_replace($word, 'e', '');
+            //}
             //}
         }
 
@@ -284,7 +280,7 @@ class En extends Base
         return $word;
     }
 
-    protected static function _replace(&$str, $check, $repl, $m=null, $natural=null)
+    protected static function _replace(&$str, $check, $repl, $m = null, $natural = null)
     {
         if ($natural === false) {
             return false;
@@ -296,7 +292,7 @@ class En extends Base
             $substr = substr($str, 0, $len);
 
             if (is_null($m) || self::_measure($substr) > $m) {
-                $str = $substr.$repl;
+                $str = $substr . $repl;
             }
 
             return true;

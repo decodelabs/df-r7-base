@@ -5,24 +5,23 @@
  */
 namespace df\apex\models\session\stub;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
 use df\flex;
 
-class Unit extends axis\unit\Table {
+class Unit extends axis\unit\Table
+{
+    public const BROADCAST_HOOK_EVENTS = false;
 
-    const BROADCAST_HOOK_EVENTS = false;
-
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('key', 'Binary', 20);
         $schema->addField('sessionId', 'Binary', 20)
             ->isNullable(true);
         $schema->addField('date', 'Timestamp');
     }
 
-    public function generateKey() {
+    public function generateKey()
+    {
         $key = flex\Generator::sessionId(true);
         $this->insert(['key' => $key])->execute();
         return $key;

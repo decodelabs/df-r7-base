@@ -6,14 +6,10 @@
 
 namespace df\apex\directory\front\users\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\flow;
-
 use DecodeLabs\Dictum;
+
 use DecodeLabs\Terminus as Cli;
+use df\arch;
 
 class TaskAdd extends arch\node\Task
 {
@@ -135,7 +131,7 @@ class TaskAdd extends arch\node\Task
                     continue;
                 }
 
-                if (Cli::confirm('Add to '.$groups[$id]['name'].' group?', true)) {
+                if (Cli::confirm('Add to ' . $groups[$id]['name'] . ' group?', true)) {
                     $this->_client->groups->add($groups[$id]);
                 }
             }

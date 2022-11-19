@@ -6,9 +6,6 @@
 
 namespace df\apex\models\user\login;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
 
 class Unit extends axis\unit\Table

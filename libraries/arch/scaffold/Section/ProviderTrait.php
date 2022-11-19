@@ -6,20 +6,17 @@
 
 namespace df\arch\scaffold\Section;
 
-use df\arch\IComponent as Component;
-use df\arch\Scaffold;
-use df\arch\scaffold\Record\DataProvider as RecordDataProvider;
-use df\arch\scaffold\Component\HeaderBar as ScaffoldHeaderBar;
-use df\arch\navigation\menu\IEntryList as MenuEntryList;
-use df\arch\node\INode as Node;
-use df\aura\view\IView as View;
-use df\aura\view\content\WidgetContentProvider;
-use df\aura\html\widget\Menu as MenuWidget;
-use df\core\lang\Callback;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy;
+use df\arch\navigation\menu\IEntryList as MenuEntryList;
+use df\arch\node\INode as Node;
+use df\arch\scaffold\Component\HeaderBar as ScaffoldHeaderBar;
+use df\arch\scaffold\Record\DataProvider as RecordDataProvider;
+
+use df\aura\view\content\WidgetContentProvider;
+use df\aura\view\IView as View;
+use df\core\lang\Callback;
 
 use Throwable;
 
@@ -58,7 +55,7 @@ trait ProviderTrait
 
         return $this->generateNode(function () use ($node) {
             return $this->buildSection($node, function ($record, $view, $scaffold) use ($node) {
-                $method = 'render'.ucfirst($node).'SectionBody';
+                $method = 'render' . ucfirst($node) . 'SectionBody';
 
                 if (method_exists($this, $method)) {
                     $body = $this->{$method}($record);
@@ -74,7 +71,7 @@ trait ProviderTrait
         });
     }
 
-    public function buildSection(string $name, callable $builder, ?callable $linkBuilder=null): View
+    public function buildSection(string $name, callable $builder, ?callable $linkBuilder = null): View
     {
         $this->view->setContentProvider(new WidgetContentProvider($this->context));
 
@@ -242,7 +239,7 @@ trait ProviderTrait
     public function generateSectionSubOperativeLinks(): iterable
     {
         $node = $this->context->request->getNode();
-        $method = 'generate'.ucfirst($node).'SectionSubOperativeLinks';
+        $method = 'generate' . ucfirst($node) . 'SectionSubOperativeLinks';
 
         if (method_exists($this, $method)) {
             yield from $this->{$method}();
@@ -251,7 +248,7 @@ trait ProviderTrait
 
     public function generateSectionSectionLinks(): iterable
     {
-        yield 'sections' => $this->location->getPath()->getDirname().'Sections';
+        yield 'sections' => $this->location->getPath()->getDirname() . 'Sections';
     }
 
     public function generateSectionsMenu(MenuEntryList $entryList): void
@@ -294,7 +291,7 @@ trait ProviderTrait
     public function generateSectionTransitiveLinks(): iterable
     {
         $node = $this->context->request->getNode();
-        $method = 'generate'.ucfirst($node).'SectionTransitiveLinks';
+        $method = 'generate' . ucfirst($node) . 'SectionTransitiveLinks';
 
         if (method_exists($this, $method)) {
             yield from $this->{$method}();

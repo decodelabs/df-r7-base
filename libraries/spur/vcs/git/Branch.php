@@ -5,20 +5,17 @@
  */
 namespace df\spur\vcs\git;
 
-use df;
-use df\core;
-use df\spur;
-
-class Branch implements IBranch {
-
+class Branch implements IBranch
+{
     protected $_name;
     protected $_isActive = null;
     protected $_repository;
 
-    public function __construct(ILocalRepository $repo, string $name, $isActive=null) {
+    public function __construct(ILocalRepository $repo, string $name, $isActive = null)
+    {
         $this->_name = $name;
 
-        if($isActive !== null) {
+        if ($isActive !== null) {
             $isActive = (bool)$isActive;
         }
 
@@ -26,47 +23,55 @@ class Branch implements IBranch {
         $this->_repository = $repo;
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->_name;
     }
 
-    public function exists() {
+    public function exists()
+    {
         return in_array($this->_name, $this->_repository->getBranchNames());
     }
 
-    public function isActive() {
-        if($this->_isActive === null) {
+    public function isActive()
+    {
+        if ($this->_isActive === null) {
             $this->_isActive = $this->_name == $this->_repository->getActiveBranchName();
         }
 
         return $this->_isActive;
     }
 
-    public function delete() {
+    public function delete()
+    {
         $this->_repository->deleteBranch($this);
         return $this;
     }
 
 
-    public function setDescription($description) {
+    public function setDescription($description)
+    {
         $this->_repository->_runCommand('config', [
-            'branch.'.$this->_name.'.description' => $description
+            'branch.' . $this->_name . '.description' => $description
         ]);
 
         return $this;
     }
 
-    public function getDescription() {
+    public function getDescription()
+    {
         return trim($this->_repository->_runCommand('config', [
-            'branch.'.$this->_name.'.description'
+            'branch.' . $this->_name . '.description'
         ]));
     }
 
-    public function getTree() {
+    public function getTree()
+    {
         return $this->_repository->getTree($this->_name);
     }
 
-    public function getRepository() {
+    public function getRepository()
+    {
         return $this->_repository;
     }
 }

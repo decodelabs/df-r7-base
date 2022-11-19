@@ -5,17 +5,16 @@
  */
 namespace df\axis\schema\field;
 
-use df;
-use df\core;
 use df\axis;
-use df\opal;
+use df\core;
 use df\flex;
+use df\opal;
 
 class Json extends Base implements opal\schema\ILargeByteSizeRestrictedField
 {
     use opal\schema\TField_LargeByteSizeRestricted;
 
-    protected function _init($size=null)
+    protected function _init($size = null)
     {
         if ($size === null) {
             $size = opal\schema\IFieldSize::LARGE;
@@ -26,7 +25,7 @@ class Json extends Base implements opal\schema\ILargeByteSizeRestrictedField
 
 
     // Values
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord = null)
     {
         $value = null;
 
@@ -52,7 +51,7 @@ class Json extends Base implements opal\schema\ILargeByteSizeRestrictedField
         }
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    public function sanitizeValue($value, opal\record\IRecord $forRecord = null)
     {
         if (!$value instanceof core\collection\ITree) {
             if (empty($value)) {

@@ -5,21 +5,20 @@
  */
 namespace df\spur\packaging\bower;
 
-use df;
-use df\core;
-use df\spur;
-use df\link;
-use df\flex;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Exceptional;
+use df\core;
+use df\flex;
+
+use df\link;
+use df\spur;
 
 class Registry implements IRegistry
 {
     use spur\TGuzzleMediator;
 
-    const BASE_URL = 'https://registry.bower.io/';
-    const TIMEOUT = '1 day';
+    public const BASE_URL = 'https://registry.bower.io/';
+    public const TIMEOUT = '1 day';
 
     protected $_cachePath;
 
@@ -30,7 +29,7 @@ class Registry implements IRegistry
 
     public function lookup($name)
     {
-        $path = $this->_cachePath.'/'.$name.'.json';
+        $path = $this->_cachePath . '/' . $name . '.json';
         $timeout = core\time\Duration::factory(self::TIMEOUT)->getSeconds();
 
         if (is_file($path)) {
@@ -42,7 +41,7 @@ class Registry implements IRegistry
         }
 
         try {
-            $data = $this->requestJson('get', 'packages/'.rawurlencode($name));
+            $data = $this->requestJson('get', 'packages/' . rawurlencode($name));
         } catch (\Throwable $e) {
             throw Exceptional::Api([
                 'message' => $e->getMessage(),
@@ -65,6 +64,6 @@ class Registry implements IRegistry
     // Server
     public function createUrl(string $path): link\http\IUrl
     {
-        return link\http\Url::factory(self::BASE_URL.ltrim($path, '/'));
+        return link\http\Url::factory(self::BASE_URL . ltrim($path, '/'));
     }
 }

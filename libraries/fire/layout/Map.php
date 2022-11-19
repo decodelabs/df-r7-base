@@ -5,13 +5,11 @@
  */
 namespace df\fire\layout;
 
-use df;
-use df\core;
-use df\fire;
-use df\arch;
-use df\aura;
-
 use DecodeLabs\Exceptional;
+use df\aura;
+use df\core;
+
+use df\fire;
 
 class Map implements fire\ILayoutMap
 {
@@ -29,7 +27,7 @@ class Map implements fire\ILayoutMap
         return $this->_theme;
     }
 
-    public function setGenerator(callable $generator=null)
+    public function setGenerator(callable $generator = null)
     {
         $this->_generator = $generator;
         return $this;

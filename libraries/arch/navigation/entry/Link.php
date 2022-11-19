@@ -5,12 +5,11 @@
  */
 namespace df\arch\navigation\entry;
 
-use df;
-use df\core;
 use df\arch;
+use df\core;
 
-class Link extends Base implements arch\navigation\ILink {
-
+class Link extends Base implements arch\navigation\ILink
+{
     use arch\navigation\TSharedLinkComponents;
 
     protected $_body;
@@ -20,14 +19,15 @@ class Link extends Base implements arch\navigation\ILink {
     protected $_disposition;
     protected $_class;
 
-    protected static function _fromArray(array $entry): arch\navigation\IEntry {
+    protected static function _fromArray(array $entry): arch\navigation\IEntry
+    {
         $tree = new core\collection\Tree($entry);
 
         return (new self(
-                $tree['uri'],
-                $tree['body'],
-                $tree['icon']
-            ))
+            $tree['uri'],
+            $tree['body'],
+            $tree['icon']
+        ))
             ->setId($tree['id'])
             ->setDisposition($tree['disposition'])
             ->shouldOpenInNewWindow((bool)$tree['newWindow'])
@@ -36,13 +36,15 @@ class Link extends Base implements arch\navigation\ILink {
             ->_setSharedLinkComponentData($tree);
     }
 
-    public function __construct($uri, $body, $icon=null) {
+    public function __construct($uri, $body, $icon = null)
+    {
         $this->setUri($uri);
         $this->setBody($body);
         $this->setIcon($icon);
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return array_merge([
             'type' => 'Link',
             'id' => $this->getId(),
@@ -55,34 +57,40 @@ class Link extends Base implements arch\navigation\ILink {
         ], $this->_getSharedLinkComponentData());
     }
 
-    public function getId(): ?string {
-        if($this->_id === null) {
-            return $this->_id = 'link-'.md5((string)$this->getUri());
+    public function getId(): ?string
+    {
+        if ($this->_id === null) {
+            return $this->_id = 'link-' . md5((string)$this->getUri());
         }
 
         return parent::getId();
     }
 
-    public function setBody($body) {
+    public function setBody($body)
+    {
         $this->_body = $body;
         return $this;
     }
 
-    public function getBody() {
+    public function getBody()
+    {
         return $this->_body;
     }
 
-    public function setIcon(string $icon=null) {
+    public function setIcon(string $icon = null)
+    {
         $this->_icon = $icon;
         return $this;
     }
 
-    public function getIcon() {
+    public function getIcon()
+    {
         return $this->_icon;
     }
 
-    public function shouldCheckMatch(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldCheckMatch(bool $flag = null)
+    {
+        if ($flag !== null) {
             $this->_checkMatch = $flag;
             return $this;
         }
@@ -90,8 +98,9 @@ class Link extends Base implements arch\navigation\ILink {
         return $this->_checkMatch;
     }
 
-    public function shouldOpenInNewWindow(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldOpenInNewWindow(bool $flag = null)
+    {
+        if ($flag !== null) {
             $this->_newWindow = $flag;
             return $this;
         }
@@ -99,21 +108,25 @@ class Link extends Base implements arch\navigation\ILink {
         return $this->_newWindow;
     }
 
-    public function setDisposition($disposition) {
+    public function setDisposition($disposition)
+    {
         $this->_disposition = $disposition;
         return $this;
     }
 
-    public function getDisposition() {
+    public function getDisposition()
+    {
         return $this->_disposition;
     }
 
-    public function setClass($class) {
+    public function setClass($class)
+    {
         $this->_class = $class;
         return $this;
     }
 
-    public function getClass() {
+    public function getClass()
+    {
         return $this->_class;
     }
 }

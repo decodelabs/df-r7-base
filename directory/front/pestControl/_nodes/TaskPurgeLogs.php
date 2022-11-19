@@ -6,9 +6,6 @@
 
 namespace df\apex\directory\front\pestControl\_nodes;
 
-use df;
-use df\core;
-use df\apex;
 use df\arch;
 
 class TaskPurgeLogs extends arch\node\Task

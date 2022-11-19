@@ -7,13 +7,12 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Nightfire\Block\Element;
 
+use DecodeLabs\R7\Nightfire\Block;
+use DecodeLabs\R7\Nightfire\Block\Element;
+
+use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
 use df\arch\node\form\SelectorDelegate;
 use df\aura\html\widget\Field as FieldWidget;
-
-use DecodeLabs\R7\Nightfire\Block;
-use DecodeLabs\R7\Nightfire\BlockAbstract;
-use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
-use DecodeLabs\R7\Nightfire\Block\Element;
 
 /**
  * @extends BlockDelegateAbstract<Element>

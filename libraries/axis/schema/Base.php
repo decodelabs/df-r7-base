@@ -5,14 +5,12 @@
  */
 namespace df\axis\schema;
 
-use df;
-use df\core;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch;
+
+use DecodeLabs\Glitch\Dumpable;
 use df\axis;
 use df\opal;
-
-use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
 
 class Base implements ISchema, Dumpable
 {
@@ -93,7 +91,7 @@ class Base implements ISchema, Dumpable
     }
 
 
-    public function _createIndex($name, $fields=null)
+    public function _createIndex($name, $fields = null)
     {
         return new axis\schema\constraint\Index($this, $name, $fields);
     }
@@ -105,7 +103,7 @@ class Base implements ISchema, Dumpable
         foreach ($fields as $name => $field) {
             if ($field instanceof opal\schema\INullPrimitiveField) {
                 throw Exceptional::Runtime(
-                    'Indexes cannot be defined for NullPrimitive fields ('.$this->getName().'.'.$name.')'
+                    'Indexes cannot be defined for NullPrimitive fields (' . $this->getName() . '.' . $name . ')'
                 );
             }
         }
@@ -121,7 +119,7 @@ class Base implements ISchema, Dumpable
 
 
 
-    public function requiresTransactions(bool $flag=null)
+    public function requiresTransactions(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_requiresTransactions = $flag;
@@ -233,7 +231,9 @@ class Base implements ISchema, Dumpable
 
         if (!$unit instanceof axis\ISchemaBasedStorageUnit) {
             throw Exceptional::Logic(
-                'Schema context is not a storage unit', null, $unit
+                'Schema context is not a storage unit',
+                null,
+                $unit
             );
         }
 

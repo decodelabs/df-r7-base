@@ -5,15 +5,13 @@
  */
 namespace df\user\session;
 
-use df;
 use df\core;
-use df\user;
-use df\opal;
 use df\flex;
+use df\user;
 
 interface IController
 {
-    const TRANSITION_COOLOFF = 20;
+    public const TRANSITION_COOLOFF = 20;
 
     public function isOpen();
     public function getId(): string;
@@ -22,19 +20,19 @@ interface IController
     public function getBucket($namespace);
 
     public function getBuckets(): array;
-    public function getBucketsLike(string $bucket, string $operator=null): array;
-    public function getBucketsForUserLike(string $userId, string $bucket, string $operator=null): array;
-    public function getBucketsForAllLike(string $bucket, string $operator=null): array;
+    public function getBucketsLike(string $bucket, string $operator = null): array;
+    public function getBucketsForUserLike(string $userId, string $bucket, string $operator = null): array;
+    public function getBucketsForAllLike(string $bucket, string $operator = null): array;
 
-    public function clearBuckets(string $bucket, string $operator=null);
-    public function clearBucketsForUser(string $userId, string $bucket, string $operator=null);
-    public function clearBucketsForAll(string $bucket, string $operator=null);
+    public function clearBuckets(string $bucket, string $operator = null);
+    public function clearBucketsForUser(string $userId, string $bucket, string $operator = null);
+    public function clearBucketsForAll(string $bucket, string $operator = null);
 
-    public function destroy(bool $restart=false);
+    public function destroy(bool $restart = false);
     public function getStartTime();
 
     public function hasRecallKey(RecallKey $key);
-    public function perpetuateRecall(user\IClient $client, RecallKey $lastKey=null);
+    public function perpetuateRecall(user\IClient $client, RecallKey $lastKey = null);
 }
 
 interface IBucket extends core\IValueMap, \ArrayAccess
@@ -58,7 +56,7 @@ interface IBucket extends core\IValueMap, \ArrayAccess
     public function clearForUser($userId);
     public function clearForClient();
     public function clearForAll();
-    public function prune($age=7200);
+    public function prune($age = 7200);
 
     public function getNode($key);
     public function __set($key, $value);
@@ -76,7 +74,7 @@ interface IBackend
 
     public function insertDescriptor(Descriptor $descriptor);
     public function fetchDescriptor(string $id, ?int $transitionTime): ?Descriptor;
-    public function touchSession(Descriptor $descriptor, int $lifeTime=30);
+    public function touchSession(Descriptor $descriptor, int $lifeTime = 30);
     public function applyTransition(Descriptor $descriptor);
     public function killSession(Descriptor $descriptor);
     public function idExists(string $id): bool;
@@ -85,13 +83,13 @@ interface IBackend
     public function pruneBucket(Descriptor $descriptor, string $bucket, int $age);
 
     public function getBuckets(Descriptor $descriptor): array;
-    public function getBucketsLike(Descriptor $descriptor, string $bucket, string $operator=null): array;
-    public function getBucketsForUserLike(string $userId, string $bucket, string $operator=null): array;
-    public function getBucketsForAllLike(string $bucket, string $operator=null): array;
+    public function getBucketsLike(Descriptor $descriptor, string $bucket, string $operator = null): array;
+    public function getBucketsForUserLike(string $userId, string $bucket, string $operator = null): array;
+    public function getBucketsForAllLike(string $bucket, string $operator = null): array;
 
-    public function clearBucket(Descriptor $descriptor, string $bucket, string $operator=null);
-    public function clearBucketForUser(string $userId, string $bucket, string $operator=null);
-    public function clearBucketForAll(string $bucket, string $operator=null);
+    public function clearBucket(Descriptor $descriptor, string $bucket, string $operator = null);
+    public function clearBucketForUser(string $userId, string $bucket, string $operator = null);
+    public function clearBucketForAll(string $bucket, string $operator = null);
 
     public function fetchNode(IBucket $bucket, $key): Node;
     public function fetchLastUpdatedNode(IBucket $bucket): ?Node;
@@ -125,7 +123,7 @@ class RecallKey
 
     public function getInterlaceKey()
     {
-        return substr($this->key, 0, 20).$this->userId.substr($this->key, 20);
+        return substr($this->key, 0, 20) . $this->userId . substr($this->key, 20);
     }
 }
 
@@ -151,7 +149,7 @@ class Node
     public $creationTime;
     public $updateTime;
 
-    public static function create($key, $res, $locked=false)
+    public static function create($key, $res, $locked = false)
     {
         $output = new self();
         $output->key = $key;

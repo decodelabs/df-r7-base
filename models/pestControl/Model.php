@@ -6,33 +6,31 @@
 
 namespace df\apex\models\pestControl;
 
-use df;
-use df\core;
-use df\apex;
-use df\axis;
-use df\arch;
-use df\link;
-
 use DecodeLabs\Disciple;
 use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy;
+use df\arch;
+
+use df\axis;
+use df\core;
+use df\link;
 
 class Model extends axis\Model
 {
     public const PURGE_THRESHOLD = '1 month';
     public const LOG_BOTS = false;
 
-    public function logCurrentAgent(bool $logBots=false): array
+    public function logCurrentAgent(bool $logBots = false): array
     {
         return $this->context->data->user->agent->logCurrent($logBots);
     }
 
-    public function logAccessError($code=403, $request=null, string $message=null)
+    public function logAccessError($code = 403, $request = null, string $message = null)
     {
         return $this->accessLog->logAccess($code, $request, $message);
     }
 
-    public function logNotFound($request=null, string $message=null): void
+    public function logNotFound($request = null, string $message = null): void
     {
         // Prepare
         $agent = $this->logCurrentAgent();
@@ -106,7 +104,7 @@ class Model extends axis\Model
         }
     }
 
-    public function logException(\Throwable $exception, $request=null)
+    public function logException(\Throwable $exception, $request = null)
     {
         return $this->errorLog->logException($exception, $request);
     }
@@ -118,7 +116,7 @@ class Model extends axis\Model
 
 
 
-    public function normalizeLogRequest($request, string $mode=null, string &$url=null): string
+    public function normalizeLogRequest($request, string $mode = null, string &$url = null): string
     {
         if ($request === null) {
             $request = '/';

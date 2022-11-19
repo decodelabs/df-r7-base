@@ -7,23 +7,18 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Genesis\Kernel;
 
-use df\arch\Context;
-use df\arch\DirectoryAccessController;
-use df\arch\IAccess;
-use df\arch\node\ITaskNode;
-use df\arch\node\Base as NodeBase;
-use df\arch\Request;
-use df\core\app\runner\Task as TaskRunner;
-use df\core\IDispatchAware;
-
-use DecodeLabs\Exceptional;
-use DecodeLabs\Genesis;
 use DecodeLabs\Genesis\Kernel;
 use DecodeLabs\R7\Genesis\KernelTrait;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Terminus;
+use df\arch\Context;
+use df\arch\DirectoryAccessController;
+use df\arch\IAccess;
 
-use Throwable;
+use df\arch\node\Base as NodeBase;
+use df\arch\node\ITaskNode;
+use df\arch\Request;
+use df\core\IDispatchAware;
 
 class Task implements Kernel
 {
@@ -67,7 +62,7 @@ class Task implements Kernel
 
         $args = Terminus::prepareArguments();
 
-        /** @var Request */
+        /** @var Request $request */
         $request = Request::factory($args['task']);
 
         /** @var Context $context */

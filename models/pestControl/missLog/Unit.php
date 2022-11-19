@@ -5,14 +5,11 @@
  */
 namespace df\apex\models\pestControl\missLog;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
 
 class Unit extends axis\unit\Table
 {
-    const SEARCH_FIELDS = [
+    public const SEARCH_FIELDS = [
         'request' => 4,
         'message' => 1
     ];

@@ -5,23 +5,22 @@
  */
 namespace df\axis\schema;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
-
 use DecodeLabs\Exceptional;
+use df\axis;
+use df\core;
+
+use df\opal;
 
 interface IManager extends core\IManager
 {
-    public function fetchFor(axis\ISchemaBasedStorageUnit $unit, $transient=false);
+    public function fetchFor(axis\ISchemaBasedStorageUnit $unit, $transient = false);
     public function store(axis\ISchemaBasedStorageUnit $unit, ISchema $schema);
     public function getTimestampFor(axis\ISchemaBasedStorageUnit $unit);
     public function insert(axis\ISchemaBasedStorageUnit $unit, $jsonData, $version);
     public function update(axis\ISchemaBasedStorageUnit $unit, $jsonData, $version);
     public function remove(axis\ISchemaBasedStorageUnit $unit);
     public function removeId($unitId);
-    public function clearCache(axis\ISchemaBasedStorageUnit $unit=null);
+    public function clearCache(axis\ISchemaBasedStorageUnit $unit = null);
     public function fetchStoredUnitList();
     public function markTransient(axis\ISchemaBasedStorageUnit $unit);
     public function unmarkTransient(axis\ISchemaBasedStorageUnit $unit);
@@ -36,7 +35,7 @@ interface ISchema extends opal\schema\ISchema, opal\schema\IFieldProvider, opal\
     public function getUnitId();
     public function iterateVersion();
     public function getVersion(): int;
-    public function requiresTransactions(bool $flag=null);
+    public function requiresTransactions(bool $flag = null);
 
     public function sanitize(axis\ISchemaBasedStorageUnit $unit);
     public function validate(axis\ISchemaBasedStorageUnit $unit);
@@ -62,14 +61,14 @@ interface IField extends opal\schema\IField, opal\query\IFieldValueProcessor
 
 interface IAutoIndexField extends IField
 {
-    public function shouldBeIndexed(bool $flag=null);
+    public function shouldBeIndexed(bool $flag = null);
 }
 
 trait TAutoIndexField
 {
     protected $_autoIndex = true;
 
-    public function shouldBeIndexed(bool $flag=null)
+    public function shouldBeIndexed(bool $flag = null)
     {
         if ($flag !== null) {
             $flag = $flag;
@@ -101,7 +100,7 @@ trait TAutoIndexField
 
 interface IAutoUniqueField extends IAutoIndexField
 {
-    public function shouldBeUnique(bool $flag=null);
+    public function shouldBeUnique(bool $flag = null);
 }
 
 trait TAutoUniqueField
@@ -110,7 +109,7 @@ trait TAutoUniqueField
 
     protected $_autoUnique = true;
 
-    public function shouldBeUnique(bool $flag=null)
+    public function shouldBeUnique(bool $flag = null)
     {
         if ($flag !== null) {
             $flag = $flag;
@@ -144,7 +143,7 @@ trait TAutoUniqueField
 
 interface IAutoPrimaryField extends IAutoUniqueField
 {
-    public function shouldBePrimary(bool $flag=null);
+    public function shouldBePrimary(bool $flag = null);
 }
 
 trait TAutoPrimaryField
@@ -153,7 +152,7 @@ trait TAutoPrimaryField
 
     protected $_autoPrimary = true;
 
-    public function shouldBePrimary(bool $flag=null)
+    public function shouldBePrimary(bool $flag = null)
     {
         if ($flag !== null) {
             $flag = $flag;
@@ -192,7 +191,7 @@ interface IDateField extends IField
 
 interface ILengthRestrictedField extends IField, opal\schema\ILengthRestrictedField
 {
-    public function isConstantLength(bool $flag=null);
+    public function isConstantLength(bool $flag = null);
 }
 
 
@@ -202,7 +201,7 @@ trait TLengthRestrictedField
 
     protected $_isConstantLength = false;
 
-    public function isConstantLength(bool $flag=null)
+    public function isConstantLength(bool $flag = null)
     {
         if ($flag !== null) {
             $flag = $flag;
@@ -332,7 +331,7 @@ trait TRelationField
         $model = $unit->getModel();
 
         if (false === strpos($this->_targetUnitId, '/')) {
-            $this->_targetUnitId = $model->getModelName().'/'.$this->_targetUnitId;
+            $this->_targetUnitId = $model->getModelName() . '/' . $this->_targetUnitId;
         }
     }
 
@@ -342,7 +341,7 @@ trait TRelationField
 
         if ($targetUnit->getUnitType() != $localUnit->getUnitType()) {
             throw Exceptional::Runtime(
-                'Relation target unit '.$targetUnit->getUnitId().' does not match local unit '.$localUnit->getUnitId().' type ('.$localUnit->getUnitType().')'
+                'Relation target unit ' . $targetUnit->getUnitId() . ' does not match local unit ' . $localUnit->getUnitId() . ' type (' . $localUnit->getUnitType() . ')'
             );
         }
 
@@ -353,14 +352,14 @@ trait TRelationField
     {
         if (!$localPrimaryIndex = $localSchema->getPrimaryIndex()) {
             throw Exceptional::Runtime(
-                'Relation table '.$localUnit->getUnitId().' does not have a primary index'
+                'Relation table ' . $localUnit->getUnitId() . ' does not have a primary index'
             );
         }
 
         return $localPrimaryIndex;
     }
 
-    protected function _validateTargetPrimaryIndex(axis\ISchemaBasedStorageUnit $targetUnit, ISchema $targetSchema=null)
+    protected function _validateTargetPrimaryIndex(axis\ISchemaBasedStorageUnit $targetUnit, ISchema $targetSchema = null)
     {
         if ($targetSchema === null) {
             $targetSchema = $targetUnit->getTransientUnitSchema();
@@ -368,7 +367,7 @@ trait TRelationField
 
         if (!$targetPrimaryIndex = $targetSchema->getPrimaryIndex()) {
             throw Exceptional::Runtime(
-                'Relation unit '.$targetUnit->getUnitId().' does not have a primary index'
+                'Relation unit ' . $targetUnit->getUnitId() . ' does not have a primary index'
             );
         }
 
@@ -408,7 +407,7 @@ trait TRelationField
         return $this->_toPrimitive($unit, $schema, true);
     }
 
-    private function _toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema, $replaced=false)
+    private function _toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema, $replaced = false)
     {
         if ($this instanceof opal\schema\INullPrimitiveField) {
             return new opal\schema\Primitive_Null($this);
@@ -461,7 +460,7 @@ trait TRelationField
 
     protected function _getSubPrimitiveName($name)
     {
-        return $this->_name.'_'.$name;
+        return $this->_name . '_' . $name;
     }
 
     protected function _setRelationStorageArray(array $data)
@@ -507,7 +506,7 @@ trait TInverseRelationField
         return $this->_targetField;
     }
 
-    protected function _validateInverseRelationField(axis\ISchemaBasedStorageUnit $targetUnit, ISchema $targetSchema=null)
+    protected function _validateInverseRelationField(axis\ISchemaBasedStorageUnit $targetUnit, ISchema $targetSchema = null)
     {
         if ($targetSchema === null) {
             $targetSchema = $targetUnit->getTransientUnitSchema();
@@ -515,49 +514,49 @@ trait TInverseRelationField
 
         if (!$targetField = $targetSchema->getField($this->_targetField)) {
             throw Exceptional::Runtime(
-                'Target field '.$this->_targetField.' could not be found in '.$targetUnit->getUnitId()
+                'Target field ' . $this->_targetField . ' could not be found in ' . $targetUnit->getUnitId()
             );
         }
 
         if ($this instanceof IOneChildField) {
             if (!$targetField instanceof IOneParentField) {
                 throw Exceptional::Runtime(
-                    'Target field '.$this->_targetField.' is not a OneParent field'
+                    'Target field ' . $this->_targetField . ' is not a OneParent field'
                 );
             }
         }
         if ($this instanceof IOneParentField) {
             if (!$targetField instanceof IOneChildField) {
                 throw Exceptional::Runtime(
-                    'Target field '.$this->_targetField.' is not a OneChild field'
+                    'Target field ' . $this->_targetField . ' is not a OneChild field'
                 );
             }
         }
         if ($this instanceof IOneToManyField) {
             if (!$targetField instanceof IManyToOneField) {
                 throw Exceptional::Runtime(
-                    'Target field '.$this->_targetField.' is not a ManyToOne field'
+                    'Target field ' . $this->_targetField . ' is not a ManyToOne field'
                 );
             }
         }
         if ($this instanceof IManyToOneField) {
             if (!$targetField instanceof IOneToManyField) {
                 throw Exceptional::Runtime(
-                    'Target field '.$this->_targetField.' is not a OneToMany field'
+                    'Target field ' . $this->_targetField . ' is not a OneToMany field'
                 );
             }
         }
         if ($this instanceof IManyToManyField) {
             if (!$targetField instanceof IManyToManyField) {
                 throw Exceptional::Runtime(
-                    'Target field '.$this->_targetField.' is not a ManyToMany field'
+                    'Target field ' . $this->_targetField . ' is not a ManyToMany field'
                 );
             }
         }
 
         if ($targetField->getTargetField() != $this->_name) {
             throw Exceptional::Runtime(
-                'Inverse field '.$this->_targetField.' is pointing to '.$targetField->getTargetField().', not '.$this->_name.' field'
+                'Inverse field ' . $this->_targetField . ' is pointing to ' . $targetField->getTargetField() . ', not ' . $this->_name . ' field'
             );
         }
 
@@ -594,7 +593,7 @@ interface IBridgedRelationField extends IRelationField, opal\schema\IBridgedRela
     public function getBridgeUnitId();
 
     public function getBridgeUnit();
-    public function isDominant(bool $flag=null);
+    public function isDominant(bool $flag = null);
 }
 
 
@@ -661,8 +660,8 @@ trait TBridgedRelationField
                 $dominantField = $targetUnit->getTransientUnitSchema()->getField($this->getTargetField());
                 $this->_bridgeUnitId = $dominantField->getBridgeUnitId();
             } else {
-                $buiArgs = [$localUnit->getUnitName().'.'.$this->_name];
-                $this->_bridgeUnitId = $modelName.'/'.$this->_getBridgeUnitType().'('.implode(',', $buiArgs).')';
+                $buiArgs = [$localUnit->getUnitName() . '.' . $this->_name];
+                $this->_bridgeUnitId = $modelName . '/' . $this->_getBridgeUnitType() . '(' . implode(',', $buiArgs) . ')';
             }
         }
 
@@ -684,15 +683,15 @@ trait TBridgedRelationField
                     $dominantField = $targetUnit->getTransientUnitSchema()->getField($this->getTargetField());
                     $this->_bridgeUnitId = $dominantField->getBridgeUnitId();
                 } else {
-                    $buiArgs = [$localUnit->getUnitName().'.'.$this->_name];
-                    $buiArgs[] = $bridgeModelName.'/'.$bridgeId;
-                    $this->_bridgeUnitId = $modelName.'/'.$this->_getBridgeUnitType().'('.implode(',', $buiArgs).')';
+                    $buiArgs = [$localUnit->getUnitName() . '.' . $this->_name];
+                    $buiArgs[] = $bridgeModelName . '/' . $bridgeId;
+                    $this->_bridgeUnitId = $modelName . '/' . $this->_getBridgeUnitType() . '(' . implode(',', $buiArgs) . ')';
                 }
             }
         }
 
         if (false === strpos($this->_bridgeUnitId, '/')) {
-            $this->_bridgeUnitId = $modelName.'/'.$this->_bridgeUnitId;
+            $this->_bridgeUnitId = $modelName . '/' . $this->_bridgeUnitId;
         }
 
         if ($this->_bridgeTargetFieldName == $localUnit->getUnitName()) {
@@ -711,8 +710,8 @@ trait TBridgedRelationField
         if ($this instanceof IManyToManyField) {
             if ($bridgeUnit->getModel()->getModelName() != $localUnit->getModel()->getModelName()) {
                 throw Exceptional::Runtime(
-                    'Bridge units must be local to the dominant participant - '.
-                    $this->_bridgeUnitId.' should be on model '.$localUnit->getModel()->getModelName()
+                    'Bridge units must be local to the dominant participant - ' .
+                    $this->_bridgeUnitId . ' should be on model ' . $localUnit->getModel()->getModelName()
                 );
             }
         }
@@ -746,7 +745,7 @@ trait TBridgedRelationField
         // Fix legacy
         if (preg_match('|^([a-zA-Z0-9_]+)/table.Bridge\(|i', $this->_bridgeUnitId)) {
             list($model, $unit) = explode('/', $this->_bridgeUnitId, 2);
-            $this->_bridgeUnitId = $model.'/BridgeTable'.substr($unit, 12);
+            $this->_bridgeUnitId = $model . '/BridgeTable' . substr($unit, 12);
         }
     }
 

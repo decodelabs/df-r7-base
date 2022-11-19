@@ -6,19 +6,19 @@
 
 namespace df\arch\scaffold;
 
-use df\arch\Scaffold;
-use df\arch\IContext as Context;
-use df\arch\IRequest as Request;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy;
+
+use df\arch\IContext as Context;
+use df\arch\IRequest as Request;
+use df\arch\Scaffold;
 
 class Loader
 {
     public static function fromContext(Context $context): Scaffold
     {
-        $registryKey = 'scaffold('.$context->location->getPath()->getDirname().')';
+        $registryKey = 'scaffold(' . $context->location->getPath()->getDirname() . ')';
 
         if ($output = Legacy::getRegistryObject($registryKey)) {
             /** @var Scaffold $output */
@@ -32,7 +32,7 @@ class Loader
 
         if (!class_exists($class)) {
             throw Exceptional::NotFound(
-                'Scaffold could not be found for '.$context->location
+                'Scaffold could not be found for ' . $context->location
             );
         }
 
@@ -42,12 +42,12 @@ class Loader
         return $output;
     }
 
-    public static function getClassFromRequest(Request $request, string $runMode='Http'): string
+    public static function getClassFromRequest(Request $request, string $runMode = 'Http'): string
     {
         $runMode = ucfirst($runMode);
         $parts = $request->getControllerParts();
-        $parts[] = $runMode.'Scaffold';
+        $parts[] = $runMode . 'Scaffold';
 
-        return 'df\\apex\\directory\\'.$request->getArea().'\\'.implode('\\', $parts);
+        return 'df\\apex\\directory\\' . $request->getArea() . '\\' . implode('\\', $parts);
     }
 }

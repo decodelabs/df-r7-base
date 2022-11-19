@@ -6,15 +6,11 @@
 
 namespace df\apex\directory\front\config\_nodes;
 
-use df;
-use df\core;
-use df\apex;
+use DecodeLabs\R7\Legacy;
+use DecodeLabs\Terminus as Cli;
+
 use df\arch;
 use df\axis;
-
-use DecodeLabs\Genesis;
-use DecodeLabs\Terminus as Cli;
-use DecodeLabs\R7\Legacy;
 
 class TaskInit extends arch\node\Task
 {
@@ -27,14 +23,14 @@ class TaskInit extends arch\node\Task
         $classes = [];
 
         foreach ($libList as $libName) {
-            Cli::{'brightMagenta'}(' '.$libName);
+            Cli::{'brightMagenta'}(' ' . $libName);
             $classes = array_merge($classes, $this->data->config->findIn($libName));
         }
 
         $classCount = count($classes);
         Cli::newLine();
 
-        Cli::inlineSuccess('Found '.$classCount);
+        Cli::inlineSuccess('Found ' . $classCount);
 
         if (!$classCount) {
             Cli::newLine();
@@ -53,7 +49,7 @@ class TaskInit extends arch\node\Task
                 continue;
             }
 
-            Cli::{'green'}(' '.ucfirst($config->getConfigId()));
+            Cli::{'green'}(' ' . ucfirst($config->getConfigId()));
         }
 
         Cli::newLine();

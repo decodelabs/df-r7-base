@@ -5,9 +5,9 @@
  */
 namespace df\flex;
 
-use df\flex;
-
 use DecodeLabs\Dictum;
+
+use df\flex;
 
 abstract class TextCase implements ICase
 {
@@ -58,7 +58,7 @@ abstract class TextCase implements ICase
         return $case;
     }
 
-    public static function apply($string, $case, $encoding=flex\IEncoding::UTF_8): ?string
+    public static function apply($string, $case, $encoding = flex\IEncoding::UTF_8): ?string
     {
         if (null === ($text = Dictum::text($string, $encoding))) {
             return null;

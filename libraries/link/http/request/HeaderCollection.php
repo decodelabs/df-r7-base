@@ -6,7 +6,6 @@
 
 namespace df\link\http\request;
 
-use df;
 use df\core;
 use df\link;
 

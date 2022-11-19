@@ -6,18 +6,16 @@
 
 namespace df\aura\theme;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-use df\spur;
-use df\fuse;
-
 use DecodeLabs\Exceptional;
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Genesis;
-use DecodeLabs\Spectrum\Color;
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\R7\Legacy;
+
+use DecodeLabs\Spectrum\Color;
+use df\arch;
+use df\aura;
+use df\core;
+use df\fuse;
 
 class Base implements ITheme, Dumpable
 {
@@ -52,7 +50,7 @@ class Base implements ITheme, Dumpable
         }
 
         $id = lcfirst($id);
-        $class = 'df\\apex\\themes\\'.$id.'\\Theme';
+        $class = 'df\\apex\\themes\\' . $id . '\\Theme';
 
         if (!class_exists($class)) {
             $class = __CLASS__;
@@ -81,7 +79,7 @@ class Base implements ITheme, Dumpable
     # Before render
     public function beforeViewRender(aura\view\IView $view)
     {
-        $func = 'before'.$view->getType().'ViewRender';
+        $func = 'before' . $view->getType() . 'ViewRender';
 
         if (method_exists($this, $func)) {
             $this->$func($view);
@@ -137,7 +135,7 @@ class Base implements ITheme, Dumpable
     # On content render
     public function onViewContentRender(aura\view\IView $view, $content)
     {
-        $func = 'on'.$view->getType().'ViewContentRender';
+        $func = 'on' . $view->getType() . 'ViewContentRender';
 
         if (method_exists($this, $func)) {
             if (null !== ($newContent = $this->$func($view, $content))) {
@@ -158,7 +156,7 @@ class Base implements ITheme, Dumpable
     # On layout render
     public function onViewLayoutRender(aura\view\IView $view, $content)
     {
-        $func = 'on'.$view->getType().'ViewLayoutRender';
+        $func = 'on' . $view->getType() . 'ViewLayoutRender';
 
         if (method_exists($this, $func)) {
             if (null !== ($newContent = $this->$func($view, $content))) {
@@ -180,7 +178,7 @@ class Base implements ITheme, Dumpable
     # After render
     public function afterViewRender(aura\view\IView $view, $content)
     {
-        $func = 'after'.$view->getType().'ViewRender';
+        $func = 'after' . $view->getType() . 'ViewRender';
 
         if (method_exists($this, $func)) {
             if (null !== ($newContent = $this->$func($view, $content))) {
@@ -227,7 +225,7 @@ class Base implements ITheme, Dumpable
             $suffix = Genesis::$hub->getApplicationName();
 
             if ($view->hasTitle()) {
-                $suffix = ' : '.$suffix;
+                $suffix = ' : ' . $suffix;
             }
 
             $view->setTitleSuffix($suffix);
@@ -312,12 +310,12 @@ class Base implements ITheme, Dumpable
         $path = core\uri\Path::normalizeLocal($path);
 
         $output = Legacy::getLoader()->findFile(
-            $lookupPath = 'apex/themes/'.$this->getId().'/assets/'.$path
+            $lookupPath = 'apex/themes/' . $this->getId() . '/assets/' . $path
         );
 
         if (!$output) {
             $output = Legacy::getLoader()->findFile(
-                $lookupPath = 'apex/themes/shared/assets/'.$path
+                $lookupPath = 'apex/themes/shared/assets/' . $path
             );
         }
 
@@ -337,7 +335,7 @@ class Base implements ITheme, Dumpable
     public function mapIcon($name)
     {
         if ($this->_iconMap === null) {
-            if (!$path = Legacy::getLoader()->findFile('apex/themes/'.$this->getId().'/IconMap.php')) {
+            if (!$path = Legacy::getLoader()->findFile('apex/themes/' . $this->getId() . '/IconMap.php')) {
                 $path = Legacy::getLoader()->findFile('apex/themes/shared/IconMap.php');
             }
 
@@ -374,7 +372,7 @@ class Base implements ITheme, Dumpable
 
 
     // Facets
-    public function loadFacet($name, $config=null)
+    public function loadFacet($name, $config = null)
     {
         $name = lcfirst($name);
 
@@ -448,7 +446,7 @@ class Base implements ITheme, Dumpable
         return null;
     }
 
-    protected function _normalizeFacetList(array $list, array $current=[])
+    protected function _normalizeFacetList(array $list, array $current = [])
     {
         foreach ($list as $name => $config) {
             if (is_string($config)) {

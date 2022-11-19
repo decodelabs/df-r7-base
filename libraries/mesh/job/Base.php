@@ -5,10 +5,6 @@
  */
 namespace df\mesh\job;
 
-use df;
-use df\core;
-use df\mesh;
-
 use DecodeLabs\Exceptional;
 
 abstract class Base implements IJob
@@ -27,7 +23,7 @@ abstract class Base implements IJob
             $prefix = uniqid();
         }
 
-        $this->_id = get_class($this).'|'.$prefix.':'.$id;
+        $this->_id = get_class($this) . '|' . $prefix . ':' . $id;
     }
 
     public function getId(): string
@@ -42,7 +38,7 @@ abstract class Base implements IJob
 
 
     // Dependencies
-    public function addDependency($dependency, IResolution $resolution=null)
+    public function addDependency($dependency, IResolution $resolution = null)
     {
         if ($dependency instanceof IJob) {
             $dependency = new Dependency($dependency, $resolution);

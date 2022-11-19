@@ -5,12 +5,10 @@
  */
 namespace df\axis\schema\field;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
-
 use DecodeLabs\Exceptional;
+use df\axis;
+
+use df\opal;
 
 class AutoId extends Base implements
     opal\schema\IByteSizeRestrictedField,
@@ -21,14 +19,14 @@ class AutoId extends Base implements
     use opal\schema\TField_ByteSizeRestricted;
     use axis\schema\TAutoPrimaryField;
 
-    protected function _init($size=null)
+    protected function _init($size = null)
     {
         $this->setByteSize($size);
     }
 
 
     // Auto inc
-    public function shouldAutoGenerate(bool $flag=null)
+    public function shouldAutoGenerate(bool $flag = null)
     {
         if ($flag !== null) {
             if (!$flag) {
@@ -43,7 +41,7 @@ class AutoId extends Base implements
         return true;
     }
 
-    public function shouldAutoIncrement(bool $flag=null)
+    public function shouldAutoIncrement(bool $flag = null)
     {
         if ($flag !== null) {
             if (!$flag) {
@@ -58,7 +56,7 @@ class AutoId extends Base implements
         return true;
     }
 
-    public function isSigned(bool $flag=null)
+    public function isSigned(bool $flag = null)
     {
         if ($flag !== null) {
             if ($flag) {
@@ -73,7 +71,7 @@ class AutoId extends Base implements
         return false;
     }
 
-    public function isUnsigned(bool $flag=null)
+    public function isUnsigned(bool $flag = null)
     {
         if ($flag !== null) {
             if (!$flag) {
@@ -88,7 +86,7 @@ class AutoId extends Base implements
         return true;
     }
 
-    public function shouldZerofill(bool $flag=null)
+    public function shouldZerofill(bool $flag = null)
     {
         if ($flag !== null) {
             if ($flag) {

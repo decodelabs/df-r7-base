@@ -5,18 +5,13 @@
  */
 namespace df\spur\mail\mailchimp3;
 
-use df;
-use df\core;
 use df\spur;
-use df\flow;
-use df\link;
 use df\user;
 
 interface IMediator extends spur\IGuzzleMediator
 {
-
-// Transport
-    public function isSecure(bool $flag=null);
+    // Transport
+    public function isSecure(bool $flag = null);
     public function canConnect(): bool;
 
     // Api key
@@ -34,7 +29,7 @@ interface IMediator extends spur\IGuzzleMediator
     public function fetchList(string $id): IDataObject;
 
     public function newListFilter(): IListFilter;
-    public function fetchLists(IListFilter $filter=null): IDataList;
+    public function fetchLists(IListFilter $filter = null): IDataList;
 
 
 
@@ -42,14 +37,14 @@ interface IMediator extends spur\IGuzzleMediator
     public function fetchInterestCategory(string $listId, string $categoryId): IDataObject;
 
     public function newInterestCategoryFilter(): IInterestCategoryFilter;
-    public function fetchInterestCategories(string $listId, IInterestCategoryFilter $filter=null): IDataList;
+    public function fetchInterestCategories(string $listId, IInterestCategoryFilter $filter = null): IDataList;
 
 
     // Interests
     public function fetchInterest(string $listId, string $categoryId, string $interestId): IDataObject;
 
     public function newInterestFilter(): IInterestFilter;
-    public function fetchInterests(string $listId, string $categoryId, IInterestFilter $filter=null): IDataList;
+    public function fetchInterests(string $listId, string $categoryId, IInterestFilter $filter = null): IDataList;
 
 
 
@@ -58,9 +53,9 @@ interface IMediator extends spur\IGuzzleMediator
     public function fetchMemberByHash(string $listId, string $hash): IDataObject;
 
     public function newMemberFilter(): IMemberFilter;
-    public function fetchMembers(string $listId, IMemberFilter $filter=null): IDataList;
+    public function fetchMembers(string $listId, IMemberFilter $filter = null): IDataList;
 
-    public function ensureSubscription(string $listId, user\IClientDataObject $user, array $groups=[], ?array $extraData=null): IDataObject;
+    public function ensureSubscription(string $listId, user\IClientDataObject $user, array $groups = [], ?array $extraData = null): IDataObject;
     public function unsubscribe(string $listId, string $email): ?IDataObject;
     public function updateMemberDetails(string $listId, string $oldEmail, user\IClientDataObject $user): IDataObject;
 
@@ -102,7 +97,7 @@ interface IFilter extends spur\IFilter
     public function addExcludeFields(string ...$fields);
     public function getExcludeFields(): array;
 
-    public function shouldIncludeLinks(bool $flag=null);
+    public function shouldIncludeLinks(bool $flag = null);
 }
 
 
@@ -112,7 +107,7 @@ interface IDirectionalFilter extends IFilter
 {
     public function setSortField(?string $field);
     public function getSortField(): ?string;
-    public function isReversed(bool $flag=null);
+    public function isReversed(bool $flag = null);
 }
 
 

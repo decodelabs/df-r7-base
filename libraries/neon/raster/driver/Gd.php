@@ -6,12 +6,11 @@
 
 namespace df\neon\raster\driver;
 
-use df;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Spectrum\Color;
+
 use df\core;
 use df\neon;
-
-use DecodeLabs\Spectrum\Color;
-use DecodeLabs\Exceptional;
 
 class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\raster\IImageFilterDriver
 {
@@ -76,7 +75,9 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
                 default:
                     if (false === ($data = file_get_contents($file))) {
                         throw Exceptional::Runtime(
-                            'Unable to load file contents', null, $file
+                            'Unable to load file contents',
+                            null,
+                            $file
                         );
                     }
 
@@ -92,7 +93,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
 
         if (!$this->_pointer) {
             throw Exceptional::{'../Io,../Unreadable'}(
-                'Unable to load raster image '.$file
+                'Unable to load raster image ' . $file
             );
         }
 
@@ -117,7 +118,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         return $this;
     }
 
-    public function loadCanvas($width, $height, Color $color=null)
+    public function loadCanvas($width, $height, Color $color = null)
     {
         if ($color === null) {
             $color = new Color(0, 0, 0, 0);
@@ -139,7 +140,9 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         $color->setMode('rgb');
 
         imageFill(
-            $this->_pointer, 1, 1,
+            $this->_pointer,
+            1,
+            1,
             imageColorAllocateAlpha(
                 $this->_pointer,
                 (int)($color->getRed() * 255),
@@ -254,9 +257,14 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         imageAlphaBlending($image->getPointer(), true);
 
         imageCopy(
-            $this->_pointer, $image->getPointer(),
-            $x, $y, 0, 0,
-            $image->getWidth(), $image->getHeight()
+            $this->_pointer,
+            $image->getPointer(),
+            $x,
+            $y,
+            0,
+            0,
+            $image->getWidth(),
+            $image->getHeight()
         );
 
         imageAlphaBlending($this->_pointer, false);
@@ -265,7 +273,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         return $this;
     }
 
-    public function rotate(core\unit\IAngle $angle, Color $background=null)
+    public function rotate(core\unit\IAngle $angle, Color $background = null)
     {
         if ($background === null) {
             $background = imageColorAllocateAlpha($this->_pointer, 0, 0, 0, 127);
@@ -304,9 +312,14 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
 
         for ($x = 0; $x < $this->_width; $x++) {
             imageCopy(
-                $tmp, $this->_pointer, $x, 0,
-                (int)($this->_width - $x - 1), 0,
-                1, $this->_height
+                $tmp,
+                $this->_pointer,
+                $x,
+                0,
+                (int)($this->_width - $x - 1),
+                0,
+                1,
+                $this->_height
             );
         }
 
@@ -329,9 +342,14 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
 
         for ($y = 0; $y < $this->_height; $y++) {
             imageCopy(
-                $tmp, $this->_pointer, 0, $y,
-                0, (int)($this->_height - $y - 1),
-                $this->_width, 1
+                $tmp,
+                $this->_pointer,
+                0,
+                $y,
+                0,
+                (int)($this->_height - $y - 1),
+                $this->_width,
+                1
             );
         }
 
@@ -377,9 +395,15 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
             imagefilter($this->_pointer, \IMG_FILTER_GRAYSCALE);
         } else {
             imageCopyMergeGray(
-                $this->_pointer, $this->_pointer,
-                0, 0, 0, 0,
-                $this->_width, $this->_height, 0
+                $this->_pointer,
+                $this->_pointer,
+                0,
+                0,
+                0,
+                0,
+                $this->_width,
+                $this->_height,
+                0
             );
         }
 

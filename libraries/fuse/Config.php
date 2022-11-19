@@ -5,22 +5,21 @@
  */
 namespace df\fuse;
 
-use df;
 use df\core;
-use df\aura;
-use df\arch;
 
-class Config extends core\Config {
+class Config extends core\Config
+{
+    public const ID = 'Fuse';
 
-    const ID = 'Fuse';
-
-    public function getDefaultValues(): array {
+    public function getDefaultValues(): array
+    {
         return [
             'dependencies' => []
         ];
     }
 
-    public function getDependencies() {
+    public function getDependencies()
+    {
         return $this->values->dependencies->toArray();
     }
 }

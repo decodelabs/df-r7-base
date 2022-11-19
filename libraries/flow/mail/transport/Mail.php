@@ -5,8 +5,6 @@
  */
 namespace df\flow\mail\transport;
 
-use df;
-use df\core;
 use df\flow;
 
 class Mail extends Base
@@ -25,9 +23,9 @@ class Mail extends Base
         $additional = '';
 
         if ($returnPath = $headers->get('return-path')) {
-            $additional = '-f'.$returnPath;
+            $additional = '-f' . $returnPath;
         } elseif ($from = $message->getFromAddress()) {
-            $additional = '-f'.$from->getAddress();
+            $additional = '-f' . $from->getAddress();
         }
 
         return mail($to, $headers->get('subject'), $body, $headerString, $additional);

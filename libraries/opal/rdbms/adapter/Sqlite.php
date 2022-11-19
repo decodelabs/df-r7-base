@@ -6,17 +6,15 @@
 
 namespace df\opal\rdbms\adapter;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Atlas;
+
 use DecodeLabs\Genesis;
+use df\opal;
 
 class Sqlite extends Base_Pdo
 {
-// Connection
-    protected function _connect($global=false)
+    // Connection
+    protected function _connect($global = false)
     {
         parent::_connect($global);
 
@@ -35,12 +33,12 @@ class Sqlite extends Base_Pdo
         // don't need to do anything :)
     }
 
-    protected function _getPdoDsn($global=false)
+    protected function _getPdoDsn($global = false)
     {
         $database = $this->_dsn->getDatabaseKeyName();
 
         if (!$database || $database == 'default') {
-            $database = Genesis::$hub->getSharedDataPath().'/sqlite/default';
+            $database = Genesis::$hub->getSharedDataPath() . '/sqlite/default';
 
             if ($suffix = $this->_dsn->getDatabaseSuffix()) {
                 $database .= $suffix;
@@ -50,7 +48,7 @@ class Sqlite extends Base_Pdo
             Atlas::createDir(dirname($database));
         }
 
-        return 'sqlite:'.$database;
+        return 'sqlite:' . $database;
     }
 
     protected function _getPdoOptions()
@@ -114,7 +112,7 @@ class Sqlite extends Base_Pdo
         return opal\rdbms\variant\sqlite\Server::getConnectionException($this, $number, $message);
     }
 
-    public function _getQueryException($number, $message, $sql=null)
+    public function _getQueryException($number, $message, $sql = null)
     {
         return opal\rdbms\variant\sqlite\Server::getQueryException($this, $number, $message, $sql);
     }
@@ -137,7 +135,7 @@ class Sqlite extends Base_Pdo
         $parts = explode('.', $identifier);
 
         foreach ($parts as $key => $part) {
-            $parts[$key] = '`'.trim($part, '`\'').'`';
+            $parts[$key] = '`' . trim($part, '`\'') . '`';
         }
 
         return implode('.', $parts);
@@ -145,7 +143,7 @@ class Sqlite extends Base_Pdo
 
     public function quoteFieldAliasReference($alias)
     {
-        return '`'.trim($alias, '`\'').'`';
+        return '`' . trim($alias, '`\'') . '`';
     }
 
     public function quoteValue($value)

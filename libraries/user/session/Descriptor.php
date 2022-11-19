@@ -5,9 +5,7 @@
  */
 namespace df\user\session;
 
-use df;
 use df\core;
-use df\user;
 use df\opal;
 
 class Descriptor implements
@@ -70,7 +68,7 @@ class Descriptor implements
             && $this->transitionTime === null;
     }
 
-    public function hasJustStarted(bool $flag=null)
+    public function hasJustStarted(bool $flag = null)
     {
         if ($flag !== null) {
             $this->justStarted = $flag;
@@ -139,12 +137,12 @@ class Descriptor implements
         return $this->setPublicKey($newPublicKey);
     }
 
-    public function hasJustTransitioned($transitionLifeTime=10)
+    public function hasJustTransitioned($transitionLifeTime = 10)
     {
         return time() - $this->transitionTime < $transitionLifeTime;
     }
 
-    public function needsTouching($transitionLifeTime=10)
+    public function needsTouching($transitionLifeTime = 10)
     {
         if ($this->justStarted) {
             return false;
@@ -164,7 +162,7 @@ class Descriptor implements
         return $output;
     }
 
-    public function touchInfo($transitionLifeTime=10)
+    public function touchInfo($transitionLifeTime = 10)
     {
         $output = [
             'accessTime' => $this->accessTime = time()

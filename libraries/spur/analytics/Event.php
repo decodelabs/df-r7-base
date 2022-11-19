@@ -5,9 +5,7 @@
  */
 namespace df\spur\analytics;
 
-use df;
 use df\core;
-use df\spur;
 
 class Event implements IEvent
 {
@@ -17,7 +15,7 @@ class Event implements IEvent
     protected $_name;
     protected $_label;
 
-    public function __construct($category, string $name, $label=null, array $attributes=null)
+    public function __construct($category, string $name, $label = null, array $attributes = null)
     {
         $this->setCategory($category);
         $this->setName($name);
@@ -30,7 +28,7 @@ class Event implements IEvent
 
     public function getUniqueId()
     {
-        return $this->_category.'/'.$this->_name;
+        return $this->_category . '/' . $this->_name;
     }
 
     public function setCategory($category)

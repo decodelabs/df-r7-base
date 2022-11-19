@@ -6,19 +6,17 @@
 
 namespace df\arch\component;
 
-use df;
-use df\core;
-use df\arch;
-use df\user;
-use df\aura;
-use df\link;
-
-use df\arch\scaffold\Loader as ScaffoldLoader;
-
 use DecodeLabs\Exceptional;
-use DecodeLabs\Genesis;
 use DecodeLabs\Tagged as Html;
 use DecodeLabs\Tagged\Markup;
+use df\arch;
+use df\arch\scaffold\Loader as ScaffoldLoader;
+
+use df\aura;
+
+use df\core;
+use df\link;
+use df\user;
 
 abstract class Base implements arch\IComponent
 {
@@ -35,7 +33,7 @@ abstract class Base implements arch\IComponent
     public $slots = [];
     protected $_componentArgs = [];
 
-    public static function factory(arch\IContext $context, $name, array $args=null): arch\IComponent
+    public static function factory(arch\IContext $context, $name, array $args = null): arch\IComponent
     {
         $path = $context->location->getController();
         $area = $context->location->getArea();
@@ -55,7 +53,7 @@ abstract class Base implements arch\IComponent
         }
 
         $parts[] = ucfirst($topName);
-        $class = 'df\\apex\\directory\\'.$area.'\\'.implode('\\', $parts);
+        $class = 'df\\apex\\directory\\' . $area . '\\' . implode('\\', $parts);
 
         if (!class_exists($class)) {
             try {
@@ -64,11 +62,11 @@ abstract class Base implements arch\IComponent
             } catch (arch\scaffold\Exception $e) {
             }
 
-            $class = 'df\\apex\\directory\\shared\\'.implode('\\', $parts);
+            $class = 'df\\apex\\directory\\shared\\' . implode('\\', $parts);
 
             if (!class_exists($class)) {
                 throw Exceptional::NotFound(
-                    'Component ~'.$area.'/'.$path.'/#/'.$name.' could not be found'
+                    'Component ~' . $area . '/' . $path . '/#/' . $name . ' could not be found'
                 );
             }
         }
@@ -76,16 +74,16 @@ abstract class Base implements arch\IComponent
         return new $class($context, $args);
     }
 
-    public static function themeFactory(arch\IContext $context, $themeName, $name, array $args=null)
+    public static function themeFactory(arch\IContext $context, $themeName, $name, array $args = null)
     {
-        $class = 'df\\apex\\themes\\'.$themeName.'\\components\\'.ucfirst($name);
+        $class = 'df\\apex\\themes\\' . $themeName . '\\components\\' . ucfirst($name);
 
         if (!class_exists($class)) {
-            $class = 'df\\apex\\themes\\shared\\components\\'.ucfirst($name);
+            $class = 'df\\apex\\themes\\shared\\components\\' . ucfirst($name);
 
             if (!class_exists($class)) {
                 throw Exceptional::NotFound(
-                    'Theme component '.ucfirst($name).' could not be found'
+                    'Theme component ' . ucfirst($name) . ' could not be found'
                 );
             }
         }
@@ -93,7 +91,7 @@ abstract class Base implements arch\IComponent
         return new $class($context, $args);
     }
 
-    public function __construct(arch\IContext $context, array $args=null)
+    public function __construct(arch\IContext $context, array $args = null)
     {
         $this->context = $context;
 
@@ -221,7 +219,7 @@ abstract class Base implements arch\IComponent
         return array_key_exists($key, $this->slots);
     }
 
-    public function getSlot(string $key, $default=null)
+    public function getSlot(string $key, $default = null)
     {
         if (isset($this->slots[$key])) {
             return $this->slots[$key];
@@ -266,12 +264,12 @@ abstract class Base implements arch\IComponent
         return 'directory';
     }
 
-    public function lookupAccessKey(array $keys, $action=null)
+    public function lookupAccessKey(array $keys, $action = null)
     {
         return $this->context->location->lookupAccessKey($keys, $action);
     }
 
-    public function getDefaultAccess($action=null)
+    public function getDefaultAccess($action = null)
     {
         return static::DEFAULT_ACCESS;
     }

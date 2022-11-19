@@ -6,26 +6,26 @@
 
 namespace df\arch\scaffold\Record;
 
+use DecodeLabs\Dictum;
+
+use DecodeLabs\Exceptional;
+use DecodeLabs\Tagged as Html;
+
+use df\arch\IRequest as DirectoryRequest;
 use df\arch\scaffold\Section\Provider as SectionProvider;
 
-use df\opal\record\IRecord as Record;
-use df\arch\IRequest as DirectoryRequest;
-
-use df\core\collection\Util as CollectionUtil;
+use df\axis\ISchemaBasedStorageUnit as SchemaBasedStorageUnit;
+use df\axis\IUnit as Unit;
 use df\core\collection\IMappedCollection as MappedCollection;
 
-use df\opal\query\Exception as QueryException;
-use df\opal\query\ISelectQuery as SelectQuery;
-use df\opal\record\IPrimaryKeySetProvider as PrimaryKeySetProvider;
-
-use df\axis\IUnit as Unit;
-use df\axis\ISchemaBasedStorageUnit as SchemaBasedStorageUnit;
-
+use df\core\collection\Util as CollectionUtil;
 use df\core\time\IDate as Date;
 
-use DecodeLabs\Dictum;
-use DecodeLabs\Tagged as Html;
-use DecodeLabs\Exceptional;
+use df\opal\query\Exception as QueryException;
+
+use df\opal\query\ISelectQuery as SelectQuery;
+use df\opal\record\IPrimaryKeySetProvider as PrimaryKeySetProvider;
+use df\opal\record\IRecord as Record;
 
 trait DataProviderTrait
 {
@@ -176,7 +176,7 @@ trait DataProviderTrait
 
 
     // Record IO
-    public function newRecord(array $values=null): Record
+    public function newRecord(array $values = null): Record
     {
         return $this->data->newRecord($this->getRecordAdapter(), $values);
     }
@@ -252,7 +252,7 @@ trait DataProviderTrait
         );
     }
 
-    public function deleteRecord(Record $record, array $flags=[])//: void
+    public function deleteRecord(Record $record, array $flags = [])//: void
     {
         $record->delete();
     }
@@ -261,7 +261,7 @@ trait DataProviderTrait
 
 
     // List IO
-    public function queryRecordList(string $mode, array $fields=null): SelectQuery
+    public function queryRecordList(string $mode, array $fields = null): SelectQuery
     {
         if ($fields === null) {
             $fields = $this->getDefaultRecordQueryFields();
@@ -372,7 +372,7 @@ trait DataProviderTrait
             $output = $record[$key];
 
             if ($key == $this->getRecordIdField() && is_numeric($output)) {
-                $output = '#'.$output;
+                $output = '#' . $output;
             }
         } else {
             if (is_array($record)) {
@@ -400,7 +400,7 @@ trait DataProviderTrait
             }
 
             if (is_numeric($id)) {
-                $output = [$output, Html::{'samp'}('#'.$id)];
+                $output = [$output, Html::{'samp'}('#' . $id)];
             }
         }
 
@@ -565,7 +565,7 @@ trait DataProviderTrait
 
 
     // URL locations
-    public function getRecordUri($record, ?string $node=null, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]): DirectoryRequest
+    public function getRecordUri($record, ?string $node = null, array $query = null, $redirFrom = null, $redirTo = null, array $propagationFilter = []): DirectoryRequest
     {
         if ($node === null) {
             if ($this instanceof SectionProvider) {

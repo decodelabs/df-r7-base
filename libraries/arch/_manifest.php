@@ -6,17 +6,15 @@
 
 namespace df\arch;
 
-use df;
-use df\core;
-use df\arch;
-use df\user;
-use df\aura;
-use df\flow;
-
-use df\arch\Scaffold;
-
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Tagged\Markup\Proxy as MarkupProxy;
+use df\arch;
+use df\aura;
+use df\core;
+
+
+use df\flow;
+use df\user;
 
 // Exceptions
 interface IForcedResponse
@@ -69,10 +67,10 @@ interface IAccess extends user\IState
 
 interface IContext extends core\IContext, IResponseForcer
 {
-    public static function factory($location=null, $request=null): IContext;
+    public static function factory($location = null, $request = null): IContext;
 
     // Application
-    public function spawnInstance($request=null, bool $copyRequest=false): IContext;
+    public function spawnInstance($request = null, bool $copyRequest = false): IContext;
     public function getDispatchContext(): core\IContext;
     public function isDispatchContext(): bool;
 
@@ -81,7 +79,7 @@ interface IContext extends core\IContext, IResponseForcer
     public function getLocation(): IRequest;
 
     public function extractDirectoryLocation(string &$path): IRequest;
-    public function extractThemeId(string &$path, bool $findDefault=false): ?string;
+    public function extractThemeId(string &$path, bool $findDefault = false): ?string;
 
     public function getScaffold(): Scaffold;
 }
@@ -173,7 +171,7 @@ interface IRequest extends
     public static function formatControllerParts(array $parts);
 
     // Node
-    public function setNode(string $node=null);
+    public function setNode(string $node = null);
     public function getNode();
     public function getRawNode();
     public function isNode($node): bool;
@@ -182,7 +180,7 @@ interface IRequest extends
     public static function formatNode($node);
 
     // Type
-    public function setType(string $type=null);
+    public function setType(string $type = null);
     public function getType();
     public function isType($type): bool;
     public static function getDefaultType();
@@ -206,7 +204,7 @@ interface IRequest extends
     public function isPathWithin($request): bool;
 
     public function getLiteralPath();
-    public function getLiteralPathArray(bool $incType=true, bool $incNode=true);
+    public function getLiteralPathArray(bool $incType = true, bool $incNode = true);
     public function getLiteralPathString();
     public function getDirectoryLocation();
     public function getLibraryPath();
@@ -217,7 +215,7 @@ interface IRequest extends
     public function encode();
     public static function decode($str);
 
-    public function setRedirect($from, $to=null);
+    public function setRedirect($from, $to = null);
     public function hasRedirectFrom();
     public function hasRedirectTo();
     public function setRedirectFrom($redir);
@@ -244,14 +242,14 @@ interface IProxyResponse
 
 interface IOptionalDirectoryAccessLock
 {
-    public function shouldCheckAccess(bool $flag=null);
+    public function shouldCheckAccess(bool $flag = null);
 }
 
 trait TOptionalDirectoryAccessLock
 {
     private $_shouldCheckAccess = null;
 
-    public function shouldCheckAccess(bool $flag=null)
+    public function shouldCheckAccess(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_shouldCheckAccess = $flag;
@@ -294,7 +292,7 @@ interface IComponent extends
     MarkupProxy,
     \ArrayAccess
 {
-    public static function factory(arch\IContext $context, $name, array $args=null): arch\IComponent;
+    public static function factory(arch\IContext $context, $name, array $args = null): arch\IComponent;
     public function getName(): string;
 }
 
@@ -311,12 +309,12 @@ trait TDirectoryAccessLock
         return 'directory';
     }
 
-    public function lookupAccessKey(array $keys, $action=null)
+    public function lookupAccessKey(array $keys, $action = null)
     {
         return $this->context->location->lookupAccessKey($keys, $action);
     }
 
-    public function getDefaultAccess($action=null)
+    public function getDefaultAccess($action = null)
     {
         return $this->_getClassDefaultAccess();
     }

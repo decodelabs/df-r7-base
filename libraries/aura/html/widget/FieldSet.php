@@ -5,23 +5,22 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
 use df\arch;
+use df\aura;
+use df\core;
 
 class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProvider
 {
     use core\constraint\TDisableable;
 
-    const PRIMARY_TAG = 'fieldset';
+    public const PRIMARY_TAG = 'fieldset';
 
     protected $_legendBody;
     protected $_legendTagName = 'legend';
     protected $_name;
     protected $_targetFormId;
 
-    public function __construct(arch\IContext $context, $legend=null)
+    public function __construct(arch\IContext $context, $legend = null)
     {
         parent::__construct($context);
 
@@ -62,7 +61,8 @@ class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProv
             $legend = (new aura\html\Element($this->_legendTagName, $legendBody))->render();
         }
 
-        return $tag->renderWith([
+        return $tag->renderWith(
+            [
                 $legend,
                 (new aura\html\Tag('div', ['class' => 'body']))->renderWith($children)
             ],

@@ -5,13 +5,8 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-
-class RangeSlider extends NumberTextbox {
-
-    const PRIMARY_TAG = 'input.number.slider';
-    const INPUT_TYPE = 'range';
+class RangeSlider extends NumberTextbox
+{
+    public const PRIMARY_TAG = 'input.number.slider';
+    public const INPUT_TYPE = 'range';
 }

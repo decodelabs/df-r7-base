@@ -5,14 +5,12 @@
  */
 namespace df\apex\models\media\version\fortify;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
 
-class FixActive extends axis\fortify\Base {
-
-    protected function execute() {
+class FixActive extends axis\fortify\Base
+{
+    protected function execute()
+    {
         $list = $this->_unit->select('id', 'isActive')
             ->joinRelation('file', 'id as fileId', 'activeVersion')
             ->where('isActive', '=', true)
@@ -21,14 +19,14 @@ class FixActive extends axis\fortify\Base {
 
         $count = 0;
 
-        foreach($list as $row) {
+        foreach ($list as $row) {
             $count++;
             $this->_unit->update(['isActive' => false])
                 ->where('id', '=', $row['id'])
                 ->execute();
         }
 
-        yield $count.' inactive flags cleared';
+        yield $count . ' inactive flags cleared';
 
         $list = $this->_unit->select('id', 'isActive')
             ->joinRelation('file', 'id as fileId', 'activeVersion')
@@ -38,13 +36,13 @@ class FixActive extends axis\fortify\Base {
 
         $count = 0;
 
-        foreach($list as $row) {
+        foreach ($list as $row) {
             $count++;
             $this->_unit->update(['isActive' => true])
                 ->where('id', '=', $row['id'])
                 ->execute();
         }
 
-        yield ', '.$count.' active versions flagged';
+        yield ', ' . $count . ' active versions flagged';
     }
 }

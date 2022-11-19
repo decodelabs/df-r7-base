@@ -6,17 +6,16 @@
 
 namespace df\axis;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
-use df\user;
-use df\mesh;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\Fluidity\Cast;
 use DecodeLabs\Fluidity\CastTrait;
 use DecodeLabs\Glitch;
+use df\axis;
+
+use df\core;
+use df\mesh;
+use df\opal;
+use df\user;
 
 interface IAccess extends user\IState
 {
@@ -56,7 +55,7 @@ interface IUnit extends
     public function getUnitSettings();
     public function getStorageBackendName();
 
-    public function prepareValidator(core\validate\IHandler $validator, opal\record\IRecord $record=null);
+    public function prepareValidator(core\validate\IHandler $validator, opal\record\IRecord $record = null);
     public function beginProcedure($name, $values);
 }
 
@@ -100,7 +99,7 @@ trait TUnit
 
     public function getUnitId()
     {
-        return $this->_model->getModelName().'/'.$this->getUnitName();
+        return $this->_model->getModelName() . '/' . $this->getUnitName();
     }
 
     public function getUnitSettings()
@@ -148,7 +147,7 @@ trait TUnit
         }
     }
 
-    public function prepareValidator(core\validate\IHandler $validator, opal\record\IRecord $record=null)
+    public function prepareValidator(core\validate\IHandler $validator, opal\record\IRecord $record = null)
     {
         return $validator;
     }
@@ -165,7 +164,7 @@ trait TUnit
     public function getEntityLocator()
     {
         return new mesh\entity\Locator(
-            'axis://'.$this->_model->getModelName().'/'.ucfirst($this->getUnitName())
+            'axis://' . $this->_model->getModelName() . '/' . ucfirst($this->getUnitName())
         );
     }
 
@@ -176,28 +175,28 @@ trait TUnit
         return 'model';
     }
 
-    public function lookupAccessKey(array $keys, $action=null)
+    public function lookupAccessKey(array $keys, $action = null)
     {
         $id = $this->getUnitId();
 
         $parts = explode('/', $id);
-        $test = $parts[0].'/';
+        $test = $parts[0] . '/';
 
         if ($action !== null) {
-            if (isset($keys[$id.'#'.$action])) {
-                return $keys[$id.'#'.$action];
+            if (isset($keys[$id . '#' . $action])) {
+                return $keys[$id . '#' . $action];
             }
 
-            if (isset($keys[$test.'*#'.$action])) {
-                return $keys[$test.'*#'.$action];
+            if (isset($keys[$test . '*#' . $action])) {
+                return $keys[$test . '*#' . $action];
             }
 
-            if (isset($keys[$test.'%#'.$action])) {
-                return $keys[$test.'%#'.$action];
+            if (isset($keys[$test . '%#' . $action])) {
+                return $keys[$test . '%#' . $action];
             }
 
-            if (isset($keys['*#'.$action])) {
-                return $keys['*#'.$action];
+            if (isset($keys['*#' . $action])) {
+                return $keys['*#' . $action];
             }
         }
 
@@ -206,18 +205,18 @@ trait TUnit
             return $keys[$id];
         }
 
-        if (isset($keys[$test.'*'])) {
-            return $keys[$test.'*'];
+        if (isset($keys[$test . '*'])) {
+            return $keys[$test . '*'];
         }
 
-        if (isset($keys[$test.'%'])) {
-            return $keys[$test.'%'];
+        if (isset($keys[$test . '%'])) {
+            return $keys[$test . '%'];
         }
 
         return null;
     }
 
-    public function getDefaultAccess($action=null)
+    public function getDefaultAccess($action = null)
     {
         return static::DEFAULT_ACCESS;
     }
@@ -288,15 +287,15 @@ trait TAdapterBasedStorageUnit
 
         if (empty($adapterId)) {
             throw Exceptional::Runtime(
-                'No adapter has been configured for '.ucfirst($this->getUnitType()).' unit type'
+                'No adapter has been configured for ' . ucfirst($this->getUnitType()) . ' unit type'
             );
         }
 
-        $class = 'df\\axis\\unit\\'.lcfirst($unitType).'\\adapter\\'.$adapterId;
+        $class = 'df\\axis\\unit\\' . lcfirst($unitType) . '\\adapter\\' . $adapterId;
 
         if (!class_exists($class)) {
             throw Exceptional::Runtime(
-                ucfirst($this->getUnitType()).' unit adapter '.$adapterId.' could not be found'
+                ucfirst($this->getUnitType()) . ' unit adapter ' . $adapterId . ' could not be found'
             );
         }
 
@@ -307,7 +306,7 @@ trait TAdapterBasedStorageUnit
 interface ISchemaBasedStorageUnit extends IAdapterBasedStorageUnit, opal\schema\ISchemaContext
 {
     public function getUnitSchema();
-    public function getTransientUnitSchema($force=false);
+    public function getTransientUnitSchema($force = false);
     public function clearUnitSchemaCache();
     public function buildInitialSchema();
     public function updateUnitSchema(axis\schema\ISchema $schema);
@@ -364,7 +363,7 @@ trait TSchemaBasedStorageUnit
 
                 if (!$this->_recordNameField) {
                     throw Exceptional::Runtime(
-                        'Unable to work out a suitable name field for '.$this->getUnitId()
+                        'Unable to work out a suitable name field for ' . $this->getUnitId()
                     );
                 }
             }
@@ -431,7 +430,7 @@ interface IConnectionProxyAdapter extends IAdapter
 interface IIntrospectableAdapter extends IAdapter
 {
     public function getStorageList();
-    public function describeStorage($name=null);
+    public function describeStorage($name = null);
     public function destroyDescribedStorage($name);
     public function getStorageGroupName();
 }

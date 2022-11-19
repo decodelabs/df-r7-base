@@ -5,18 +5,16 @@
  */
 namespace df\aura\html\widget;
 
-use df;
 use df\core;
-use df\aura;
-use df\arch;
 
-class MonthPicker extends DatePicker {
+class MonthPicker extends DatePicker
+{
+    public const PRIMARY_TAG = 'input.textbox.picker.month';
+    public const INPUT_TYPE = 'month';
+    public const DEFAULT_PLACEHOLDER = 'yyyy-MM';
 
-    const PRIMARY_TAG = 'input.textbox.picker.month';
-    const INPUT_TYPE = 'month';
-    const DEFAULT_PLACEHOLDER = 'yyyy-MM';
-
-    protected function _dateToString(core\time\IDate $date) {
+    protected function _dateToString(core\time\IDate $date)
+    {
         $date->toUtc();
         return $date->format('Y-m');
     }

@@ -5,19 +5,17 @@
  */
 namespace df\core\validate\field;
 
-use df;
 use df\core;
-use df\opal;
 
-class Custom extends Base implements core\validate\IField {
-
-
-// Validate
-    public function validate() {
+class Custom extends Base implements core\validate\IField
+{
+    // Validate
+    public function validate()
+    {
         // Sanitize
         $value = $this->_sanitizeValue($this->data->getValue());
 
-        if(!$length = $this->_checkRequired($value)) {
+        if (!$length = $this->_checkRequired($value)) {
             return null;
         }
 

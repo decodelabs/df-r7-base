@@ -9,8 +9,6 @@ namespace DecodeLabs\R7\Nightfire;
 
 use df\core\IStringProvider;
 
-use DecodeLabs\R7\Nightfire\Block;
-
 interface Category extends IStringProvider
 {
     public static function factory(string $name): Category;

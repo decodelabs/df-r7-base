@@ -5,43 +5,49 @@
  */
 namespace df\axis\unit;
 
-use df;
-use df\core;
 use df\axis;
+use df\core;
 
-abstract class Cache extends core\cache\Base implements axis\IUnit, axis\IAdapterBasedUnit {
-
+abstract class Cache extends core\cache\Base implements axis\IUnit, axis\IAdapterBasedUnit
+{
     use axis\TUnit;
 
-    public static function createCacheId(): string {
+    public static function createCacheId(): string
+    {
         $parts = explode('\\', get_called_class());
         $parts = array_slice($parts, 3, -1);
-        return 'axis/unit/'.implode('/', $parts);
+        return 'axis/unit/' . implode('/', $parts);
     }
 
-    public function __construct(axis\IModel $model) {
+    public function __construct(axis\IModel $model)
+    {
         $this->_model = $model;
         parent::__construct();
     }
 
-    public function getUnitType() {
+    public function getUnitType()
+    {
         return 'cache';
     }
 
-    public function getUnitAdapter() {
+    public function getUnitAdapter()
+    {
         return $this->getCacheBackend();
     }
 
-    public function getUnitAdapterName() {
+    public function getUnitAdapterName()
+    {
         $parts = explode('\\', get_class($this->getCacheBackend()));
         return array_pop($parts);
     }
 
-    public function getUnitAdapterConnectionName() {
+    public function getUnitAdapterConnectionName()
+    {
         return $this->getCacheBackend()->getConnectionDescription();
     }
 
-    public function getStorageBackendName() {
+    public function getStorageBackendName()
+    {
         return $this->getCacheId();
     }
 }

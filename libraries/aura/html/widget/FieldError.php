@@ -5,12 +5,11 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-
 use DecodeLabs\Glitch\Dumpable;
+use df\arch;
+use df\aura;
+
+use df\core;
 
 class FieldError extends Base implements
     IFormOrientedWidget,
@@ -19,9 +18,9 @@ class FieldError extends Base implements
 {
     use core\collection\TErrorContainer;
 
-    const PRIMARY_TAG = 'div.list.errors';
+    public const PRIMARY_TAG = 'div.list.errors';
 
-    public function __construct(arch\IContext $context, $errors=null)
+    public function __construct(arch\IContext $context, $errors = null)
     {
         parent::__construct($context);
 
@@ -46,7 +45,8 @@ class FieldError extends Base implements
         foreach ($this->_errors as $code => $error) {
             $output->push(
                 new aura\html\Element(
-                    'div', $error,
+                    'div',
+                    $error,
                     ['data-errorid' => $code]
                 )
             );

@@ -5,12 +5,10 @@
  */
 namespace df\core\validate\field;
 
-use df;
-use df\core;
-use df\spur;
-
 use DecodeLabs\Tagged as Html;
+
 use DecodeLabs\Tagged\Embed;
+use df\core;
 
 class VideoEmbed extends Base implements core\validate\IVideoEmbedField
 {

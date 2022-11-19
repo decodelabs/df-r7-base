@@ -5,9 +5,6 @@
  */
 namespace df\apex\models\session\recall\fortify;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
 
 class Purge extends axis\fortify\Base
@@ -38,6 +35,6 @@ class Purge extends axis\fortify\Base
             usleep(10000);
         }
 
-        yield $total.' removed';
+        yield $total . ' removed';
     }
 }

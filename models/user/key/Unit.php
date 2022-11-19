@@ -2,12 +2,12 @@
 
 namespace df\apex\models\user\key;
 
-use df\core;
 use df\axis;
 
-class Unit extends axis\unit\Table {
-
-    protected function createSchema($schema) {
+class Unit extends axis\unit\Table
+{
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addField('role', 'ManyToOne', 'role', 'keys');
 

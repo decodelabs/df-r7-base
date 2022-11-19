@@ -5,17 +5,16 @@
  */
 namespace df\core\time;
 
-use df;
-use df\core;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
 
 class Schedule implements ISchedule, Dumpable
 {
     use core\TStringProvider;
 
-    const RANGES = [
+    public const RANGES = [
         'minute' => [0, 59],
         'hour' => [0, 23],
         'day' => [1, 31],
@@ -23,12 +22,12 @@ class Schedule implements ISchedule, Dumpable
         'weekday' => [0, 6]
     ];
 
-    const OPTIONS = [
+    public const OPTIONS = [
         'month' => ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
         'weekday' => ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
     ];
 
-    const FORMATTERS = [
+    public const FORMATTERS = [
         'minute' => 'i',
         'hour' => 'G',
         'day' => 'j',
@@ -166,7 +165,10 @@ class Schedule implements ISchedule, Dumpable
             $string = (string)$value;
 
             $value = $this->_expandString(
-                $string, $min, $max, $options
+                $string,
+                $min,
+                $max,
+                $options
             );
         } else {
             throw Exceptional::InvalidArgument(
@@ -195,11 +197,11 @@ class Schedule implements ISchedule, Dumpable
             sort($value);
         }
 
-        $this->{'_'.$key} = $value;
-        $this->{'_'.$key.'String'} = $string;
+        $this->{'_' . $key} = $value;
+        $this->{'_' . $key . 'String'} = $string;
     }
 
-    protected function _expandString($string, $min, $max, array $options=null)
+    protected function _expandString($string, $min, $max, array $options = null)
     {
         $value = [];
 
@@ -256,7 +258,7 @@ class Schedule implements ISchedule, Dumpable
 
 
 
-    public function getLast($time=null, $yearThreshold=2)
+    public function getLast($time = null, $yearThreshold = 2)
     {
         if ($time === null) {
             $time = 'now';
@@ -323,19 +325,19 @@ class Schedule implements ISchedule, Dumpable
                     $minute--;
 
                     if ($minute < 0) {
-                        $time->modify($time->format('H').':59:00 -1 hour');
+                        $time->modify($time->format('H') . ':59:00 -1 hour');
                         continue 2;
                     }
                 }
             }
 
-            $time->modify($hour.':'.$minute.':00');
+            $time->modify($hour . ':' . $minute . ':00');
 
             return $time;
         }
     }
 
-    public function getNext($time=null, $yearThreshold=2)
+    public function getNext($time = null, $yearThreshold = 2)
     {
         if ($time === null) {
             $time = 'now';
@@ -402,13 +404,13 @@ class Schedule implements ISchedule, Dumpable
                     $minute++;
 
                     if ($minute > 59) {
-                        $time->modify(($time->format('H')+1).':00:00');
+                        $time->modify(($time->format('H') + 1) . ':00:00');
                         continue 2;
                     }
                 }
             }
 
-            $time->modify($hour.':'.$minute.':59');
+            $time->modify($hour . ':' . $minute . ':59');
 
             return $time;
         }
@@ -429,7 +431,7 @@ class Schedule implements ISchedule, Dumpable
 
     public function toString(): string
     {
-        return $this->_minuteString.' '.$this->_hourString.' '.$this->_dayString.' '.$this->_monthString.' '.$this->_weekdayString;
+        return $this->_minuteString . ' ' . $this->_hourString . ' ' . $this->_dayString . ' ' . $this->_monthString . ' ' . $this->_weekdayString;
     }
 
     /**

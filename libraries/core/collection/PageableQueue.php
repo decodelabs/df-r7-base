@@ -5,9 +5,6 @@
  */
 namespace df\core\collection;
 
-use df;
-use df\core;
-
 use DecodeLabs\Glitch\Dumpable;
 
 class PageableQueue implements IIndexedQueue, \IteratorAggregate, IPaginator, Dumpable
@@ -15,7 +12,7 @@ class PageableQueue implements IIndexedQueue, \IteratorAggregate, IPaginator, Du
     use TArrayCollection_Queue;
     use TPaginator;
 
-    public function __construct(array $input=null, $limit=null, $offset=null, $total=null)
+    public function __construct(array $input = null, $limit = null, $offset = null, $total = null)
     {
         if ($input !== null) {
             $this->import(...$input);

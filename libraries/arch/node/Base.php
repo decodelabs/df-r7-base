@@ -6,19 +6,18 @@
 
 namespace df\arch\node;
 
-use df;
-use df\core;
-use df\arch;
-use df\aura;
-use df\link;
-
-use df\arch\scaffold\Loader as ScaffoldLoader;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\Glitch\Dumpable;
+
 use DecodeLabs\R7\Legacy;
+
+use df\arch;
+use df\arch\scaffold\Loader as ScaffoldLoader;
+use df\aura;
+use df\core;
+use df\link;
 
 class Base implements INode, Dumpable
 {
@@ -62,7 +61,7 @@ class Base implements INode, Dumpable
             }
 
             throw Exceptional::NotFound([
-                'message' => 'No node could be found for '.utf8_encode($context->location->toString()),
+                'message' => 'No node could be found for ' . utf8_encode($context->location->toString()),
                 'http' => 404
             ]);
         }
@@ -70,34 +69,34 @@ class Base implements INode, Dumpable
         return new $class($context);
     }
 
-    public static function getClassFor(arch\IRequest $request, $runMode='Http', &$isDefault=null)
+    public static function getClassFor(arch\IRequest $request, $runMode = 'Http', &$isDefault = null)
     {
         $runMode = ucfirst($runMode);
         $parts = $request->getControllerParts();
         $parts[] = '_nodes';
-        $parts[] = $runMode.ucfirst($request->getNode());
+        $parts[] = $runMode . ucfirst($request->getNode());
         $end = implode('\\', $parts);
 
         if (false !== strpos($end, '\\\\') || substr($end, 0, 1) == '\\') {
             return null;
         }
 
-        $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.$end;
+        $class = 'df\\apex\\directory\\' . $request->getArea() . '\\' . $end;
         $isDefault = false;
 
         if (!class_exists($class)) {
-            $class = 'df\\apex\\directory\\shared\\'.$end;
+            $class = 'df\\apex\\directory\\shared\\' . $end;
 
             if (!class_exists($class)) {
                 array_pop($parts);
-                $parts[] = $runMode.'Default';
+                $parts[] = $runMode . 'Default';
                 $end = implode('\\', $parts);
                 $isDefault = true;
 
-                $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.$end;
+                $class = 'df\\apex\\directory\\' . $request->getArea() . '\\' . $end;
 
                 if (!class_exists($class)) {
-                    $class = 'df\\apex\\directory\\shared\\'.$end;
+                    $class = 'df\\apex\\directory\\shared\\' . $end;
 
                     if (!class_exists($class)) {
                         $class = null;
@@ -109,7 +108,7 @@ class Base implements INode, Dumpable
         return $class;
     }
 
-    public function __construct(arch\IContext $context, $callback=null)
+    public function __construct(arch\IContext $context, $callback = null)
     {
         $this->context = $context;
         $this->setCallback($callback);
@@ -126,7 +125,7 @@ class Base implements INode, Dumpable
         return $this->_callback;
     }
 
-    public function shouldOptimize(bool $flag=null)
+    public function shouldOptimize(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_shouldOptimize = $flag;
@@ -140,7 +139,7 @@ class Base implements INode, Dumpable
         return (bool)static::OPTIMIZE;
     }
 
-    public function shouldCheckAccess(bool $flag=null)
+    public function shouldCheckAccess(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_shouldCheckAccess = $flag;
@@ -168,7 +167,7 @@ class Base implements INode, Dumpable
         return $this;
     }
 
-    public function getDefaultAccess($action=null)
+    public function getDefaultAccess($action = null)
     {
         if ($this->_defaultAccess !== null) {
             return $this->_defaultAccess;
@@ -279,20 +278,20 @@ class Base implements INode, Dumpable
 
 
         if ($mode) {
-            $func = 'execute'.$mode.'As'.$type;
+            $func = 'execute' . $mode . 'As' . $type;
 
             if (method_exists($this, $func)) {
                 return $func;
             }
 
-            $func = 'execute'.$mode;
+            $func = 'execute' . $mode;
 
             if (method_exists($this, $func)) {
                 return $func;
             }
         }
 
-        $func = 'executeAs'.$type;
+        $func = 'executeAs' . $type;
 
         if (method_exists($this, $func)) {
             return $func;
@@ -315,7 +314,7 @@ class Base implements INode, Dumpable
         }
 
         throw Exceptional::NotFound([
-            'message' => 'No handler could be found for node: '.
+            'message' => 'No handler could be found for node: ' .
                 $this->context->location->toString(),
             'http' => 404
         ]);
@@ -377,7 +376,7 @@ class Base implements INode, Dumpable
         $parts[] = Dictum::actionSlug(substr($name, 4));
 
         yield new arch\navigation\SitemapEntry(
-            $this->uri('~'.implode('/', $parts)),
+            $this->uri('~' . implode('/', $parts)),
             null,
             is_string(static::SITEMAP) ? static::SITEMAP : 'monthly'
         );

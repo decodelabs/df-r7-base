@@ -5,23 +5,20 @@
  */
 namespace df\core\unit;
 
-use df;
-use df\core;
-
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
 
 class FileSize implements IFileSize, Dumpable
 {
     use TSingleValueUnit;
 
-    const DEFAULT_UNIT = 'b';
-    const UNITS = ['bit', 'b', 'kb', 'mb', 'gb', 'tb', 'pb'];
+    public const DEFAULT_UNIT = 'b';
+    public const UNITS = ['bit', 'b', 'kb', 'mb', 'gb', 'tb', 'pb'];
 
     protected $_value;
     protected $_unit;
 
-    public static function factory($value, $unit=null, $allowPlainNumbers=false): IFileSize
+    public static function factory($value, $unit = null, $allowPlainNumbers = false): IFileSize
     {
         if ($value instanceof IFileSize) {
             return $value;
@@ -157,7 +154,7 @@ class FileSize implements IFileSize, Dumpable
 
             default:
                 throw Exceptional::InvalidArgument(
-                    'Unsupported file size unit: '.$inUnit
+                    'Unsupported file size unit: ' . $inUnit
                 );
         }
 
@@ -210,7 +207,7 @@ class FileSize implements IFileSize, Dumpable
 
         if ($unit == 'bit') {
             if ($value <= 128) {
-                return $value.'bit';
+                return $value . 'bit';
             }
 
             $unit = 'b';
@@ -224,7 +221,7 @@ class FileSize implements IFileSize, Dumpable
             $value /= 1024;
         }
 
-        return $value.$unit;
+        return $value . $unit;
     }
 
     /**

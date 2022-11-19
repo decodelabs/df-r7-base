@@ -9,33 +9,33 @@ namespace DecodeLabs\R7\Genesis\Kernel;
 
 use Closure;
 
-use df\arch\Context;
-use df\arch\IForcedResponse;
-use df\arch\ForcedResponse;
-use df\arch\IProxyResponse;
-use df\arch\node\Base as NodeBase;
-use df\arch\node\NotFoundException as NodeNotFoundException;
-use df\arch\Request;
-use df\core\app\http\Config as HttpConfig;
-use df\core\app\http\Router as HttpRouter;
-use df\core\IDispatchAware;
-use df\core\lang\ICallback;
-use df\link\http\IRequest as HttpRequest;
-use df\link\http\IResponse as Response;
-use df\link\http\IFileResponse;
-use df\link\http\IGeneratorResponse;
-use df\link\http\Url;
-use df\halo\daemon\Manager as DaemonManager;
-
 use DecodeLabs\Compass\Ip;
 use DecodeLabs\Deliverance;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\Genesis\Kernel;
 use DecodeLabs\Glitch;
-use DecodeLabs\R7\Legacy;
 use DecodeLabs\R7\Genesis\KernelTrait;
+use DecodeLabs\R7\Legacy;
 use DecodeLabs\Typify;
+use df\arch\Context;
+use df\arch\ForcedResponse;
+use df\arch\IForcedResponse;
+use df\arch\IProxyResponse;
+use df\arch\node\Base as NodeBase;
+use df\arch\node\NotFoundException as NodeNotFoundException;
+use df\arch\Request;
+use df\core\app\http\Config as HttpConfig;
+
+use df\core\app\http\Router as HttpRouter;
+use df\core\IDispatchAware;
+use df\core\lang\ICallback;
+use df\halo\daemon\Manager as DaemonManager;
+use df\link\http\IFileResponse;
+use df\link\http\IGeneratorResponse;
+use df\link\http\IRequest as HttpRequest;
+use df\link\http\IResponse as Response;
+use df\link\http\Url;
 
 use Throwable;
 
@@ -72,7 +72,7 @@ class Http implements Kernel
             false !== ($apache = apache_request_headers())
         ) {
             foreach ($apache as $key => $value) {
-                $_SERVER['HTTP_'.strtoupper(str_replace('-', '_', (string)$key))] = $value;
+                $_SERVER['HTTP_' . strtoupper(str_replace('-', '_', (string)$key))] = $value;
             }
         }
 
@@ -99,11 +99,11 @@ class Http implements Kernel
             $cookies = $augmentor->getCookieCollectionForCurrentRequest();
 
             foreach ($cookies->toArray() as $cookie) {
-                header('Set-Cookie: '.$cookie->toString());
+                header('Set-Cookie: ' . $cookie->toString());
             }
 
             foreach ($cookies->getRemoved() as $cookie) {
-                header('Set-Cookie: '.$cookie->toInvalidateString());
+                header('Set-Cookie: ' . $cookie->toInvalidateString());
             }
         });
     }
@@ -305,9 +305,9 @@ class Http implements Kernel
         $url->query->authenticate = null;
 
         $response = Legacy::$http->stringResponse(
-            '<html><head><title>Forbidden</title></head><body>'.
-            '<p>Sorry, this site is protected by IP range.</p><p>Your IP is: <strong>'.$ip.'</strong></p>'.
-            '<p><a href="'.$url.'">Developer access</a></p>',
+            '<html><head><title>Forbidden</title></head><body>' .
+            '<p>Sorry, this site is protected by IP range.</p><p>Your IP is: <strong>' . $ip . '</strong></p>' .
+            '<p><a href="' . $url . '">Developer access</a></p>',
             'text/html'
         );
 
@@ -391,7 +391,7 @@ class Http implements Kernel
                 if ($context->apex->nodeExists($context->request)) {
                     return Legacy::$http->redirect($context->request)
                         //->isPermanent(true)
-                        ;
+                    ;
                 }
             }
 
@@ -445,7 +445,7 @@ class Http implements Kernel
             Genesis::$environment->isDevelopment()
         ) {
             throw Exceptional::NotImplemented([
-                'message' => 'No response was returned by node: '.Legacy::getContext()->request,
+                'message' => 'No response was returned by node: ' . Legacy::getContext()->request,
                 'http' => 501
             ]);
         }

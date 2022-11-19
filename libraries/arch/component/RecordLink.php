@@ -6,16 +6,15 @@
 
 namespace df\arch\component;
 
-use df;
-use df\core;
+use DecodeLabs\Dictum;
+use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Metamorph;
 use df\arch;
 use df\aura;
-use df\user;
-use df\opal;
 
-use DecodeLabs\Dictum;
-use DecodeLabs\Metamorph;
-use DecodeLabs\Glitch\Dumpable;
+use df\core;
+use df\opal;
+use df\user;
 
 abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy, Dumpable
 {
@@ -37,7 +36,7 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
     protected $matchRequest;
     protected $record;
 
-    protected function init($record=null, $name=null, $match=null)
+    protected function init($record = null, $name = null, $match = null)
     {
         if ($record) {
             $this->setRecord($record);
@@ -74,7 +73,7 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
     }
 
     // Icon
-    public function setIcon(string $icon=null)
+    public function setIcon(string $icon = null)
     {
         $this->icon = $icon;
         return $this;

@@ -6,12 +6,11 @@
 
 namespace df\core\cache\backend;
 
-use df;
-use df\core;
-use df\arch;
-
-use DecodeLabs\Terminus\Session;
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\Terminus\Session;
+
+use df\arch;
+use df\core;
 
 class Apcu implements core\cache\IBackend
 {
@@ -22,10 +21,10 @@ class Apcu implements core\cache\IBackend
     protected $_cache;
     protected $_isCli = false;
 
-    public static function purgeApp(core\collection\ITree $options, ?Session $session=null)
+    public static function purgeApp(core\collection\ITree $options, ?Session $session = null)
     {
         if (extension_loaded('apcu') && !(php_sapi_name() == 'cli' && !ini_get('apc.enable_cli'))) {
-            $prefix = Legacy::getUniquePrefix().'-';
+            $prefix = Legacy::getUniquePrefix() . '-';
             $list = self::getCacheList();
 
             foreach ($list as $set) {
@@ -42,7 +41,7 @@ class Apcu implements core\cache\IBackend
         $session ? $taskMan->launch($request, $session) : $taskMan->launchBackground($request);
     }
 
-    public static function purgeAll(core\collection\ITree $options, ?Session $session=null)
+    public static function purgeAll(core\collection\ITree $options, ?Session $session = null)
     {
         if (extension_loaded('apcu')) {
             apcu_clear_cache();
@@ -84,14 +83,14 @@ class Apcu implements core\cache\IBackend
     {
         $this->_cache = $cache;
         $this->_lifeTime = $lifeTime;
-        $this->_prefix = Legacy::getUniquePrefix().'-'.$cache->getCacheId().':';
+        $this->_prefix = Legacy::getUniquePrefix() . '-' . $cache->getCacheId() . ':';
         $this->_isCli = php_sapi_name() == 'cli';
         unset($options);
     }
 
     public function getConnectionDescription(): string
     {
-        return 'localhost/'.$this->_cache->getCacheId();
+        return 'localhost/' . $this->_cache->getCacheId();
     }
 
     public function getStats(): array
@@ -120,22 +119,22 @@ class Apcu implements core\cache\IBackend
     }
 
 
-    public function set($key, $value, $lifeTime=null)
+    public function set($key, $value, $lifeTime = null)
     {
         if ($lifeTime === null) {
             $lifeTime = $this->_lifeTime;
         }
 
         return apcu_store(
-            $this->_prefix.$key,
+            $this->_prefix . $key,
             [serialize($value), time()],
             $lifeTime
         );
     }
 
-    public function get($key, $default=null)
+    public function get($key, $default = null)
     {
-        $val = apcu_fetch($this->_prefix.$key);
+        $val = apcu_fetch($this->_prefix . $key);
 
         if (is_array($val)) {
             try {
@@ -152,7 +151,7 @@ class Apcu implements core\cache\IBackend
     public function has(...$keys)
     {
         foreach ($keys as $key) {
-            if (is_array(apcu_fetch($this->_prefix.$key))) {
+            if (is_array(apcu_fetch($this->_prefix . $key))) {
                 return true;
             }
         }
@@ -163,7 +162,7 @@ class Apcu implements core\cache\IBackend
     public function remove(...$keys)
     {
         foreach ($keys as $key) {
-            $output = @apcu_delete($this->_prefix.$key);
+            $output = @apcu_delete($this->_prefix . $key);
 
             /*
             if($this->_isCli) {
@@ -192,7 +191,7 @@ class Apcu implements core\cache\IBackend
     public function clearBegins(string $key)
     {
         foreach ($this->getCacheList() as $set) {
-            if (0 === strpos($set['info'], $this->_prefix.$key)) {
+            if (0 === strpos($set['info'], $this->_prefix . $key)) {
                 @apcu_delete($set['info']);
             }
         }
@@ -245,7 +244,7 @@ class Apcu implements core\cache\IBackend
 
     public function getCreationTime(string $key): ?int
     {
-        $val = apcu_fetch($this->_prefix.$key);
+        $val = apcu_fetch($this->_prefix . $key);
 
         if (is_array($val)) {
             return $val[1];
@@ -277,7 +276,7 @@ class Apcu implements core\cache\IBackend
         return $output;
     }
 
-    protected function _retrigger($method, $arg=null)
+    protected function _retrigger($method, $arg = null)
     {
         $request = new arch\Request('cache/apcu-clear');
         $request->query->cacheId = $this->_cache->getCacheId();

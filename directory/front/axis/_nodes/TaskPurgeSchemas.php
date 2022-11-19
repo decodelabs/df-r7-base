@@ -6,14 +6,9 @@
 
 namespace df\apex\directory\front\axis\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\axis;
-use df\opal;
-
 use DecodeLabs\Terminus as Cli;
+
+use df\arch;
 
 class TaskPurgeSchemas extends arch\node\Task
 {

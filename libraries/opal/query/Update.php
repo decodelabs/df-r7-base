@@ -5,12 +5,11 @@
  */
 namespace df\opal\query;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
+
+use df\core;
+use df\opal;
 
 class Update implements IUpdateQuery, Dumpable
 {
@@ -26,7 +25,7 @@ class Update implements IUpdateQuery, Dumpable
     protected $_values = [];
     protected $_preparedValues;
 
-    public function __construct(ISourceManager $sourceManager, ISource $source, array $values=null)
+    public function __construct(ISourceManager $sourceManager, ISource $source, array $values = null)
     {
         $this->_sourceManager = $sourceManager;
         $this->_source = $source;
@@ -41,7 +40,7 @@ class Update implements IUpdateQuery, Dumpable
         return IQueryTypes::UPDATE;
     }
 
-    public function set($key, $value=null)
+    public function set($key, $value = null)
     {
         if (is_array($key)) {
             $values = $key;

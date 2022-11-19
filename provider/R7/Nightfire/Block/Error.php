@@ -7,9 +7,9 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Nightfire\Block;
 
+use DecodeLabs\Exceptional;
 use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
-use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\R7\Nightfire\BlockAbstract;
 use DecodeLabs\Tagged\Markup;
@@ -116,7 +116,7 @@ class Error extends BlockAbstract
         }
 
         $output = $view->html->flashMessage($view->_(
-            'Error loading block type: '.$this->type
+            'Error loading block type: ' . $this->type
         ), 'error');
 
         if ($this->error) {

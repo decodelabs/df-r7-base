@@ -6,15 +6,13 @@
 
 namespace df\fire;
 
-use df\core;
-use df\fire;
-
 use DecodeLabs\Archetype;
-use DecodeLabs\R7\Legacy;
+
 use DecodeLabs\R7\Nightfire\Block;
 use DecodeLabs\R7\Nightfire\BlockAbstract;
 use DecodeLabs\R7\Nightfire\Category;
 use DecodeLabs\R7\Nightfire\CategoryAbstract;
+use df\core;
 
 class Manager implements IManager
 {

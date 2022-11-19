@@ -5,11 +5,10 @@
  */
 namespace df\arch\navigation\menu;
 
-use df;
-use df\core;
+use DecodeLabs\Exceptional;
 use df\arch;
 
-use DecodeLabs\Exceptional;
+use df\core;
 
 interface IMenu extends core\IContextAware, arch\navigation\IEntryListGenerator
 {
@@ -44,7 +43,7 @@ interface ISource
 
 interface IListableSource extends ISource
 {
-    public function loadAllMenus(array $whiteList=null);
+    public function loadAllMenus(array $whiteList = null);
 }
 
 interface ISourceAdapter
@@ -56,11 +55,11 @@ trait TResponsiveSourceAdapter
 {
     public function loadMenu(ISource $source, core\uri\IUrl $id)
     {
-        $func = '_load'.$id->path->getBaseName().'Menu';
+        $func = '_load' . $id->path->getBaseName() . 'Menu';
 
         if (!method_exists($this, $func)) {
             throw Exceptional::NotFound(
-                'Menu '.$id->path->getBaseName().' could not be loaded'
+                'Menu ' . $id->path->getBaseName() . ' could not be loaded'
             );
         }
 

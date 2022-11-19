@@ -6,19 +6,16 @@
 
 namespace df\aura\html;
 
-use df;
-use df\core;
-use df\aura;
-use df\aura\html\widget;
-use df\flex;
-
-use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Elementary\Tag as TagInterface;
-use DecodeLabs\Tagged as Html;
-use DecodeLabs\Tagged\Tag;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use DecodeLabs\Tagged as Html;
+use DecodeLabs\Tagged\Markup;
+use DecodeLabs\Tagged\Tag;
+
+use df\aura;
+use df\core;
 
 interface IRenderable
 {
@@ -35,7 +32,7 @@ interface ITagDataContainer extends core\collection\IAttributeContainer
     // Data attributes
     public function setDataAttributes(array $attributes);
     public function setDataAttribute($key, $value);
-    public function getDataAttribute($key, $default=null);
+    public function getDataAttribute($key, $default = null);
     public function hasDataAttribute($key);
     public function removeDataAttribute($key);
     public function getDataAttributes();
@@ -53,7 +50,7 @@ interface ITagDataContainer extends core\collection\IAttributeContainer
     // Direct attributes
     public function setId(?string $id);
     public function getId(): ?string;
-    public function isHidden(bool $flag=null);
+    public function isHidden(bool $flag = null);
     public function setTitle(?string $title);
     public function getTitle(): ?string;
 
@@ -63,7 +60,7 @@ interface ITagDataContainer extends core\collection\IAttributeContainer
     public function addStyles(...$styles);
     public function getStyles();
     public function setStyle($key, $value);
-    public function getStyle($key, $default=null);
+    public function getStyle($key, $default = null);
     public function removeStyle(...$keys);
     public function hasStyle(...$keys);
 }
@@ -84,8 +81,8 @@ interface ITag extends IElementRepresentation, \ArrayAccess, ITagDataContainer, 
     // Strings
     public function open();
     public function close();
-    public function renderWith($innerContent=null, $expanded=false);
-    public function shouldRenderIfEmpty(bool $flag=null);
+    public function renderWith($innerContent = null, $expanded = false);
+    public function shouldRenderIfEmpty(bool $flag = null);
 }
 
 
@@ -138,7 +135,7 @@ trait TElementContent
         return $this;
     }
 
-    private static function flattenArray($data, bool $removeNull=false)
+    private static function flattenArray($data, bool $removeNull = false)
     {
         if (!is_array($data)) {
             yield $data;
@@ -205,7 +202,7 @@ trait TElementContent
             }
 
             if ($isBlock) {
-                $stringValue = $stringValue."\n";
+                $stringValue = $stringValue . "\n";
             }
 
             $output .= $stringValue;
@@ -380,14 +377,14 @@ class ElementContent implements IElementContentCollection, Dumpable
 {
     use TElementContent;
 
-    public static function normalize($content, $parent=null)
+    public static function normalize($content, $parent = null)
     {
         return new aura\html\ElementString(
             (new self($content, $parent))->toString()
         );
     }
 
-    public function __construct($content=null, $parent=null)
+    public function __construct($content = null, $parent = null)
     {
         $this->setParentRenderContext($parent);
 
@@ -424,7 +421,7 @@ class ElementString implements IElementRepresentation, Dumpable
 
     public function prepend($str)
     {
-        $this->_content = $str.$this->_content;
+        $this->_content = $str . $this->_content;
         return $this;
     }
 

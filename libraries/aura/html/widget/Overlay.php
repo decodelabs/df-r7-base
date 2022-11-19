@@ -5,20 +5,18 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
 use df\arch;
+use df\aura;
 
 class Overlay extends Container implements IWidgetShortcutProvider
 {
-    const PRIMARY_TAG = 'div.overlay';
+    public const PRIMARY_TAG = 'div.overlay';
 
     protected $_titleBody;
     protected $_titleTagName = 'h3';
     protected $_url;
 
-    public function __construct(arch\IContext $context, $title=null, $url=null)
+    public function __construct(arch\IContext $context, $title = null, $url = null)
     {
         parent::__construct($context);
 

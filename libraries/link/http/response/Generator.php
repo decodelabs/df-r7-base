@@ -6,14 +6,11 @@
 
 namespace df\link\http\response;
 
-use df;
-use df\core;
-use df\link;
-
 use DecodeLabs\Deliverance\DataReceiver;
+
 use DecodeLabs\Deliverance\DataReceiverTrait;
-use DecodeLabs\Deliverance\DataSender;
 use DecodeLabs\Exceptional;
+use df\link;
 
 class Generator extends Base implements link\http\IGeneratorResponse
 {
@@ -24,7 +21,7 @@ class Generator extends Base implements link\http\IGeneratorResponse
 
     protected $_writeCallback;
 
-    public function __construct($contentType, callable $sender, link\http\IResponseHeaderCollection $headers=null)
+    public function __construct($contentType, callable $sender, link\http\IResponseHeaderCollection $headers = null)
     {
         parent::__construct($headers);
         $this->_sender = $sender;
@@ -35,7 +32,7 @@ class Generator extends Base implements link\http\IGeneratorResponse
             ->setCacheAccess('no-cache')
             ->getCacheControl()
                 ->canStore(false)
-            ;
+        ;
     }
 
     public function setWriteCallback(callable $callback)
@@ -73,7 +70,7 @@ class Generator extends Base implements link\http\IGeneratorResponse
         return $this->_channel;
     }
 
-    public function write(?string $data, int $length=null): int
+    public function write(?string $data, int $length = null): int
     {
         if ($this->_writeCallback) {
             ($this->_writeCallback)($this);

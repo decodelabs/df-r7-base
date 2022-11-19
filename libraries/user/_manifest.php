@@ -6,14 +6,12 @@
 
 namespace df\user;
 
-use df;
-use df\core;
-use df\user;
-use df\opal;
-use df\mesh;
-
 use DecodeLabs\Disciple\Profile as DiscipleProfile;
 use DecodeLabs\Exceptional;
+use df\core;
+
+use df\mesh;
+use df\user;
 
 // Constants
 interface IState
@@ -46,7 +44,7 @@ interface IManager extends core\IManager, mesh\event\IEmitter
     public function instigateGlobalKeyringRegeneration();
 
     public function isA(...$signifiers);
-    public function canAccess($lock, $action=null, $linkTo=false);
+    public function canAccess($lock, $action = null, $linkTo = false);
     public function getAccessLock($lock);
     public function clearAccessLockCache();
 
@@ -57,7 +55,7 @@ interface IManager extends core\IManager, mesh\event\IEmitter
 interface IUserModel
 {
     public function getClientData($id);
-    public function getClientDataList(array $ids, array $emails=null);
+    public function getClientDataList(array $ids, array $emails = null);
     public function getAuthenticationDomainInfo(user\authentication\IRequest $request);
     public function generateKeyring(IClient $client);
 
@@ -100,7 +98,7 @@ trait TNameExtractor
 
 interface IActiveClientDataObject extends IClientDataObject
 {
-    public function onAuthentication(IClient $client, bool $asAdmin=false);
+    public function onAuthentication(IClient $client, bool $asAdmin = false);
 }
 
 interface IClient extends IClientDataObject
@@ -122,7 +120,7 @@ interface IClient extends IClientDataObject
     public function getKeyring();
     public function getKeyringTimestamp();
 
-    public function canAccess(IAccessLock $lock, $action=null, $linkTo=false);
+    public function canAccess(IAccessLock $lock, $action = null, $linkTo = false);
 }
 
 
@@ -248,8 +246,8 @@ trait TSessionBackedHelper
 interface IAccessLock
 {
     public function getAccessLockDomain();
-    public function lookupAccessKey(array $keys, $action=null);
-    public function getDefaultAccess($action=null);
+    public function lookupAccessKey(array $keys, $action = null);
+    public function getDefaultAccess($action = null);
     public function getAccessSignifiers(): array;
     public function getActionLock($action);
     public function getAccessLockId();
@@ -277,7 +275,7 @@ trait TAccessLock
 
 interface IAccessControlled
 {
-    public function shouldCheckAccess(bool $flag=null);
+    public function shouldCheckAccess(bool $flag = null);
     public function setAccessLocks(array $locks);
     public function addAccessLocks(array $locks);
     public function addAccessLock($lock);
@@ -291,7 +289,7 @@ trait TAccessControlled
     protected $_checkAccess = false;
     protected $_accessLocks = [];
 
-    public function shouldCheckAccess(bool $flag=null)
+    public function shouldCheckAccess(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_checkAccess = $flag;
@@ -363,7 +361,7 @@ trait TPostalAddress
         $output = $this->getStreetLine1();
 
         if ($this->getStreetLine3() && $t = $this->getStreetLine2()) {
-            $output .= ', '.$t;
+            $output .= ', ' . $t;
         }
 
         return $output;
@@ -385,11 +383,11 @@ trait TPostalAddress
         $address3 = $this->getStreetLine3();
 
         if (!empty($address2)) {
-            $output .= ', '.$address2;
+            $output .= ', ' . $address2;
         }
 
         if (!empty($address3)) {
-            $output .= ', '.$address3;
+            $output .= ', ' . $address3;
         }
 
         return $output;
@@ -428,7 +426,7 @@ trait TPostalAddress
 
     public function toOneLineString()
     {
-        return $this->getFullStreetAddress().', '.$this->getLocality().', '.$this->getPostalCode().', '.$this->getCountryCode();
+        return $this->getFullStreetAddress() . ', ' . $this->getLocality() . ', ' . $this->getPostalCode() . ', ' . $this->getCountryCode();
     }
 
     public function toArray(): array

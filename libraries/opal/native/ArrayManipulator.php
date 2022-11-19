@@ -6,12 +6,11 @@
 
 namespace df\opal\native;
 
-use df;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch;
+
 use df\core;
 use df\opal;
-
-use DecodeLabs\Glitch;
-use DecodeLabs\Exceptional;
 
 class ArrayManipulator implements IArrayManipulator
 {
@@ -20,12 +19,12 @@ class ArrayManipulator implements IArrayManipulator
 
     protected $_outputManifest;
 
-    public function __construct(opal\query\ISource $source, array $rows, $isNormalized=false, opal\query\IOutputManifest $outputManifest=null)
+    public function __construct(opal\query\ISource $source, array $rows, $isNormalized = false, opal\query\IOutputManifest $outputManifest = null)
     {
         $this->setRows($rows, $isNormalized);
 
         if (!$outputManifest) {
-            $outputManifest = new opal\query\OutputManifest($source, /*$rows*/null, $isNormalized);
+            $outputManifest = new opal\query\OutputManifest($source, /*$rows*/ null, $isNormalized);
         } else {
             $outputManifest->importSource($source, $rows, $isNormalized);
         }
@@ -33,7 +32,7 @@ class ArrayManipulator implements IArrayManipulator
         $this->_outputManifest = $outputManifest;
     }
 
-    public function setRows(array $rows, $isNormalized=true)
+    public function setRows(array $rows, $isNormalized = true)
     {
         $this->_rows = $rows;
         $this->_isNormalized = $isNormalized;
@@ -56,7 +55,7 @@ class ArrayManipulator implements IArrayManipulator
         return empty($this->_rows);
     }
 
-    public function applyReadQuery(opal\query\IQuery $query, $keyField=null, $valField=null, $forCount=false)
+    public function applyReadQuery(opal\query\IQuery $query, $keyField = null, $valField = null, $forCount = false)
     {
         if (empty($this->_rows)) {
             if ($forCount) {
@@ -159,7 +158,7 @@ class ArrayManipulator implements IArrayManipulator
         return $this->_rows;
     }
 
-    public function applyRemoteJoinQuery(opal\query\IQuery $query, array $localJoins, array $remoteJoins, $forCount=false)
+    public function applyRemoteJoinQuery(opal\query\IQuery $query, array $localJoins, array $remoteJoins, $forCount = false)
     {
         if (empty($this->_rows)) {
             if ($forCount) {
@@ -223,7 +222,7 @@ class ArrayManipulator implements IArrayManipulator
         return $this->_rows;
     }
 
-    public function applyAttachmentDataQuery(opal\query\IAttachQuery $query, $joinsApplied=false, $clausesApplied=false)
+    public function applyAttachmentDataQuery(opal\query\IAttachQuery $query, $joinsApplied = false, $clausesApplied = false)
     {
         if (empty($this->_rows)) {
             return $this->_rows;
@@ -287,7 +286,7 @@ class ArrayManipulator implements IArrayManipulator
                     $current = [];
 
                     foreach ($row as $key => $val) {
-                        $current[$sourceAlias.'.'.$key] = $val;
+                        $current[$sourceAlias . '.' . $key] = $val;
                     }
 
                     $sourceData[] = $current;
@@ -401,7 +400,7 @@ class ArrayManipulator implements IArrayManipulator
             $current = [];
 
             foreach ($row as $key => $val) {
-                $current[$sourceAlias.'.'.$key] = $val;
+                $current[$sourceAlias . '.' . $key] = $val;
             }
 
             $this->_rows[$i] = $current;
@@ -476,7 +475,7 @@ class ArrayManipulator implements IArrayManipulator
 
 
     // Groups
-    public function applyAggregatesAndGroups(array $groupFields=[])
+    public function applyAggregatesAndGroups(array $groupFields = [])
     {
         if (empty($this->_rows) || (!$this->_outputManifest->hasAggregateFields() && empty($groupFields))) {
             return $this;
@@ -695,7 +694,7 @@ class ArrayManipulator implements IArrayManipulator
 
                         default:
                             throw Exceptional::UnexpectedValue(
-                                'Unsupported null order key: '.$nullOrder
+                                'Unsupported null order key: ' . $nullOrder
                             );
                     }
 
@@ -797,7 +796,7 @@ class ArrayManipulator implements IArrayManipulator
 
             if (!$attachment instanceof opal\query\IAttachQuery) {
                 throw Exceptional::InvalidArgument(
-                    'Cannot populate '.$populate->getFieldName().' - integral schema field cannot convert to attachment'
+                    'Cannot populate ' . $populate->getFieldName() . ' - integral schema field cannot convert to attachment'
                 );
             }
 
@@ -908,7 +907,6 @@ class ArrayManipulator implements IArrayManipulator
 
             // Iterate data
             foreach ($this->_rows as $i => $row) {
-
                 // Filter source data
                 if (empty($clauseList)) {
                     $attachData = $sourceData;
@@ -1040,7 +1038,7 @@ class ArrayManipulator implements IArrayManipulator
 
 
     // Output
-    public function applyOutputFields(opal\query\IField $keyField=null, opal\query\IField $valField=null, array $nestFields=null, $forFetch=false, callable $formatter=null)
+    public function applyOutputFields(opal\query\IField $keyField = null, opal\query\IField $valField = null, array $nestFields = null, $forFetch = false, callable $formatter = null)
     {
         if (empty($this->_rows)) {
             return $this;
@@ -1160,7 +1158,7 @@ class ArrayManipulator implements IArrayManipulator
 
 
         // Prepare object field
-        $objectKey = $primarySource->getAlias().'.@object';
+        $objectKey = $primarySource->getAlias() . '.@object';
         $fetchObject = false;
 
         if ($forFetch) {
@@ -1184,7 +1182,9 @@ class ArrayManipulator implements IArrayManipulator
             if (!empty($fieldProcessors)) {
                 foreach ($fieldProcessors as $qName => $fieldProcessor) {
                     $row[$qName] = $fieldProcessor->inflateValueFromRow(
-                        $qName, $row, $record
+                        $qName,
+                        $row,
+                        $record
                     );
                 }
             }
@@ -1211,7 +1211,7 @@ class ArrayManipulator implements IArrayManipulator
                     $current = null;
                 }
 
-                // Entity object
+            // Entity object
             } elseif ($fetchObject) {
                 if (isset($row[$objectKey])) {
                     $current = $row[$objectKey];
@@ -1220,7 +1220,7 @@ class ArrayManipulator implements IArrayManipulator
                 }
 
 
-                // Normal row
+            // Normal row
             } else {
                 $current = [];
 

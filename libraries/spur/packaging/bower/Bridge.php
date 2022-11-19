@@ -6,16 +6,12 @@
 
 namespace df\spur\packaging\bower;
 
-use df;
-use df\core;
-use df\spur;
-use df\flex;
-use df\halo;
-
 use DecodeLabs\Atlas;
-use DecodeLabs\Glitch;
+
 use DecodeLabs\Genesis;
+use DecodeLabs\Glitch;
 use DecodeLabs\Systemic;
+use df\flex;
 
 class Bridge implements IBridge
 {
@@ -24,7 +20,7 @@ class Bridge implements IBridge
 
     public function __construct()
     {
-        $this->_execPath = Genesis::$hub->getLocalDataPath().'/bower';
+        $this->_execPath = Genesis::$hub->getLocalDataPath() . '/bower';
     }
 
     public function setInstallPath($path)
@@ -61,8 +57,8 @@ class Bridge implements IBridge
             'directory' => $this->_installPath
         ]);
 
-        Atlas::createFile($this->_execPath.'/bower.json', $json1);
-        Atlas::createFile($this->_execPath.'/.bowerrc', $json2);
+        Atlas::createFile($this->_execPath . '/bower.json', $json1);
+        Atlas::createFile($this->_execPath . '/.bowerrc', $json2);
 
         return $this;
     }

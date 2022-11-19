@@ -5,16 +5,14 @@
  */
 namespace df\apex\models\user\option;
 
-use df;
-use df\core;
 use df\axis;
-use df\opal;
 
-class Unit extends axis\unit\Table {
+class Unit extends axis\unit\Table
+{
+    public const BROADCAST_HOOK_EVENTS = false;
 
-    const BROADCAST_HOOK_EVENTS = false;
-
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addField('user', 'ManyToOne', 'client', 'options');
         $schema->addField('key', 'Text', 255);
         $schema->addField('data', 'Text', 1024);
@@ -22,20 +20,22 @@ class Unit extends axis\unit\Table {
         $schema->addPrimaryIndex('primary', ['user', 'key']);
     }
 
-    public function fetchOption($userId, $key, $default=null) {
+    public function fetchOption($userId, $key, $default = null)
+    {
         $output = $this->select('data')
             ->where('user', '=', $userId)
             ->where('key', '=', $key)
             ->toValue('data');
 
-        if($output === null) {
+        if ($output === null) {
             $output = $default;
         }
 
         return $output;
     }
 
-    public function setOption($userId, $key, $value) {
+    public function setOption($userId, $key, $value)
+    {
         $this->replace([
                 'user' => $userId,
                 'key' => $key,
@@ -46,14 +46,15 @@ class Unit extends axis\unit\Table {
         return $this;
     }
 
-    public function setOptionForMany(array $userIds, $key, $value) {
-        if(empty($userIds)) {
+    public function setOptionForMany(array $userIds, $key, $value)
+    {
+        if (empty($userIds)) {
             return $this;
         }
 
         $query = $this->batchReplace();
 
-        foreach($userIds as $userId) {
+        foreach ($userIds as $userId) {
             $query->addRow([
                 'user' => $userId,
                 'key' => $key,
@@ -65,8 +66,9 @@ class Unit extends axis\unit\Table {
         return $this;
     }
 
-    public function updateOptionForMany(array $userIds, $key, $value) {
-        if(empty($userIds)) {
+    public function updateOptionForMany(array $userIds, $key, $value)
+    {
+        if (empty($userIds)) {
             return $this;
         }
 
@@ -78,7 +80,8 @@ class Unit extends axis\unit\Table {
         return $this;
     }
 
-    public function updateOptionForAll($key, $value) {
+    public function updateOptionForAll($key, $value)
+    {
         $this->update(['data' => $value])
             ->where('key', '=', $key)
             ->execute();

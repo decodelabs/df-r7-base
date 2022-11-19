@@ -6,12 +6,11 @@
 
 namespace df\user\session;
 
-use df;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
+
 use df\core;
 use df\user;
-
-use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
 
 class Bucket implements user\session\IBucket, Dumpable
 {
@@ -146,7 +145,7 @@ class Bucket implements user\session\IBucket, Dumpable
         return $this;
     }
 
-    public function prune($age=7200)
+    public function prune($age = 7200)
     {
         $age = (int)$age;
 
@@ -209,7 +208,7 @@ class Bucket implements user\session\IBucket, Dumpable
         return $this;
     }
 
-    public function get($key, $default=null)
+    public function get($key, $default = null)
     {
         $node = $this->getNode($key);
 
@@ -311,7 +310,7 @@ class Bucket implements user\session\IBucket, Dumpable
     {
         if ($this->_controller->isOpen()) {
             foreach ($this->_nodes as $key => $node) {
-                yield 'value:'.$key => $node->value;
+                yield 'value:' . $key => $node->value;
             }
         }
     }

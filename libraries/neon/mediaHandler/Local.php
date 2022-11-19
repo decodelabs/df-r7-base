@@ -6,10 +6,6 @@
 
 namespace df\neon\mediaHandler;
 
-use df;
-use df\core;
-use df\neon;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Genesis;
 
@@ -36,10 +32,10 @@ class Local extends Base implements ILocalDataHandler
 
     public function getDownloadUrl($fileId)
     {
-        $output = '/media/download?file='.$fileId;
+        $output = '/media/download?file=' . $fileId;
 
         if (Genesis::$build->shouldCacheBust()) {
-            $output .= '&cts='.Genesis::$build->getCacheBuster();
+            $output .= '&cts=' . Genesis::$build->getCacheBuster();
         }
 
         return $output;
@@ -47,15 +43,15 @@ class Local extends Base implements ILocalDataHandler
 
     public function getEmbedUrl($fileId)
     {
-        return $this->getDownloadUrl($fileId).'&embed';
+        return $this->getDownloadUrl($fileId) . '&embed';
     }
 
     public function getVersionDownloadUrl($fileId, $versionId, $isActive)
     {
-        $output = '/media/download?version='.$versionId;
+        $output = '/media/download?version=' . $versionId;
 
         if (Genesis::$build->shouldCacheBust()) {
-            $output .= '&cts='.Genesis::$build->getCacheBuster();
+            $output .= '&cts=' . Genesis::$build->getCacheBuster();
         }
 
         return $output;
@@ -64,7 +60,7 @@ class Local extends Base implements ILocalDataHandler
     public function getFilePath($fileId, $versionId)
     {
         $storageKey = $this->_getStorageKey($fileId);
-        return Genesis::$hub->getSharedDataPath().'/media/'.$storageKey.'/'.$fileId.'/'.$versionId;
+        return Genesis::$hub->getSharedDataPath() . '/media/' . $storageKey . '/' . $fileId . '/' . $versionId;
     }
 
     public function purgeVersion($fileId, $versionId, $isActive)
@@ -78,7 +74,7 @@ class Local extends Base implements ILocalDataHandler
     public function deleteFile($fileId)
     {
         $storageKey = $this->_getStorageKey($fileId);
-        $path = Genesis::$hub->getSharedDataPath().'/media/'.$storageKey.'/'.$fileId;
+        $path = Genesis::$hub->getSharedDataPath() . '/media/' . $storageKey . '/' . $fileId;
         $dir = Atlas::dir($path);
         $parent = $dir->getParent();
         $dir->delete();

@@ -5,20 +5,18 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
+use DecodeLabs\Glitch\Dumpable;
 use df\arch;
 
-use DecodeLabs\Glitch\Dumpable;
+use df\aura;
 
 class Menu extends Base implements Dumpable
 {
     use TWidget_NavigationEntryController;
 
-    const PRIMARY_TAG = 'nav.menu.list';
-    const DEFAULT_LINK_WIDGET = 'Link';
-    const ENFORCE_DEFAULT_LINK_WIDGET = false;
+    public const PRIMARY_TAG = 'nav.menu.list';
+    public const DEFAULT_LINK_WIDGET = 'Link';
+    public const ENFORCE_DEFAULT_LINK_WIDGET = false;
 
     public function __construct(arch\IContext $context, ...$entries)
     {
@@ -45,7 +43,7 @@ class Menu extends Base implements Dumpable
             $args = [];
 
             if (($entry instanceof aura\html\ITagDataContainer) && ($id = $entry->getDataAttribute('menuid'))) {
-                $args['class'] = 'item-'.$id;
+                $args['class'] = 'item-' . $id;
             }
 
             if ($entry instanceof aura\html\widget\Link) {

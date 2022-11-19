@@ -6,13 +6,10 @@
 
 namespace df\apex\directory\front\theme\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\fuse;
-
 use DecodeLabs\Terminus as Cli;
+use df\arch;
+
+use df\fuse;
 
 class TaskInstallDependencies extends arch\node\Task implements arch\node\IBuildTaskNode
 {

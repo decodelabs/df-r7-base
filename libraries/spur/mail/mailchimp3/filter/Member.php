@@ -5,11 +5,9 @@
  */
 namespace df\spur\mail\mailchimp3\filter;
 
-use df;
-use df\core;
 use df\spur;
 
-class Member extends Base implements spur\mail\mailchimp3\IMemberFilter {
-
-    const KEY_NAME = 'members';
+class Member extends Base implements spur\mail\mailchimp3\IMemberFilter
+{
+    public const KEY_NAME = 'members';
 }

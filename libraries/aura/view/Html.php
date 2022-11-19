@@ -6,17 +6,14 @@
 
 namespace df\aura\view;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-use df\flow;
-
 use DecodeLabs\Elementary\Style\Sheet as StyleSheet;
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Genesis;
-use DecodeLabs\Tagged;
+
+use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\Tagged;
+use df\arch;
+use df\aura;
 
 class Html extends Base implements IHtmlView, Dumpable
 {
@@ -76,14 +73,14 @@ class Html extends Base implements IHtmlView, Dumpable
             ->setMeta('X-UA-Compatible', 'IE=edge,chrome=1')
             ->setMeta('content-type', $this->getContentType())
             ->setMeta('viewport', 'width=device-width, minimum-scale=0.5, maximum-scale=1.5')
-            ;
+        ;
 
         $this->getHeaders()
             ->set('X-Frame-Options', 'SAMEORIGIN')
             ->set('X-XSS-Protection', '1; mode=block')
             ->set('X-Content-Type-Options', 'nosniff')
             ->set('Referrer-Policy', 'no-referrer-when-downgrade')
-            ;
+        ;
     }
 
 
@@ -173,7 +170,7 @@ class Html extends Base implements IHtmlView, Dumpable
 
     public function getFullTitle()
     {
-        return $this->_titlePrefix.$this->_title.$this->_titleSuffix;
+        return $this->_titlePrefix . $this->_title . $this->_titleSuffix;
     }
 
 
@@ -261,7 +258,7 @@ class Html extends Base implements IHtmlView, Dumpable
 
 
     // Robots
-    public function canIndex(bool $flag=null, $bot='robots')
+    public function canIndex(bool $flag = null, $bot = 'robots')
     {
         if ($this->hasMeta($bot)) {
             $current = explode(',', $this->getMeta($bot));
@@ -286,7 +283,7 @@ class Html extends Base implements IHtmlView, Dumpable
         return !array_key_exists('noindex', $current);
     }
 
-    public function canFollow(bool $flag=null, $bot='robots')
+    public function canFollow(bool $flag = null, $bot = 'robots')
     {
         if ($this->hasMeta($bot)) {
             $current = explode(',', $this->getMeta($bot));
@@ -333,7 +330,7 @@ class Html extends Base implements IHtmlView, Dumpable
 
 
     // Link
-    public function addLink($id, $rel, $url, array $attr=null)
+    public function addLink($id, $rel, $url, array $attr = null)
     {
         $attributes = [
             'rel' => $rel,
@@ -425,7 +422,7 @@ class Html extends Base implements IHtmlView, Dumpable
 
 
     // CSS
-    public function linkCss($uri, $weight=null, array $attributes=null, $condition=null)
+    public function linkCss($uri, $weight = null, array $attributes = null, $condition = null)
     {
         $url = $this->uri($uri);
 
@@ -459,7 +456,7 @@ class Html extends Base implements IHtmlView, Dumpable
         return $this;
     }
 
-    public function linkConditionalCss($condition, $uri, $weight=null, array $attributes=null)
+    public function linkConditionalCss($condition, $uri, $weight = null, array $attributes = null)
     {
         return $this->linkCss($uri, $weight, $attributes, $condition);
     }
@@ -545,28 +542,28 @@ class Html extends Base implements IHtmlView, Dumpable
 
 
     // Js
-    public function linkJs($uri, $weight=null, array $attributes=null, $condition=null)
+    public function linkJs($uri, $weight = null, array $attributes = null, $condition = null)
     {
         return $this->_linkJs('head', $uri, $weight, $attributes, $condition);
     }
 
-    public function linkConditionalJs($condition, $uri, $weight=null, array $attributes=null)
+    public function linkConditionalJs($condition, $uri, $weight = null, array $attributes = null)
     {
         return $this->_linkJs('head', $uri, $weight, $attributes, $condition);
     }
 
-    public function linkFootJs($uri, $weight=null, array $attributes=null, $condition=null)
+    public function linkFootJs($uri, $weight = null, array $attributes = null, $condition = null)
     {
         return $this->_linkJs('foot', $uri, $weight, $attributes, $condition);
     }
 
-    public function linkConditionalFootJs($condition, $uri, $weight=null, array $attributes=null)
+    public function linkConditionalFootJs($condition, $uri, $weight = null, array $attributes = null)
     {
         return $this->_linkJs('foot', $uri, $weight, $attributes, $condition);
     }
 
 
-    protected function _linkJs($location, $uri, $weight=null, array $attributes=null, $condition=null)
+    protected function _linkJs($location, $uri, $weight = null, array $attributes = null, $condition = null)
     {
         $url = $this->uri($uri);
 
@@ -673,12 +670,12 @@ class Html extends Base implements IHtmlView, Dumpable
 
 
     // Scripts
-    public function addScript($id, $script, $condition=null, $noScript=null)
+    public function addScript($id, $script, $condition = null, $noScript = null)
     {
         return $this->addHeadScript($id, $script, $condition, $noScript);
     }
 
-    public function addHeadScript($id, $script, $condition=null, $noScript=null)
+    public function addHeadScript($id, $script, $condition = null, $noScript = null)
     {
         $this->_headScripts[$id] = [
             'script' => $script,
@@ -689,7 +686,7 @@ class Html extends Base implements IHtmlView, Dumpable
         return $this;
     }
 
-    public function addFootScript($id, $script, $condition=null, $noScript=null)
+    public function addFootScript($id, $script, $condition = null, $noScript = null)
     {
         $this->_footScripts[$id] = [
             'script' => $script,
@@ -756,7 +753,7 @@ class Html extends Base implements IHtmlView, Dumpable
     }
 
     // Rendering
-    public function shouldRenderBase(bool $flag=null)
+    public function shouldRenderBase(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_shouldRenderBase = $flag;
@@ -795,13 +792,13 @@ class Html extends Base implements IHtmlView, Dumpable
 
         if ($this->_shouldRenderBase) {
             $output =
-                '<!DOCTYPE html>'."\n".
-                $this->htmlTag->open()."\n".
-                $this->_renderHead()."\n".
-                $this->bodyTag->open()."\n".
-                $output."\n".
-                $this->_renderFoot().
-                $this->bodyTag->close()."\n".
+                '<!DOCTYPE html>' . "\n" .
+                $this->htmlTag->open() . "\n" .
+                $this->_renderHead() . "\n" .
+                $this->bodyTag->open() . "\n" .
+                $output . "\n" .
+                $this->_renderFoot() .
+                $this->bodyTag->close() . "\n" .
                 $this->htmlTag->close();
         }
 
@@ -810,7 +807,7 @@ class Html extends Base implements IHtmlView, Dumpable
 
     protected function _renderHead()
     {
-        $output = '<head>'."\n";
+        $output = '<head>' . "\n";
         $meta = $this->_meta;
 
         // Priority meta
@@ -818,17 +815,17 @@ class Html extends Base implements IHtmlView, Dumpable
 
         foreach ($meta as $key => $value) {
             if (in_array(strtolower($key), self::META_PRIORITY)) {
-                $output .= '    '.$this->_metaToString($key, $meta[$key])."\n";
+                $output .= '    ' . $this->_metaToString($key, $meta[$key]) . "\n";
                 unset($meta[$key]);
             }
         }
 
         // Title
-        $output .= '    <title>'.Tagged::esc($this->getFullTitle()).'</title>'."\n";
+        $output .= '    <title>' . Tagged::esc($this->getFullTitle()) . '</title>' . "\n";
 
         // Base
         if ($this->_baseHref !== null) {
-            $output .= '    <base href="'.Tagged::esc($this->_baseHref).'" />'."\n";
+            $output .= '    <base href="' . Tagged::esc($this->_baseHref) . '" />' . "\n";
         }
 
         // Links
@@ -840,17 +837,17 @@ class Html extends Base implements IHtmlView, Dumpable
                 continue;
             }
 
-            $output .= '    '.$link."\n";
+            $output .= '    ' . $link . "\n";
         }
 
         if ($fav) {
-            $output .= '    '.$fav."\n";
+            $output .= '    ' . $fav . "\n";
         }
 
         // Meta
         foreach ($meta as $key => $value) {
             if ($value !== null) {
-                $output .= '    '.$this->_metaToString($key, $value)."\n";
+                $output .= '    ' . $this->_metaToString($key, $value) . "\n";
             }
         }
 
@@ -858,12 +855,12 @@ class Html extends Base implements IHtmlView, Dumpable
             $attr = [];
 
             foreach ($this->_data as $key => $value) {
-                $attr[] = 'data-'.$key.'="'.Tagged::esc($value).'"';
+                $attr[] = 'data-' . $key . '="' . Tagged::esc($value) . '"';
             }
 
-            $attr[] = 'data-'.Genesis::$environment->getMode();
+            $attr[] = 'data-' . Genesis::$environment->getMode();
 
-            $output .= '    <meta id="custom-view-data" '.implode(' ', $attr).' />'."\n";
+            $output .= '    <meta id="custom-view-data" ' . implode(' ', $attr) . ' />' . "\n";
         }
 
         // Css
@@ -872,7 +869,7 @@ class Html extends Base implements IHtmlView, Dumpable
 
         // Style
         if ($this->_styles) {
-            $output .= '    '.str_replace("\n", "\n    ", (string)$this->_styles)."\n";
+            $output .= '    ' . str_replace("\n", "\n    ", (string)$this->_styles) . "\n";
         }
 
         // Js
@@ -882,13 +879,13 @@ class Html extends Base implements IHtmlView, Dumpable
         // Scripts
         $output .= $this->_renderScriptList($this->_headScripts);
 
-        $output .= '</head>'."\n";
+        $output .= '</head>' . "\n";
         return $output;
     }
 
     protected function _renderFoot()
     {
-        return $this->_renderJsList('foot').
+        return $this->_renderJsList('foot') .
                 $this->_renderScriptList($this->_footScripts);
     }
 
@@ -916,7 +913,7 @@ class Html extends Base implements IHtmlView, Dumpable
             );
 
             $tag = new aura\html\Tag('link', $attributes);
-            $line = '    '.$tag->__toString()."\n";
+            $line = '    ' . $tag->__toString() . "\n";
 
             if (isset($entry['condition'])) {
                 $line = $this->_addCondition($line, $entry['condition']);
@@ -960,7 +957,7 @@ class Html extends Base implements IHtmlView, Dumpable
             }
 
             $tag = new aura\html\Tag('script', $attributes);
-            $line = '    '.$tag->open().$tag->close()."\n";
+            $line = '    ' . $tag->open() . $tag->close() . "\n";
 
             if (isset($entry['condition'])) {
                 $line = $this->_addCondition($line, $entry['condition']);
@@ -978,7 +975,7 @@ class Html extends Base implements IHtmlView, Dumpable
                 }
 
                 $tag = new aura\html\Tag('script', $attributes);
-                $output .= '    '.$tag->open().$entry['invoke'].$tag->close()."\n";
+                $output .= '    ' . $tag->open() . $entry['invoke'] . $tag->close() . "\n";
             }
         }
 
@@ -999,20 +996,20 @@ class Html extends Base implements IHtmlView, Dumpable
         }
 
         foreach ($scripts as $id => $entry) {
-            $line = '    <script type="text/javascript" id="script-'.$id.'"';
+            $line = '    <script type="text/javascript" id="script-' . $id . '"';
 
             if ($nonce !== null) {
-                $line .= ' nonce="'.$nonce.'"';
+                $line .= ' nonce="' . $nonce . '"';
             }
 
-            $line .= '>'.
-                    "\n        ".str_replace("\n", "\n        ", $entry['script'])."\n".
-                    '    </script>'."\n";
+            $line .= '>' .
+                    "\n        " . str_replace("\n", "\n        ", $entry['script']) . "\n" .
+                    '    </script>' . "\n";
 
             if (isset($entry['noScript'])) {
-                $line .= '    <noscript>'."\n".
-                         '        '.str_replace("\n", "\n        ", $entry['noScript'])."\n".
-                         '    </noscript>'."\n";
+                $line .= '    <noscript>' . "\n" .
+                         '        ' . str_replace("\n", "\n        ", $entry['noScript']) . "\n" .
+                         '    </noscript>' . "\n";
             }
 
             if (isset($entry['condition'])) {
@@ -1027,7 +1024,7 @@ class Html extends Base implements IHtmlView, Dumpable
 
     protected function _addCondition($line, $condition)
     {
-        return '    <!--[if '.$condition.' ]>'.trim($line).'<![endif]-->'."\n";
+        return '    <!--[if ' . $condition . ' ]>' . trim($line) . '<![endif]-->' . "\n";
     }
 
     protected function _metaToString($key, $value)

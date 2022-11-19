@@ -7,12 +7,12 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Nightfire\Block\Error;
 
-use df\aura\html\widget\Field as FieldWidget;
-
 use DecodeLabs\Coercion;
+
 use DecodeLabs\R7\Nightfire\Block;
-use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
 use DecodeLabs\R7\Nightfire\Block\Error;
+use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
+use df\aura\html\widget\Field as FieldWidget;
 
 /**
  * @extends BlockDelegateAbstract<Error>
@@ -43,7 +43,7 @@ class FormDelegate extends BlockDelegateAbstract
     public function renderFieldContent(FieldWidget $field): void
     {
         $output = $this->html->flashMessage($this->_(
-            'Error loading block type: '.$this->getStore('type')
+            'Error loading block type: ' . $this->getStore('type')
         ), 'error');
 
         $output->setDescription($this->getStore('message'));

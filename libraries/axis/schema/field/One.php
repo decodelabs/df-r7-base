@@ -5,8 +5,6 @@
  */
 namespace df\axis\schema\field;
 
-use df;
-use df\core;
 use df\axis;
 use df\opal;
 
@@ -27,7 +25,7 @@ class One extends Base implements axis\schema\IOneField
 
 
     // Values
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord = null)
     {
         $value = $this->getTargetRelationManifest()->extractFromRow($key, $row);
 
@@ -46,7 +44,9 @@ class One extends Base implements axis\schema\IOneField
 
         // Need to build a value container
         return new axis\unit\table\record\OneRelationValueContainer(
-            $this, $forRecord, $value
+            $this,
+            $forRecord,
+            $value
         );
     }
 
@@ -69,20 +69,22 @@ class One extends Base implements axis\schema\IOneField
                 $value = $field->deflateValue($value);
             }
 
-            $output[$this->_name.'_'.$key] = $value;
+            $output[$this->_name . '_' . $key] = $value;
         }
 
         return $output;
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    public function sanitizeValue($value, opal\record\IRecord $forRecord = null)
     {
         if (!$forRecord) {
             return $value;
         }
 
         return new axis\unit\table\record\OneRelationValueContainer(
-            $this, $forRecord, $value
+            $this,
+            $forRecord,
+            $value
         );
     }
 
@@ -93,10 +95,14 @@ class One extends Base implements axis\schema\IOneField
 
 
     // Clause
-    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false)
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr = false)
     {
         return opal\query\clause\Clause::mapVirtualClause(
-            $parent, $field, $operator, $value, $isOr
+            $parent,
+            $field,
+            $operator,
+            $value,
+            $isOr
         );
     }
 
@@ -109,7 +115,7 @@ class One extends Base implements axis\schema\IOneField
         $parentSourceAlias = $populate->getParentSourceAlias();
         $targetSourceAlias = $populate->getSourceAlias();
 
-        $output->on($targetSourceAlias.'.@primary', '=', $parentSourceAlias.'.'.$this->_name);
+        $output->on($targetSourceAlias . '.@primary', '=', $parentSourceAlias . '.' . $this->_name);
         $output->asOne($this->_name);
 
         return $output;
@@ -160,7 +166,7 @@ class One extends Base implements axis\schema\IOneField
             $field = $targetSchema->getField($fieldName);
 
             $dupField = $field->duplicateForRelation($targetUnit, $targetSchema);
-            $dupField->_setName($this->_name.'_'.$dupField->getName());
+            $dupField->_setName($this->_name . '_' . $dupField->getName());
 
             $output[] = $dupField;
         }
@@ -198,7 +204,7 @@ class One extends Base implements axis\schema\IOneField
     public function glitchDump(): iterable
     {
         $def = $this->getFieldSchemaString();
-        $def .= '('.$this->_targetUnitId.')';
+        $def .= '(' . $this->_targetUnitId . ')';
 
         yield 'definition' => $def;
     }

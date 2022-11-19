@@ -5,11 +5,10 @@
  */
 namespace df\core\validate\field;
 
-use df;
-use df\core;
+use DecodeLabs\Exceptional;
 use df\arch;
 
-use DecodeLabs\Exceptional;
+use df\core;
 
 class Delegate extends Base implements core\validate\IDelegateField
 {
@@ -18,7 +17,7 @@ class Delegate extends Base implements core\validate\IDelegateField
 
 
     // Options
-    public function fromForm(arch\node\IForm $form, string $name=null)
+    public function fromForm(arch\node\IForm $form, string $name = null)
     {
         if ($name === null) {
             $name = $this->_name;
@@ -31,7 +30,7 @@ class Delegate extends Base implements core\validate\IDelegateField
     {
         if (!$delegate instanceof arch\node\IResultProviderDelegate) {
             throw Exceptional::InvalidArgument(
-                'Delegate '.$delegate->getDelegateId().' does not provide a result'
+                'Delegate ' . $delegate->getDelegateId() . ' does not provide a result'
             );
         }
 
@@ -51,7 +50,7 @@ class Delegate extends Base implements core\validate\IDelegateField
         return $this->_delegate;
     }
 
-    public function isRequired(bool $flag=null)
+    public function isRequired(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isRequired = $flag;

@@ -5,16 +5,15 @@
  */
 namespace df\neon\raster\driver;
 
-use df;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Spectrum\Color;
+
 use df\core;
 use df\neon;
 
-use DecodeLabs\Spectrum\Color;
-use DecodeLabs\Exceptional;
-
 class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, neon\raster\IImageFilterDriver
 {
-    const READ_FORMATS = [
+    public const READ_FORMATS = [
         'AAI', 'ART', 'ARW', 'AVI', 'AVS', 'BMP', 'BMP2', 'BMP3', 'CALS', 'CGM', 'CIN', 'CMYK', 'CMYKA',
         'CR2', 'CRW', 'CUR', 'CUT', 'DCM', 'DCR', 'DCX', 'DIB', 'DJVU', 'DNG', 'DOT', 'DPX', 'EMF',
         'EPDF', 'EPI', 'EPS', 'EPS2', 'EPS3', 'EPSF', 'EPSI', 'EPT', 'EXR', 'FAX', 'FIG', 'FITS', 'FPX',
@@ -28,7 +27,7 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
         'YCbCr', 'YCbCrA', 'YUV'
     ];
 
-    const WRITE_FORMATS = [
+    public const WRITE_FORMATS = [
         'AAI', 'AVS', 'BMP', 'BMP2', 'BMP3', 'CIN', 'CMYK', 'CMYKA', 'DCX', 'DIB', 'DPX', 'EPDF', 'EPI',
         'EPS', 'EPSF', 'EPSI', 'EPT', 'EXR', 'FAX', 'FITS', 'FPX', 'GIF', 'GRAY', 'HDR', 'HRZ', 'HTML',
         'INFO', 'JBIG', 'JNG', 'JP2', 'JPC', 'JPEG', 'MIFF', 'MONO', 'MNG', 'M2V', 'MPEG', 'MPC', 'MPR',
@@ -79,7 +78,7 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
         return $this;
     }
 
-    public function loadCanvas($width, $height, Color $color=null)
+    public function loadCanvas($width, $height, Color $color = null)
     {
         if ($color === null) {
             $color = new Color(0, 0, 0, 0);
@@ -144,13 +143,14 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
         $this->_pointer->compositeImage(
             $image->getPointer(),
             \Imagick::COMPOSITE_DEFAULT,
-            $x, $y
+            $x,
+            $y
         );
 
         return $this;
     }
 
-    public function rotate(core\unit\IAngle $angle, Color $background=null)
+    public function rotate(core\unit\IAngle $angle, Color $background = null)
     {
         if ($background === null) {
             $background = new \ImagickPixel('none');

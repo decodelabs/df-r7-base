@@ -5,23 +5,20 @@
  */
 namespace df\core\unit;
 
-use df;
-use df\core;
-
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
 
 class Angle implements IAngle, Dumpable
 {
     use TSingleValueUnit;
 
-    const DEFAULT_UNIT = 'deg';
-    const UNITS = ['deg', 'rad', 'grad', 'turn'];
+    public const DEFAULT_UNIT = 'deg';
+    public const UNITS = ['deg', 'rad', 'grad', 'turn'];
 
     protected $_value;
     protected $_unit;
 
-    public static function factory($value, $unit=null, $allowPlainNumbers=false)
+    public static function factory($value, $unit = null, $allowPlainNumbers = false)
     {
         if ($value instanceof IAngle) {
             return $value;
@@ -32,7 +29,7 @@ class Angle implements IAngle, Dumpable
 
     public function toCssString(): string
     {
-        return $this->getDegrees().'deg';
+        return $this->getDegrees() . 'deg';
     }
 
     public function normalize()
@@ -58,7 +55,7 @@ class Angle implements IAngle, Dumpable
 
             default:
                 throw Exceptional::InvalidArgument(
-                    'Unsupport angle unit: '.$this->_unit
+                    'Unsupport angle unit: ' . $this->_unit
                 );
         }
 
@@ -149,7 +146,7 @@ class Angle implements IAngle, Dumpable
 
             default:
                 throw Exceptional::InvalidArgument(
-                    'Unsupport angle unit: '.$inUnit
+                    'Unsupport angle unit: ' . $inUnit
                 );
         }
 

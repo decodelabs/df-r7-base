@@ -6,13 +6,11 @@
 
 namespace df\axis\unit\table\record;
 
-use df;
-use df\core;
+use DecodeLabs\Glitch\Dumpable;
 use df\axis;
-use df\opal;
 use df\mesh;
 
-use DecodeLabs\Glitch\Dumpable;
+use df\opal;
 
 class OneChildRelationValueContainer implements
     opal\record\IJobAwareValueContainer,
@@ -39,7 +37,7 @@ class OneChildRelationValueContainer implements
         return axis\Model::loadUnitFromId($this->_field->getTargetUnitId());
     }
 
-    public function newRecord(array $values=null)
+    public function newRecord(array $values = null)
     {
         return $this->getTargetUnit()->newRecord($values);
     }
@@ -119,7 +117,7 @@ class OneChildRelationValueContainer implements
         return $this;
     }
 
-    public function getValue($default=null)
+    public function getValue($default = null)
     {
         if ($this->_record !== false) {
             return $this->_record;
@@ -133,7 +131,7 @@ class OneChildRelationValueContainer implements
         return $this->_record !== false && $this->_record !== null;
     }
 
-    public function getStringValue($default=''): string
+    public function getStringValue($default = ''): string
     {
         return $this->__toString();
     }
@@ -164,7 +162,7 @@ class OneChildRelationValueContainer implements
         return $output;
     }
 
-    public function populateInverse(opal\record\IRecord $record=null)
+    public function populateInverse(opal\record\IRecord $record = null)
     {
         if (!$this->_insertPrimaryKeySet) {
             $this->_record = $record;
@@ -175,7 +173,7 @@ class OneChildRelationValueContainer implements
 
 
     // Tasks
-    public function deploySaveJobs(mesh\job\IQueue $queue, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordJob=null)
+    public function deploySaveJobs(mesh\job\IQueue $queue, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordJob = null)
     {
         if ($this->_insertPrimaryKeySet) {
             if (!$this->_record instanceof opal\record\IRecord) {
@@ -192,7 +190,7 @@ class OneChildRelationValueContainer implements
                 $query = $targetUnit->fetch();
 
                 foreach ($record->getPrimaryKeySet()->toArray() as $field => $value) {
-                    $query->where($targetField.'_'.$field, '=', $value);
+                    $query->where($targetField . '_' . $field, '=', $value);
                 }
 
                 $originalRecord = $query->toRow();
@@ -228,7 +226,7 @@ class OneChildRelationValueContainer implements
         return $this;
     }
 
-    public function deployDeleteJobs(mesh\job\IQueue $queue, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordJob=null)
+    public function deployDeleteJobs(mesh\job\IQueue $queue, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordJob = null)
     {
         $localUnit = $parentRecord->getAdapter();
         $targetUnit = $this->getTargetUnit();
@@ -238,7 +236,7 @@ class OneChildRelationValueContainer implements
         $values = [];
 
         foreach ($parentKeySet->toArray() as $key => $value) {
-            $values[$targetField.'_'.$key] = $value;
+            $values[$targetField . '_' . $key] = $value;
         }
 
         $inverseKeySet = new opal\record\PrimaryKeySet(array_keys($values), $values);
@@ -246,11 +244,14 @@ class OneChildRelationValueContainer implements
 
         if ($primaryIndex->hasField($targetSchema->getField($targetField))) {
             $targetRecordJob = new opal\query\job\DeleteKey(
-                $targetUnit, $values
+                $targetUnit,
+                $values
             );
         } else {
             $targetRecordJob = new opal\query\job\Update(
-                $targetUnit, $inverseKeySet, $inverseKeySet->duplicateWith(null)->toArray()
+                $targetUnit,
+                $inverseKeySet,
+                $inverseKeySet->duplicateWith(null)->toArray()
             );
         }
 
@@ -287,7 +288,7 @@ class OneChildRelationValueContainer implements
             return $this->_insertPrimaryKeySet;
         }
 
-        return '['.$this->_field->getTargetUnitId().']';
+        return '[' . $this->_field->getTargetUnitId() . ']';
     }
 
     /**
@@ -318,7 +319,7 @@ class OneChildRelationValueContainer implements
                 $t = [];
 
                 foreach ($this->_insertPrimaryKeySet->toArray() as $key => $value) {
-                    $valString = $key.'=';
+                    $valString = $key . '=';
 
                     if ($value === null) {
                         $valString .= 'null';
@@ -332,7 +333,7 @@ class OneChildRelationValueContainer implements
                 $output .= implode(', ', $t);
             }
         } else {
-            $output = '['.$output.']';
+            $output = '[' . $output . ']';
         }
 
         yield 'definition' => $output;

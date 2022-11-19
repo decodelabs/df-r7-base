@@ -5,20 +5,17 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-use df\flex;
-
 use DecodeLabs\Dictum;
+use df\arch;
+
+use df\aura;
 
 class EventButton extends Button
 {
-    const PRIMARY_TAG = 'button.btn.event';
-    const BUTTON_TYPE = 'submit';
+    public const PRIMARY_TAG = 'button.btn.event';
+    public const BUTTON_TYPE = 'submit';
 
-    public function __construct(arch\IContext $context, $event, $body=null)
+    public function __construct(arch\IContext $context, $event, $body = null)
     {
         parent::__construct($context, 'formEvent', $body, $event);
     }

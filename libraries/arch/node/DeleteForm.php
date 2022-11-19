@@ -6,14 +6,10 @@
 
 namespace df\arch\node;
 
-use df;
-use df\core;
-use df\arch;
-use df\aura;
-use df\flex;
-
 use DecodeLabs\Dictum;
+
 use DecodeLabs\Tagged as Html;
+use df\aura;
 
 abstract class DeleteForm extends Form
 {
@@ -61,21 +57,21 @@ abstract class DeleteForm extends Form
         if ($this->isPermanent()) {
             $fs->push(
                 $this->html->flashMessage('CAUTION: This action is permanent!', 'warning')
-                    ->setDescription('This '.$itemName.' will be completely removed from the system and cannot be retrieved!')
+                    ->setDescription('This ' . $itemName . ' will be completely removed from the system and cannot be retrieved!')
             );
         }
 
         if ($this->isParent()) {
             $fs->push(
-                $this->html->flashMessage('NOTE: This '.$itemName.' may contain child items', 'info')
-                    ->setDescription('Some or all child records that are contained in this '.$itemName.' will also be deleted!')
+                $this->html->flashMessage('NOTE: This ' . $itemName . ' may contain child items', 'info')
+                    ->setDescription('Some or all child records that are contained in this ' . $itemName . ' will also be deleted!')
             );
         }
 
         if ($this->isShared()) {
             $fs->push(
-                $this->html->flashMessage('WARNING: This '.$itemName.' may be shared with other items', 'error')
-                    ->setDescription('Deleting this '.$itemName.' will remove it from all other related records that depend on it')
+                $this->html->flashMessage('WARNING: This ' . $itemName . ' may be shared with other items', 'error')
+                    ->setDescription('Deleting this ' . $itemName . ' will remove it from all other related records that depend on it')
             );
         }
 
@@ -91,15 +87,15 @@ abstract class DeleteForm extends Form
 
 
         $mainButton = $this->html->eventButton(
-                $this->eventName('delete'),
-                $this->_('Delete')
-            )
+            $this->eventName('delete'),
+            $this->_('Delete')
+        )
             ->setIcon('delete');
 
         $cancelButton = $this->html->eventButton(
-                $this->eventName('cancel'),
-                $this->_('Cancel')
-            )
+            $this->eventName('cancel'),
+            $this->_('Cancel')
+        )
             ->setIcon('cancel');
 
         $this->customizeMainButton($mainButton);
@@ -107,7 +103,8 @@ abstract class DeleteForm extends Form
 
 
         $form->addButtonArea()->push(
-            $mainButton, $cancelButton
+            $mainButton,
+            $cancelButton
         );
     }
 
@@ -192,7 +189,7 @@ abstract class DeleteForm extends Form
         if ($this->values->isValid()) {
             if ($message = $this->getFlashMessage()) {
                 $this->comms->flash(
-                    Dictum::id($this->getItemName()).'.deleted',
+                    Dictum::id($this->getItemName()) . '.deleted',
                     $message,
                     'success'
                 );

@@ -6,14 +6,12 @@
 
 namespace df\arch\navigation\menu;
 
-use df;
-use df\core;
-use df\arch;
-use df\flex;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+
 use DecodeLabs\R7\Legacy;
+use df\arch;
+use df\core;
 
 class Base implements IMenu, \Serializable
 {
@@ -25,7 +23,7 @@ class Base implements IMenu, \Serializable
     protected $_subId;
     protected $_delegates = null;
 
-    public static function loadAll(arch\IContext $context, array $whiteList=null)
+    public static function loadAll(arch\IContext $context, array $whiteList = null)
     {
         $output = [];
         $sources = arch\navigation\menu\source\Base::loadAll($context);
@@ -205,7 +203,7 @@ class Base implements IMenu, \Serializable
         $output = Dictum::name(array_shift($parts));
 
         if (!empty($parts)) {
-            $output .= ' ('.Dictum::name(array_shift($parts)).')';
+            $output .= ' (' . Dictum::name(array_shift($parts)) . ')';
         }
 
         return $output;
@@ -251,7 +249,7 @@ class Base implements IMenu, \Serializable
     }
 
     // Entries
-    public function generateEntries(arch\navigation\IEntryList $entryList=null): arch\navigation\IEntryList
+    public function generateEntries(arch\navigation\IEntryList $entryList = null): arch\navigation\IEntryList
     {
         $this->initDelegates();
         $isRoot = ($entryList === null);

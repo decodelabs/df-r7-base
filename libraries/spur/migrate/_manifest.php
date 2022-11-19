@@ -5,9 +5,6 @@
  */
 namespace df\spur\migrate;
 
-use df;
-use df\core;
-use df\spur;
 use df\link;
 
 interface IHandler
@@ -19,8 +16,8 @@ interface IHandler
     public function setAsyncBatchLimit($limit);
     public function getAsyncBatchLimit();
 
-    public function createRequest($method, $request, array $data=null);
+    public function createRequest($method, $request, array $data = null);
     public function call(link\http\IRequest $request);
-    public function callAsync(link\http\IRequest $request, callable $callback, ?callable $progress=null);
+    public function callAsync(link\http\IRequest $request, callable $callback, ?callable $progress = null);
     public function sync();
 }

@@ -6,10 +6,9 @@
 
 namespace df\core\uri;
 
-use df;
-use df\core;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\core;
 
 class Url implements IGenericUrl, Dumpable
 {
@@ -30,12 +29,12 @@ class Url implements IGenericUrl, Dumpable
         return new $class($url);
     }
 
-    public function __construct($url=null)
+    public function __construct($url = null)
     {
         $this->import($url);
     }
 
-    public function import($url='')
+    public function import($url = '')
     {
         if ($url !== null) {
             $this->reset();

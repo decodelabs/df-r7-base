@@ -5,18 +5,16 @@
  */
 namespace df\neon\raster;
 
-use df;
-use df\core;
-use df\neon;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
 
 class Transformation implements ITransformation, Dumpable
 {
     use core\TStringProvider;
 
-    const KEYS = [
+    public const KEYS = [
         'resize' => 'rs',
         'crop' => 'cr',
         'cropZoom' => 'cz',
@@ -38,7 +36,7 @@ class Transformation implements ITransformation, Dumpable
         'smooth' => 'sm'
     ];
 
-    const RESCALABLE = [
+    public const RESCALABLE = [
         'resize', 'cropZoom'
     ];
 
@@ -100,10 +98,10 @@ class Transformation implements ITransformation, Dumpable
         $output = '';
 
         foreach ($this->_transformations as $callback) {
-            $output .= '['.self::KEYS[$callback[0]];
+            $output .= '[' . self::KEYS[$callback[0]];
 
             if (count($args = $callback[1])) {
-                $output .= ':'.implode('|', $args);
+                $output .= ':' . implode('|', $args);
             }
 
             $output .= ']';
@@ -182,7 +180,7 @@ class Transformation implements ITransformation, Dumpable
 
 
     // Manipulations
-    public function resize(?int $width, int $height=null, string $mode=null)
+    public function resize(?int $width, int $height = null, string $mode = null)
     {
         return $this->_addTransformation('resize', [$width, $height, $mode]);
     }
@@ -192,17 +190,17 @@ class Transformation implements ITransformation, Dumpable
         return $this->_addTransformation('crop', [$x, $y, $width, $height]);
     }
 
-    public function cropZoom(?int $width, int $height=null)
+    public function cropZoom(?int $width, int $height = null)
     {
         return $this->_addTransformation('cropZoom', [$width, $height]);
     }
 
-    public function frame(?int $width, int $height=null, $color=null)
+    public function frame(?int $width, int $height = null, $color = null)
     {
         return $this->_addTransformation('frame', [$width, $height, $color]);
     }
 
-    public function rotate($angle, $background=null)
+    public function rotate($angle, $background = null)
     {
         return $this->_addTransformation('rotate', [$angle, $background]);
     }
@@ -234,7 +232,7 @@ class Transformation implements ITransformation, Dumpable
         return $this->_addTransformation('greyscale');
     }
 
-    public function colorize($color, $alpha=null)
+    public function colorize($color, $alpha = null)
     {
         return $this->_addTransformation('colorize', [$color, $alpha]);
     }
@@ -269,14 +267,14 @@ class Transformation implements ITransformation, Dumpable
         return $this->_addTransformation('removeMean');
     }
 
-    public function smooth($amount=null)
+    public function smooth($amount = null)
     {
         return $this->_addTransformation('smooth', [$amount]);
     }
 
 
     // Helpers
-    protected function _addTransformation($method, array $args=[])
+    protected function _addTransformation($method, array $args = [])
     {
         foreach ($args as $i => $arg) {
             if (!strlen($arg)) {

@@ -5,12 +5,10 @@
  */
 namespace df\user\session\perpetuator;
 
-use df;
-use df\core;
-use df\user;
-use df\halo;
-
 use DecodeLabs\Systemic;
+use df\core;
+
+use df\user;
 
 class Shell implements user\session\IPerpetuator
 {
@@ -24,7 +22,7 @@ class Shell implements user\session\IPerpetuator
         $uid = $process->getOwnerId();
         $name = $process->getOwnerName();
 
-        $this->_userKey = md5($uid.$name);
+        $this->_userKey = md5($uid . $name);
         $cache = Shell_Cache::getInstance();
 
         $this->_inputId = $cache->get($this->_userKey);

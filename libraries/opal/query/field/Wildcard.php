@@ -6,12 +6,10 @@
 
 namespace df\opal\query\field;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Glitch;
+
 use DecodeLabs\Glitch\Dumpable;
+use df\opal;
 
 class Wildcard implements opal\query\IWildcardField, Dumpable
 {
@@ -37,7 +35,7 @@ class Wildcard implements opal\query\IWildcardField, Dumpable
 
     public function getQualifiedName()
     {
-        return $this->getSourceAlias().'.*';
+        return $this->getSourceAlias() . '.*';
     }
 
     public function getName(): string
@@ -76,7 +74,7 @@ class Wildcard implements opal\query\IWildcardField, Dumpable
     }
 
 
-    public function addMuteField($name, $alias=null)
+    public function addMuteField($name, $alias = null)
     {
         $this->_muteFields[$name] = $alias;
         return $this;
@@ -100,11 +98,11 @@ class Wildcard implements opal\query\IWildcardField, Dumpable
         $mute = [];
 
         foreach ($this->_muteFields as $name => $alias) {
-            $mute[] = '!'.$name.($alias ? ' as '.$alias : '');
+            $mute[] = '!' . $name . ($alias ? ' as ' . $alias : '');
         }
 
         if (!empty($mute)) {
-            $output .= ' ('.implode(', ', $mute).')';
+            $output .= ' (' . implode(', ', $mute) . ')';
         }
 
         return $output;

@@ -7,63 +7,63 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Legacy;
 
-use df\arch\Context;
-use df\arch\Request;
-use df\arch\mail\Base as ArchMail;
-
-use df\aura\view\content\Template;
-use df\aura\view\IHtmlView as View;
-use df\aura\theme\Config as StaticThemeConfig;
-
-use df\axis\Model;
-use df\axis\IUnit as Unit;
-use df\axis\unit\Cache as CacheUnit;
-use df\axis\unit\Table as TableUnit;
-use df\axis\unit\Enum as EnumUnit;
-use df\axis\unit\Config as ConfigUnit;
-
-use df\core\collection\Tree;
-use df\flex\Guid;
-
-use df\flow\Manager as CommsManager;
-
-use df\mesh\job\IQueue as JobQueue;
-use df\mesh\job\IJob as Job;
-use df\mesh\entity\Locator as EntityLocator;
-
-use df\core\uri\IUrl as Url;
-
-use df\core\time\Date;
-use df\core\time\Duration;
-
-use df\fire\ISlotContent as Slot;
-
-use df\opal\query\ISelectQuery as SelectQuery;
-use df\opal\record\IRecord as Record;
-use df\opal\record\IPartial as Partial;
-
-use df\user\Manager as UserManager;
-use df\user\IClientDataObject as ClientObject;
-
-use df\core\app\Base as AppBase;
-use df\core\loader\Base as LoaderBase;
-use df\core\IRegistryObject as RegistryObject;
-
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
-use DateTime;
 use DateInterval;
 
-
+use DateTime;
 use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy\Plugins\Http as HttpPlugin;
+
 use DecodeLabs\R7\Nightfire\Block;
 use DecodeLabs\R7\Theme\Config as ThemeConfig;
 use DecodeLabs\Systemic\Process;
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
 use DecodeLabs\Terminus\Session as TerminusSession;
 use DecodeLabs\Veneer\LazyLoad;
+
 use DecodeLabs\Veneer\Plugin;
+use df\arch\Context;
+
+use df\arch\mail\Base as ArchMail;
+
+use df\arch\Request;
+use df\aura\theme\Config as StaticThemeConfig;
+use df\aura\view\content\Template;
+
+use df\aura\view\IHtmlView as View;
+
+use df\axis\IUnit as Unit;
+use df\axis\Model;
+
+use df\axis\unit\Cache as CacheUnit;
+
+use df\axis\unit\Config as ConfigUnit;
+use df\axis\unit\Enum as EnumUnit;
+use df\axis\unit\Table as TableUnit;
+
+use df\core\app\Base as AppBase;
+use df\core\collection\Tree;
+
+use df\core\IRegistryObject as RegistryObject;
+use df\core\loader\Base as LoaderBase;
+use df\core\time\Date;
+
+use df\core\time\Duration;
+use df\core\uri\IUrl as Url;
+use df\fire\ISlotContent as Slot;
+use df\flex\Guid;
+
+
+use df\flow\Manager as CommsManager;
+use df\mesh\entity\Locator as EntityLocator;
+use df\mesh\job\IJob as Job;
+use df\mesh\job\IQueue as JobQueue;
+use df\opal\query\ISelectQuery as SelectQuery;
+use df\opal\record\IPartial as Partial;
+use df\opal\record\IRecord as Record;
+use df\user\IClientDataObject as ClientObject;
+use df\user\Manager as UserManager;
 
 use Stringable;
 
@@ -259,7 +259,7 @@ class Helper
             if (Genesis::$container->has(ThemeConfig::class)) {
                 $output = Genesis::$container[ThemeConfig::class];
             } else {
-                /** @var StaticThemeConfig */
+                /** @var StaticThemeConfig $output */
                 $output = StaticThemeConfig::getInstance();
             }
         }
@@ -296,9 +296,9 @@ class Helper
      */
     public function uri(
         string|Stringable|Url $uri,
-        string|Stringable|Url|bool|null $from=null,
-        string|Stringable|Url|bool|null $to=null,
-        bool $asRequest=false
+        string|Stringable|Url|bool|null $from = null,
+        string|Stringable|Url|bool|null $to = null,
+        bool $asRequest = false
     ): Url {
         return $this->getContext()->uri->__invoke($uri, $from, $to, $asRequest);
     }
@@ -311,7 +311,7 @@ class Helper
     public function flashMessage(
         string $id,
         string $message,
-        string $type='info'
+        string $type = 'info'
     ): void {
         $this->getContext()->comms->flash($id, $message, $type);
     }
@@ -334,7 +334,7 @@ class Helper
      */
     public function loadTemplate(
         string $path,
-        array|callable|null $slots=null
+        array|callable|null $slots = null
     ): Template {
         return $this->getContext()->apex->template($path, $slots);
     }
@@ -349,9 +349,9 @@ class Helper
     public function emitEvent(
         string|EntityLocator $entity,
         string $action,
-        array $data=null,
-        JobQueue $jobQueue=null,
-        Job $job=null
+        array $data = null,
+        JobQueue $jobQueue = null,
+        Job $job = null
     ): void {
         $this->getContext()->mesh->emitEvent($entity, $action, $data, $jobQueue, $job);
     }
@@ -436,9 +436,9 @@ class Helper
             $months = $interval->getMonths();
 
             if ((int)$months != $months) {
-                $interval = ceil($interval->getDays()).' days';
+                $interval = ceil($interval->getDays()) . ' days';
             } else {
-                $interval = $interval->getMonths().' months';
+                $interval = $interval->getMonths() . ' months';
             }
 
             $interval = CarbonInterval::createFromDateString($interval);
@@ -453,13 +453,17 @@ class Helper
      */
     public function formatDuration(
         string|Stringable|int|Duration|DateInterval|null $duration,
-        int $maxUnits=1,
-        bool $shortUnits=false,
-        int|string $maxUnit=Duration::YEARS,
-        bool $roundLastUnit=true
+        int $maxUnits = 1,
+        bool $shortUnits = false,
+        int|string $maxUnit = Duration::YEARS,
+        bool $roundLastUnit = true
     ): ?string {
         return $this->getContext()->date->formatDuration(
-            $duration, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit
+            $duration,
+            $maxUnits,
+            $shortUnits,
+            $maxUnit,
+            $roundLastUnit
         );
     }
 
@@ -577,7 +581,7 @@ class Helper
     public function getRelationId(
         array|Record|Partial|null $record,
         string $field,
-        ?string $idField=null
+        ?string $idField = null
     ): ?string {
         $output = $this->getContext()->data->getRelationId($record, $field, $idField);
 
@@ -599,11 +603,14 @@ class Helper
     public function selectForAction(
         string|Unit $source,
         string|array $fields,
-        mixed $primary=null,
-        ?callable $queryChain=null
+        mixed $primary = null,
+        ?callable $queryChain = null
     ): array {
         return $this->getContext()->data->selectForAction(
-            $source, $fields, $primary, $queryChain
+            $source,
+            $fields,
+            $primary,
+            $queryChain
         );
     }
 
@@ -616,7 +623,7 @@ class Helper
      */
     public function queryForAction(
         SelectQuery $query,
-        ?callable $chain=null
+        ?callable $chain = null
     ): array {
         return $this->getContext()->data->queryForAction($query, $chain);
     }
@@ -630,10 +637,12 @@ class Helper
     public function queryByPrimaryForAction(
         SelectQuery $query,
         mixed $primary,
-        ?callable $chain=null
+        ?callable $chain = null
     ): array {
         return $this->getContext()->data->queryByPrimaryForAction(
-            $query, $primary, $chain
+            $query,
+            $primary,
+            $chain
         );
     }
 
@@ -663,7 +672,7 @@ class Helper
      *
      * @param array<string, mixed>|null $slots
      */
-    public function sendPreparedMail(string $path, ?array $slots=null, bool $forceSend=false): void
+    public function sendPreparedMail(string $path, ?array $slots = null, bool $forceSend = false): void
     {
         $this->getContext()->comms->sendPreparedMail($path, $slots, $forceSend);
     }
@@ -673,7 +682,7 @@ class Helper
      *
      * @param array<string, mixed>|null $slots
      */
-    public function prepareMail(string $path, ?array $slots=null, bool $forceSend=false): ArchMail
+    public function prepareMail(string $path, ?array $slots = null, bool $forceSend = false): ArchMail
     {
         return $this->getContext()->comms->prepareMail($path, $slots, $forceSend);
     }
@@ -684,7 +693,7 @@ class Helper
      *
      * @param array<string, mixed>|null $slots
      */
-    public function renderMail(string $path, ?array $slots=null, bool $forceSend=false): string
+    public function renderMail(string $path, ?array $slots = null, bool $forceSend = false): string
     {
         return $this->prepareMail($path, $slots, $forceSend)->getBodyHtml();
     }
@@ -696,13 +705,17 @@ class Helper
      */
     public function launchTask(
         string $request,
-        ?TerminusSession $session=null,
-        ?string $user=null,
-        bool $dfSource=false,
-        bool $decoratable=null
+        ?TerminusSession $session = null,
+        ?string $user = null,
+        bool $dfSource = false,
+        bool $decoratable = null
     ): ProcessResult {
         return $this->getContext()->task->launch(
-            $request, $session, $user, $dfSource, $decoratable
+            $request,
+            $session,
+            $user,
+            $dfSource,
+            $decoratable
         );
     }
 
@@ -711,12 +724,15 @@ class Helper
      */
     public function launchBackgroundTask(
         string $request,
-        ?string $user=null,
-        bool $dfSource=false,
-        bool $decoratable=null
+        ?string $user = null,
+        bool $dfSource = false,
+        bool $decoratable = null
     ): Process {
         return $this->getContext()->task->launchBackground(
-            $request, $user, $dfSource, $decoratable
+            $request,
+            $user,
+            $dfSource,
+            $decoratable
         );
     }
 

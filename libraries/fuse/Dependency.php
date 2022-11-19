@@ -6,10 +6,6 @@
 
 namespace df\fuse;
 
-use df;
-use df\core;
-use df\fuse;
-use df\aura;
 use df\flex;
 use df\spur;
 
@@ -25,7 +21,7 @@ class Dependency
     public $installName;
 
 
-    public function __construct(string $id, $data=null)
+    public function __construct(string $id, $data = null)
     {
         $parts = explode('#', $id, 2);
         $id = array_shift($parts);
@@ -131,7 +127,7 @@ class Dependency
 
     public function getKey()
     {
-        return $this->id.'#'.(string)$this->version;
+        return $this->id . '#' . (string)$this->version;
     }
 
     public function getPackage()

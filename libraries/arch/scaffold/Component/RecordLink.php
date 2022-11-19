@@ -5,21 +5,16 @@
  */
 namespace df\arch\scaffold\Component;
 
-use df;
-use df\core;
-use df\arch;
-use df\aura;
-
-use df\arch\component\RecordLink as RecordLinkBase;
-use df\arch\scaffold\Record\DataProvider as RecordDataProviderScaffold;
-
 use DecodeLabs\Tagged as Html;
+use df\arch\component\RecordLink as RecordLinkBase;
+
+use df\arch\scaffold\Record\DataProvider as RecordDataProviderScaffold;
 
 class RecordLink extends RecordLinkBase
 {
     protected $scaffold;
 
-    public function __construct(RecordDataProviderScaffold $scaffold, array $args=null)
+    public function __construct(RecordDataProviderScaffold $scaffold, array $args = null)
     {
         $this->scaffold = $scaffold;
         parent::__construct($scaffold->getContext(), $args);

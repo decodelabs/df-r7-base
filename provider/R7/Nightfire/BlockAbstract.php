@@ -7,21 +7,21 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Nightfire;
 
-use df\aura\view\TView_DeferredRenderable;
-use df\core\TStringProvider;
-
-use df\arch\IContext as Context;
-use df\arch\node\IDelegate as NodeDelegate;
-use df\arch\node\form\State as FormState;
-use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
-
 use DecodeLabs\Archetype;
 use DecodeLabs\Dictum;
+
 use DecodeLabs\Exceptional;
 use DecodeLabs\Exemplar\Element as XmlElement;
-use DecodeLabs\Exemplar\Writer as XmlWriter;
 use DecodeLabs\Exemplar\Serializable as XmlSerializable;
 use DecodeLabs\Exemplar\SerializableTrait as XmlSerializableTrait;
+
+use DecodeLabs\Exemplar\Writer as XmlWriter;
+use df\arch\IContext as Context;
+use df\arch\node\form\State as FormState;
+use df\arch\node\IDelegate as NodeDelegate;
+use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
+use df\aura\view\TView_DeferredRenderable;
+use df\core\TStringProvider;
 
 abstract class BlockAbstract implements Block
 {
@@ -38,7 +38,9 @@ abstract class BlockAbstract implements Block
     {
         if (null === ($type = $element->getAttribute('type'))) {
             throw Exceptional::UnexpectedValue(
-                'Block XML does not contain type attribute', null, $element
+                'Block XML does not contain type attribute',
+                null,
+                $element
             );
         }
 
@@ -46,7 +48,9 @@ abstract class BlockAbstract implements Block
 
         if (!$output instanceof XmlSerializable) {
             throw Exceptional::UnexpectedValue(
-                'Block object is not instanceof XmlSerializable', null, $output
+                'Block object is not instanceof XmlSerializable',
+                null,
+                $output
             );
         }
 
@@ -177,7 +181,7 @@ abstract class BlockAbstract implements Block
 
         if (strtolower((string)$type) != strtolower($this->getName())) {
             throw Exceptional::UnexpectedValue(
-                'Block content is meant for a '.$reader->getAttribute('type').' block, not a '.$this->getName().' block'
+                'Block content is meant for a ' . $reader->getAttribute('type') . ' block, not a ' . $this->getName() . ' block'
             );
         }
 
@@ -208,10 +212,10 @@ abstract class BlockAbstract implements Block
         FormEventDescriptor $event,
         string $id
     ): NodeDelegate {
-        $class = get_class($this).'\\FormDelegate';
+        $class = get_class($this) . '\\FormDelegate';
 
         if (!class_exists($class)) {
-            throw Exceptional::Setup('Unable to find form delegate for Nightfire Block: '.$this->getName());
+            throw Exceptional::Setup('Unable to find form delegate for Nightfire Block: ' . $this->getName());
         }
 
         /** @phpstan-var class-string<NodeDelegate> $class */

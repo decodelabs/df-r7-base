@@ -6,12 +6,11 @@
 
 namespace df\axis\unit;
 
-use df;
-use df\core;
-use df\axis;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch;
+
+use df\axis;
+use df\core;
 
 abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
 {
@@ -102,7 +101,7 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
 
         if (false === ($key = array_search($option, $options, true))) {
             throw Exceptional::InvalidArgument(
-                'Invalid option: '.$option
+                'Invalid option: ' . $option
             );
         }
 
@@ -116,7 +115,7 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
 
         if (false === ($key = array_search($option, $options, true))) {
             throw Exceptional::InvalidArgument(
-                'Invalid option: '.$option
+                'Invalid option: ' . $option
             );
         }
 
@@ -130,7 +129,7 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
 
         if (false === ($key = array_search($option, $options, true))) {
             throw Exceptional::InvalidArgument(
-                'Invalid option: '.$option
+                'Invalid option: ' . $option
             );
         }
 
@@ -144,7 +143,7 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
 
         if (false === ($key = array_search($option, $options, true))) {
             throw Exceptional::InvalidArgument(
-                'Invalid option: '.$option
+                'Invalid option: ' . $option
             );
         }
 
@@ -196,7 +195,7 @@ class Enum_Inst implements core\lang\IInstanceEnum
                 $value = array_search($value, $this->_labels);
             } else {
                 throw Exceptional::{'df/core/lang/Enum,df/core/lang/InvalidArgument'}(
-                    $value.' is not a valid enum option'
+                    $value . ' is not a valid enum option'
                 );
             }
         }
@@ -260,7 +259,7 @@ class Enum_Inst implements core\lang\IInstanceEnum
         return $this->_labels[$this->_index];
     }
 
-    public function getStringValue($default=''): string
+    public function getStringValue($default = ''): string
     {
         return $this->_options[$this->_index];
     }

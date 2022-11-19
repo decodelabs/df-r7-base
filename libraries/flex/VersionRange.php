@@ -5,11 +5,9 @@
  */
 namespace df\flex;
 
-use df;
-use df\core;
-use df\flex;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\core;
 
 class VersionRange implements core\IStringProvider, Dumpable
 {
@@ -26,7 +24,7 @@ class VersionRange implements core\IStringProvider, Dumpable
         return new self($range);
     }
 
-    public function __construct(string $range=null)
+    public function __construct(string $range = null)
     {
         $range = (string)preg_replace('/\s+/', ' ', (string)$range);
         $range = str_replace(['*', 'X'], 'x', $range);
@@ -46,7 +44,7 @@ class VersionRange implements core\IStringProvider, Dumpable
                     $group[] = $left;
                 }
 
-                $part = '<='.array_shift($parts);
+                $part = '<=' . array_shift($parts);
             }
 
             if ($part == '||' || $part == 'or') {
@@ -85,12 +83,12 @@ class VersionRange implements core\IStringProvider, Dumpable
                 $group[] = new Version_Comparator('<', (int)$parts[0] + 1);
                 return;
             } elseif (!isset($parts[2])) {
-                $group[] = new Version_Comparator('>=', $parts[0].'.'.$parts[1]);
-                $group[] = new Version_Comparator('<', $parts[0].'.'.((int)$parts[1] + 1));
+                $group[] = new Version_Comparator('>=', $parts[0] . '.' . $parts[1]);
+                $group[] = new Version_Comparator('<', $parts[0] . '.' . ((int)$parts[1] + 1));
                 return;
             } else {
                 $group[] = new Version_Comparator('>=', $matches[0]);
-                $group[] = new Version_Comparator('<', $parts[0].'.'.((int)$parts[1] + 1));
+                $group[] = new Version_Comparator('<', $parts[0] . '.' . ((int)$parts[1] + 1));
                 return;
             }
         }
@@ -110,7 +108,7 @@ class VersionRange implements core\IStringProvider, Dumpable
                 $group[] = new Version_Comparator('<', (int)$parts[0] + 1);
                 return;
             } else {
-                $group[] = new Version_Comparator('<', $parts[0].'.'.((int)$parts[1] + 1));
+                $group[] = new Version_Comparator('<', $parts[0] . '.' . ((int)$parts[1] + 1));
                 return;
             }
         }
@@ -130,8 +128,8 @@ class VersionRange implements core\IStringProvider, Dumpable
             $group[] = new Version_Comparator('<', $version->major + 1);
             return;
         } elseif ($version->patch === 'x') {
-            $group[] = new Version_Comparator('>=', $version->major.'.'.$version->minor);
-            $group[] = new Version_Comparator('<', $version->major.'.'.($version->minor + 1));
+            $group[] = new Version_Comparator('>=', $version->major . '.' . $version->minor);
+            $group[] = new Version_Comparator('<', $version->major . '.' . ($version->minor + 1));
             return;
         } else {
             $group[] = $version;
@@ -215,7 +213,7 @@ class VersionRange implements core\IStringProvider, Dumpable
         }
 
         $output = new Version(
-            $this->_groups[0][0]->major.'.'.
+            $this->_groups[0][0]->major . '.' .
             $this->_groups[0][0]->minor
         );
 

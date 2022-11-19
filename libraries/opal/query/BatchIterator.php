@@ -6,11 +6,10 @@
 
 namespace df\opal\query;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Exceptional;
+use df\core;
+
+use df\opal;
 
 class BatchIterator implements IBatchIterator
 {
@@ -36,7 +35,7 @@ class BatchIterator implements IBatchIterator
 
     protected $_currentKey = null;
 
-    public function __construct(ISource $source, $result, IOutputManifest $outputManifest=null)
+    public function __construct(ISource $source, $result, IOutputManifest $outputManifest = null)
     {
         $this->_batchSize = static::DEFAULT_BATCH_SIZE;
         $this->_arrayManipulator = new opal\native\ArrayManipulator($source, [], true, $outputManifest);
@@ -60,7 +59,7 @@ class BatchIterator implements IBatchIterator
         return $this->_result;
     }
 
-    public function isForFetch(bool $flag=null)
+    public function isForFetch(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isForFetch = $flag;
@@ -127,7 +126,7 @@ class BatchIterator implements IBatchIterator
         return $this->_combines;
     }
 
-    public function setListKeyField(IField $field=null)
+    public function setListKeyField(IField $field = null)
     {
         $this->_keyField = $field;
         return $this;
@@ -138,7 +137,7 @@ class BatchIterator implements IBatchIterator
         return $this->_keyField;
     }
 
-    public function setListValueField(IField $field=null)
+    public function setListValueField(IField $field = null)
     {
         $this->_valField = $field;
         return $this;
@@ -149,7 +148,7 @@ class BatchIterator implements IBatchIterator
         return $this->_valField;
     }
 
-    public function setFormatter(callable $formatter=null)
+    public function setFormatter(callable $formatter = null)
     {
         $this->_formatter = $formatter;
         return $this;

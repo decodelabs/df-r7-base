@@ -5,13 +5,9 @@
  */
 namespace df\fire\layout;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-use df\fire;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\fire;
 
 class Definition implements fire\ILayoutDefinition, Dumpable
 {
@@ -21,7 +17,7 @@ class Definition implements fire\ILayoutDefinition, Dumpable
     protected $_areas = [];
     protected $_slots = [];
 
-    public function __construct(string $id=null, string $name=null, bool $isStatic=false)
+    public function __construct(string $id = null, string $name = null, bool $isStatic = false)
     {
         $this->setId($id);
         $this->setName($name);

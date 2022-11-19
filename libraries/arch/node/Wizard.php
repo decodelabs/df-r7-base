@@ -6,9 +6,9 @@
 
 namespace df\arch\node;
 
-use df\core;
-
 use DecodeLabs\Exceptional;
+
+use df\core;
 
 abstract class Wizard extends Form
 {
@@ -18,11 +18,11 @@ abstract class Wizard extends Form
     protected function createUi(): void
     {
         $section = $this->getCurrentSection();
-        $func = 'create'.ucfirst($section).'Ui';
+        $func = 'create' . ucfirst($section) . 'Ui';
 
         if (!method_exists($this, $func)) {
             throw Exceptional::Definition(
-                'Wizard ui missing for '.$section.' section'
+                'Wizard ui missing for ' . $section . ' section'
             );
         }
 
@@ -51,10 +51,10 @@ abstract class Wizard extends Form
         $this->setStore('section', $section);
         $this->values->clear();
 
-        if ($this->hasStore('data.'.$section)) {
-            $this->values->import($this->getStore('data.'.$section));
+        if ($this->hasStore('data.' . $section)) {
+            $this->values->import($this->getStore('data.' . $section));
         } else {
-            $func = '_set'.ucfirst($section).'DefaultValues';
+            $func = '_set' . ucfirst($section) . 'DefaultValues';
 
             if (method_exists($this, $func)) {
                 $this->{$func}();
@@ -98,18 +98,18 @@ abstract class Wizard extends Form
         return null;
     }
 
-    public function getSectionData(string $section=null): core\collection\ITree
+    public function getSectionData(string $section = null): core\collection\ITree
     {
         if ($section === null) {
             $output = [];
 
             foreach (static::SECTIONS as $section) {
-                $output[$section] = $this->getStore('data.'.$section);
+                $output[$section] = $this->getStore('data.' . $section);
             }
 
             $output = $output;
         } else {
-            $output = $this->getStore('data.'.$section);
+            $output = $this->getStore('data.' . $section);
         }
 
         return new core\collection\Tree($output);
@@ -126,7 +126,7 @@ abstract class Wizard extends Form
     final protected function onCurrentEvent()
     {
         $current = $this->getCurrentSection();
-        $func = 'on'.ucfirst($current).'Submit';
+        $func = 'on' . ucfirst($current) . 'Submit';
 
         if (!method_exists($this, $func)) {
             $data = $this->values->toArray();
@@ -144,7 +144,7 @@ abstract class Wizard extends Form
             $data = $data->toArray();
         }
 
-        $this->setStore('data.'.$current, $data);
+        $this->setStore('data.' . $current, $data);
     }
 
     final protected function onNextEvent()

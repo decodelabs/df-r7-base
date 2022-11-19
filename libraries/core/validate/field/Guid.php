@@ -5,19 +5,18 @@
  */
 namespace df\core\validate\field;
 
-use df;
 use df\core;
 use df\flex;
 
-class Guid extends Base implements core\validate\IGuidField {
-
-
-// Validate
-    public function validate() {
+class Guid extends Base implements core\validate\IGuidField
+{
+    // Validate
+    public function validate()
+    {
         // Sanitize
         $value = $this->_sanitizeValue($this->data->getValue());
 
-        if(!$length = $this->_checkRequired($value)) {
+        if (!$length = $this->_checkRequired($value)) {
             return null;
         }
 
@@ -25,7 +24,7 @@ class Guid extends Base implements core\validate\IGuidField {
         // Validate
         try {
             $value = flex\Guid::factory($value);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $this->addError('invalid', $this->validator->_(
                 'Please select a valid entry'
             ));

@@ -6,12 +6,10 @@
 
 namespace df\link\http\request;
 
-use df;
-use df\core;
-use df\link;
-
 use DecodeLabs\Deliverance\Channel;
+
 use DecodeLabs\Exceptional;
+use df\link;
 
 class Options implements link\http\IRequestOptions
 {
@@ -54,7 +52,7 @@ class Options implements link\http\IRequestOptions
         ];
 
         foreach ($keys as $key) {
-            $val = $options->{'get'.ucfirst($key)}();
+            $val = $options->{'get' . ucfirst($key)}();
 
             if ($val !== null) {
                 $this->{$key} = $val;
@@ -140,10 +138,10 @@ class Options implements link\http\IRequestOptions
             return null;
         }
 
-        return rtrim($this->downloadFolder, '/').'/'.$this->downloadFileName;
+        return rtrim($this->downloadFolder, '/') . '/' . $this->downloadFileName;
     }
 
-    public function setDownloadStream(Channel $stream=null)
+    public function setDownloadStream(Channel $stream = null)
     {
         $this->downloadStream = $stream;
         return $this;
@@ -172,7 +170,7 @@ class Options implements link\http\IRequestOptions
         return $this->maxRedirects;
     }
 
-    public function shouldEnforceStrictRedirects(bool $flag=null)
+    public function shouldEnforceStrictRedirects(bool $flag = null)
     {
         if ($flag !== null) {
             $this->strictRedirects = $flag;
@@ -182,7 +180,7 @@ class Options implements link\http\IRequestOptions
         return (bool)$this->strictRedirects;
     }
 
-    public function shouldHideRedirectReferrer(bool $flag=null)
+    public function shouldHideRedirectReferrer(bool $flag = null)
     {
         if ($flag !== null) {
             $this->hideRedirectReferrer = $flag;
@@ -193,7 +191,7 @@ class Options implements link\http\IRequestOptions
     }
 
     // Auth
-    public function setCredentials($username, $password, $type=null)
+    public function setCredentials($username, $password, $type = null)
     {
         $this->setUsername($username)->setPassword($password);
 
@@ -239,7 +237,7 @@ class Options implements link\http\IRequestOptions
 
             default:
                 throw Exceptional::InvalidArgument(
-                    'Auth type '.$type.' is not supported'
+                    'Auth type ' . $type . ' is not supported'
                 );
         }
 
@@ -282,7 +280,7 @@ class Options implements link\http\IRequestOptions
 
 
     // Cookie jar
-    public function setCookieJar(link\http\ICookieJar $cookieJar=null)
+    public function setCookieJar(link\http\ICookieJar $cookieJar = null)
     {
         $this->cookieJar = $cookieJar;
         return $this;
@@ -342,7 +340,7 @@ class Options implements link\http\IRequestOptions
         return $this->sslKeyPassword;
     }
 
-    public function shouldVerifySsl(bool $flag=null)
+    public function shouldVerifySsl(bool $flag = null)
     {
         if ($flag !== null) {
             $this->verifySsl = $flag;
@@ -352,7 +350,7 @@ class Options implements link\http\IRequestOptions
         return (bool)$this->verifySsl;
     }
 
-    public function shouldAllowSelfSigned(bool $flag=null)
+    public function shouldAllowSelfSigned(bool $flag = null)
     {
         if ($flag !== null) {
             $this->allowSelfSigned = $flag;

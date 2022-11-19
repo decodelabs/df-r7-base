@@ -5,11 +5,10 @@
  */
 namespace df\aura\css;
 
-use df;
-use df\core;
-
 use DecodeLabs\Atlas;
+
 use DecodeLabs\Exceptional;
+use df\core;
 
 class LockFile
 {
@@ -18,7 +17,7 @@ class LockFile
     protected $_timeout = 30;
     protected $_isLocked = false;
 
-    public function __construct($path=null, $timeout=null)
+    public function __construct($path = null, $timeout = null)
     {
         if ($path !== null) {
             $this->setPath($path);
@@ -99,7 +98,7 @@ class LockFile
 
     public function getRemainingTime()
     {
-        $file = Atlas::file($this->_path.'/'.$this->_fileName);
+        $file = Atlas::file($this->_path . '/' . $this->_fileName);
         $file->clearStatCache();
 
         if (!$file->exists()) {
@@ -136,8 +135,8 @@ class LockFile
         }
 
         Atlas::createFile(
-            $this->_path.'/'.$this->_fileName,
-            time().':'.$this->_timeout
+            $this->_path . '/' . $this->_fileName,
+            time() . ':' . $this->_timeout
         );
 
         $this->_isLocked = true;
@@ -146,7 +145,7 @@ class LockFile
 
     public function unlock()
     {
-        Atlas::deleteFile($this->_path.'/'.$this->_fileName);
+        Atlas::deleteFile($this->_path . '/' . $this->_fileName);
         $this->_isLocked = false;
         return $this;
     }

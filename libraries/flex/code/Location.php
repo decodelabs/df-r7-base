@@ -5,19 +5,18 @@
  */
 namespace df\flex\code;
 
-use df;
 use df\core;
 
 class Location
 {
-    const DEFAULT_BLACKLIST = ['.git'];
+    public const DEFAULT_BLACKLIST = ['.git'];
 
     public $id;
     public $path;
     public $blackList = [];
     public $probes = [];
 
-    public function __construct(string $id, $path, array $blackList=[])
+    public function __construct(string $id, $path, array $blackList = [])
     {
         $this->setId($id);
         $this->setPath($path);

@@ -5,12 +5,10 @@
  */
 namespace df\spur\vcs\github;
 
-use df;
-use df\core;
-use df\flex;
-use df\spur;
-
 use DecodeLabs\Glitch\Dumpable;
+use df\core;
+
+use df\flex;
 
 class Tag implements ITag, Dumpable
 {

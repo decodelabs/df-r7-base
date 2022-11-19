@@ -5,9 +5,6 @@
  */
 namespace df\core\time;
 
-use df;
-use df\core;
-
 use DecodeLabs\Glitch\Dumpable;
 
 class AnnualRange implements IAnnualRange, Dumpable
@@ -17,7 +14,7 @@ class AnnualRange implements IAnnualRange, Dumpable
     protected $_isOpen = null;
     protected $_year = null;
 
-    public function __construct($start, $end, $timezone=null)
+    public function __construct($start, $end, $timezone = null)
     {
         $this->update($start, $end, $timezone);
     }
@@ -28,7 +25,7 @@ class AnnualRange implements IAnnualRange, Dumpable
         $this->_end = clone $this->_end;
     }
 
-    public function update($start, $end, $timezone=null)
+    public function update($start, $end, $timezone = null)
     {
         $this->_start = $this->_end = $this->_isOpen = $this->_year = null;
         $time = true;
@@ -169,7 +166,7 @@ class AnnualRange implements IAnnualRange, Dumpable
 
 
     // Events
-    public function getEventDate($date, $timezone=null): IDate
+    public function getEventDate($date, $timezone = null): IDate
     {
         if ($timezone === false) {
             $timezone = null;

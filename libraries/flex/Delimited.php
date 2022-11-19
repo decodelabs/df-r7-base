@@ -5,17 +5,12 @@
  */
 namespace df\flex;
 
-use df;
-use df\core;
-use df\flex;
-
 use DecodeLabs\Exceptional;
 
 class Delimited implements IDelimited
 {
-
-// Explode generator
-    public static function splitLines($source, $trim=false)
+    // Explode generator
+    public static function splitLines($source, $trim = false)
     {
         $source = str_replace(["\r\n", "\r"], "\n", $source);
 
@@ -46,7 +41,7 @@ class Delimited implements IDelimited
 
 
     // Parser
-    public static function parse($input, $delimiter=',', $quoteMap='"\'', $terminator=null)
+    public static function parse($input, $delimiter = ',', $quoteMap = '"\'', $terminator = null)
     {
         $output = [];
 
@@ -57,7 +52,7 @@ class Delimited implements IDelimited
         return $output;
     }
 
-    public static function iterate($input, $delimiter=',', $quoteMap='"\'', $terminator=null)
+    public static function iterate($input, $delimiter = ',', $quoteMap = '"\'', $terminator = null)
     {
         $input = trim($input);
 
@@ -103,7 +98,7 @@ class Delimited implements IDelimited
 
                     break;
 
-                // in cell
+                    // in cell
                 case 1:
                     if ($terminator !== null && $char == $terminator) {
                         $row[] = $cell;
@@ -126,7 +121,7 @@ class Delimited implements IDelimited
 
                     break;
 
-                // in quote
+                    // in quote
                 case 2:
                     if ($char == '\\') {
                         $mode = 3;
@@ -138,12 +133,12 @@ class Delimited implements IDelimited
 
                     break;
 
-                // escape in quote
+                    // escape in quote
                 case 3:
                     $cell .= $char;
                     break;
 
-                // end of quote
+                    // end of quote
                 case 4:
                     $quote = null;
 
@@ -171,20 +166,20 @@ class Delimited implements IDelimited
                     }
 
                     throw Exceptional::UnexpectedValue(
-                        'Unexpected character: '.$char.' at position '.$i.' in '.$input
+                        'Unexpected character: ' . $char . ' at position ' . $i . ' in ' . $input
                     );
             }
         }
     }
 
-    public static function implode(array $data, $delimiter=',', $quote='"', $terminator=null)
+    public static function implode(array $data, $delimiter = ',', $quote = '"', $terminator = null)
     {
         $output = [];
 
         if ($terminator !== null) {
             foreach ($data as $row) {
                 foreach ($row as $key => $value) {
-                    $row[$key] = $quote.str_replace($quote, '\\'.$quote, $value).$quote;
+                    $row[$key] = $quote . str_replace($quote, '\\' . $quote, $value) . $quote;
                 }
 
                 $output[] = implode($delimiter, $row);
@@ -193,7 +188,7 @@ class Delimited implements IDelimited
             return implode($terminator, $output);
         } else {
             foreach ($data as $value) {
-                $output[] = $quote.str_replace($quote, '\\'.$quote, $value).$quote;
+                $output[] = $quote . str_replace($quote, '\\' . $quote, $value) . $quote;
             }
 
             return implode($delimiter, $output);

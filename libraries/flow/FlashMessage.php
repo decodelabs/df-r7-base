@@ -6,11 +6,6 @@
 
 namespace df\flow;
 
-use df;
-use df\core;
-use df\flow;
-use df\user;
-
 class FlashMessage implements IFlashMessage, \Serializable
 {
     protected $_id;
@@ -23,7 +18,7 @@ class FlashMessage implements IFlashMessage, \Serializable
     protected $_linkText;
     protected $_linkNewWindow = false;
 
-    public static function factory($id, $message=null, $type=null)
+    public static function factory($id, $message = null, $type = null)
     {
         if ($id instanceof IFlashMessage) {
             return $id;
@@ -34,7 +29,7 @@ class FlashMessage implements IFlashMessage, \Serializable
         return new self($id, $message, $type);
     }
 
-    public function __construct($id, $message=null, $type=null)
+    public function __construct($id, $message = null, $type = null)
     {
         if ($message === null) {
             $message = $id;
@@ -153,7 +148,7 @@ class FlashMessage implements IFlashMessage, \Serializable
     }
 
 
-    public function isDisplayed(bool $flag=null)
+    public function isDisplayed(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isDisplayed = $flag;
@@ -208,7 +203,7 @@ class FlashMessage implements IFlashMessage, \Serializable
         return $this->_description;
     }
 
-    public function setLink($link, $text=null)
+    public function setLink($link, $text = null)
     {
         if ($link === null) {
             $this->_link = null;
@@ -248,7 +243,7 @@ class FlashMessage implements IFlashMessage, \Serializable
         return $this;
     }
 
-    public function shouldLinkOpenInNewWindow(bool $flag=null)
+    public function shouldLinkOpenInNewWindow(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_linkNewWindow = $flag;

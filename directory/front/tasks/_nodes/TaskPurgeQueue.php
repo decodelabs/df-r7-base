@@ -6,12 +6,9 @@
 
 namespace df\apex\directory\front\tasks\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-
 use DecodeLabs\Terminus as Cli;
+
+use df\arch;
 
 class TaskPurgeQueue extends arch\node\Task
 {
@@ -23,7 +20,7 @@ class TaskPurgeQueue extends arch\node\Task
         Cli::{'yellow'}('Clearing broken queued tasks: ');
 
         $count = $this->data->task->queue->delete()
-            ->where('lockDate', '<', '-'.static::THRESHOLD)
+            ->where('lockDate', '<', '-' . static::THRESHOLD)
             ->execute();
 
         try {
@@ -33,6 +30,6 @@ class TaskPurgeQueue extends arch\node\Task
         } catch (\Exception $e) {
         }
 
-        Cli::{$count ? 'deleteSuccess' : 'success'}($count.' tasks');
+        Cli::{$count ? 'deleteSuccess' : 'success'}($count . ' tasks');
     }
 }

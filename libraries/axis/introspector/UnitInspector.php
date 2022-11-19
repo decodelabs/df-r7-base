@@ -5,12 +5,9 @@
  */
 namespace df\axis\introspector;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\axis;
 
 class UnitInspector implements IUnitInspector, Dumpable
 {
@@ -106,7 +103,7 @@ class UnitInspector implements IUnitInspector, Dumpable
         return $this->_unit->getUnitSchema();
     }
 
-    public function getTransientSchema($force=false)
+    public function getTransientSchema($force = false)
     {
         if (!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
             return null;
@@ -185,7 +182,7 @@ class UnitInspector implements IUnitInspector, Dumpable
         }
 
         $storageList = $adapter->getStorageList();
-        $check = $this->_unit->getStorageBackendName().axis\IUnitOptions::BACKUP_SUFFIX;
+        $check = $this->_unit->getStorageBackendName() . axis\IUnitOptions::BACKUP_SUFFIX;
         $length = strlen($check);
 
         foreach ($storageList as $name) {

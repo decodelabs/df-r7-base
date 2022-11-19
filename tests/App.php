@@ -5,14 +5,12 @@
  */
 namespace df\apex;
 
-use df;
 use df\core;
-use df\apex;
 
 class App extends core\app\Base
 {
-    const NAME = 'Test App';
-    const UNIQUE_PREFIX = 'hdt';
-    const PASS_KEY = 'r&*J95%9t*&8M05j';
-    const PACKAGES = [];
+    public const NAME = 'Test App';
+    public const UNIQUE_PREFIX = 'hdt';
+    public const PASS_KEY = 'r&*J95%9t*&8M05j';
+    public const PACKAGES = [];
 }

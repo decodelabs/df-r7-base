@@ -6,16 +6,13 @@
 
 namespace df\user\authentication\adapter;
 
-use df;
-use df\core;
-use df\user;
-use df\axis;
-use df\opal;
-
-use DecodeLabs\Exceptional;
-use DecodeLabs\R7\Legacy;
-
 use Auth0\SDK\Auth0 as Auth0Conn;
+use DecodeLabs\Exceptional;
+
+use DecodeLabs\R7\Legacy;
+use df\core;
+
+use df\user;
 
 class Auth0 implements user\authentication\IAdapter
 {
@@ -40,7 +37,7 @@ class Auth0 implements user\authentication\IAdapter
         return 'Auth0';
     }
 
-    public static function newConnection(string $redirect=null)
+    public static function newConnection(string $redirect = null)
     {
         $config = user\authentication\Config::getInstance();
         $options = $config->getOptionsFor('Auth0');
@@ -59,7 +56,7 @@ class Auth0 implements user\authentication\IAdapter
             'client_id' => $options['clientId'],
             'client_secret' => $options['clientSecret'],
             'redirect_uri' => (string)$redirect,
-            'audience' => 'https://'.$domain.'/userinfo',
+            'audience' => 'https://' . $domain . '/userinfo',
             'scope' => 'openid profile email zoneinfo',
             'store' => false,
             'state_handler' => false

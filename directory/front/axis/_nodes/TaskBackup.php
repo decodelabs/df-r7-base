@@ -6,17 +6,15 @@
 
 namespace df\apex\directory\front\axis\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\axis;
-use df\opal;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Genesis;
 use DecodeLabs\Glitch;
 use DecodeLabs\Terminus as Cli;
+
+use df\arch;
+use df\axis;
+use df\core;
+use df\opal;
 
 class TaskBackup extends arch\node\Task
 {
@@ -38,11 +36,11 @@ class TaskBackup extends arch\node\Task
         $probe = new axis\introspector\Probe();
         $units = $probe->probeUnits();
 
-        Cli::success(' found '.count($units));
+        Cli::success(' found ' . count($units));
 
         $this->_manifest['timestamp'] = time();
-        $backupId = 'axis-'.date('YmdHis');
-        $this->_path = Genesis::$hub->getSharedDataPath().'/backup/'.$backupId;
+        $backupId = 'axis-' . date('YmdHis');
+        $this->_path = Genesis::$hub->getSharedDataPath() . '/backup/' . $backupId;
         Atlas::createDir($this->_path);
 
         $progressBar = Cli::newProgressBar(0, count($units), 0);
@@ -57,12 +55,12 @@ class TaskBackup extends arch\node\Task
 
         Cli::newLine();
         Cli::{'yellow'}('Writing manifest file: ');
-        $content = '<?php'."\n".'return '.core\collection\Util::exportArray($this->_manifest).';';
-        file_put_contents($this->_path.'/manifest.php', $content, LOCK_EX);
+        $content = '<?php' . "\n" . 'return ' . core\collection\Util::exportArray($this->_manifest) . ';';
+        file_put_contents($this->_path . '/manifest.php', $content, LOCK_EX);
         Cli::success('done');
 
         Cli::{'yellow'}('Archiving backup: ');
-        $phar = new \PharData(dirname($this->_path).'/'.$backupId.'.tar');
+        $phar = new \PharData(dirname($this->_path) . '/' . $backupId . '.tar');
         $phar->buildFromDirectory($this->_path);
         Cli::success('done');
 
@@ -151,9 +149,9 @@ class TaskBackup extends arch\node\Task
         Cli::inlineNotice('Creating backup adapter ');
         Cli::{'.brightMagenta'}($dbName);
 
-        $backupAdapter = opal\rdbms\adapter\Base::factory('sqlite://'.$this->_path.'/'.$dbName.'.sqlite');
+        $backupAdapter = opal\rdbms\adapter\Base::factory('sqlite://' . $this->_path . '/' . $dbName . '.sqlite');
         $this->_backupAdapters[$hash] = $backupAdapter;
-        $this->_manifest['connections'][$dbName.'.sqlite'] = $connection;
+        $this->_manifest['connections'][$dbName . '.sqlite'] = $connection;
 
         return $backupAdapter;
     }

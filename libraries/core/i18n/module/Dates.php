@@ -31,7 +31,7 @@ class Dates extends Base
         return 'gregorian';
     }
 
-    public function getDayName($day=null, $calendar=null)
+    public function getDayName($day = null, $calendar = null)
     {
         $this->_loadData();
 
@@ -80,7 +80,7 @@ class Dates extends Base
         }
     }
 
-    public function getDayList($calendar=null)
+    public function getDayList($calendar = null)
     {
         $this->_loadData();
 
@@ -99,7 +99,7 @@ class Dates extends Base
         return $c['days']['full'];
     }
 
-    public function getAbbreviatedDayList($calendar=null)
+    public function getAbbreviatedDayList($calendar = null)
     {
         $this->_loadData();
 
@@ -122,7 +122,7 @@ class Dates extends Base
         return $c['days']['abbreviated'];
     }
 
-    public function getMonthName($month=null, $calendar=null)
+    public function getMonthName($month = null, $calendar = null)
     {
         $this->_loadData();
 
@@ -194,7 +194,7 @@ class Dates extends Base
         }
     }
 
-    public function getMonthList($calendar=null)
+    public function getMonthList($calendar = null)
     {
         $this->_loadData();
 
@@ -213,7 +213,7 @@ class Dates extends Base
         return $c['months']['full'];
     }
 
-    public function getAbbreviatedMonthList($calendar=null)
+    public function getAbbreviatedMonthList($calendar = null)
     {
         $this->_loadData();
 

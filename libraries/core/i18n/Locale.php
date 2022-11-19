@@ -6,8 +6,6 @@
 
 namespace df\core\i18n;
 
-use df\core;
-
 use DecodeLabs\Glitch\Dumpable;
 
 class Locale implements ILocale, \Serializable, Dumpable
@@ -105,17 +103,17 @@ class Locale implements ILocale, \Serializable, Dumpable
 
             $output = \Locale::composeLocale($values);
         } catch (\Throwable $e) {
-            return $this->_language.'_'.$this->_region;
+            return $this->_language . '_' . $this->_region;
         }
 
         if (!empty($this->_keywords)) {
             $keywords = [];
 
             foreach ($this->_keywords as $key => $value) {
-                $keywords[] = $key.'='.$value;
+                $keywords[] = $key . '=' . $value;
             }
 
-            $output .= '@'.implode(';', $keywords);
+            $output .= '@' . implode(';', $keywords);
         }
 
         return $output;
@@ -126,11 +124,11 @@ class Locale implements ILocale, \Serializable, Dumpable
         try {
             return (string)$this->toString();
         } catch (\Throwable $e) {
-            return $this->_language.'_'.$this->_region;
+            return $this->_language . '_' . $this->_region;
         }
     }
 
-    public function getDisplayName($formatLocale=null)
+    public function getDisplayName($formatLocale = null)
     {
         if ($formatLocale === true) {
             $formatLocale = $this;
@@ -146,7 +144,7 @@ class Locale implements ILocale, \Serializable, Dumpable
         return $this->_language;
     }
 
-    public function getDisplayLanguage($formatLocale=null)
+    public function getDisplayLanguage($formatLocale = null)
     {
         if ($formatLocale === true) {
             $formatLocale = $this;
@@ -161,7 +159,7 @@ class Locale implements ILocale, \Serializable, Dumpable
         return $this->_script;
     }
 
-    public function getDisplayScript($formatLocale=null)
+    public function getDisplayScript($formatLocale = null)
     {
         if ($formatLocale === true) {
             $formatLocale = $this;
@@ -176,7 +174,7 @@ class Locale implements ILocale, \Serializable, Dumpable
         return $this->_region;
     }
 
-    public function getDisplayRegion($formatLocale=null)
+    public function getDisplayRegion($formatLocale = null)
     {
         if ($formatLocale === true) {
             $formatLocale = $this;
@@ -191,7 +189,7 @@ class Locale implements ILocale, \Serializable, Dumpable
         return $this->_variants;
     }
 
-    public function getDisplayVariants($formatLocale=null)
+    public function getDisplayVariants($formatLocale = null)
     {
         if ($formatLocale === true) {
             $formatLocale = $this;

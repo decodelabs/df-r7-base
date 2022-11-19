@@ -5,10 +5,9 @@
  */
 namespace df\opal\rdbms\schema\constraint;
 
-use df\core;
-use df\opal;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\opal;
 
 class Trigger implements opal\rdbms\schema\ITrigger, Dumpable
 {
@@ -28,7 +27,7 @@ class Trigger implements opal\rdbms\schema\ITrigger, Dumpable
 
     protected function _hasFieldReference(array $fields)
     {
-        $regex = '/(OLD|NEW)?\.('.implode('|', $fields).')/i';
+        $regex = '/(OLD|NEW)?\.(' . implode('|', $fields) . ')/i';
 
         foreach ($this->_statements as $statement) {
             if (preg_match($regex, $statement)) {
@@ -45,9 +44,9 @@ class Trigger implements opal\rdbms\schema\ITrigger, Dumpable
     public function glitchDump(): iterable
     {
         $output = $this->_name;
-        $output .= ' '.$this->getTimingName();
-        $output .= ' '.$this->getEventName().' '.implode('; ', $this->_statements);
-        $output .= ' ['.$this->_sqlVariant.']';
+        $output .= ' ' . $this->getTimingName();
+        $output .= ' ' . $this->getEventName() . ' ' . implode('; ', $this->_statements);
+        $output .= ' [' . $this->_sqlVariant . ']';
 
         yield 'definition' => $output;
     }

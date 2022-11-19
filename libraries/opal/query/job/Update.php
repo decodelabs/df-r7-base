@@ -5,19 +5,18 @@
  */
 namespace df\opal\query\job;
 
-use df;
-use df\core;
-use df\opal;
 use df\mesh;
+use df\opal;
 
-class Update extends mesh\job\Base {
-
+class Update extends mesh\job\Base
+{
     use mesh\job\TAdapterAwareJob;
 
     protected $_primaryKeySet;
     protected $_values;
 
-    public function __construct(opal\query\IAdapter $adapter, opal\record\IPrimaryKeySet $primaryKeySet, array $values) {
+    public function __construct(opal\query\IAdapter $adapter, opal\record\IPrimaryKeySet $primaryKeySet, array $values)
+    {
         $this->_primaryKeySet = $primaryKeySet;
         $this->_values = $values;
         $this->_adapter = $adapter;
@@ -25,23 +24,26 @@ class Update extends mesh\job\Base {
         $this->_setId(opal\record\Base::extractRecordId($primaryKeySet));
     }
 
-    public function setValues(array $values) {
+    public function setValues(array $values)
+    {
         $this->_values = $values;
         return $this;
     }
 
-    public function getValues() {
+    public function getValues()
+    {
         return $this->_values;
     }
 
-    public function execute() {
-        if($this->_primaryKeySet->isNull()) {
+    public function execute()
+    {
+        if ($this->_primaryKeySet->isNull()) {
             return $this;
         }
 
         $query = $this->_adapter->update($this->_values);
 
-        foreach($this->_primaryKeySet->toArray() as $field => $value) {
+        foreach ($this->_primaryKeySet->toArray() as $field => $value) {
             $query->where($field, '=', $value);
         }
 

@@ -5,12 +5,10 @@
  */
 namespace df\opal\schema;
 
-use df;
-use df\core;
-use df\opal;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\opal;
 
 class IndexFieldReference implements IIndexFieldReference, Dumpable
 {
@@ -18,7 +16,7 @@ class IndexFieldReference implements IIndexFieldReference, Dumpable
     protected $_size;
     protected $_isDescending = false;
 
-    public function __construct(opal\schema\IField $field, $size=null, $isDescending=false)
+    public function __construct(opal\schema\IField $field, $size = null, $isDescending = false)
     {
         if (is_string($isDescending)) {
             $isDescending = strtoupper($isDescending) == 'DESC';
@@ -68,7 +66,7 @@ class IndexFieldReference implements IIndexFieldReference, Dumpable
         return $this->_size;
     }
 
-    public function isDescending(bool $flag=null)
+    public function isDescending(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isDescending = $flag;
@@ -82,7 +80,9 @@ class IndexFieldReference implements IIndexFieldReference, Dumpable
     {
         if (!$schema instanceof opal\schema\IFieldProvider) {
             throw Exceptional::Runtime(
-                'Schema does not provider fields', null, $schema
+                'Schema does not provider fields',
+                null,
+                $schema
             );
         }
 
@@ -106,7 +106,7 @@ class IndexFieldReference implements IIndexFieldReference, Dumpable
         $output = $this->_field->getName();
 
         if ($this->_size !== null) {
-            $output .= '('.$this->_size.')';
+            $output .= '(' . $this->_size . ')';
         }
 
         if ($this->_isDescending) {

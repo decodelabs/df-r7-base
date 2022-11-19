@@ -5,35 +5,34 @@
  */
 namespace df\core\time;
 
-use df;
-use df\core;
-
 use DateTime;
+
+use df\core;
 
 interface IDate extends \Serializable, core\IStringProvider
 {
-    const SHORT = \IntlDateFormatter::SHORT;
-    const MEDIUM = \IntlDateFormatter::MEDIUM;
-    const LONG = \IntlDateFormatter::LONG;
-    const FULL = \IntlDateFormatter::FULL;
+    public const SHORT = \IntlDateFormatter::SHORT;
+    public const MEDIUM = \IntlDateFormatter::MEDIUM;
+    public const LONG = \IntlDateFormatter::LONG;
+    public const FULL = \IntlDateFormatter::FULL;
 
-    const ATOM = \DateTime::ATOM;
-    const COOKIE = \DateTime::COOKIE;
-    const ISO8601 = \DateTime::ISO8601;
-    const RFC822 = \DateTime::RFC822;
-    const RFC850 = \DateTime::RFC850;
-    const RFC1036 = \DateTime::RFC1036;
-    const RFC1123 = \DateTime::RFC1123;
-    const RFC2822 = \DateTime::RFC2822;
-    const RFC3339 = \DateTime::RFC3339;
-    const RSS = \DateTime::RSS;
-    const W3C = \DateTime::W3C;
-    const DB = 'Y-m-d H:i:s';
-    const DBDATE = 'Y-m-d';
+    public const ATOM = \DateTime::ATOM;
+    public const COOKIE = \DateTime::COOKIE;
+    public const ISO8601 = \DateTime::ISO8601;
+    public const RFC822 = \DateTime::RFC822;
+    public const RFC850 = \DateTime::RFC850;
+    public const RFC1036 = \DateTime::RFC1036;
+    public const RFC1123 = \DateTime::RFC1123;
+    public const RFC2822 = \DateTime::RFC2822;
+    public const RFC3339 = \DateTime::RFC3339;
+    public const RSS = \DateTime::RSS;
+    public const W3C = \DateTime::W3C;
+    public const DB = 'Y-m-d H:i:s';
+    public const DBDATE = 'Y-m-d';
 
     // Creation
-    public static function fromLocaleString($string, $timezone=true, $size=self::SHORT, $locale=true);
-    public static function factory($date, $timezone=null);
+    public static function fromLocaleString($string, $timezone = true, $size = self::SHORT, $locale = true);
+    public static function factory($date, $timezone = null);
 
     // IO
     public function getRaw(): DateTime;
@@ -52,10 +51,10 @@ interface IDate extends \Serializable, core\IStringProvider
 
     // Formatting
     public function toTimestamp();
-    public function localeFormat($size='long', $locale=true);
-    public function localeDateFormat($size='long', $locale=true);
-    public function localeTimeFormat($size='long', $locale=true);
-    public function format($format='Y-m-d H:i:s T');
+    public function localeFormat($size = 'long', $locale = true);
+    public function localeDateFormat($size = 'long', $locale = true);
+    public function localeTimeFormat($size = 'long', $locale = true);
+    public function format($format = 'Y-m-d H:i:s T');
 
     // Comparison
     public function eq($date);
@@ -67,10 +66,10 @@ interface IDate extends \Serializable, core\IStringProvider
     public function lte($date);
 
     public function isPast();
-    public function isNearPast($hours=null);
+    public function isNearPast($hours = null);
     public function isFuture();
-    public function isNearFuture($hours=null);
-    public function isToday($date=null);
+    public function isNearFuture($hours = null);
+    public function isToday($date = null);
 
     public function isYear($year);
     public function getYear();
@@ -107,15 +106,14 @@ interface IDate extends \Serializable, core\IStringProvider
     public function subtractNew($interval);
 
     // Duration
-    public function timeSince($date=null);
-    public function timeUntil($date=null);
+    public function timeSince($date = null);
+    public function timeUntil($date = null);
 }
 
 
 interface IDuration extends core\IStringProvider
 {
-
-// Locale
+    // Locale
     public function setLocale($locale);
     public function getLocale();
 
@@ -135,7 +133,7 @@ interface IDuration extends core\IStringProvider
     public static function fromUnit($value, $unit);
     public function toUnit($unit);
     public static function normalizeUnitId($id);
-    public static function getUnitString($unit, $plural=true, $locale=null);
+    public static function getUnitString($unit, $plural = true, $locale = null);
 
     // Microseconds
     public function setMicroseconds($us);
@@ -240,15 +238,15 @@ interface ISchedule extends core\IStringProvider
     public function setWeekday($weekday);
     public function getWeekday();
 
-    public function getLast($time=null, $yearThreshold=2);
-    public function getNext($time=null, $yearThreshold=2);
+    public function getLast($time = null, $yearThreshold = 2);
+    public function getNext($time = null, $yearThreshold = 2);
 }
 
 
 
 interface IAnnualRange
 {
-    public function update($start, $end, $timezone=null);
+    public function update($start, $end, $timezone = null);
 
     public function getStartDate(): IDate;
     public function getNextStartDate(): IDate;
@@ -265,5 +263,5 @@ interface IAnnualRange
     public function getPrevious(): IAnnualRange;
     public function getNext(): IAnnualRange;
 
-    public function getEventDate($date, $timezone=null): IDate;
+    public function getEventDate($date, $timezone = null): IDate;
 }

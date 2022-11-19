@@ -5,9 +5,6 @@
  */
 namespace df\core\archive;
 
-use df;
-use df\core;
-
 use DecodeLabs\Exceptional;
 
 class Gz extends Base
@@ -21,24 +18,24 @@ class Gz extends Base
         }
     }
 
-    public function extractFile(string $file, string $destDir=null, bool $flattenRoot=false): string
+    public function extractFile(string $file, string $destDir = null, bool $flattenRoot = false): string
     {
         $destFile = null;
 
         if ($destDir !== null) {
-            $destFile = $destDir.'/'.$this->_getDecompressFileName($file, 'gz');
+            $destFile = $destDir . '/' . $this->_getDecompressFileName($file, 'gz');
         }
 
         return dirname($this->decompressFile($file, $destFile));
     }
 
-    public function decompressFile(string $file, string $destFile=null): string
+    public function decompressFile(string $file, string $destFile = null): string
     {
         $destFile = $this->_normalizeDecompressDestination($file, $destFile, 'gz');
 
         if (false === ($archive = fopen($file, 'rb'))) {
             throw Exceptional::NotFound(
-                'Unable to open gz file: '.$file
+                'Unable to open gz file: ' . $file
             );
         }
 
@@ -51,13 +48,17 @@ class Gz extends Base
 
         if (false === ($output = fopen($destFile, 'w'))) {
             throw Exceptional::Runtime(
-                'Unable to open gz file for writing', null, $destFile
+                'Unable to open gz file for writing',
+                null,
+                $destFile
             );
         }
 
         if (false === ($archive = gzopen($file, 'r'))) {
             throw Exceptional::Runtime(
-                'Unable to open gz file', null, $file
+                'Unable to open gz file',
+                null,
+                $file
             );
         }
 

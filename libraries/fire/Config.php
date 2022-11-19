@@ -6,7 +6,6 @@
 
 namespace df\fire;
 
-use df;
 use df\core;
 use df\fire;
 
@@ -56,7 +55,7 @@ class Config extends core\Config implements ILayoutConfig
 
 
     // Layouts
-    public function getLayoutList(string $area=null): array
+    public function getLayoutList(string $area = null): array
     {
         $output = [];
 

@@ -5,20 +5,17 @@
  */
 namespace df\apex\models\task\queue;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
 
 class Unit extends axis\unit\Table
 {
-    const BROADCAST_HOOK_EVENTS = false;
+    public const BROADCAST_HOOK_EVENTS = false;
 
-    const ORDERABLE_FIELDS = [
+    public const ORDERABLE_FIELDS = [
         'request', 'priority', 'queueDate', 'lockDate', 'status'
     ];
 
-    const DEFAULT_ORDER = 'queueDate DESC';
+    public const DEFAULT_ORDER = 'queueDate DESC';
 
     protected function createSchema($schema)
     {

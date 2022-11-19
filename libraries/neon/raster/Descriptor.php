@@ -6,16 +6,13 @@
 
 namespace df\neon\raster;
 
-use df;
-use df\core;
-use df\neon;
-use df\link;
-use df\flex;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Genesis;
-use DecodeLabs\Typify;
+
 use DecodeLabs\Spectrum\Color;
+use DecodeLabs\Typify;
+use df\core;
+use df\link;
 
 class Descriptor implements IDescriptor
 {
@@ -43,7 +40,7 @@ class Descriptor implements IDescriptor
     protected $_transformationInFileName = true;
     protected $_contentType = null;
 
-    public function __construct(string $source, string $contentType=null)
+    public function __construct(string $source, string $contentType = null)
     {
         $this->_sourceLocation = $source;
         $this->_location = $source;
@@ -73,7 +70,7 @@ class Descriptor implements IDescriptor
     }
 
 
-    public function applyTransformation($transformation, core\time\IDate $modificationDate=null)
+    public function applyTransformation($transformation, core\time\IDate $modificationDate = null)
     {
         $mTime = null;
         $fileStore = FileStore::getInstance();
@@ -88,7 +85,7 @@ class Descriptor implements IDescriptor
             // Local
             $lifetime = static::DEFAULT_LIFETIME;
             $keyPath = $this->normalizePath($this->_sourceLocation);
-            $key = basename(dirname($keyPath)).'_'.basename($keyPath).'-'.md5($keyPath.':'.$transformation);
+            $key = basename(dirname($keyPath)) . '_' . basename($keyPath) . '-' . md5($keyPath . ':' . $transformation);
             $mTime = filemtime($this->_sourceLocation);
 
             if ($this->_fileName === null) {
@@ -99,7 +96,7 @@ class Descriptor implements IDescriptor
             $lifetime = static::URL_LIFETIME;
             $url = new link\http\Url($this->_sourceLocation);
             $path = (string)$url->getPath();
-            $key = basename(dirname($path)).'_'.basename($path).'-'.md5($this->_sourceLocation.':'.$transformation);
+            $key = basename(dirname($path)) . '_' . basename($path) . '-' . md5($this->_sourceLocation . ':' . $transformation);
 
             if ($modificationDate !== null) {
                 $mTime = $modificationDate->toTimestamp();
@@ -201,14 +198,14 @@ class Descriptor implements IDescriptor
 
             if ($origExt !== $ext) {
                 if (strlen($origExt)) {
-                    $path->setFileName($path->getFileName().'.'.$origExt);
+                    $path->setFileName($path->getFileName() . '.' . $origExt);
                 }
 
                 $path->setExtension($ext);
             }
 
             if ($this->_transformationInFileName && $transformation !== null) {
-                $path->setFileName($path->getFileName().'.'.str_replace([':', '|'], '_', $transformation));
+                $path->setFileName($path->getFileName() . '.' . str_replace([':', '|'], '_', $transformation));
             }
 
             $this->_fileName = (string)$path;
@@ -243,7 +240,7 @@ class Descriptor implements IDescriptor
                     $innerPath = implode('/', $parts);
                 }
 
-                $path = $key.'://'.$innerPath;
+                $path = $key . '://' . $innerPath;
                 break;
             }
         }
@@ -251,7 +248,7 @@ class Descriptor implements IDescriptor
         return $path;
     }
 
-    public function shouldOptimizeTransformation(bool $flag=null)
+    public function shouldOptimizeTransformation(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_optimizeTransformation = $flag;
@@ -279,12 +276,12 @@ class Descriptor implements IDescriptor
         if ($this->_isSourceLocal) {
             // Local
             $keyPath = $this->normalizePath($this->_sourceLocation);
-            $key = basename(dirname($keyPath)).'_'.basename($keyPath).'-'.md5($keyPath.':').'-ico';
+            $key = basename(dirname($keyPath)) . '_' . basename($keyPath) . '-' . md5($keyPath . ':') . '-ico';
         } else {
             // Url
             $url = new link\http\Url($this->_sourceLocation);
             $path = (string)$url->getPath();
-            $key = basename(dirname($path)).'_'.basename($path).'-'.md5($this->_sourceLocation.':').'-ico';
+            $key = basename(dirname($path)) . '_' . basename($path) . '-' . md5($this->_sourceLocation . ':') . '-ico';
         }
 
         $fileStore = FileStore::getInstance();
@@ -303,7 +300,7 @@ class Descriptor implements IDescriptor
         }
 
         $path = new core\uri\Path($this->_fileName);
-        $path->setFileName($path->getFileName().'.'.strtolower($path->getExtension()));
+        $path->setFileName($path->getFileName() . '.' . strtolower($path->getExtension()));
         $path->setExtension('ico');
         $this->_fileName = (string)$path;
 
@@ -336,7 +333,7 @@ class Descriptor implements IDescriptor
         return $this->_fileName;
     }
 
-    public function shouldIncludeTransformationInFileName(bool $flag=null)
+    public function shouldIncludeTransformationInFileName(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_transformationInFileName = $flag;

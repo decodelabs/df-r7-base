@@ -52,7 +52,7 @@ class DeleteForm extends DeleteFormBase
     protected function createItemUi($container)
     {
         $container->push(
-            $this->apex->component(ucfirst($this->scaffold->getRecordKeyName()).'Details')
+            $this->apex->component(ucfirst($this->scaffold->getRecordKeyName()) . 'Details')
                 ->setRecord($this->scaffold->getRecord())
         );
 

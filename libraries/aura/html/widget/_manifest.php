@@ -6,11 +6,9 @@
 
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
 use df\arch;
-use df\user;
+use df\aura;
+use df\core;
 
 interface IRendererContext extends core\collection\IMappedCollection
 {
@@ -35,11 +33,11 @@ interface IRendererContext extends core\collection\IMappedCollection
      */
     public function reset(): static;
 
-    public function iterate($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null);
-    public function iterateField($field, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null);
-    public function renderCell($value, $renderer=null);
+    public function iterate($key, aura\html\ITag $cellTag = null, aura\html\ITag $rowTag = null);
+    public function iterateField($field, aura\html\ITag $cellTag = null, aura\html\ITag $rowTag = null);
+    public function renderCell($value, $renderer = null);
     public function skipRow();
-    public function skipCells(int $count=1);
+    public function skipCells(int $count = 1);
     public function shouldSkipRow(): bool;
     public function shouldSkipCells(): bool;
 }
@@ -50,12 +48,12 @@ interface IField
     public function setName(string $name);
     public function getName(): string;
 
-    public function addLabel(string $key, string $label=null);
+    public function addLabel(string $key, string $label = null);
     public function removeLabel(string $key);
     public function getLabels(): array;
     public function getHeaderList(): array;
 
-    public function setRenderer(callable $renderer=null);
+    public function setRenderer(callable $renderer = null);
     public function getRenderer(): ?callable;
     public function render($data, IRendererContext $renderContext);
 }
@@ -134,18 +132,18 @@ interface IInputWidget extends IFormDataWidget, IFieldDataProvider, core\constra
 
 interface IFocusableInputWidget extends IInputWidget
 {
-    public function shouldAutoFocus(bool $flag=null);
+    public function shouldAutoFocus(bool $flag = null);
 }
 
 interface IVisualInputWidget extends IInputWidget, IFocusableInputWidget
 {
-    public function shouldValidate(bool $flag=null);
-    public function shouldAutoComplete(bool $flag=null);
+    public function shouldValidate(bool $flag = null);
+    public function shouldAutoComplete(bool $flag = null);
 }
 
 interface IOptionalMultipleValueInputWidget extends IInputWidget
 {
-    public function allowMultiple(bool $flag=null);
+    public function allowMultiple(bool $flag = null);
 }
 
 interface IDataListEntryWidget extends IVisualInputWidget
@@ -166,12 +164,12 @@ interface ITextEntryWidget extends IVisualInputWidget
     public function setPlaceholder($placeholder);
     public function getPlaceholder();
 
-    public function shouldSpellCheck(bool $flag=null);
+    public function shouldSpellCheck(bool $flag = null);
 }
 
 interface IRangeEntryWidget extends IDataEntryWidget
 {
-    public function setRange($min, $max, $step=null);
+    public function setRange($min, $max, $step = null);
 
     public function setMin($min);
     public function getMin();
@@ -185,7 +183,7 @@ interface IRangeEntryWidget extends IDataEntryWidget
 
 interface ICheckInputWidget extends IInputWidget
 {
-    public function isChecked($flag=null);
+    public function isChecked($flag = null);
 }
 
 interface ISelectionInputWidget extends IInputWidget
@@ -200,10 +198,10 @@ interface IMultipleSelectionInputWidget extends ISelectionInputWidget
 
 interface IUngroupedOptionWidget extends IFormOrientedWidget
 {
-    public function setOptions($options, $labelsAsValues=false);
-    public function addOptions($options, $labelsAsValues=false);
+    public function setOptions($options, $labelsAsValues = false);
+    public function addOptions($options, $labelsAsValues = false);
     public function getOptions();
-    public function sortOptions($byLabel=false);
+    public function sortOptions($byLabel = false);
 }
 
 interface IUngroupedSelectionInputWidget extends IUngroupedOptionWidget, ISelectionInputWidget
@@ -212,17 +210,17 @@ interface IUngroupedSelectionInputWidget extends IUngroupedOptionWidget, ISelect
 
 interface IGroupedSelectionInputWidget extends ISelectionInputWidget
 {
-    public function setOptions($options, $labelsAsValues=false);
-    public function addOptions($options, $labelsAsValues=false);
+    public function setOptions($options, $labelsAsValues = false);
+    public function addOptions($options, $labelsAsValues = false);
     public function getOptions();
-    public function sortOptions($byLabel=false);
+    public function sortOptions($byLabel = false);
 
-    public function setGroupOptions($groupId, $options, $labelsAsValues=false);
-    public function addGroupOptions($groupId, $options, $labelsAsValues=false);
+    public function setGroupOptions($groupId, $options, $labelsAsValues = false);
+    public function addGroupOptions($groupId, $options, $labelsAsValues = false);
     public function getGroupOptions($groupId);
-    public function sortGroupOptions($groupId, $byLabel=false);
+    public function sortGroupOptions($groupId, $byLabel = false);
 
-    public function addGroup($id, $name, $options=null, $labelsAsValues=false);
+    public function addGroup($id, $name, $options = null, $labelsAsValues = false);
     public function getGroup($id);
     public function removeGroup($id);
     public function getGroups();
@@ -239,7 +237,7 @@ interface IDispositionAwareWidget
 
 interface IIconProviderWidget
 {
-    public function setIcon(string $icon=null);
+    public function setIcon(string $icon = null);
     public function getIcon();
 }
 
@@ -269,8 +267,8 @@ interface IFormWidget extends IFormOrientedWidget
     public function setTarget($target);
     public function getTarget();
 
-    public function shouldAutoComplete(bool $flag=null);
-    public function shouldValidate(bool $flag=null);
+    public function shouldAutoComplete(bool $flag = null);
+    public function shouldValidate(bool $flag = null);
 
     public function setAcceptCharset($charset);
     public function getAcceptCharset();
@@ -291,7 +289,7 @@ interface IFieldSetWidget extends IFormOrientedWidget
 
 interface IButtonWidget extends IInputWidget, IBodyContentAwareWidget, IDispositionAwareWidget
 {
-    public function shouldValidate(bool $flag=null);
+    public function shouldValidate(bool $flag = null);
 }
 
 interface ITextboxWidget extends ITextEntryWidget, IDataListEntryWidget
@@ -362,24 +360,24 @@ interface IOrderedDataDrivenListWidget extends IDataDrivenListWidget
 {
     public function setStartIndex($start);
     public function getStartIndex();
-    public function isReversed(bool $flag=null);
+    public function isReversed(bool $flag = null);
 }
 
 interface ILinearListWidget extends IListWidget
 {
-    public function setRenderer($renderer=null);
+    public function setRenderer($renderer = null);
     public function getRenderer();
 }
 
 interface IMappedListWidget extends IListWidget
 {
-    public function setRowProcessor($processor=null);
+    public function setRowProcessor($processor = null);
     public function getRowProcessor();
     public function setField(IField $field);
-    public function addField($key, $a=null, $b=null);
-    public function addFieldAtIndex($index, $key, $a=null, $b=null);
+    public function addField($key, $a = null, $b = null);
+    public function addFieldAtIndex($index, $key, $a = null, $b = null);
     public function removeField($key);
-    public function addLabel($fieldKey, $labelKey, $label=null);
+    public function addLabel($fieldKey, $labelKey, $label = null);
     public function removeLabel($fieldKey, $labelKey);
     public function getFields();
     public function getField($key);
@@ -399,7 +397,7 @@ interface ILinkWidget extends IWidget, IBodyContentAwareWidget, core\constraint\
     public function getRelationship();
     public function removeRelationship(...$rel);
 
-    public function isActive(bool $flag=null);
+    public function isActive(bool $flag = null);
 
     public function setHrefLanguage($language);
     public function getHrefLanguage();
@@ -415,5 +413,5 @@ interface IDescriptionAwareLinkWidget extends ILinkWidget
 {
     public function setDescription($description);
     public function getDescription();
-    public function shouldShowDescription(bool $flag=null);
+    public function shouldShowDescription(bool $flag = null);
 }

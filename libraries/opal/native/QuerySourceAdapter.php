@@ -5,12 +5,11 @@
  */
 namespace df\opal\native;
 
-use df;
+use DecodeLabs\Exceptional;
 use df\core;
 use df\opal;
-use df\user;
 
-use DecodeLabs\Exceptional;
+use df\user;
 
 class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query\IEntryPoint
 {
@@ -21,7 +20,7 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
     protected $_rows;
     protected $_primaryField;
 
-    public function __construct($dataSourceId, array $rows, $primaryField=null)
+    public function __construct($dataSourceId, array $rows, $primaryField = null)
     {
         $this->_dataSourceId = $dataSourceId;
         $this->_rows = $rows;
@@ -69,12 +68,12 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
 
 
 
-    public function newRecord(array $values=null)
+    public function newRecord(array $values = null)
     {
         return new opal\record\Base($this, $values);
     }
 
-    public function newPartial(array $values=null)
+    public function newPartial(array $values = null)
     {
         return new opal\record\Partial($this, $values);
     }
@@ -221,11 +220,11 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
             $row = [];
 
             foreach ($temp as $key => $value) {
-                $row[$sourceAlias.'.'.$key] = $value;
+                $row[$sourceAlias . '.' . $key] = $value;
             }
 
             if (is_object($origRow)) {
-                $row[$sourceAlias.'.@object'] = $origRow;
+                $row[$sourceAlias . '.@object'] = $origRow;
             }
 
             $data[] = $row;
@@ -260,12 +259,12 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
         return 'nativeData';
     }
 
-    public function lookupAccessKey(array $keys, $action=null)
+    public function lookupAccessKey(array $keys, $action = null)
     {
         return null;
     }
 
-    public function getDefaultAccess($action=null)
+    public function getDefaultAccess($action = null)
     {
         return user\IState::ALL;
     }

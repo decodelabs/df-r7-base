@@ -6,16 +6,14 @@
 
 namespace df\apex\directory\front\media\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\neon;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Dictum;
 use DecodeLabs\Genesis;
+
 use DecodeLabs\Terminus as Cli;
+use df\arch;
+use df\core;
+use df\neon;
 
 class TaskPurgeLargeFiles extends arch\node\Task
 {
@@ -49,13 +47,13 @@ class TaskPurgeLargeFiles extends arch\node\Task
                 continue;
             }
 
-            Cli::{'.brightMagenta'}($version['fileName'].' - '.Dictum::$number->fileSize($version['fileSize']));
+            Cli::{'.brightMagenta'}($version['fileName'] . ' - ' . Dictum::$number->fileSize($version['fileSize']));
             Atlas::deleteFile($path);
 
             $total += $version['fileSize'];
         }
 
-        Cli::success('Purged '.Dictum::$number->fileSize($total).' in total');
+        Cli::success('Purged ' . Dictum::$number->fileSize($total) . ' in total');
     }
 
     protected function _getLimit(): ?int

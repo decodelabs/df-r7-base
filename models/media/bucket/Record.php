@@ -5,15 +5,13 @@
  */
 namespace df\apex\models\media\bucket;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
 use df\neon;
+use df\opal;
 
-class Record extends opal\record\Base {
-    
-    public function getHandler() {
+class Record extends opal\record\Base
+{
+    public function getHandler()
+    {
         return neon\bucket\Base::factory($this['slug']);
     }
 }

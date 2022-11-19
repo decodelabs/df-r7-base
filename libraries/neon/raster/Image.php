@@ -6,13 +6,11 @@
 
 namespace df\neon\raster;
 
-use df;
-use df\core;
-use df\neon;
-
-use DecodeLabs\Spectrum\Color;
-use DecodeLabs\Glitch;
 use DecodeLabs\Exceptional;
+
+use DecodeLabs\Glitch;
+use DecodeLabs\Spectrum\Color;
+use df\core;
 
 class Image implements IImage
 {
@@ -34,12 +32,12 @@ class Image implements IImage
             return true;
         }
 
-        $class = 'df\\neon\\raster\\driver\\'.$driver;
+        $class = 'df\\neon\\raster\\driver\\' . $driver;
 
         if (class_exists($class)) {
             if (!$class::isLoadable()) {
                 throw Exceptional::Unsupported(
-                    'Raster image driver '.$driver.' is not loadable'
+                    'Raster image driver ' . $driver . ' is not loadable'
                 );
             }
 
@@ -48,7 +46,7 @@ class Image implements IImage
         }
 
         throw Exceptional::NotFound(
-            $driver.' is not a valid raster image driver'
+            $driver . ' is not a valid raster image driver'
         );
     }
 
@@ -84,7 +82,7 @@ class Image implements IImage
 
         if (!is_readable($file)) {
             throw Exceptional::{'Io,Unreadable'}(
-                'Raster image '.$file.' is not readable'
+                'Raster image ' . $file . ' is not readable'
             );
         }
 
@@ -103,7 +101,7 @@ class Image implements IImage
         return new self((new $class())->loadString($string));
     }
 
-    public static function newCanvas($width, $height, $color=null)
+    public static function newCanvas($width, $height, $color = null)
     {
         $class = self::getDefaultDriverClass();
         $output = new self(new $class());
@@ -145,7 +143,7 @@ class Image implements IImage
 
 
     // Transformation
-    public function transform($string=null)
+    public function transform($string = null)
     {
         return Transformation::factory($string)
             ->setImage($this);
@@ -157,13 +155,13 @@ class Image implements IImage
     {
         if (!self::isFormatValid($format)) {
             throw Exceptional::{'InvalidArgument,Format'}(
-                $format.' is not a valid output raster image format'
+                $format . ' is not a valid output raster image format'
             );
         }
 
         if (!$this->_driver->canWrite($format)) {
             throw Exceptional::Format(
-                $this->_driver->getName().' image driver cannot write '.$format.' format files'
+                $this->_driver->getName() . ' image driver cannot write ' . $format . ' format files'
             );
         }
 
@@ -196,13 +194,13 @@ class Image implements IImage
         return $this->_savePath;
     }
 
-    public function saveTo($savePath, $quality=100)
+    public function saveTo($savePath, $quality = 100)
     {
         $this->setSavePath($savePath);
         return $this->save($quality);
     }
 
-    public function save($quality=100)
+    public function save($quality = 100)
     {
         if (!$this->_savePath) {
             throw Exceptional::Setup(
@@ -219,7 +217,7 @@ class Image implements IImage
         return $this;
     }
 
-    public function toString($quality=100): string
+    public function toString($quality = 100): string
     {
         return $this->_driver->toString($this->_normalizePercentage($quality));
     }
@@ -227,7 +225,7 @@ class Image implements IImage
 
 
     // Manipulations
-    public function resize(?int $width, int $height=null, string $mode=null)
+    public function resize(?int $width, int $height = null, string $mode = null)
     {
         $this->_checkDriverForManipulations();
         $this->_normalizeRelativeDimensions($width, $height, $currentWidth, $currentHeight);
@@ -265,7 +263,7 @@ class Image implements IImage
 
             default:
                 throw Exceptional::InvalidArgument(
-                    'Unsupported resize mode: '.$mode
+                    'Unsupported resize mode: ' . $mode
                 );
         }
 
@@ -292,7 +290,7 @@ class Image implements IImage
         return $this;
     }
 
-    public function cropZoom(?int $width, int $height=null)
+    public function cropZoom(?int $width, int $height = null)
     {
         $this->_checkDriverForManipulations();
 
@@ -316,7 +314,7 @@ class Image implements IImage
         return $this->crop((int)$x, (int)$y, $width, $height);
     }
 
-    public function frame(?int $width, int $height=null, $color=null)
+    public function frame(?int $width, int $height = null, $color = null)
     {
         $this->_checkDriverForManipulations();
 
@@ -337,7 +335,7 @@ class Image implements IImage
         return $this;
     }
 
-    public function rotate($angle, $background=null)
+    public function rotate($angle, $background = null)
     {
         $this->_checkDriverForManipulations();
 
@@ -398,7 +396,7 @@ class Image implements IImage
         return $this;
     }
 
-    public function colorize($color, $alpha=null)
+    public function colorize($color, $alpha = null)
     {
         $this->_checkDriverForFilters();
 
@@ -457,7 +455,7 @@ class Image implements IImage
         return $this;
     }
 
-    public function smooth($amount=null)
+    public function smooth($amount = null)
     {
         $this->_checkDriverForFilters();
 
@@ -473,7 +471,7 @@ class Image implements IImage
     {
         if (!$this->_driver instanceof IImageManipulationDriver) {
             throw Exceptional::Unsupported(
-                'Raster image driver '.$this->_driver->getName().' does not support manipulations'
+                'Raster image driver ' . $this->_driver->getName() . ' does not support manipulations'
             );
         }
     }
@@ -482,14 +480,14 @@ class Image implements IImage
     {
         if (!$this->_driver instanceof IImageFilterDriver) {
             throw Exceptional::Unsupported(
-                'Raster image driver '.$this->_driver->getName().' does not support filters'
+                'Raster image driver ' . $this->_driver->getName() . ' does not support filters'
             );
         }
     }
 
 
     // Normalizers
-    protected function _normalizePixelSize($size, $dimension=null)
+    protected function _normalizePixelSize($size, $dimension = null)
     {
         $size = core\unit\DisplaySize::factory($size);
 
@@ -518,7 +516,7 @@ class Image implements IImage
         return $size->getPixels();
     }
 
-    protected function _normalizeRelativeDimensions(&$width, &$height, &$currentWidth=null, &$currentHeight=null, bool $proportional=true)
+    protected function _normalizeRelativeDimensions(&$width, &$height, &$currentWidth = null, &$currentHeight = null, bool $proportional = true)
     {
         $width = $this->_normalizePixelSize($width, IDimension::WIDTH);
         $height = $this->_normalizePixelSize($height, IDimension::HEIGHT);
@@ -554,17 +552,19 @@ class Image implements IImage
         }
     }
 
-    protected function _normalizePosition($x, $y, $compositeWidth=null, $compositeHeight=null)
+    protected function _normalizePosition($x, $y, $compositeWidth = null, $compositeHeight = null)
     {
         $position = core\unit\DisplayPosition::factory($x, $y)->extractAbsolute(
-            $this->getWidth(), $this->getHeight(),
-            $compositeWidth, $compositeHeight
+            $this->getWidth(),
+            $this->getHeight(),
+            $compositeWidth,
+            $compositeHeight
         );
 
         return [$position->getXOffset()->getPixels(), $position->getYOffset()->getPixels()];
     }
 
-    protected function _normalizePercentage($percent, $ignoreLowBound=false, $ignoreHighBound=false)
+    protected function _normalizePercentage($percent, $ignoreLowBound = false, $ignoreHighBound = false)
     {
         if (empty($percent)) {
             return null;
@@ -600,7 +600,7 @@ class Image implements IImage
         }
     }
 
-    protected function _normalizeResizeMode(?string $mode, string $default=null)
+    protected function _normalizeResizeMode(?string $mode, string $default = null)
     {
         switch ($mode) {
             case IDimension::STRETCH:
@@ -617,7 +617,7 @@ class Image implements IImage
         }
     }
 
-    protected function _normalizeColor($color, $default=null)
+    protected function _normalizeColor($color, $default = null)
     {
         if (empty($color)) {
             if ($default === null) {
@@ -795,7 +795,7 @@ class Image implements IImage
         }
 
         throw Exceptional::Format(
-            'Format could not be extracted from path: '.$path
+            'Format could not be extracted from path: ' . $path
         );
     }
 
@@ -808,7 +808,7 @@ class Image implements IImage
         $extension = strtolower($extension);
 
         throw Exceptional::Format(
-            'Format could not be extracted from extension: '.$extension
+            'Format could not be extracted from extension: ' . $extension
         );
     }
 

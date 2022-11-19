@@ -6,13 +6,11 @@
 
 namespace df\user\helper;
 
-use df;
-use df\core;
-use df\user;
+use DecodeLabs\Genesis;
 use df\axis;
 use df\flex;
 
-use DecodeLabs\Genesis;
+use df\user;
 
 class Session extends Base implements user\session\IController
 {
@@ -224,7 +222,7 @@ class Session extends Base implements user\session\IController
         return $this->backend->getBuckets($this->descriptor);
     }
 
-    public function getBucketsLike(string $bucket, string $operator=null): array
+    public function getBucketsLike(string $bucket, string $operator = null): array
     {
         if (!$this->_isOpen) {
             throw Exceptional::{'df/user/session/Logic'}(
@@ -235,7 +233,7 @@ class Session extends Base implements user\session\IController
         return $this->backend->getBucketsLike($this->descriptor, $bucket, $operator);
     }
 
-    public function getBucketsForUserLike(string $userId, string $bucket, string $operator=null): array
+    public function getBucketsForUserLike(string $userId, string $bucket, string $operator = null): array
     {
         if (!$this->_isOpen) {
             throw Exceptional::{'df/user/session/Logic'}(
@@ -246,7 +244,7 @@ class Session extends Base implements user\session\IController
         return $this->backend->getBucketsForUserLike($userId, $bucket, $operator);
     }
 
-    public function getBucketsForAllLike(string $bucket, string $operator=null): array
+    public function getBucketsForAllLike(string $bucket, string $operator = null): array
     {
         if (!$this->_isOpen) {
             throw Exceptional::{'df/user/session/Logic'}(
@@ -259,7 +257,7 @@ class Session extends Base implements user\session\IController
 
 
 
-    public function clearBuckets(string $bucket, string $operator=null)
+    public function clearBuckets(string $bucket, string $operator = null)
     {
         if (!$this->_isOpen) {
             throw Exceptional::{'df/user/session/Logic'}(
@@ -271,7 +269,7 @@ class Session extends Base implements user\session\IController
         return $this;
     }
 
-    public function clearBucketsForUser(string $userId, string $bucket, string $operator=null)
+    public function clearBucketsForUser(string $userId, string $bucket, string $operator = null)
     {
         if (!$this->_isOpen) {
             throw Exceptional::{'df/user/session/Logic'}(
@@ -283,7 +281,7 @@ class Session extends Base implements user\session\IController
         return $this;
     }
 
-    public function clearBucketsForAll(string $bucket, string $operator=null)
+    public function clearBucketsForAll(string $bucket, string $operator = null)
     {
         if (!$this->_isOpen) {
             throw Exceptional::{'df/user/session/Logic'}(
@@ -297,7 +295,7 @@ class Session extends Base implements user\session\IController
 
 
 
-    public function destroy(bool $restart=false)
+    public function destroy(bool $restart = false)
     {
         if ($this->perpetuator) {
             $key = $this->perpetuator->getRecallKey($this);
@@ -329,7 +327,7 @@ class Session extends Base implements user\session\IController
         return $this->backend->hasRecallKey($key);
     }
 
-    public function perpetuateRecall(user\IClient $client, user\session\RecallKey $lastKey=null)
+    public function perpetuateRecall(user\IClient $client, user\session\RecallKey $lastKey = null)
     {
         if ($lastKey) {
             $this->backend->destroyRecallKey($lastKey);

@@ -7,20 +7,20 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Genesis\Kernel;
 
-use df\core\environment\Config as EnvConfig;
-use df\core\SharedContext;
-use df\core\time\Date;
-use df\halo\daemon\Base as DaemonBase;
-use df\halo\daemon\Remote;
-use df\halo\daemon\IDaemon;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis\Kernel;
 use DecodeLabs\R7\Genesis\KernelTrait;
 use DecodeLabs\Systemic;
 use DecodeLabs\Systemic\Process\Managed as ManagedProcess;
+
 use DecodeLabs\Terminus as Cli;
+use df\core\environment\Config as EnvConfig;
+use df\core\SharedContext;
+use df\core\time\Date;
+use df\halo\daemon\Base as DaemonBase;
+use df\halo\daemon\IDaemon;
+use df\halo\daemon\Remote;
 
 use Throwable;
 
@@ -86,7 +86,7 @@ class Daemon implements Kernel
 
         if ($settings) {
             if (!$settings['isEnabled']) {
-                Cli::error('Daemon '.$daemon->getName().' is not currently enabled');
+                Cli::error('Daemon ' . $daemon->getName() . ' is not currently enabled');
                 return;
             }
 
@@ -108,7 +108,7 @@ class Daemon implements Kernel
             !$currentProcess->isPrivileged() &&
             $user != $currentProcess->getOwnerName()
         ) {
-            Cli::error('You are trying to control this daemon as a user with conflicting permissions - either run it as '.$user.' or with sudo!');
+            Cli::error('You are trying to control this daemon as a user with conflicting permissions - either run it as ' . $user . ' or with sudo!');
             return;
         }
 
@@ -139,12 +139,12 @@ class Daemon implements Kernel
                 return;
 
             case 'pause':
-                Cli::info('Pausing daemon '.$name);
+                Cli::info('Pausing daemon ' . $name);
                 $process->sendSignal('SIGTSTP');
                 return;
 
             case 'resume':
-                Cli::info('Resuming daemon '.$name);
+                Cli::info('Resuming daemon ' . $name);
                 $process->sendSignal('SIGCONT');
                 return;
 
@@ -157,7 +157,7 @@ class Daemon implements Kernel
                 return;
 
             default:
-                Cli::error('Unknown commend '.$command);
+                Cli::error('Unknown commend ' . $command);
                 Cli::error('Use: start, stop, pause, resume, status, nudge');
                 return;
         }
@@ -209,7 +209,7 @@ class Daemon implements Kernel
         $name = $daemon->getName();
 
         if ($process) {
-            Cli::info('Daemon '.$name.' is already running');
+            Cli::info('Daemon ' . $name . ' is already running');
             return;
         }
 
@@ -225,8 +225,8 @@ class Daemon implements Kernel
         }
 
         $entryPath =
-            $this->context->hub->getApplicationPath().'/entry/'.
-            $this->context->environment->getName().'.php';
+            $this->context->hub->getApplicationPath() . '/entry/' .
+            $this->context->environment->getName() . '.php';
 
         Systemic::$process->newScriptLauncher($entryPath, [
                 'daemon', $name, '__spawn'
@@ -248,7 +248,7 @@ class Daemon implements Kernel
         }
 
         if ($process) {
-            Cli::success('PID: '.$process->getProcessId());
+            Cli::success('PID: ' . $process->getProcessId());
         } else {
             Cli::warning('PID could not be found!');
         }
@@ -268,12 +268,12 @@ class Daemon implements Kernel
         $name = $daemon->getName();
 
         if (!$process) {
-            Cli::info('Daemon '.$name.' is not running');
+            Cli::info('Daemon ' . $name . ' is not running');
             return;
         }
 
         Cli::write('Stopping ');
-        Cli::{'brightMagenta'}($name.': ');
+        Cli::{'brightMagenta'}($name . ': ');
 
         $process->sendSignal('SIGTERM');
         $count = 0;
@@ -308,7 +308,7 @@ class Daemon implements Kernel
         $name = $daemon->getName();
 
         if (!$process) {
-            Cli::info('Daemon '.$name.' is not currently running');
+            Cli::info('Daemon ' . $name . ' is not currently running');
             return;
         }
 
@@ -316,7 +316,7 @@ class Daemon implements Kernel
         $remote = Remote::factory($daemon);
         $status = $remote->getStatusData();
 
-        Cli::info('Daemon '.$name.' is currently running');
+        Cli::info('Daemon ' . $name . ' is currently running');
 
         foreach ($status as $key => $value) {
             if (substr($key, -4) == 'Time') {
@@ -335,7 +335,7 @@ class Daemon implements Kernel
         ?ManagedProcess $process = null
     ): void {
         $name = $daemon->getName();
-        Cli::{'yellow'}('Checking daemon '.$name.': ');
+        Cli::{'yellow'}('Checking daemon ' . $name . ': ');
 
         if (!$process) {
             Cli::warning('not running');
@@ -359,6 +359,6 @@ class Daemon implements Kernel
             return;
         }
 
-        Cli::success('running with PID: '.$process->getProcessId());
+        Cli::success('running with PID: ' . $process->getProcessId());
     }
 }

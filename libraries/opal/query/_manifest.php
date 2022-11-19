@@ -5,11 +5,10 @@
  */
 namespace df\opal\query;
 
-use df;
 use df\core;
+use df\mesh;
 use df\opal;
 use df\user;
-use df\mesh;
 
 interface IDataRowProvider
 {
@@ -21,24 +20,24 @@ interface IDataRowProvider
 // Initiator
 interface IInitiator extends mesh\job\ITransactionAware
 {
-    public function beginSelect(array $fields=[], $distinct=false);
+    public function beginSelect(array $fields = [], $distinct = false);
     public function beginUnion();
-    public function beginUnionSelect(IUnionQuery $union, array $fields=[], $unionDistinct=true, $selectDistinct=false);
+    public function beginUnionSelect(IUnionQuery $union, array $fields = [], $unionDistinct = true, $selectDistinct = false);
     public function beginFetch();
     public function beginInsert($row);
-    public function beginBatchInsert($rows=[]);
+    public function beginBatchInsert($rows = []);
     public function beginReplace($row);
-    public function beginBatchReplace($rows=[]);
-    public function beginUpdate(array $valueMap=null);
+    public function beginBatchReplace($rows = []);
+    public function beginUpdate(array $valueMap = null);
     public function beginDelete();
 
-    public function beginCorrelation(ISourceProvider $parent, $field, $alias=null);
-    public function beginPopulate(IPopulatableQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL, array $selectFields=null);
+    public function beginCorrelation(ISourceProvider $parent, $field, $alias = null);
+    public function beginPopulate(IPopulatableQuery $parent, array $fields, $type = IPopulateQuery::TYPE_ALL, array $selectFields = null);
     public function beginCombine(ICombinableQuery $parent, array $fields);
 
-    public function beginJoin(IQuery $parent, array $fields=[], $type=IJoinQuery::INNER);
-    public function beginJoinConstraint(IQuery $parent, $type=IJoinQuery::INNER);
-    public function beginAttach(IReadQuery $parent, array $fields=[], $isSelect=false);
+    public function beginJoin(IQuery $parent, array $fields = [], $type = IJoinQuery::INNER);
+    public function beginJoinConstraint(IQuery $parent, $type = IJoinQuery::INNER);
+    public function beginAttach(IReadQuery $parent, array $fields = [], $isSelect = false);
     public static function beginAttachFromPopulate(IPopulateQuery $populate);
 
     public function getFields();
@@ -47,15 +46,15 @@ interface IInitiator extends mesh\job\ITransactionAware
     public function getParentQuery();
     public function getJoinType();
 
-    public function setApplicator(callable $applicator=null);
+    public function setApplicator(callable $applicator = null);
     public function getApplicator();
 
-    public function from($sourceAdapter, $alias=null);
+    public function from($sourceAdapter, $alias = null);
     public function fromUnion();
     public function fromSelect(...$fields);
     public function fromSelectDistinct(...$fields);
-    public function into($sourceAdapter, $alias=null);
-    public function in($sourceAdapter, $alias=null);
+    public function into($sourceAdapter, $alias = null);
+    public function in($sourceAdapter, $alias = null);
 }
 
 
@@ -99,10 +98,10 @@ interface IEntryPoint extends mesh\job\ITransactionInitiator
     public function union(...$fields);
     public function fetch();
     public function insert($values);
-    public function batchInsert($rows=[]);
+    public function batchInsert($rows = []);
     public function replace($values);
-    public function batchReplace($rows=[]);
-    public function update(array $valueMap=null);
+    public function batchReplace($rows = []);
+    public function update(array $valueMap = null);
     public function delete();
 }
 
@@ -120,7 +119,7 @@ interface IJoinClauseFactory extends IClauseFactory
     public function beginOnClause();
     public function beginOrOnClause();
 
-    public function addJoinClause(IJoinClauseProvider $clause=null);
+    public function addJoinClause(IJoinClauseProvider $clause = null);
     public function getJoinClauseList();
     public function hasJoinClauses();
     public function clearJoinClauses();
@@ -130,7 +129,7 @@ interface IPrerequisiteClauseFactory extends IClauseFactory
 {
     public function wherePrerequisite($field, $operator, $value);
     public function whereBeginPrerequisite();
-    public function addPrerequisite(IClauseProvider $clause=null);
+    public function addPrerequisite(IClauseProvider $clause = null);
     public function getPrerequisites();
     public function hasPrerequisites();
     public function clearPrerequisites();
@@ -147,7 +146,7 @@ interface IWhereClauseFactory extends IClauseFactory
     public function beginWhereClause();
     public function beginOrWhereClause();
 
-    public function addWhereClause(IWhereClauseProvider $clause=null);
+    public function addWhereClause(IWhereClauseProvider $clause = null);
     public function getWhereClauseList();
     public function hasWhereClauses();
     public function clearWhereClauses();
@@ -163,7 +162,7 @@ interface IHavingClauseFactory extends IClauseFactory
     public function beginHavingClause();
     public function beginOrHavingClause();
 
-    public function addHavingClause(IHavingClauseProvider $clause=null);
+    public function addHavingClause(IHavingClauseProvider $clause = null);
     public function getHavingClauseList();
     public function hasHavingClauses();
     public function clearHavingClauses();
@@ -192,7 +191,7 @@ interface IReadQuery extends IQuery, \IteratorAggregate, core\IArrayProvider
     public function getRawResult();
     public function getOutputManifest();
     public function getOutputFields();
-    public function isUnbuffered(bool $flag=null);
+    public function isUnbuffered(bool $flag = null);
 }
 
 interface IWriteQuery extends IQuery
@@ -203,7 +202,7 @@ interface IWriteQuery extends IQuery
 
 interface IDistinctQuery extends IQuery
 {
-    public function isDistinct(bool $flag=null);
+    public function isDistinct(bool $flag = null);
 }
 
 interface IDerivableQuery extends IQuery
@@ -211,18 +210,18 @@ interface IDerivableQuery extends IQuery
     public function setDerivationParentInitiator(IInitiator $initiator);
     public function getDerivationParentInitiator();
     public function getDerivationSourceAdapter();
-    public function endSource(string $alias=null): IQuery;
+    public function endSource(string $alias = null): IQuery;
 }
 
 interface ICorrelatableQuery extends IQuery
 {
-    public function correlate($field, $alias=null);
-    public function correlateRelation($relationField, $targetField, $alias=null);
-    public function beginCorrelateRelation($relationField, $targetField, $alias=null);
-    public function countRelation($field, $alias=null);
-    public function beginCountRelation($field, $alias=null);
-    public function hasRelation($field, $alias=null);
-    public function beginHasRelation($field, $alias=null);
+    public function correlate($field, $alias = null);
+    public function correlateRelation($relationField, $targetField, $alias = null);
+    public function beginCorrelateRelation($relationField, $targetField, $alias = null);
+    public function countRelation($field, $alias = null);
+    public function beginCountRelation($field, $alias = null);
+    public function hasRelation($field, $alias = null);
+    public function beginHasRelation($field, $alias = null);
     public function addCorrelation(ICorrelationQuery $correlation);
     public function getCorrelations();
 }
@@ -316,7 +315,7 @@ interface IHavingClauseQuery extends IReadQuery, IHavingClauseFactory
 
 interface ISearchableQuery extends IReadQuery
 {
-    public function searchFor(?string $phrase, array $fields=null);
+    public function searchFor(?string $phrase, array $fields = null);
     public function getSearch();
     public function hasSearch();
     public function clearSearch();
@@ -336,7 +335,7 @@ interface IOrderableQuery extends IQuery
     public function getOrderDirectives();
     public function hasOrderDirectives();
     public function clearOrderDirectives();
-    public function isPrimaryOrderSource($sourceAlias=null);
+    public function isPrimaryOrderSource($sourceAlias = null);
 }
 
 interface INestableQuery extends IQuery
@@ -366,9 +365,9 @@ interface IOffsettableQuery extends IQuery
 
 interface ILocationalQuery extends IQuery
 {
-    public function inside($location, $searchChildLocations=false);
+    public function inside($location, $searchChildLocations = false);
     public function getLocation();
-    public function shouldSearchChildLocations(bool $flag=null);
+    public function shouldSearchChildLocations(bool $flag = null);
 }
 
 
@@ -384,13 +383,13 @@ interface ICorrelationQuery extends
     ILimitableQuery,
     IOffsettableQuery
 {
-    public function setApplicator(callable $applicator=null);
+    public function setApplicator(callable $applicator = null);
     public function getApplicator();
     public function getFieldAlias();
-    public function endCorrelation($fieldAlias=null);
+    public function endCorrelation($fieldAlias = null);
 
     public function getCorrelationSource();
-    public function getCorrelatedClauses(ISource $correlationSource=null);
+    public function getCorrelatedClauses(ISource $correlationSource = null);
 }
 
 
@@ -401,14 +400,14 @@ interface IJoinQuery extends
     IJoinClauseFactory,
     IWhereClauseFactory
 {
-    const INNER = 0;
-    const LEFT = 1;
-    const RIGHT = 2;
+    public const INNER = 0;
+    public const LEFT = 1;
+    public const RIGHT = 2;
 
     public function addOutputFields(string ...$fields);
     public function getType();
-    public function isConstraint(bool $flag=null);
-    public function combineAll($nullField=null, string $alias=null);
+    public function isConstraint(bool $flag = null);
+    public function combineAll($nullField = null, string $alias = null);
     public function endJoin();
     public function referencesSourceAliases(array $sourceAliases);
 }
@@ -424,12 +423,12 @@ interface IPopulateQuery extends
     ILimitableQuery,
     IOffsettableQuery
 {
-    const TYPE_ALL = 1;
-    const TYPE_SOME = 2;
+    public const TYPE_ALL = 1;
+    public const TYPE_SOME = 2;
 
     public function getField();
     public function getFieldName();
-    public function isSelect(bool $flag=null);
+    public function isSelect(bool $flag = null);
     public function endPopulate();
 }
 
@@ -452,7 +451,7 @@ interface ICombineQuery extends
 
     public function asOne($name);
     public function asCopy($name);
-    public function isCopy(bool $flag=null);
+    public function isCopy(bool $flag = null);
 }
 
 
@@ -462,15 +461,15 @@ interface IAttachQuery extends
     INestedComponent,
     IJoinClauseFactory
 {
-    const TYPE_ONE = 0;
-    const TYPE_MANY = 1;
-    const TYPE_LIST = 2;
-    const TYPE_VALUE = 3;
+    public const TYPE_ONE = 0;
+    public const TYPE_MANY = 1;
+    public const TYPE_LIST = 2;
+    public const TYPE_VALUE = 3;
 
     public function isPopulate();
     public function getType();
     public function asOne($name);
-    public function asMany($name, $keyField=null);
+    public function asMany($name, $keyField = null);
     public function getNonLocalFieldReferences();
 }
 
@@ -483,18 +482,18 @@ interface IOrderDirective extends core\IStringProvider
     public function setDirection($direction);
     public function getDirection();
     public function getReversedDirection();
-    public function isDescending(bool $flag=null);
-    public function isAscending(bool $flag=null);
+    public function isDescending(bool $flag = null);
+    public function isAscending(bool $flag = null);
     public function setNullOrder($order);
     public function getNullOrder();
 }
 
 class NullOrder extends core\lang\Enum
 {
-    const FIRST = 'first';
-    const LAST = 'last';
-    const ASCENDING = 'ascending';
-    const DESCENDING = 'descending';
+    public const FIRST = 'first';
+    public const LAST = 'last';
+    public const ASCENDING = 'ascending';
+    public const DESCENDING = 'descending';
 }
 
 
@@ -531,14 +530,14 @@ interface ISelectQuery extends
     IPageableQuery
 {
     public function addOutputFields(string ...$fields);
-    public function toList($field1, $field2=null);
-    public function toValue($valField=null);
+    public function toList($field1, $field2 = null);
+    public function toValue($valField = null);
 }
 
 interface ISelectAttachQuery extends ISelectQuery, IAttachQuery
 {
-    public function asList($name, $field1, $field2=null);
-    public function asValue($name, $field=null);
+    public function asList($name, $field1, $field2 = null);
+    public function asValue($name, $field = null);
     public function getListKeyField();
     public function getListValueField();
 }
@@ -567,7 +566,7 @@ interface IUnionQuery extends
 
 interface IUnionSelectQuery extends ISelectQuery
 {
-    public function isUnionDistinct(bool $flag=null);
+    public function isUnionDistinct(bool $flag = null);
 
     public function endSelect();
     public function with(...$fields);
@@ -607,8 +606,8 @@ interface IFetchAttachQuery extends IFetchQuery, IAttachQuery
  */
 interface IDataInsertQuery extends IWriteQuery, ILocationalQuery
 {
-    public function shouldReplace(bool $flag=null);
-    public function ifNotExists(bool $flag=null);
+    public function shouldReplace(bool $flag = null);
+    public function ifNotExists(bool $flag = null);
 }
 
 
@@ -644,7 +643,7 @@ interface IBatchInsertQuery extends IDataInsertQuery
  */
 interface IDataUpdateQuery extends IWriteQuery, ILocationalQuery
 {
-    public function set($field, $value=null);
+    public function set($field, $value = null);
     public function express($field, ...$elements);
     public function beginExpression($field, ...$elements);
     public function expressCorrelation($field, $targetField);
@@ -679,43 +678,43 @@ interface IDeleteQuery extends
  */
 interface IQueryTypes
 {
-    const SELECT = 1;
-    const UNION = 2;
-    const FETCH = 3;
-    const INSERT = 4;
-    const BATCH_INSERT = 5;
-    const REPLACE = 6;
-    const BATCH_REPLACE = 7;
-    const UPDATE = 8;
-    const DELETE = 9;
+    public const SELECT = 1;
+    public const UNION = 2;
+    public const FETCH = 3;
+    public const INSERT = 4;
+    public const BATCH_INSERT = 5;
+    public const REPLACE = 6;
+    public const BATCH_REPLACE = 7;
+    public const UPDATE = 8;
+    public const DELETE = 9;
 
-    const CORRELATION = 101;
-    const DERIVATION = 102;
+    public const CORRELATION = 101;
+    public const DERIVATION = 102;
 
-    const POPULATE = 151;
-    const COMBINE = 152;
+    public const POPULATE = 151;
+    public const COMBINE = 152;
 
-    const JOIN = 201;
-    const JOIN_CONSTRAINT = 202;
-    const REMOTE_JOIN = 211;
+    public const JOIN = 201;
+    public const JOIN_CONSTRAINT = 202;
+    public const REMOTE_JOIN = 211;
 
-    const SELECT_ATTACH = 301;
-    const FETCH_ATTACH = 302;
-    const REMOTE_ATTACH = 311;
+    public const SELECT_ATTACH = 301;
+    public const FETCH_ATTACH = 302;
+    public const REMOTE_ATTACH = 311;
 }
 
 interface IQueryFeatures
 {
-    const AGGREGATE = 1;
-    const WHERE_CLAUSE = 2;
-    const GROUP_DIRECTIVE = 3;
-    const HAVING_CLAUSE = 4;
-    const ORDER_DIRECTIVE = 5;
-    const LIMIT = 6;
-    const OFFSET = 7;
-    const TRANSACTION = 10;
-    const VALUE_PROCESSOR = 101;
-    const LOCATION = 201;
+    public const AGGREGATE = 1;
+    public const WHERE_CLAUSE = 2;
+    public const GROUP_DIRECTIVE = 3;
+    public const HAVING_CLAUSE = 4;
+    public const ORDER_DIRECTIVE = 5;
+    public const LIMIT = 6;
+    public const OFFSET = 7;
+    public const TRANSACTION = 10;
+    public const VALUE_PROCESSOR = 101;
+    public const LOCATION = 201;
 }
 
 
@@ -755,8 +754,8 @@ interface IAdapter extends user\IAccessLock, mesh\job\IJobAdapter
     public function fetchRemoteJoinData(IJoinQuery $join, array $rows);
     public function fetchAttachmentData(IAttachQuery $attachment, array $rows);
 
-    public function newRecord(array $values=null);
-    public function newPartial(array $values=null);
+    public function newRecord(array $values = null);
+    public function newPartial(array $values = null);
     public function shouldRecordsBroadcastHookEvents();
 }
 
@@ -765,10 +764,10 @@ interface IIntegralAdapter extends IAdapter
     public function getQueryAdapterSchema();
 
     public function prepareQueryClauseValue(IField $field, $value);
-    public function rewriteVirtualQueryClause(IClauseFactory $parent, IVirtualField $field, $operator, $value, $isOr=false);
+    public function rewriteVirtualQueryClause(IClauseFactory $parent, IVirtualField $field, $operator, $value, $isOr = false);
     public function getDefaultSearchFields();
 
-    public function getQueryResultValueProcessors(array $fields=null);
+    public function getQueryResultValueProcessors(array $fields = null);
     public function applyQueryBlock(IQuery $query, $name, array $args);
     public function applyRelationQueryBlock(IQuery $query, opal\query\IField $relationField, $name, array $args);
 }
@@ -799,12 +798,12 @@ interface ISource extends IAdapterAware
     public function getHash();
     public function getDisplayName(): string;
     public function isDerived();
-    public function isPrimary(bool $flag=null);
+    public function isPrimary(bool $flag = null);
 
     public function handleQueryException(IQuery $query, \Throwable $e);
 
-    public function extrapolateIntegralAdapterField($name, $alias=null, opal\schema\IField $field=null);
-    public function extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, opal\schema\IField $field=null);
+    public function extrapolateIntegralAdapterField($name, $alias = null, opal\schema\IField $field = null);
+    public function extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, opal\schema\IField $field = null);
 
     public function getFieldProcessor(IIntrinsicField $field);
 
@@ -819,7 +818,7 @@ interface ISource extends IAdapterAware
     public function getWildcardField();
     public function removeWildcardOutputField($name);
 
-    public function setKeyField(IField $field=null);
+    public function setKeyField(IField $field = null);
     public function getKeyField();
 
     public function getOutputFields();
@@ -840,7 +839,7 @@ interface ISourceManager extends mesh\job\ITransactionAware
     public function setParentSourceManager(ISourceManager $parent);
     public function getParentSourceManager();
 
-    public function newSource($adapter, $alias, array $fields=null, $forWrite=false);
+    public function newSource($adapter, $alias, array $fields = null, $forWrite = false);
     public function removeSource($alias);
     public function getSources();
     public function getSourceByAlias($alias);
@@ -853,9 +852,9 @@ interface ISourceManager extends mesh\job\ITransactionAware
     public function extrapolateOutputField(ISource $source, $name);
     public function realiasOutputField(ISource $parentSource, ISource $source, $name);
     public function extrapolateField(ISource $source, $name);
-    public function extrapolateIntrinsicField(ISource $source, $name, $checkAlias=null);
-    public function extrapolateAggregateField(ISource $source, $name, $checkAlias=null);
-    public function extrapolateDataField(ISource $source, $name, $checkAlias=null);
+    public function extrapolateIntrinsicField(ISource $source, $name, $checkAlias = null);
+    public function extrapolateAggregateField(ISource $source, $name, $checkAlias = null);
+    public function extrapolateDataField(ISource $source, $name, $checkAlias = null);
     public function generateAlias();
 }
 
@@ -886,13 +885,13 @@ interface IField extends core\IStringProvider
     public function setLogicalAlias($alias);
     public function getLogicalAlias();
 
-    public function setOverrideField(IField $field=null);
+    public function setOverrideField(IField $field = null);
     public function getOverrideField();
 
     public function shouldBeProcessed();
     public function rewriteAsDerived(ISource $source);
 
-    public function isFromWildcard(bool $flag=null);
+    public function isFromWildcard(bool $flag = null);
 }
 
 trait TField
@@ -918,7 +917,7 @@ trait TField
         return $this->_logicalAlias;
     }
 
-    public function setOverrideField(IField $field=null)
+    public function setOverrideField(IField $field = null)
     {
         $this->_overrideField = $field;
         return $this;
@@ -934,7 +933,7 @@ trait TField
         return true;
     }
 
-    public function isFromWildcard(bool $flag=null)
+    public function isFromWildcard(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isFromWildcard = $flag;
@@ -959,7 +958,7 @@ interface IIntrinsicField extends IField
 
 interface IWildcardField extends IField
 {
-    public function addMuteField($name, $alias=null);
+    public function addMuteField($name, $alias = null);
     public function removeMuteField($name);
     public function getMuteFields();
 }
@@ -976,7 +975,7 @@ interface IAggregateField extends IField
     public function getTypeName();
     public function getTargetField();
     public function normalizeOutputValue($value);
-    public function isDistinct(bool $flag=null);
+    public function isDistinct(bool $flag = null);
 }
 
 interface IExpressionField extends IField
@@ -1018,10 +1017,10 @@ interface IVirtualField extends IField
 
 interface IFieldValueProcessor
 {
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null);
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord = null);
     public function deflateValue($value);
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null);
-    public function normalizeSavedValue($value, opal\record\IRecord $forRecord=null);
+    public function sanitizeValue($value, opal\record\IRecord $forRecord = null);
+    public function normalizeSavedValue($value, opal\record\IRecord $forRecord = null);
     public function compareValues($value1, $value2);
     public function generateInsertValue(array $row);
     public function getNominalValue();
@@ -1037,8 +1036,8 @@ interface IFieldValueProcessor
 // Clauses
 interface IClauseProvider
 {
-    public function isOr(bool $flag=null);
-    public function isAnd(bool $flag=null);
+    public function isOr(bool $flag = null);
+    public function isAnd(bool $flag = null);
     public function referencesSourceAliases(array $sourceAliases);
     public function getNonLocalFieldReferences();
     public function rewriteAsDerived(ISource $source);
@@ -1087,14 +1086,14 @@ interface IClauseList extends
 
     public function isEmpty(): bool;
 
-    public function _addClause(IClauseProvider $clause=null);
+    public function _addClause(IClauseProvider $clause = null);
     public function clear();
     public function endClause();
 
     public function referencesSourceAliases(array $sourceAliases);
     public function getNonLocalFieldReferences();
-    public function getClausesFor(opal\query\ISource $source, opal\query\IClauseFactory $parent=null);
-    public function extractClausesFor(opal\query\ISource $source, $checkValues=true);
+    public function getClausesFor(opal\query\ISource $source, opal\query\IClauseFactory $parent = null);
+    public function extractClausesFor(opal\query\ISource $source, $checkValues = true);
     public function isLocalTo(array $sources);
     public function getLocalFieldList(): array;
 }
@@ -1129,12 +1128,12 @@ interface IExpression
 
 interface IExpressionOperator
 {
-    const ADD = '+';
-    const SUBTRACT = '-';
-    const MULTIPLY = '*';
-    const DIVIDE = '/';
-    const MOD = '%';
-    const POWER = '^';
+    public const ADD = '+';
+    public const SUBTRACT = '-';
+    public const MULTIPLY = '*';
+    public const DIVIDE = '/';
+    public const MOD = '%';
+    public const POWER = '^';
 
     public function getOperator();
 }
@@ -1188,7 +1187,7 @@ interface IPaginator extends core\collection\IOrderablePaginator
 interface IBatchIterator extends core\collection\ICollection, \Iterator
 {
     public function getResult();
-    public function isForFetch(bool $flag=null);
+    public function isForFetch(bool $flag = null);
 
     public function getPrimarySource();
     public function addSources(array $joinSources);
@@ -1203,13 +1202,13 @@ interface IBatchIterator extends core\collection\ICollection, \Iterator
     public function setCombines(array $combines);
     public function getCombines();
 
-    public function setListKeyField(IField $field=null);
+    public function setListKeyField(IField $field = null);
     public function getListKeyField();
 
-    public function setListValueField(IField $field=null);
+    public function setListValueField(IField $field = null);
     public function getListValueField();
 
-    public function setFormatter(callable $formatter=null);
+    public function setFormatter(callable $formatter = null);
     public function getFormatter();
 
     public function setNestFields(IField ...$fields);
@@ -1223,7 +1222,7 @@ interface IOutputManifest
 {
     public function getPrimarySource();
     public function getSources();
-    public function importSource(ISource $source, array $rows=null, $isNormalized=true);
+    public function importSource(ISource $source, array $rows = null, $isNormalized = true);
 
     public function addOutputField(IField $field);
     public function getOutputFields();
@@ -1243,15 +1242,15 @@ interface IOutputManifest
 
     public function getSearchController();
 
-    public function queryRequiresPartial(bool $flag=null);
-    public function requiresPartial($forFetch=true);
+    public function queryRequiresPartial(bool $flag = null);
+    public function requiresPartial($forFetch = true);
 }
 
 
 // Filters
 interface IFilterConsumer
 {
-    public function addFilter($a, $b=null);
+    public function addFilter($a, $b = null);
     public function setFilter($name, $callback);
     public function hasFilter($name);
     public function removeFilter($name);
@@ -1264,7 +1263,7 @@ trait TFilterConsumer
 {
     protected $_filters = [];
 
-    public function addFilter($a, $b=null)
+    public function addFilter($a, $b = null)
     {
         if (is_string($a)) {
             $name = $a;

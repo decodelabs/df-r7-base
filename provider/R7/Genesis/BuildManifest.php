@@ -7,21 +7,21 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Genesis;
 
-use df\arch\Request as ArchRequest;
-use df\arch\node\IBuildTaskNode as BuildTaskNode;
-use df\core\Config as CoreConfig;
-use df\flex\Guid;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Dir;
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Dictum;
+
 use DecodeLabs\Genesis;
 use DecodeLabs\Genesis\Build\Manifest;
 use DecodeLabs\Genesis\Build\Package;
 use DecodeLabs\Genesis\Build\Task\Generic as GenericTask;
-use DecodeLabs\Terminus\Session;
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\Terminus\Session;
+use df\arch\node\IBuildTaskNode as BuildTaskNode;
+use df\arch\Request as ArchRequest;
+use df\core\Config as CoreConfig;
+use df\flex\Guid;
 use Generator;
 use ReflectionClass;
 
@@ -73,7 +73,7 @@ class BuildManifest implements Manifest
      */
     public function getBuildTempDir(): Dir
     {
-        return Atlas::dir(Genesis::$hub->getLocalDataPath().'/build/');
+        return Atlas::dir(Genesis::$hub->getLocalDataPath() . '/build/');
     }
 
     /**
@@ -81,7 +81,7 @@ class BuildManifest implements Manifest
      */
     public function getRunDir(): Dir
     {
-        return Atlas::dir(Genesis::$hub->getLocalDataPath().'/run/');
+        return Atlas::dir(Genesis::$hub->getLocalDataPath() . '/run/');
     }
 
     /**
@@ -114,7 +114,7 @@ class BuildManifest implements Manifest
         // Task nodes
         foreach ($this->scanTaskNodes() as $request) {
             yield new GenericTask(
-                'Running task: '.$request->getPath(),
+                'Running task: ' . $request->getPath(),
                 function (Session $session) use ($request) {
                     Legacy::launchTask((string)$request, $session, null, true);
                 }
@@ -172,7 +172,7 @@ class BuildManifest implements Manifest
         }
 
         if ($packageFile = $packageDir->getExistingFile('Package.php')) {
-            yield $packageFile => '/apex/packages/'.$package->name.'/Package.php';
+            yield $packageFile => '/apex/packages/' . $package->name . '/Package.php';
         }
 
         foreach ($packageDir->scanDirs() as $name => $dir) {
@@ -184,7 +184,7 @@ class BuildManifest implements Manifest
                 continue;
             }
 
-            yield $dir => '/apex/'.$name;
+            yield $dir => '/apex/' . $name;
         }
     }
 
@@ -205,7 +205,7 @@ class BuildManifest implements Manifest
             if ($name == 'libraries') {
                 yield $dir => '/';
             } else {
-                yield $dir => '/apex/'.$name;
+                yield $dir => '/apex/' . $name;
             }
         }
 
@@ -216,7 +216,7 @@ class BuildManifest implements Manifest
                 continue;
             }
 
-            yield $file => '/apex/'.$name;
+            yield $file => '/apex/' . $name;
         }
 
 
@@ -229,12 +229,12 @@ class BuildManifest implements Manifest
     public function writeEntryFile(File $file): void
     {
         $file->putContents(
-            '<?php'."\n".
-            'namespace df;'."\n".
-            'const COMPILE_TIMESTAMP = '.time().';'."\n".
-            'const COMPILE_BUILD_ID = \''.$this->buildId.'\';'."\n".
-            'const COMPILE_ROOT_PATH = __DIR__;'."\n".
-            'const COMPILE_ENV_MODE = \''.Genesis::$environment->getMode().'\';'
+            '<?php' . "\n" .
+            'namespace df;' . "\n" .
+            'const COMPILE_TIMESTAMP = ' . time() . ';' . "\n" .
+            'const COMPILE_BUILD_ID = \'' . $this->buildId . '\';' . "\n" .
+            'const COMPILE_ROOT_PATH = __DIR__;' . "\n" .
+            'const COMPILE_ENV_MODE = \'' . Genesis::$environment->getMode() . '\';'
         );
     }
 
@@ -247,7 +247,7 @@ class BuildManifest implements Manifest
         // Task nodes
         foreach ($this->scanTaskNodes(true) as $request) {
             yield new GenericTask(
-                'Running task: '.$request->getPath(),
+                'Running task: ' . $request->getPath(),
                 function (Session $session) use ($request) {
                     Legacy::launchTask((string)$request, $session, null, true);
                 }
@@ -316,14 +316,14 @@ class BuildManifest implements Manifest
 
             $keyParts = explode('/', dirname($key));
             /** @phpstan-var class-string */
-            $class = 'df\\apex\\directory\\'.implode('\\', $keyParts).'\\'.$basename;
+            $class = 'df\\apex\\directory\\' . implode('\\', $keyParts) . '\\' . $basename;
             $ref = new ReflectionClass($class);
 
             if (!$ref->implementsInterface(BuildTaskNode::class)) {
                 continue;
             }
 
-            $runAfter = defined($class.'::RUN_AFTER') && (bool)$class::RUN_AFTER;
+            $runAfter = defined($class . '::RUN_AFTER') && (bool)$class::RUN_AFTER;
 
             if (
                 (!$after && $runAfter) ||
@@ -337,12 +337,12 @@ class BuildManifest implements Manifest
             if ($keyParts[0] == 'front') {
                 array_shift($keyParts);
             } else {
-                $keyParts[0] = '~'.$keyParts[0];
+                $keyParts[0] = '~' . $keyParts[0];
             }
 
-            /** @var ArchRequest */
+            /** @var ArchRequest $output */
             $output = ArchRequest::factory(
-                trim(implode('/', $keyParts).'/'.Dictum::actionSlug(substr($basename, 4)), '/')
+                trim(implode('/', $keyParts) . '/' . Dictum::actionSlug(substr($basename, 4)), '/')
             );
 
             $output->query->buildId = $this->buildId;

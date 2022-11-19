@@ -6,8 +6,6 @@
 
 namespace df\axis\schema\field;
 
-use df;
-use df\core;
 use df\axis;
 use df\opal;
 
@@ -22,18 +20,18 @@ class Number extends Base implements
 
     protected $_isFixedPoint = false;
 
-    protected function _initAsInteger($size=null)
+    protected function _initAsInteger($size = null)
     {
         $this->setByteSize($size);
     }
 
-    protected function _initAsUInteger($size=null)
+    protected function _initAsUInteger($size = null)
     {
         $this->setByteSize($size);
         $this->isUnsigned(true);
     }
 
-    protected function _initAsFilled($precision=6)
+    protected function _initAsFilled($precision = 6)
     {
         $this->setPrecision($precision);
         $this->setScale(0);
@@ -42,27 +40,27 @@ class Number extends Base implements
         $this->shouldZerofill(true);
     }
 
-    protected function _initAsFloat($precision=null, $scale=null)
+    protected function _initAsFloat($precision = null, $scale = null)
     {
         $this->setPrecision($precision);
         $this->setScale($scale);
     }
 
-    protected function _initAsUFloat($precision=null, $scale=null)
+    protected function _initAsUFloat($precision = null, $scale = null)
     {
         $this->setPrecision($precision);
         $this->setScale($scale);
         $this->isUnsigned(true);
     }
 
-    protected function _initAsDecimal($precision=null, $scale=null)
+    protected function _initAsDecimal($precision = null, $scale = null)
     {
         $this->setPrecision($precision);
         $this->setScale($scale);
         $this->isFixedPoint(true);
     }
 
-    protected function _initAsUDecimal($precision=null, $scale=null)
+    protected function _initAsUDecimal($precision = null, $scale = null)
     {
         $this->setPrecision($precision);
         $this->setScale($scale);
@@ -77,7 +75,7 @@ class Number extends Base implements
         $this->isFixedPoint(true);
     }
 
-    protected function _initAsPercentage($scale=4)
+    protected function _initAsPercentage($scale = 4)
     {
         $this->setScale($scale);
         $this->setPrecision($this->_scale + 3);
@@ -91,13 +89,13 @@ class Number extends Base implements
         $this->setScale(6);
     }
 
-    protected function _init($size=null)
+    protected function _init($size = null)
     {
         $this->setByteSize($size);
     }
 
 
-    public function isFixedPoint(bool $flag=null)
+    public function isFixedPoint(bool $flag = null)
     {
         if ($flag !== null) {
             if ($flag != $this->_isFixedPoint) {
@@ -113,7 +111,7 @@ class Number extends Base implements
 
 
     // Values
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    public function sanitizeValue($value, opal\record\IRecord $forRecord = null)
     {
         if ($value !== null) {
             if ($this->_isFixedPoint) {
@@ -130,7 +128,7 @@ class Number extends Base implements
         return $value;
     }
 
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord = null)
     {
         if (isset($row[$key])) {
             $output = $row[$key];

@@ -5,23 +5,22 @@
  */
 namespace df\arch;
 
-use df;
-use df\core;
 use df\arch;
 use df\mesh;
 
-class MeshHandler implements mesh\IEntityHandler {
-
-    public function fetchEntity(mesh\IManager $manager, array $node) {
-        switch($node['type']) {
+class MeshHandler implements mesh\IEntityHandler
+{
+    public function fetchEntity(mesh\IManager $manager, array $node)
+    {
+        switch ($node['type']) {
             case 'Context':
                 $id = $node['id'];
 
-                if($id === null) {
+                if ($id === null) {
                     $id = 'Http';
                 }
 
-                $request = arch\Request::factory($id.'://~'.implode('/', $node['location']).'/');
+                $request = arch\Request::factory($id . '://~' . implode('/', $node['location']) . '/');
                 return arch\Context::factory($request);
         }
     }

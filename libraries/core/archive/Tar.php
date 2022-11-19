@@ -5,14 +5,11 @@
  */
 namespace df\core\archive;
 
-use df;
-use df\core;
-
 use DecodeLabs\Atlas;
 
 class Tar extends Base
 {
-    public function extractFile(string $file, string $destination=null, bool $flattenRoot=false): string
+    public function extractFile(string $file, string $destination = null, bool $flattenRoot = false): string
     {
         $destination = $this->_normalizeExtractDestination($file, $destination);
         $archive = new \PharData($file);

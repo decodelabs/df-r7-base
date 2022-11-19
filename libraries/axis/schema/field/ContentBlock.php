@@ -6,22 +6,18 @@
 
 namespace df\axis\schema\field;
 
-use df;
-use df\core;
-use df\axis;
-use df\fire;
-use df\opal;
-use df\flex;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+
 use DecodeLabs\R7\Nightfire\Block;
 use DecodeLabs\R7\Nightfire\BlockAbstract;
+use df\axis;
+use df\opal;
 
 class ContentBlock extends Base
 {
     // Values
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord = null)
     {
         if (!isset($row[$key])) {
             return null;
@@ -77,7 +73,7 @@ class ContentBlock extends Base
         return $this->sanitizeValue($value);
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    public function sanitizeValue($value, opal\record\IRecord $forRecord = null)
     {
         if ($value === null) {
             if ($this->isNullable()) {

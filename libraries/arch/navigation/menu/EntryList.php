@@ -6,8 +6,6 @@
 
 namespace df\arch\navigation\menu;
 
-use df;
-use df\core;
 use df\arch;
 
 class EntryList implements IEntryList

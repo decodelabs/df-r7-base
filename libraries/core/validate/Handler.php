@@ -6,10 +6,9 @@
 
 namespace df\core\validate;
 
-use df;
-use df\core;
-
 use DecodeLabs\Exceptional;
+
+use df\core;
 
 class Handler implements IHandler
 {
@@ -28,13 +27,13 @@ class Handler implements IHandler
 
 
     // Fields
-    public function addField(string $name, string $type=null)
+    public function addField(string $name, string $type = null)
     {
         $this->newField($name, $type);
         return $this;
     }
 
-    public function addRequiredField(string $name, string $type=null)
+    public function addRequiredField(string $name, string $type = null)
     {
         $this->newField($name, $type)->isRequired(true);
         return $this;
@@ -48,7 +47,7 @@ class Handler implements IHandler
 
 
 
-    public function newField(string $name, string $type=null): IField
+    public function newField(string $name, string $type = null): IField
     {
         $this->endField();
         $field = core\validate\field\Base::factory($this, $type, $name);
@@ -59,7 +58,7 @@ class Handler implements IHandler
         return $field;
     }
 
-    public function newRequiredField(string $name, string $type=null): IField
+    public function newRequiredField(string $name, string $type = null): IField
     {
         return $this->newField($name, $type)->isRequired(true);
     }
@@ -103,13 +102,13 @@ class Handler implements IHandler
     {
         if (!$this->_targetField) {
             throw Exceptional::Runtime(
-                'There is no active target field to apply method '.$method.' to'
+                'There is no active target field to apply method ' . $method . ' to'
             );
         }
 
         if (!method_exists($this->_targetField, $method)) {
             throw Exceptional::BadMethodCall(
-                'Target field '.$this->_targetField->getName().' does not have method '.$method
+                'Target field ' . $this->_targetField->getName() . ' does not have method ' . $method
             );
         }
 
@@ -255,7 +254,7 @@ class Handler implements IHandler
 
 
     // Map
-    public function setDataMap(array $map=null)
+    public function setDataMap(array $map = null)
     {
         if ($map === null) {
             $this->_dataMap = null;
@@ -320,7 +319,7 @@ class Handler implements IHandler
 
 
     // Validate
-    public function validate($data, array $allowFields=null)
+    public function validate($data, array $allowFields = null)
     {
         $this->endField();
 
@@ -403,7 +402,7 @@ class Handler implements IHandler
         return $this->data;
     }
 
-    public function applyTo(&$record, array $fields=null)
+    public function applyTo(&$record, array $fields = null)
     {
         if (!is_array($record) && !$record instanceof \ArrayAccess) {
             throw Exceptional::InvalidArgument(

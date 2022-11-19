@@ -5,11 +5,9 @@
  */
 namespace df\core\i18n\module;
 
-use df\core;
-
 class Countries extends Base implements ICountriesModule
 {
-    const MODULE_NAME = 'countries';
+    public const MODULE_NAME = 'countries';
 
     public function getName($id)
     {
@@ -23,7 +21,7 @@ class Countries extends Base implements ICountriesModule
         return $id;
     }
 
-    public function getList(array $ids=null)
+    public function getList(array $ids = null)
     {
         $this->_loadData();
         $output = $this->_data;
@@ -74,7 +72,7 @@ class Countries extends Base implements ICountriesModule
         }
     }
 
-    const SUGGESTED_LOCALES = [
+    public const SUGGESTED_LOCALES = [
         'aa_DJ', 'aa_ER', 'aa_ET', 'aa', 'af_ZA', 'af', 'am_ET', 'am', 'ar_AE', 'ar_BH', 'ar_DZ', 'ar_EG',
         'ar_IQ', 'ar_JO', 'ar_KW', 'ar_LB', 'ar_LY', 'ar_MA', 'ar_OM', 'ar_QA', 'ar_SA', 'ar_SD', 'ar_SY',
         'ar_TN', 'ar_YE', 'ar', 'as_IN', 'as', 'az_AZ', 'az', 'be_BY', 'be', 'bg_BG', 'bg', 'bn_IN', 'bn',

@@ -5,25 +5,24 @@
  */
 namespace df\core\time;
 
-use df;
-use df\core;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
 
 class Duration implements IDuration, Dumpable
 {
-    const MICROSECONDS = -2;
-    const MILLISECONDS = -1;
-    const SECONDS = 1;
-    const MINUTES = 2;
-    const HOURS = 3;
-    const DAYS = 4;
-    const WEEKS = 5;
-    const MONTHS = 6;
-    const YEARS = 7;
+    public const MICROSECONDS = -2;
+    public const MILLISECONDS = -1;
+    public const SECONDS = 1;
+    public const MINUTES = 2;
+    public const HOURS = 3;
+    public const DAYS = 4;
+    public const WEEKS = 5;
+    public const MONTHS = 6;
+    public const YEARS = 7;
 
-    const MULTIPLIERS = [
+    public const MULTIPLIERS = [
         self::MICROSECONDS => 0.000001,
         self::MILLISECONDS => 0.001,
         self::SECONDS => 1,
@@ -130,22 +129,22 @@ class Duration implements IDuration, Dumpable
         return (new self(0))->setYears($years);
     }
 
-    public static function getUnitList($locale=null)
+    public static function getUnitList($locale = null)
     {
         return [
             self::MICROSECONDS => self::getUnitString(self::MICROSECONDS, 1, $locale),
             self::MILLISECONDS => self::getUnitString(self::MILLISECONDS, 1, $locale),
             self::SECONDS => self::getUnitString(self::SECONDS, 1, $locale),
             self::MINUTES => self::getUnitString(self::MINUTES, 1, $locale),
-            self::HOURS   => self::getUnitString(self::HOURS, 1, $locale),
-            self::DAYS    => self::getUnitString(self::DAYS, 1, $locale),
-            self::WEEKS   => self::getUnitString(self::WEEKS, 1, $locale),
-            self::MONTHS  => self::getUnitString(self::MONTHS, 1, $locale),
-            self::YEARS   => self::getUnitString(self::YEARS, 1, $locale),
+            self::HOURS => self::getUnitString(self::HOURS, 1, $locale),
+            self::DAYS => self::getUnitString(self::DAYS, 1, $locale),
+            self::WEEKS => self::getUnitString(self::WEEKS, 1, $locale),
+            self::MONTHS => self::getUnitString(self::MONTHS, 1, $locale),
+            self::YEARS => self::getUnitString(self::YEARS, 1, $locale),
         ];
     }
 
-    public function __construct($time=0)
+    public function __construct($time = 0)
     {
         if ($time instanceof IDuration) {
             $time = $time->getSeconds();
@@ -201,7 +200,7 @@ class Duration implements IDuration, Dumpable
             && $interval->s == 0
             && false === strpos($time, '0')) {
                 throw Exceptional::InvalidArgument(
-                    'Invalid duration string: '.$time
+                    'Invalid duration string: ' . $time
                 );
             }
         }
@@ -592,14 +591,14 @@ class Duration implements IDuration, Dumpable
 
             default:
                 throw Exceptional::InvalidArgument(
-                    'Invalid duration unit: '.$id
+                    'Invalid duration unit: ' . $id
                 );
         }
 
         return $id;
     }
 
-    public static function getUnitString($unit, $plural=true, $locale=null)
+    public static function getUnitString($unit, $plural = true, $locale = null)
     {
         $unit = self::normalizeUnitId($unit);
         $i18n = core\i18n\Manager::getInstance();
@@ -634,7 +633,7 @@ class Duration implements IDuration, Dumpable
         }
     }
 
-    public function toString($maxUnits=1, $shortUnits=false, $maxUnit=self::YEARS, $roundLastUnit=true): string
+    public function toString($maxUnits = 1, $shortUnits = false, $maxUnit = self::YEARS, $roundLastUnit = true): string
     {
         return implode(', ', $this->_buildStringComponents($maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $this->_locale));
     }
@@ -659,7 +658,7 @@ class Duration implements IDuration, Dumpable
         return implode(':', $components);
     }
 
-    protected function _buildStringComponents($maxUnits=1, $shortUnits=false, $maxUnit=self::YEARS, $roundLastUnit=true, $locale=null)
+    protected function _buildStringComponents($maxUnits = 1, $shortUnits = false, $maxUnit = self::YEARS, $roundLastUnit = true, $locale = null)
     {
         $i18n = core\i18n\Manager::getInstance();
         $seconds = $this->_seconds;
@@ -776,7 +775,7 @@ class Duration implements IDuration, Dumpable
         }
     }
 
-    private function _createOutputArray($seconds, $maxUnits, $minUnit, $maxUnit, $all=false)
+    private function _createOutputArray($seconds, $maxUnits, $minUnit, $maxUnit, $all = false)
     {
         if ($maxUnits <= 0) {
             $maxUnits = 1;
@@ -825,7 +824,7 @@ class Duration implements IDuration, Dumpable
         return $output;
     }
 
-    protected function _addUnitString(core\i18n\IManager $i18n, $number, $unit, $shortUnits=false)
+    protected function _addUnitString(core\i18n\IManager $i18n, $number, $unit, $shortUnits = false)
     {
         switch ($unit) {
             case self::MICROSECONDS:

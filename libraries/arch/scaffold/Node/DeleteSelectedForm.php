@@ -6,9 +6,9 @@
 
 namespace df\arch\scaffold\Node;
 
-use df\arch\Scaffold;
-
 use DecodeLabs\Tagged as Html;
+
+use df\arch\Scaffold;
 
 class DeleteSelectedForm extends AffectSelectedForm
 {
@@ -73,15 +73,15 @@ class DeleteSelectedForm extends AffectSelectedForm
         }
 
         $mainButton = $this->html->eventButton(
-                $this->eventName('delete'),
-                $this->_('Delete')
-            )
+            $this->eventName('delete'),
+            $this->_('Delete')
+        )
             ->setIcon('delete');
 
         $cancelButton = $this->html->eventButton(
-                $this->eventName('cancel'),
-                $this->_('Cancel')
-            )
+            $this->eventName('cancel'),
+            $this->_('Cancel')
+        )
             ->setIcon('cancel');
 
         $this->customizeMainButton($mainButton);

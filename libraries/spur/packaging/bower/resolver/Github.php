@@ -5,20 +5,17 @@
  */
 namespace df\spur\packaging\bower\resolver;
 
-use df;
-use df\core;
-use df\spur;
-use df\link;
-use df\flex;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Exceptional;
+
+use df\flex;
+use df\spur;
 
 class Github implements spur\packaging\bower\IResolver
 {
     use spur\packaging\bower\TGitResolver;
 
-    const TAG_TIMEOUT = '5 hours';
+    public const TAG_TIMEOUT = '5 hours';
 
     protected $_mediator;
 
@@ -34,7 +31,7 @@ class Github implements spur\packaging\bower\IResolver
         return array_pop($parts);
     }
 
-    public function fetchPackage(spur\packaging\bower\Package $package, $cachePath, $currentVersion=null)
+    public function fetchPackage(spur\packaging\bower\Package $package, $cachePath, $currentVersion = null)
     {
         $repoName = $this->_extractRepoName($package);
 
@@ -51,13 +48,13 @@ class Github implements spur\packaging\bower\IResolver
             return false;
         }
 
-        $package->cacheFileName = $package->name.'#'.$version.'.zip';
+        $package->cacheFileName = $package->name . '#' . $version . '.zip';
 
-        if (is_file($cachePath.'/packages/'.$package->cacheFileName)) {
+        if (is_file($cachePath . '/packages/' . $package->cacheFileName)) {
             return true;
         }
 
-        Atlas::$http->getFile($url, $cachePath.'/packages/'.$package->cacheFileName);
+        Atlas::$http->getFile($url, $cachePath . '/packages/' . $package->cacheFileName);
         return true;
     }
 
@@ -76,11 +73,11 @@ class Github implements spur\packaging\bower\IResolver
     {
         if (!preg_match('/(?:@|:\/\/)github.com[:\/]([^\/\s]+?)\/([^\/\s]+?)(?:\.git)?\/?$/i', $package->url, $matches)) {
             throw Exceptional::Runtime(
-                'Unable to extract repo name from url: '.$package->url
+                'Unable to extract repo name from url: ' . $package->url
             );
         }
 
-        return $matches[1].'/'.$matches[2];
+        return $matches[1] . '/' . $matches[2];
     }
 
     protected function _getRequiredTag(spur\packaging\bower\Package $package, $repoName, $cachePath)
@@ -96,7 +93,7 @@ class Github implements spur\packaging\bower\IResolver
 
     protected function _fetchTags(spur\packaging\bower\Package $package, $repoName, $cachePath)
     {
-        $path = $cachePath.'/tags/github-'.str_replace('/', '-', $repoName).'.json';
+        $path = $cachePath . '/tags/github-' . str_replace('/', '-', $repoName) . '.json';
 
         if (!Atlas::hasFileChangedIn($path, self::TAG_TIMEOUT)) {
             $tags = $this->_mediator->getRepositoryTags($repoName);

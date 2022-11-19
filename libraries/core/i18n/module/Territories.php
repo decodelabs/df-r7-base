@@ -5,11 +5,9 @@
  */
 namespace df\core\i18n\module;
 
-use df\core;
-
 class Territories extends Base implements ITerritoriesModule
 {
-    const MODULE_NAME = 'territories';
+    public const MODULE_NAME = 'territories';
 
     public function getName($id)
     {
@@ -23,7 +21,7 @@ class Territories extends Base implements ITerritoriesModule
         return $id;
     }
 
-    public function getList(array $ids=null)
+    public function getList(array $ids = null)
     {
         $this->_loadData();
         $output = $this->_data;

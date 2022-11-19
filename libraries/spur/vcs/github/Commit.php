@@ -5,9 +5,7 @@
  */
 namespace df\spur\vcs\github;
 
-use df;
 use df\core;
-use df\spur;
 
 class Commit extends CommitReference implements ICommit
 {

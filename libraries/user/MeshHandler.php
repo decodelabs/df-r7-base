@@ -5,15 +5,13 @@
  */
 namespace df\user;
 
-use df;
-use df\core;
-use df\user;
 use df\mesh;
 
-class MeshHandler implements mesh\IEntityHandler {
-    
-    public function fetchEntity(mesh\IManager $manager, array $node) {
-        if($node['type'] == 'Client') {
+class MeshHandler implements mesh\IEntityHandler
+{
+    public function fetchEntity(mesh\IManager $manager, array $node)
+    {
+        if ($node['type'] == 'Client') {
             return Manager::getInstance()->getClient();
         }
     }

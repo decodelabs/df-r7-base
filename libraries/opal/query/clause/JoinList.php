@@ -5,8 +5,6 @@
  */
 namespace df\opal\query\clause;
 
-use df;
-use df\core;
 use df\opal;
 
 class JoinList extends ListBase implements opal\query\IJoinClauseList
@@ -65,7 +63,7 @@ class JoinList extends ListBase implements opal\query\IJoinClauseList
     }
 
 
-    public function addJoinClause(opal\query\IJoinClauseProvider $clause=null)
+    public function addJoinClause(opal\query\IJoinClauseProvider $clause = null)
     {
         return $this->_addClause($clause);
     }

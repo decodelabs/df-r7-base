@@ -5,18 +5,16 @@
  */
 namespace df\aura\html\widget;
 
-use df;
 use df\core;
-use df\aura;
-use df\arch;
 
-class WeekPicker extends DatePicker {
+class WeekPicker extends DatePicker
+{
+    public const PRIMARY_TAG = 'input.textbox.picker.week';
+    public const INPUT_TYPE = 'week';
+    public const DEFAULT_PLACEHOLDER = 'yyyy-Www';
 
-    const PRIMARY_TAG = 'input.textbox.picker.week';
-    const INPUT_TYPE = 'week';
-    const DEFAULT_PLACEHOLDER = 'yyyy-Www';
-
-    protected function _dateToString(core\time\IDate $date) {
+    protected function _dateToString(core\time\IDate $date)
+    {
         $date->toUtc();
         return $date->format('Y-\WW');
     }

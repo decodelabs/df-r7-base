@@ -6,12 +6,9 @@
 
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-
 use DecodeLabs\Coercion;
+
+use df\aura;
 
 class PanelSet extends Base
 {
@@ -29,11 +26,11 @@ class PanelSet extends Base
 
         foreach ($this->_panels as $id => $panel) {
             $cellTag = new aura\html\Tag('article', [
-                'class' => 'w panel field-'.$id,
+                'class' => 'w panel field-' . $id,
             ]);
 
             if ($width = $panel->getWidth()) {
-                $cellTag->setStyle('flex-basis', $width.'%');
+                $cellTag->setStyle('flex-basis', $width . '%');
             }
 
             $bodyTag = new aura\html\Tag('div', ['class' => 'body']);
@@ -45,7 +42,7 @@ class PanelSet extends Base
 
 
 
-    public function addPanel($a, $b=null, $c=null)
+    public function addPanel($a, $b = null, $c = null)
     {
         if ($c !== null) {
             $id = $a;
@@ -95,7 +92,7 @@ class PanelSet_Panel
     public function __construct(?string $id)
     {
         if ($id === null) {
-            $id = 'panel'.uniqid();
+            $id = 'panel' . uniqid();
         }
 
         $this->setId($id);

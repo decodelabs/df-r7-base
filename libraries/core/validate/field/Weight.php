@@ -5,7 +5,6 @@
  */
 namespace df\core\validate\field;
 
-use df;
 use df\core;
 use df\opal;
 
@@ -58,7 +57,7 @@ class Weight extends Base implements core\validate\IWeightField
         $fieldName = $this->getRecordName();
 
         $query = opal\query\Initiator::factory()
-            ->beginSelect(['MAX('.$fieldName.') as max'])
+            ->beginSelect(['MAX(' . $fieldName . ') as max'])
             ->from($this->_storageAdapter);
 
         if ($this->_recordId !== null) {

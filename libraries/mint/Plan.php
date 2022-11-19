@@ -6,12 +6,10 @@
 
 namespace df\mint;
 
-use df;
-use df\core;
-use df\mint;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\mint;
 
 class Plan implements mint\IPlan, Dumpable
 {
@@ -23,7 +21,7 @@ class Plan implements mint\IPlan, Dumpable
     protected $_statementDescriptor;
     protected $_trialDays;
 
-    public function __construct(string $id, string $name, mint\ICurrency $amount, string $interval='month')
+    public function __construct(string $id, string $name, mint\ICurrency $amount, string $interval = 'month')
     {
         $this->setId($id);
         $this->setName($name);
@@ -66,7 +64,7 @@ class Plan implements mint\IPlan, Dumpable
     }
 
 
-    public function setInterval(string $interval, int $count=null)
+    public function setInterval(string $interval, int $count = null)
     {
         switch ($interval) {
             case 'day':
@@ -157,17 +155,17 @@ class Plan implements mint\IPlan, Dumpable
      */
     public function glitchDump(): iterable
     {
-        $output = ($this->_id ?? '*').' : '.$this->_name;
+        $output = ($this->_id ?? '*') . ' : ' . $this->_name;
 
         if ($this->_statementDescriptor) {
-            $output .= ' ['.$this->_statementDescriptor.']';
+            $output .= ' [' . $this->_statementDescriptor . ']';
         }
 
         $output .= "\n";
-        $output .= $this->_amount.' @ '.$this->_intervalCount.' '.$this->_interval;
+        $output .= $this->_amount . ' @ ' . $this->_intervalCount . ' ' . $this->_interval;
 
         if ($this->_trialDays) {
-            $output .= ' ('.$this->_trialDays.' day trial)';
+            $output .= ' (' . $this->_trialDays . ' day trial)';
         }
 
         yield 'text' => $output;

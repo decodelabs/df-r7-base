@@ -5,12 +5,10 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
+use DecodeLabs\Glitch\Dumpable;
 use df\arch;
 
-use DecodeLabs\Glitch\Dumpable;
+use df\aura;
 
 class RadioGroup extends Base implements IUngroupedSelectionInputWidget, Dumpable
 {
@@ -18,18 +16,18 @@ class RadioGroup extends Base implements IUngroupedSelectionInputWidget, Dumpabl
     use TWidget_Input;
     use TWidget_UngroupedSelectionInput;
 
-    const PRIMARY_TAG = 'div.group.radio';
-    const INPUT_TYPE = 'radio';
-    const ARRAY_INPUT = false;
-    const WIDGET_CLASS = 'w.check.radio';
-    const EMPTY_PLACEHOLDER = '_%_empty_%_';
+    public const PRIMARY_TAG = 'div.group.radio';
+    public const INPUT_TYPE = 'radio';
+    public const ARRAY_INPUT = false;
+    public const WIDGET_CLASS = 'w.check.radio';
+    public const EMPTY_PLACEHOLDER = '_%_empty_%_';
 
     protected $_inputIdCounter = 0;
     protected $_shouldWrapBody = true;
     protected $_labelClass = null;
     protected $_emptyLabel = null;
 
-    public function __construct(arch\IContext $context, $name, $value=null, $options=null, $labelsAsValues=false)
+    public function __construct(arch\IContext $context, $name, $value = null, $options = null, $labelsAsValues = false)
     {
         parent::__construct($context);
 
@@ -64,13 +62,13 @@ class RadioGroup extends Base implements IUngroupedSelectionInputWidget, Dumpabl
         }
 
         foreach ($options as $value => $label) {
-            $labelTag = new aura\html\Element('label.'.static::WIDGET_CLASS);
+            $labelTag = new aura\html\Element('label.' . static::WIDGET_CLASS);
 
             if ($this->_labelClass) {
                 $labelTag->addClass($this->_labelClass);
             }
 
-            $inputTag = new aura\html\Tag('input.'.static::WIDGET_CLASS, [
+            $inputTag = new aura\html\Tag('input.' . static::WIDGET_CLASS, [
                 'type' => static::INPUT_TYPE
             ]);
 
@@ -85,7 +83,7 @@ class RadioGroup extends Base implements IUngroupedSelectionInputWidget, Dumpabl
             $inputId = null;
 
             if ($id !== null) {
-                $inputId = $id.'-'.$this->_inputIdCounter++;
+                $inputId = $id . '-' . $this->_inputIdCounter++;
                 $labelTag->setAttribute('for', $inputId);
                 $inputTag->setId($inputId);
             }
@@ -122,7 +120,7 @@ class RadioGroup extends Base implements IUngroupedSelectionInputWidget, Dumpabl
         return $selectionFound = $value == $currValue;
     }
 
-    public function shouldWrapBody(bool $flag=null)
+    public function shouldWrapBody(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_shouldWrapBody = $flag;
@@ -143,7 +141,7 @@ class RadioGroup extends Base implements IUngroupedSelectionInputWidget, Dumpabl
         return $this->_labelClass;
     }
 
-    public function isInline(bool $flag=null)
+    public function isInline(bool $flag = null)
     {
         if ($flag !== null) {
             if ($flag) {

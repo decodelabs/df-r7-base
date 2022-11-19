@@ -6,15 +6,13 @@
 
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-use df\flex;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\Tagged as Html;
+
+use df\arch;
+use df\aura;
+use df\core;
 
 abstract class Base implements IWidget
 {
@@ -22,14 +20,14 @@ abstract class Base implements IWidget
 
     public const PRIMARY_TAG = 'div';
 
-    public static function factory(arch\IContext $context, $name, array $args=[]): IWidget
+    public static function factory(arch\IContext $context, $name, array $args = []): IWidget
     {
         $name = ucfirst($name);
-        $class = 'df\\aura\\html\\widget\\'.$name;
+        $class = 'df\\aura\\html\\widget\\' . $name;
 
         if (!class_exists($class)) {
             throw Exceptional::NotFound(
-                'Widget '.$name.' could not be found'
+                'Widget ' . $name . ' could not be found'
             );
         }
 
@@ -40,7 +38,9 @@ abstract class Base implements IWidget
 
         if (!$output instanceof IWidget) {
             throw Exceptional::Logic(
-                'Generated widget object does not implement IWidget', null, $output
+                'Generated widget object does not implement IWidget',
+                null,
+                $output
             );
         }
 
@@ -89,13 +89,13 @@ abstract class Base implements IWidget
     {
         core\log\Manager::getInstance()->logException($e);
 
-        $message = Html::esc('Error rendering widget '.$this->getWidgetName());
+        $message = Html::esc('Error rendering widget ' . $this->getWidgetName());
 
         if (Genesis::$environment->isTesting()) {
-            $message .= Html::esc(' - '.$e->getMessage()).'<br /><code>'.Html::esc($e->getFile().' : '.$e->getLine()).'</code>';
+            $message .= Html::esc(' - ' . $e->getMessage()) . '<br /><code>' . Html::esc($e->getFile() . ' : ' . $e->getLine()) . '</code>';
         }
 
-        return '<p class="error">'.$message.'</p>';
+        return '<p class="error">' . $message . '</p>';
     }
 
     abstract protected function _render();
@@ -114,7 +114,7 @@ abstract class Base implements IWidget
         return $this->getTag()->getId();
     }
 
-    public function isHidden(bool $flag=null)
+    public function isHidden(bool $flag = null)
     {
         if ($flag !== null) {
             $this->getTag()->isHidden($flag);
@@ -161,9 +161,9 @@ abstract class Base implements IWidget
         return $this;
     }
 
-    public function getAttribute($attr, $default=null)
+    public function getAttribute($attr, $default = null)
     {
-        return $this->getTag()->getAttribute($attr, $default=null);
+        return $this->getTag()->getAttribute($attr, $default = null);
     }
 
     public function removeAttribute($attr)
@@ -197,7 +197,7 @@ abstract class Base implements IWidget
         return $this;
     }
 
-    public function getDataAttribute($key, $default=null)
+    public function getDataAttribute($key, $default = null)
     {
         return $this->getTag()->getDataAttribute($key, $default);
     }
@@ -291,7 +291,7 @@ abstract class Base implements IWidget
         return $this;
     }
 
-    public function getStyle($key, $default=null)
+    public function getStyle($key, $default = null)
     {
         return $this->getTag()->getStyle($key, $default);
     }

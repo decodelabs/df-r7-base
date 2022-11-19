@@ -5,12 +5,10 @@
  */
 namespace df\core\validate\field;
 
-use df;
-use df\core;
-use df\opal;
-use df\flex;
-
 use DecodeLabs\Dictum;
+use df\core;
+
+use df\opal;
 
 class Text extends Base implements core\validate\ITextField
 {
@@ -94,7 +92,7 @@ class Text extends Base implements core\validate\ITextField
 
 
     // Trim
-    public function shouldTrim(bool $flag=null)
+    public function shouldTrim(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_shouldTrim = $flag;
@@ -106,7 +104,7 @@ class Text extends Base implements core\validate\ITextField
 
 
     // 4 Byte
-    public function canAccept4Byte(bool $flag=null)
+    public function canAccept4Byte(bool $flag = null)
     {
         if ($flag != null) {
             $this->_accept4Byte = $flag;
@@ -180,7 +178,8 @@ class Text extends Base implements core\validate\ITextField
         }
 
         if ($this->_pattern !== null && !filter_var(
-            $value, FILTER_VALIDATE_REGEXP,
+            $value,
+            FILTER_VALIDATE_REGEXP,
             ['options' => ['regexp' => $this->_pattern]]
         )) {
             $this->addError('pattern', $this->validator->_('The value entered is invalid'));

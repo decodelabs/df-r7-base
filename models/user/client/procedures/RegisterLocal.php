@@ -5,19 +5,15 @@
  */
 namespace df\apex\models\user\client\procedures;
 
-use df;
-use df\core;
-use df\apex;
-use df\axis;
-use df\user;
-use df\opal;
-
 use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
 
+use df\axis;
+use df\opal;
+
 class RegisterLocal extends axis\procedure\Record
 {
-    const CAN_CREATE = true;
+    public const CAN_CREATE = true;
 
     protected function _prepare()
     {
@@ -28,7 +24,7 @@ class RegisterLocal extends axis\procedure\Record
         }
     }
 
-    protected function _execute($invite=null)
+    protected function _execute($invite = null)
     {
         $userConfig = $this->_model->config;
 
@@ -87,7 +83,7 @@ class RegisterLocal extends axis\procedure\Record
                     $this->user->auth->newRequest('Local')
                         ->setIdentity($auth['identity'])
                         ->setCredential('password', $this->values['password'])
-                        //->setAttribute('rememberMe', (bool)true)
+                    //->setAttribute('rememberMe', (bool)true)
                 );
             }
         }

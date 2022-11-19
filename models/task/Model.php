@@ -5,11 +5,8 @@
  */
 namespace df\apex\models\task;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
 
-class Model extends axis\Model {
-    
+class Model extends axis\Model
+{
 }

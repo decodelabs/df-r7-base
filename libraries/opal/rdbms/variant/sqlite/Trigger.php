@@ -5,8 +5,6 @@
  */
 namespace df\opal\rdbms\variant\sqlite;
 
-use df;
-use df\core;
 use df\opal;
 
 class Trigger extends opal\rdbms\schema\constraint\Trigger
@@ -15,7 +13,7 @@ class Trigger extends opal\rdbms\schema\constraint\Trigger
     protected $_updateFields = [];
     protected $_whenExpression;
 
-    public function isTemporary(bool $flag=null)
+    public function isTemporary(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isTemporary = $flag;
@@ -49,7 +47,7 @@ class Trigger extends opal\rdbms\schema\constraint\Trigger
 
     protected function _hasFieldReference(array $fields)
     {
-        $regex = '/(OLD|NEW)[`]?\.[`]?('.implode('|', $fields).')[`]?/i';
+        $regex = '/(OLD|NEW)[`]?\.[`]?(' . implode('|', $fields) . ')[`]?/i';
 
         foreach ($this->_statements as $statement) {
             if (preg_match($regex, $statement)) {
@@ -87,19 +85,19 @@ class Trigger extends opal\rdbms\schema\constraint\Trigger
         }
 
         $output .= $this->_name;
-        $output .= ' '.$this->getTimingName();
-        $output .= ' '.$this->getEventName();
+        $output .= ' ' . $this->getTimingName();
+        $output .= ' ' . $this->getEventName();
 
         if (!empty($this->_updateFields)) {
-            $output .= ' OF '.implode(', ', $this->_updateFields);
+            $output .= ' OF ' . implode(', ', $this->_updateFields);
         }
 
         if ($this->_whenExpression !== null) {
-            $output .= ' WHEN '.$this->_whenExpression;
+            $output .= ' WHEN ' . $this->_whenExpression;
         }
 
-        $output .= ' '.implode('; ', $this->_statements);
-        $output .= ' ['.$this->_sqlVariant.']';
+        $output .= ' ' . implode('; ', $this->_statements);
+        $output .= ' [' . $this->_sqlVariant . ']';
 
         yield 'definition' => $output;
     }

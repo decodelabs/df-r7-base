@@ -6,12 +6,9 @@
 
 namespace df\apex\models\config;
 
-use df;
-use df\core;
-use df\apex;
-use df\axis;
-
 use DecodeLabs\R7\Legacy;
+
+use df\axis;
 
 class Model extends axis\Model
 {
@@ -37,7 +34,7 @@ class Model extends axis\Model
                 continue;
             }
 
-            $output = array_merge($output, $this->findIn($path.'/'.$dirName));
+            $output = array_merge($output, $this->findIn($path . '/' . $dirName));
         }
 
         return $output;

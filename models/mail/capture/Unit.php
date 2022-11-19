@@ -6,10 +6,10 @@
 
 namespace df\apex\models\mail\capture;
 
-use df\axis;
-use df\flow;
-
 use DecodeLabs\Genesis;
+use df\axis;
+
+use df\flow;
 
 class Unit extends axis\unit\Table
 {

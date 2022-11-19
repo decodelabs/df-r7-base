@@ -5,23 +5,21 @@
  */
 namespace df\opal\query\field;
 
-use df;
-use df\core;
-use df\opal;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\opal;
 
 class Aggregate implements opal\query\IAggregateField, Dumpable
 {
     use opal\query\TField;
 
-    const TYPE_COUNT = 1;
-    const TYPE_SUM = 2;
-    const TYPE_AVG = 3;
-    const TYPE_MIN = 4;
-    const TYPE_MAX = 5;
-    const TYPE_HAS = 6;
+    public const TYPE_COUNT = 1;
+    public const TYPE_SUM = 2;
+    public const TYPE_AVG = 3;
+    public const TYPE_MIN = 4;
+    public const TYPE_MAX = 5;
+    public const TYPE_HAS = 6;
 
     protected $_type;
     protected $_alias;
@@ -92,7 +90,7 @@ class Aggregate implements opal\query\IAggregateField, Dumpable
 
             default:
                 throw Exceptional::InvalidArgument(
-                    'Aggregate function '.$type.' is not recognised'
+                    'Aggregate function ' . $type . ' is not recognised'
                 );
         }
 
@@ -132,12 +130,12 @@ class Aggregate implements opal\query\IAggregateField, Dumpable
 
     public function getName(): string
     {
-        return $this->getTypeName().'('.($this->_isDistinct ? 'distinct ' : '').$this->_targetField->getName().')';
+        return $this->getTypeName() . '(' . ($this->_isDistinct ? 'distinct ' : '') . $this->_targetField->getName() . ')';
     }
 
     public function getQualifiedName()
     {
-        return $this->getTypeName().'('.($this->_isDistinct ? 'distinct ' : '').$this->_targetField->getQualifiedName().')';
+        return $this->getTypeName() . '(' . ($this->_isDistinct ? 'distinct ' : '') . $this->_targetField->getQualifiedName() . ')';
     }
 
     public function setAlias($alias)
@@ -161,7 +159,7 @@ class Aggregate implements opal\query\IAggregateField, Dumpable
         return $this->_alias !== $this->getName();
     }
 
-    public function isDistinct(bool $flag=null)
+    public function isDistinct(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isDistinct = $flag;
@@ -189,12 +187,12 @@ class Aggregate implements opal\query\IAggregateField, Dumpable
 
             case self::TYPE_SUM:
             case self::TYPE_AVG:
-                return (double)$value;
+                return (float)$value;
 
             case self::TYPE_MIN:
             case self::TYPE_MAX:
                 if (is_numeric($value)) {
-                    return (double)$value;
+                    return (float)$value;
                 } else {
                     return $value;
                 }
@@ -208,7 +206,7 @@ class Aggregate implements opal\query\IAggregateField, Dumpable
     public function rewriteAsDerived(opal\query\ISource $source)
     {
         return (new Intrinsic($source, $this->_alias, $this->_alias))
-            ->setLogicalAlias($source->getAlias().'.'.$this->_alias);
+            ->setLogicalAlias($source->getAlias() . '.' . $this->_alias);
     }
 
     public function toString(): string
@@ -216,7 +214,7 @@ class Aggregate implements opal\query\IAggregateField, Dumpable
         $output = $this->getQualifiedName();
 
         if ($this->hasDiscreetAlias()) {
-            $output .= ' as '.$this->getAlias();
+            $output .= ' as ' . $this->getAlias();
         }
 
         return $output;

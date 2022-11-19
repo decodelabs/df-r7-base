@@ -5,13 +5,8 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-
-class SubmitButton extends Button {
-
-    const PRIMARY_TAG = 'button.btn.submit';
-    const BUTTON_TYPE = 'submit';
+class SubmitButton extends Button
+{
+    public const PRIMARY_TAG = 'button.btn.submit';
+    public const BUTTON_TYPE = 'submit';
 }

@@ -5,10 +5,9 @@
  */
 namespace df\core\cache;
 
-use df;
-use df\core;
-
 use DecodeLabs\Terminus\Session;
+
+use df\core;
 
 interface IStore extends core\IValueMap, \ArrayAccess, core\IRegistryObject, \Countable
 {
@@ -43,8 +42,8 @@ interface IFileStore extends IStore
 
 interface IBackend extends \Countable
 {
-    public static function purgeApp(core\collection\ITree $options, ?Session $session=null);
-    public static function purgeAll(core\collection\ITree $options, ?Session $session=null);
+    public static function purgeApp(core\collection\ITree $options, ?Session $session = null);
+    public static function purgeAll(core\collection\ITree $options, ?Session $session = null);
     public static function prune(core\collection\ITree $options);
     public static function clearFor(core\collection\ITree $options, ICache $cache);
     public static function isLoadable(): bool;
@@ -52,8 +51,8 @@ interface IBackend extends \Countable
     public function getStats(): array;
     public function setLifeTime(int $lifeTime);
     public function getLifeTime(): int;
-    public function set($key, $value, $lifeTime=null);
-    public function get($key, $default=null);
+    public function set($key, $value, $lifeTime = null);
+    public function get($key, $default = null);
     public function has(...$keys);
     public function remove(...$keys);
     public function clear();

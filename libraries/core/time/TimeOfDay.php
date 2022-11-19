@@ -5,11 +5,10 @@
  */
 namespace df\core\time;
 
-use df;
-use df\core;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
 
 class TimeOfDay implements ITimeOfDay, Dumpable
 {

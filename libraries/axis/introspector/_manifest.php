@@ -5,11 +5,6 @@
  */
 namespace df\axis\introspector;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
-
 // Interfaces
 interface IProbe
 {
@@ -38,7 +33,7 @@ interface IUnitInspector
     public function getAdapterConnectionName();
 
     public function getSchema();
-    public function getTransientSchema($force=false);
+    public function getTransientSchema($force = false);
     public function getSchemaVersion();
     public function getDefinedSchemaVersion();
     public function canUpdateSchema();

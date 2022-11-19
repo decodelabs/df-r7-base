@@ -5,43 +5,47 @@
  */
 namespace df\apex\models\mail\capture;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
 use df\flow;
+use df\opal;
 
-class Record extends opal\record\Base implements flow\mail\IMailRecord {
-
-    public function getId(): ?string {
-        if(null !== ($id = $this['id'])) {
+class Record extends opal\record\Base implements flow\mail\IMailRecord
+{
+    public function getId(): ?string
+    {
+        if (null !== ($id = $this['id'])) {
             return (string)$id;
         } else {
             return null;
         }
     }
 
-    public function getFromAddress() {
+    public function getFromAddress()
+    {
         return flow\mail\Address::factory($this['from']);
     }
 
-    public function getToAddresses() {
+    public function getToAddresses()
+    {
         return flow\mail\AddressList::factory($this['to']);
     }
 
-    public function getSubject() {
+    public function getSubject()
+    {
         return $this['subject'];
     }
 
-    public function getBodyString() {
+    public function getBodyString()
+    {
         return $this['body'];
     }
 
-    public function getDate() {
+    public function getDate()
+    {
         return $this['date'];
     }
 
-    public function toMessage() {
+    public function toMessage()
+    {
         return flow\mime\MultiPart::fromString($this['body']);
     }
 }

@@ -6,11 +6,9 @@
 
 namespace df\mesh\job;
 
-use df;
-use df\core;
-use df\mesh;
-
 use DecodeLabs\Exceptional;
+
+use df\mesh;
 
 class Queue implements IQueue
 {
@@ -76,7 +74,7 @@ class Queue implements IQueue
         return $job;
     }
 
-    public function after(IJob $job=null, ...$args): IJob
+    public function after(IJob $job = null, ...$args): IJob
     {
         if (!$job) {
             return $this->asap(...$args);
@@ -95,12 +93,12 @@ class Queue implements IQueue
         return $this->asap(...$args)->addDependency($job, $resolution);
     }
 
-    public function emitEvent($entity, $action, array $data=null, IJob $activeJob=null)
+    public function emitEvent($entity, $action, array $data = null, IJob $activeJob = null)
     {
         mesh\Manager::getInstance()->emitEvent($entity, $action, $data, $this, $activeJob);
     }
 
-    public function emitEventAfter(IJob $job=null, $entity, $action, array $data=null): ?IJob
+    public function emitEventAfter(IJob $job = null, $entity, $action, array $data = null): ?IJob
     {
         if (!$job) {
             $this->emitEvent($entity, $action, $data);
@@ -159,7 +157,7 @@ class Queue implements IQueue
         return $this->asap($provider->prepareJob($name, ...$args));
     }
 
-    public function prepareAfter(IJob $job=null, IJobProvider $provider, string $name, ...$args)
+    public function prepareAfter(IJob $job = null, IJobProvider $provider, string $name, ...$args)
     {
         if (!$job) {
             return $this->prepareAsap($provider, $name, ...$args);
@@ -327,10 +325,10 @@ class Queue implements IQueue
 
         if (is_scalar($object)) {
             return (string)$object;
-        /*
-        } else if($object instanceof mesh\entity\ILocatorProvider) {
-            return (string)$object->getEntityLocator();
-        */
+            /*
+            } else if($object instanceof mesh\entity\ILocatorProvider) {
+                return (string)$object->getEntityLocator();
+            */
         } else {
             return spl_object_hash($object);
         }

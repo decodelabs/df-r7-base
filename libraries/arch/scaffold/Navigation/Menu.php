@@ -6,12 +6,11 @@
 
 namespace df\arch\scaffold\Navigation;
 
-use df\arch\Context;
-use df\arch\Scaffold;
-use df\arch\scaffold\Loader as ScaffoldLoader;
-use df\arch\navigation\menu\Base as MenuBase;
-
 use DecodeLabs\R7\Legacy;
+use df\arch\navigation\menu\Base as MenuBase;
+use df\arch\Scaffold;
+
+use df\arch\scaffold\Loader as ScaffoldLoader;
 
 class Menu extends MenuBase
 {
@@ -27,7 +26,7 @@ class Menu extends MenuBase
 
     protected function createEntries($entryList)
     {
-        $method = 'generate'.ucfirst($this->name).'Menu';
+        $method = 'generate' . ucfirst($this->name) . 'Menu';
 
         if (method_exists($this->scaffold, $method)) {
             $this->scaffold->{$method}($entryList);

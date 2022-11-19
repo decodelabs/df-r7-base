@@ -6,16 +6,13 @@
 
 namespace df\apex\directory\front\theme\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\flex;
-use df\aura;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Genesis;
 use DecodeLabs\Terminus as Cli;
+
+use df\arch;
+use df\aura;
+use df\core;
 
 class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
 {
@@ -27,7 +24,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
     {
         $this->ensureDfSource();
 
-        $path = Genesis::$hub->getLocalDataPath().'/sass/'.Genesis::$environment->getMode();
+        $path = Genesis::$hub->getLocalDataPath() . '/sass/' . Genesis::$environment->getMode();
         $this->_dir = Atlas::dir($path);
 
         if (!$this->_dir->exists()) {
@@ -44,10 +41,10 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
         }
 
 
-        $runPath = Genesis::$hub->getLocalDataPath().'/run';
+        $runPath = Genesis::$hub->getLocalDataPath() . '/run';
         clearstatcache(true);
-        $activeExists = is_file($runPath.'/active/Run.php');
-        $active2Exists = is_file($runPath.'/active2/Run.php');
+        $activeExists = is_file($runPath . '/active/Run.php');
+        $active2Exists = is_file($runPath . '/active2/Run.php');
 
 
         // Build sass
@@ -78,7 +75,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
                 $sassPath = str_replace([
                     '/data/local/run/active/',
                     '/data/local/run/active2/'
-                ], '/data/local/build/'.$buildId.'/', $sassPath);
+                ], '/data/local/build/' . $buildId . '/', $sassPath);
 
                 $shortPath = $this->normalizeSassPath($sassPath);
             }
@@ -94,7 +91,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
 
             $done[] = $sassPath;
 
-            Cli::{'brightMagenta'}($shortPath.' ');
+            Cli::{'brightMagenta'}($shortPath . ' ');
 
             $bridge = new aura\css\SassBridge($this->context, $sassPath, $activePath);
             $bridge->setCliSession(Cli::getSession());
@@ -111,8 +108,8 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
     protected function _checkFile(string $key, string $sassPath, ?string $activePath)
     {
         $hasBuild =
-            file_exists(Genesis::$hub->getLocalDataPath().'/run/active/Run.php') ||
-            file_exists(Genesis::$hub->getLocalDataPath().'/run/active2/Run.php');
+            file_exists(Genesis::$hub->getLocalDataPath() . '/run/active/Run.php') ||
+            file_exists(Genesis::$hub->getLocalDataPath() . '/run/active2/Run.php');
         $delete = !file_exists($sassPath);
         $why = 'file not found';
 
@@ -133,11 +130,11 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
         }
 
         if ($delete) {
-            Cli::operative('Skipping '.$shortPath.' - '.$why);
+            Cli::operative('Skipping ' . $shortPath . ' - ' . $why);
             $exts = ['json', 'css', 'css.map'];
 
             foreach ($exts as $ext) {
-                $this->_dir->deleteFile($key.'.'.$ext);
+                $this->_dir->deleteFile($key . '.' . $ext);
             }
 
             return false;
@@ -172,7 +169,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
                     $innerPath = implode('/', $parts);
                 }
 
-                $path = $key.'://'.$innerPath;
+                $path = $key . '://' . $innerPath;
                 break;
             }
         }

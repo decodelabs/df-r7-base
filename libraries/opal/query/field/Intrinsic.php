@@ -5,11 +5,9 @@
  */
 namespace df\opal\query\field;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\opal;
 
 class Intrinsic implements opal\query\IIntrinsicField, Dumpable
 {
@@ -19,7 +17,7 @@ class Intrinsic implements opal\query\IIntrinsicField, Dumpable
     protected $_alias;
     protected $_source;
 
-    public function __construct(opal\query\ISource $source, string $name, $alias=null)
+    public function __construct(opal\query\ISource $source, string $name, $alias = null)
     {
         $this->_source = $source;
         $this->_name = $name;
@@ -43,7 +41,7 @@ class Intrinsic implements opal\query\IIntrinsicField, Dumpable
 
     public function getQualifiedName()
     {
-        return $this->getSourceAlias().'.'.$this->_name;
+        return $this->getSourceAlias() . '.' . $this->_name;
     }
 
     public function getName(): string
@@ -79,7 +77,7 @@ class Intrinsic implements opal\query\IIntrinsicField, Dumpable
 
     public function rewriteAsDerived(opal\query\ISource $source)
     {
-        return new self($source, $this->_source->getAlias().'.'.$this->_name, $this->_source->getAlias().'.'.$this->_alias);
+        return new self($source, $this->_source->getAlias() . '.' . $this->_name, $this->_source->getAlias() . '.' . $this->_alias);
     }
 
     public function toString(): string
@@ -87,7 +85,7 @@ class Intrinsic implements opal\query\IIntrinsicField, Dumpable
         $output = $this->getQualifiedName();
 
         if ($this->hasDiscreetAlias()) {
-            $output .= ' as '.$this->getAlias();
+            $output .= ' as ' . $this->getAlias();
         }
 
         return $output;

@@ -5,22 +5,19 @@
  */
 namespace df\core\unit;
 
-use df;
-use df\core;
-
 use DecodeLabs\Exceptional;
 
 class Resolution implements IResolution
 {
     use TSingleValueUnit;
 
-    const DEFAULT_UNIT = 'dpi';
-    const UNITS = ['dpi', 'dpcm', 'dppx'];
+    public const DEFAULT_UNIT = 'dpi';
+    public const UNITS = ['dpi', 'dpcm', 'dppx'];
 
     protected $_value;
     protected $_unit;
 
-    public static function factory($value, $unit=null, $allowPlainNumbers=false)
+    public static function factory($value, $unit = null, $allowPlainNumbers = false)
     {
         if ($value instanceof IResolution) {
             return $value;
@@ -88,7 +85,7 @@ class Resolution implements IResolution
 
             default:
                 throw Exceptional::InvalidArgument(
-                    'Unsupported dpi unit: '.$inUnit
+                    'Unsupported dpi unit: ' . $inUnit
                 );
         }
 

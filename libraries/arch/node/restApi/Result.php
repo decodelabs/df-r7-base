@@ -6,15 +6,14 @@
 
 namespace df\arch\node\restApi;
 
-use df;
-use df\core;
-use df\arch;
-use df\link;
-use df\flex;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\Glitch;
+use df\arch;
+
+use df\core;
+use df\flex;
+use df\link;
 
 class Result implements arch\node\IRestApiResult
 {
@@ -31,7 +30,7 @@ class Result implements arch\node\IRestApiResult
     protected $_refreshToken;
 
 
-    public function __construct($value=null, core\validate\IHandler $validator=null)
+    public function __construct($value = null, core\validate\IHandler $validator = null)
     {
         if (!$validator) {
             $validator = new core\validate\Handler();
@@ -100,7 +99,7 @@ class Result implements arch\node\IRestApiResult
         return $this->_exception;
     }
 
-    public function complete(callable $success, callable $failure=null)
+    public function complete(callable $success, callable $failure = null)
     {
         if ($this->isValid()) {
             try {

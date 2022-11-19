@@ -6,12 +6,10 @@
 
 namespace df\apex\directory\front\sessions\_nodes;
 
-use df;
-use df\core;
-use df\apex;
+use DecodeLabs\Terminus as Cli;
 use df\arch;
 
-use DecodeLabs\Terminus as Cli;
+use df\core;
 
 class TaskCollectGarbage extends arch\node\Task
 {
@@ -30,7 +28,7 @@ class TaskCollectGarbage extends arch\node\Task
             ->where('accessTime', '<', $time)
             ->toValue('total');
 
-        Cli::info($total.' descriptors found');
+        Cli::info($total . ' descriptors found');
 
         while (true) {
             $descriptors = $this->data->session->descriptor->select('id')
@@ -57,9 +55,9 @@ class TaskCollectGarbage extends arch\node\Task
             }
 
             usleep(50000);
-            Cli::operative($nodeCount.' nodes');
+            Cli::operative($nodeCount . ' nodes');
 
-            if ($startDate->lt('-'.self::CLOSE_THRESHOLD)) {
+            if ($startDate->lt('-' . self::CLOSE_THRESHOLD)) {
                 Cli::info('Reached time limit');
                 return;
             }

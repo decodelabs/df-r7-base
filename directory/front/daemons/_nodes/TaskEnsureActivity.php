@@ -6,13 +6,10 @@
 
 namespace df\apex\directory\front\daemons\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\halo;
-
 use DecodeLabs\Terminus as Cli;
+use df\arch;
+
+use df\halo;
 
 class TaskEnsureActivity extends arch\node\Task
 {
@@ -34,7 +31,7 @@ class TaskEnsureActivity extends arch\node\Task
         }
 
         if (!$hasRestarted) {
-            Cli::success('found '.count($daemons));
+            Cli::success('found ' . count($daemons));
         }
 
         if (empty($daemons)) {

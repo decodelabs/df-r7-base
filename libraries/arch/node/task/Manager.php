@@ -6,21 +6,19 @@
 
 namespace df\arch\node\task;
 
-use df;
-use df\core;
-use df\arch;
-use df\halo;
-use df\link;
-use df\flex;
-
 use DecodeLabs\Deliverance;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
+
 use DecodeLabs\Systemic;
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
 use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Terminus\Session;
-use DecodeLabs\R7\Legacy;
+use df\arch;
+use df\core;
+use df\flex;
+use df\link;
 
 class Manager implements arch\node\ITaskManager
 {
@@ -28,11 +26,11 @@ class Manager implements arch\node\ITaskManager
 
     public const REGISTRY_PREFIX = 'manager://task';
 
-    public function launch($request, ?Session $session=null, $user=null, bool $dfSource=false, bool $decoratable=null): ProcessResult
+    public function launch($request, ?Session $session = null, $user = null, bool $dfSource = false, bool $decoratable = null): ProcessResult
     {
         $request = arch\Request::factory($request);
-        $path = Genesis::$hub->getApplicationPath().'/entry/';
-        $path .= Genesis::$environment->getName().'.php';
+        $path = Genesis::$hub->getApplicationPath() . '/entry/';
+        $path .= Genesis::$environment->getName() . '.php';
         $args = [$request];
 
         if ($dfSource) {
@@ -59,11 +57,11 @@ class Manager implements arch\node\ITaskManager
             ->launch();
     }
 
-    public function launchBackground($request, $user=null, bool $dfSource=false, bool $decoratable=null)
+    public function launchBackground($request, $user = null, bool $dfSource = false, bool $decoratable = null)
     {
         $request = arch\Request::factory($request);
-        $path = Genesis::$hub->getApplicationPath().'/entry/';
-        $path .= Genesis::$environment->getName().'.php';
+        $path = Genesis::$hub->getApplicationPath() . '/entry/';
+        $path .= Genesis::$environment->getName() . '.php';
         $args = ['task', $request];
 
         if ($dfSource) {
@@ -105,7 +103,7 @@ class Manager implements arch\node\ITaskManager
 
         if (!$node instanceof arch\node\ITaskNode) {
             throw Exceptional::{'df/arch/node/Definition'}(
-                'Child node '.$request.' does not extend arch\\node\\Task'
+                'Child node ' . $request . ' does not extend arch\\node\\Task'
             );
         }
 
@@ -119,13 +117,13 @@ class Manager implements arch\node\ITaskManager
 
         return Legacy::$http->redirect(
             $context->uri->directoryRequest(
-                '~/tasks/invoke?token='.$token,
+                '~/tasks/invoke?token=' . $token,
                 $context->uri->backRequest(null, true)
             )
         );
     }
 
-    public function queue($request, string $priority='medium'): flex\IGuid
+    public function queue($request, string $priority = 'medium'): flex\IGuid
     {
         $context = $this->_getActiveContext();
 
@@ -138,16 +136,16 @@ class Manager implements arch\node\ITaskManager
         return $queue['id'];
     }
 
-    public function queueAndLaunch($request, ?Session $session=null): ProcessResult
+    public function queueAndLaunch($request, ?Session $session = null): ProcessResult
     {
         $id = $this->queue($request, 'medium');
-        return $this->launch('tasks/launch-queued?id='.$id, $session);
+        return $this->launch('tasks/launch-queued?id=' . $id, $session);
     }
 
     public function queueAndLaunchBackground($request)
     {
         $id = $this->queue($request, 'medium');
-        return $this->launchBackground('tasks/launch-queued?id='.$id);
+        return $this->launchBackground('tasks/launch-queued?id=' . $id);
     }
 
     protected function _getActiveContext()

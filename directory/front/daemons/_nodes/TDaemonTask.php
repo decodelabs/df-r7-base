@@ -6,13 +6,10 @@
 
 namespace df\apex\directory\front\daemons\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\halo;
+use DecodeLabs\Systemic;
 
 use DecodeLabs\Terminus as Cli;
-use DecodeLabs\Systemic;
+use df\core;
 
 trait TDaemonTask
 {
@@ -29,7 +26,7 @@ trait TDaemonTask
         $user = $env->getDaemonUser();
 
         if ($user != $process->getOwnerName() && !$process->isPrivileged() && !isset($this->request['_privileged'])) {
-            Cli::notice('Restarting task '.$this->request->getPathString().' as root');
+            Cli::notice('Restarting task ' . $this->request->getPathString() . ' as root');
             $request = clone $this->request;
             $request->query->_privileged = true;
 

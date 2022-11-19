@@ -5,21 +5,18 @@
  */
 namespace df\apex\models\task\log;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
 
 class Unit extends axis\unit\Table
 {
-    const BROADCAST_HOOK_EVENTS = false;
+    public const BROADCAST_HOOK_EVENTS = false;
 
-    const ORDERABLE_FIELDS = [
+    public const ORDERABLE_FIELDS = [
         'request', 'environmentMode', 'startDate',
         'lastActivity', 'runTime', 'status'
     ];
 
-    const DEFAULT_ORDER = 'startDate DESC';
+    public const DEFAULT_ORDER = 'startDate DESC';
 
     protected function createSchema($schema)
     {

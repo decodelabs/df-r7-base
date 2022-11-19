@@ -6,18 +6,17 @@
 
 namespace df\core\app\http;
 
-use df;
-use df\core;
-use df\arch;
-use df\link;
-
-use df\arch\ForcedResponse;
-use df\arch\Request;
-use df\link\http\IRequest as HttpRequest;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy;
+
+use df\arch;
+use df\arch\ForcedResponse;
+use df\arch\Request;
+
+use df\core;
+use df\link;
+use df\link\http\IRequest as HttpRequest;
 
 class Router implements core\IRegistryObject
 {
@@ -38,12 +37,12 @@ class Router implements core\IRegistryObject
 
     protected $_rootNodeRouter = false;
 
-    public function __construct(link\http\IUrl $rootUrl=null)
+    public function __construct(link\http\IUrl $rootUrl = null)
     {
         $config = Config::getInstance();
 
         if ($rootUrl !== null) {
-            $map = ['*' => $rootUrl->getDomain().'/'.ltrim($rootUrl->getPathString())];
+            $map = ['*' => $rootUrl->getDomain() . '/' . ltrim($rootUrl->getPathString())];
             $this->_useHttps = $rootUrl->isSecure();
             $this->_defaultRouteProtocol = $this->_useHttps ? 'https' : 'http';
         } else {
@@ -104,8 +103,8 @@ class Router implements core\IRegistryObject
 
         $test = implode('.', $parts);
 
-        if (isset($this->_mapIn['*.'.$test])) {
-            $output = clone $this->_mapIn['*.'.$test];
+        if (isset($this->_mapIn['*.' . $test])) {
+            $output = clone $this->_mapIn['*.' . $test];
             $output->mappedDomain = $domain;
             $output->mappedKey = $sub;
             return $output;
@@ -369,7 +368,7 @@ class Router implements core\IRegistryObject
         $output = null;
 
         while (!empty($parts)) {
-            $class = 'df\\apex\\directory\\'.implode('\\', $parts).'\\HttpRouter';
+            $class = 'df\\apex\\directory\\' . implode('\\', $parts) . '\\HttpRouter';
             $keys[] = implode('/', $parts);
 
             if (class_exists($class)) {
@@ -492,9 +491,9 @@ class Router implements core\IRegistryObject
 
             if (Genesis::$environment->isDevelopment()) {
                 $response = Legacy::$http->stringResponse(
-                    '<html><head><title>Bad request</title></head><body>'.
-                    '<p>Sorry, you are not in the right place!</p>'.
-                    '<p>Go here instead: <a href="'.$baseUrl.'">'.$baseUrl.'</a></p>',
+                    '<html><head><title>Bad request</title></head><body>' .
+                    '<p>Sorry, you are not in the right place!</p>' .
+                    '<p>Go here instead: <a href="' . $baseUrl . '">' . $baseUrl . '</a></p>',
                     'text/html'
                 );
 
@@ -598,14 +597,14 @@ class Router_Map
         $output = $this->domain;
 
         if ($this->isWild) {
-            $output = '*.'.$output;
+            $output = '*.' . $output;
         }
 
         return $output;
     }
 
 
-    public function mapPath(core\uri\IPath $path=null)
+    public function mapPath(core\uri\IPath $path = null)
     {
         if (!$path) {
             return false;
@@ -632,13 +631,13 @@ class Router_Map
                 $path->shouldAddTrailingSlash(true);
             }
 
-            $path->unshift(arch\Request::AREA_MARKER.$this->area);
+            $path->unshift(arch\Request::AREA_MARKER . $this->area);
         }
 
         return $request;
     }
 
-    public function toUrl($useHttps=false)
+    public function toUrl($useHttps = false)
     {
         if ($this->mappedDomain) {
             $url = $this->mappedDomain;
@@ -647,13 +646,13 @@ class Router_Map
         }
 
         if ($this->port) {
-            $url .= ':'.$this->port;
+            $url .= ':' . $this->port;
         }
 
         $url .= '/';
 
         if (!empty($this->path)) {
-            $url .= implode('/', $this->path).'/';
+            $url .= implode('/', $this->path) . '/';
         }
 
         return (new link\http\Url($url))->isSecure($useHttps);

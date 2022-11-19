@@ -5,18 +5,16 @@
  */
 namespace df\arch\scaffold\Section;
 
-use df\arch\IComponent as Component;
-use df\arch\Scaffold;
-use df\arch\node\INode as Node;
-use df\aura\view\IView as View;
 use df\arch\navigation\menu\IEntryList as MenuEntryList;
-use df\aura\html\widget\Menu as MenuWidget;
+use df\arch\node\INode as Node;
+use df\arch\Scaffold;
+use df\aura\view\IView as View;
 
 interface Provider extends Scaffold
 {
     // Node loaders
     public function loadSectionNode(): ?Node;
-    public function buildSection(string $name, callable $builder, ?callable $linkBuilder=null): View;
+    public function buildSection(string $name, callable $builder, ?callable $linkBuilder = null): View;
 
     // Section info
     public function getDefaultSection(): string;

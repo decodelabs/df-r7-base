@@ -5,14 +5,9 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-
-class ResetButton extends Button {
-
-    const PRIMARY_TAG = 'button.btn.reset';
-    const BUTTON_TYPE = 'reset';
-    const HAS_VALUE = false;
+class ResetButton extends Button
+{
+    public const PRIMARY_TAG = 'button.btn.reset';
+    public const BUTTON_TYPE = 'reset';
+    public const HAS_VALUE = false;
 }

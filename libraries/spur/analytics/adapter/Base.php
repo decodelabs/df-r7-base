@@ -6,19 +6,18 @@
 
 namespace df\spur\analytics\adapter;
 
-use df;
-use df\core;
-use df\spur;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\R7\Legacy;
+
+use df\core;
+use df\spur;
 
 abstract class Base implements spur\analytics\IAdapter
 {
     protected $_options = [];
     protected $_defaultUserAttributes = [];
 
-    public static function loadAllFromConfig($enabled=true)
+    public static function loadAllFromConfig($enabled = true)
     {
         $config = spur\analytics\Config::getInstance();
         $output = [];
@@ -50,7 +49,7 @@ abstract class Base implements spur\analytics\IAdapter
 
         if (null === ($info = $config->getAdapter($name))) {
             throw Exceptional::NotFound(
-                'Adapter '.$name.' could not be found'
+                'Adapter ' . $name . ' could not be found'
             );
         }
 
@@ -81,20 +80,20 @@ abstract class Base implements spur\analytics\IAdapter
         return $output;
     }
 
-    public static function factory($name, array $options=[], array $defaultUserAttributes=[])
+    public static function factory($name, array $options = [], array $defaultUserAttributes = [])
     {
-        $class = 'df\\spur\\analytics\\adapter\\'.ucfirst($name);
+        $class = 'df\\spur\\analytics\\adapter\\' . ucfirst($name);
 
         if (!class_exists($class)) {
             throw Exceptional::NotFound(
-                'Adapter '.$name.' could not be found'
+                'Adapter ' . $name . ' could not be found'
             );
         }
 
         return new $class($options, $defaultUserAttributes);
     }
 
-    public function __construct(array $options=[], array $defaultUserAttributes=[])
+    public function __construct(array $options = [], array $defaultUserAttributes = [])
     {
         $this->setOptions($options);
         $this->setDefaultUserAttributes($defaultUserAttributes);
@@ -123,7 +122,7 @@ abstract class Base implements spur\analytics\IAdapter
         return $this;
     }
 
-    public function getOption($key, $default=null)
+    public function getOption($key, $default = null)
     {
         if (isset($this->_options[$key])) {
             return $this->_options[$key];
@@ -148,7 +147,7 @@ abstract class Base implements spur\analytics\IAdapter
         return $this;
     }
 
-    public function validateOptions(core\collection\IInputTree $values, $update=false)
+    public function validateOptions(core\collection\IInputTree $values, $update = false)
     {
         $this->_validateOptions($values);
 

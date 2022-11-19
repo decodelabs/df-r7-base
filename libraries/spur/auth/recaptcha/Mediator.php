@@ -6,13 +6,10 @@
 
 namespace df\spur\auth\recaptcha;
 
-use df;
-use df\core;
-use df\spur;
-use df\link;
-
 use DecodeLabs\Compass\Ip;
+
 use DecodeLabs\Exceptional;
+use df\spur;
 
 class Mediator implements IMediator
 {
@@ -40,7 +37,7 @@ class Mediator implements IMediator
 
     public function verify(
         string $key,
-        Ip|string|null $ip=null
+        Ip|string|null $ip = null
     ): IResult {
         $response = $this->requestJson('post', self::ENDPOINT, [
             'secret' => $this->_secret,
@@ -54,13 +51,13 @@ class Mediator implements IMediator
                     case 'invalid-input-response':
                     case 'missing-input-response':
                         throw Exceptional::Runtime(
-                            'Invalid input response: '.$key
+                            'Invalid input response: ' . $key
                         );
 
                     case 'invalid-input-secret':
                     case 'missing-input-secret':
                         throw Exceptional::Runtime(
-                            'Invalid secret: '.$this->_secret
+                            'Invalid secret: ' . $this->_secret
                         );
                 }
             }

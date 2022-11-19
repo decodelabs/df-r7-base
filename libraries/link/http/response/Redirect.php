@@ -5,17 +5,15 @@
  */
 namespace df\link\http\response;
 
-use df;
-use df\core;
-use df\link;
-
 use DecodeLabs\Exceptional;
+
+use df\link;
 
 class Redirect extends Base implements link\http\IRedirectResponse
 {
     protected $_url;
 
-    public function __construct($url, link\http\IResponseHeaderCollection $headers=null)
+    public function __construct($url, link\http\IResponseHeaderCollection $headers = null)
     {
         parent::__construct($headers);
         $this->headers->setStatusCode(302);
@@ -44,7 +42,7 @@ class Redirect extends Base implements link\http\IRedirectResponse
         return $this->_url;
     }
 
-    public function isPermanent(bool $flag=null)
+    public function isPermanent(bool $flag = null)
     {
         if ($flag !== null) {
             if ($flag) {
@@ -59,7 +57,7 @@ class Redirect extends Base implements link\http\IRedirectResponse
         return $this->headers->getStatusCode() == 301;
     }
 
-    public function isTemporary(bool $flag=null)
+    public function isTemporary(bool $flag = null)
     {
         if ($flag !== null) {
             if ($flag) {
@@ -74,7 +72,7 @@ class Redirect extends Base implements link\http\IRedirectResponse
         return $this->headers->getStatusCode() == 307;
     }
 
-    public function isAlternativeContent(bool $flag=null)
+    public function isAlternativeContent(bool $flag = null)
     {
         if ($flag !== null) {
             if ($flag) {
@@ -93,8 +91,8 @@ class Redirect extends Base implements link\http\IRedirectResponse
     {
         $url = $this->_url->toString(false);
 
-        return '<html><head><title>Redirecting...</title></head><body>'.
-               '<p>Redirecting to <a href="'.$url.'">'.$url.'</a></p>'.
+        return '<html><head><title>Redirecting...</title></head><body>' .
+               '<p>Redirecting to <a href="' . $url . '">' . $url . '</a></p>' .
                '</body></html>';
     }
 }

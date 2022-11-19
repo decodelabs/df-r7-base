@@ -5,26 +5,23 @@
  */
 namespace df\apex\models\media\file;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
 use df\opal;
 
 class Unit extends axis\unit\Table
 {
-    const NAME_FIELD = 'fileName';
+    public const NAME_FIELD = 'fileName';
 
-    const SEARCH_FIELDS = [
+    public const SEARCH_FIELDS = [
         'fileName' => 4,
         'id' => 10
     ];
 
-    const ORDERABLE_FIELDS = [
+    public const ORDERABLE_FIELDS = [
         'creationDate', 'fileName'
     ];
 
-    const DEFAULT_ORDER = 'fileName ASC';
+    public const DEFAULT_ORDER = 'fileName ASC';
 
     protected function createSchema($schema)
     {
@@ -46,8 +43,12 @@ class Unit extends axis\unit\Table
     {
         return $this->select(...$fields)
             ->leftJoin(
-                    'id as versionId', 'fileName', 'fileSize', 'number as versionNumber', 'contentType'
-                )
+                'id as versionId',
+                'fileName',
+                'fileSize',
+                'number as versionNumber',
+                'contentType'
+            )
                 ->from('axis://media/Version', 'version')
                 ->on('version.@primary', '=', 'file.activeVersion')
                 ->endJoin();
@@ -66,21 +67,21 @@ class Unit extends axis\unit\Table
 
 
 
-    public function applyListDetailsRelationQueryBlock(opal\query\IReadQuery $query, opal\query\IField $relationField, $combine=true)
+    public function applyListDetailsRelationQueryBlock(opal\query\IReadQuery $query, opal\query\IField $relationField, $combine = true)
     {
         $rName = $relationField->getName();
 
         if ($query instanceof opal\query\ISelectQuery) {
             if ($combine) {
-                $query->leftJoinRelation($relationField, 'id as '.$rName.'|id', 'fileName as '.$rName.'|fileName')
-                    ->leftJoinRelation($rName.'.activeVersion as '.$rName.'_activeVersion', 'number as '.$rName.'|version', 'fileSize as '.$rName.'|fileSize')
-                    ->countRelation($rName.'.versions', $rName.'|versions')
-                    ->combine($rName.'|id as id', $rName.'|fileName as fileName', $rName.'|version as version', $rName.'|versions as versions', $rName.'|fileSize as fileSize')
+                $query->leftJoinRelation($relationField, 'id as ' . $rName . '|id', 'fileName as ' . $rName . '|fileName')
+                    ->leftJoinRelation($rName . '.activeVersion as ' . $rName . '_activeVersion', 'number as ' . $rName . '|version', 'fileSize as ' . $rName . '|fileSize')
+                    ->countRelation($rName . '.versions', $rName . '|versions')
+                    ->combine($rName . '|id as id', $rName . '|fileName as fileName', $rName . '|version as version', $rName . '|versions as versions', $rName . '|fileSize as fileSize')
                         ->nullOn('id')
                         ->asOne($relationField);
             } else {
                 $query->leftJoinRelation($relationField, 'id as file', 'fileName')
-                    ->leftJoinRelation($rName.'.activeVersion as '.$rName.'_activeVersion', 'number as version', 'fileSize');
+                    ->leftJoinRelation($rName . '.activeVersion as ' . $rName . '_activeVersion', 'number as version', 'fileSize');
             }
         } elseif ($query instanceof opal\query\IFetchQuery) {
             $query->attachRelation($rName, 'id as file')
@@ -95,7 +96,7 @@ class Unit extends axis\unit\Table
 
             $query->selectAttachRelation($relationField)
                 ->countRelation('versions')
-                ->joinRelation('activeVersion as '.$rName.'_activeVersion', 'id as versionId', 'number as version', 'fileSize', 'contentType', 'notes')
+                ->joinRelation('activeVersion as ' . $rName . '_activeVersion', 'id as versionId', 'number as version', 'fileSize', 'contentType', 'notes')
                 ->asOne($relationField);
         }
     }
@@ -106,7 +107,7 @@ class Unit extends axis\unit\Table
             $rName = $relationField->getName();
 
             $query->selectAttachRelation($relationField, 'id')
-                ->joinRelation('activeVersion as '.$rName.'_activeVersion', 'id as versionId', 'number as version', 'fileName', 'fileSize')
+                ->joinRelation('activeVersion as ' . $rName . '_activeVersion', 'id as versionId', 'number as version', 'fileName', 'fileSize')
                 ->asOne($relationField);
         }
     }

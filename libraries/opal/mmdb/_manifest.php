@@ -6,10 +6,6 @@
 
 namespace df\opal\mmdb;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Compass\Ip;
 
 interface IReader
@@ -22,7 +18,7 @@ interface IReader
 
 interface IDecoder
 {
-    public function decode($offset=null);
+    public function decode($offset = null);
 }
 
 interface IDataTypes

@@ -5,12 +5,9 @@
  */
 namespace df\flex\code\probe;
 
-use df;
-use df\core;
-use df\flex;
-use df\halo;
-
 use DecodeLabs\Systemic;
+
+use df\flex;
 
 class Syntax implements flex\code\IProbe
 {
@@ -24,13 +21,13 @@ class Syntax implements flex\code\IProbe
             return;
         }
 
-        $result = Systemic::$process->launch('php', ['-l', $location->path.'/'.$localPath]);
+        $result = Systemic::$process->launch('php', ['-l', $location->path . '/' . $localPath]);
         $result = trim($result->getOutput());
         $lines = explode("\n", $result);
         $result = (string)array_shift($lines);
 
         if (strpos($result, 'No syntax errors detected') === false) {
-            $this->_errors[$location->id.'://'.$localPath] = $result;
+            $this->_errors[$location->id . '://' . $localPath] = $result;
         }
     }
 

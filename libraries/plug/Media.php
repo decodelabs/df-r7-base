@@ -6,16 +6,16 @@
 
 namespace df\plug;
 
-use df\core;
-use df\arch;
-use df\axis;
-use df\neon;
-use df\link;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy;
+use df\arch;
+
+use df\axis;
+use df\core;
+use df\link;
+use df\neon;
 
 class Media implements arch\IDirectoryHelper
 {
@@ -63,7 +63,7 @@ class Media implements arch\IDirectoryHelper
             ->setDirectoryRequest(null);
     }
 
-    public function getImageUrl($fileId, $transformation=null)
+    public function getImageUrl($fileId, $transformation = null)
     {
         if ($fileId === null) {
             return null;
@@ -73,7 +73,7 @@ class Media implements arch\IDirectoryHelper
             ->setDirectoryRequest(null);
     }
 
-    public function getVersionImageUrl($fileId, $versionId, $isActive, $transformation=null)
+    public function getVersionImageUrl($fileId, $versionId, $isActive, $transformation = null)
     {
         if ($fileId === null) {
             return null;
@@ -84,9 +84,9 @@ class Media implements arch\IDirectoryHelper
     }
 
 
-    public function getUploadedUrl($uploadId, $fileName, $transformation=null)
+    public function getUploadedUrl($uploadId, $fileName, $transformation = null)
     {
-        $output = $this->context->uri->directoryRequest('media/uploaded?id='.$uploadId);
+        $output = $this->context->uri->directoryRequest('media/uploaded?id=' . $uploadId);
         $output->query->file = $fileName;
 
         if ($transformation !== null) {
@@ -97,7 +97,7 @@ class Media implements arch\IDirectoryHelper
     }
 
 
-    public function fetchAndServeDownload($fileId, $embed=false)
+    public function fetchAndServeDownload($fileId, $embed = false)
     {
         return $this->_serveVersionDownload(
             $this->_model->fetchActiveVersionForDownload($fileId),
@@ -105,7 +105,7 @@ class Media implements arch\IDirectoryHelper
         );
     }
 
-    public function fetchAndServeVersionDownload($versionId, $embed=false)
+    public function fetchAndServeVersionDownload($versionId, $embed = false)
     {
         return $this->_serveVersionDownload(
             $this->_model->fetchVersionForDownload($versionId),
@@ -113,7 +113,7 @@ class Media implements arch\IDirectoryHelper
         );
     }
 
-    protected function _serveVersionDownload(array $version, $embed=false)
+    protected function _serveVersionDownload(array $version, $embed = false)
     {
         return $this->serveDownload(
             $version['fileId'],
@@ -125,7 +125,7 @@ class Media implements arch\IDirectoryHelper
         );
     }
 
-    public function serveDownload($fileId, $versionId, $isActive, $contentType, $fileName, $embed=false)
+    public function serveDownload($fileId, $versionId, $isActive, $contentType, $fileName, $embed = false)
     {
         $filePath = $this->getDownloadFileLocation($fileId, $versionId, $isActive);
         $isUrl = $filePath instanceof link\http\IUrl;
@@ -143,7 +143,7 @@ class Media implements arch\IDirectoryHelper
             $output = Legacy::$http->fileResponse($filePath)
                 ->setContentType($contentType)
                 ->setFileName($fileName, !$embed)
-                ;
+            ;
 
             $output->getHeaders()
                 ->set('Access-Control-Allow-Origin', '*')
@@ -155,7 +155,7 @@ class Media implements arch\IDirectoryHelper
         return $output;
     }
 
-    public function fetchAndServeImage($fileId, $transformation=null)
+    public function fetchAndServeImage($fileId, $transformation = null)
     {
         return $this->_serveVersionImage(
             $this->_model->fetchActiveVersionForDownload($fileId),
@@ -163,7 +163,7 @@ class Media implements arch\IDirectoryHelper
         );
     }
 
-    public function fetchAndServeVersionImage($versionId, $transformation=null)
+    public function fetchAndServeVersionImage($versionId, $transformation = null)
     {
         return $this->_serveVersionImage(
             $this->_model->fetchVersionForDownload($versionId),
@@ -171,7 +171,7 @@ class Media implements arch\IDirectoryHelper
         );
     }
 
-    protected function _serveVersionImage(array $version, $transformation=null)
+    protected function _serveVersionImage(array $version, $transformation = null)
     {
         if ($transformation === null && isset($version['transformation'])) {
             $transformation = $version['transformation'];
@@ -188,7 +188,7 @@ class Media implements arch\IDirectoryHelper
         );
     }
 
-    public function serveImage($fileId, $versionId, $isActive, $contentType, $fileName=null, $transformation=null, $modificationDate=null)
+    public function serveImage($fileId, $versionId, $isActive, $contentType, $fileName = null, $transformation = null, $modificationDate = null)
     {
         try {
             $filePath = $this->getDownloadFileLocation($fileId, $versionId, $isActive);
@@ -216,7 +216,7 @@ class Media implements arch\IDirectoryHelper
                 $namePath = core\uri\Path::factory($fileName);
 
                 $fileName = (string)$namePath->setFileName(
-                    $namePath->getFileName().' '.Dictum::filename($transformation)
+                    $namePath->getFileName() . ' ' . Dictum::filename($transformation)
                 );
             }
 
@@ -234,7 +234,7 @@ class Media implements arch\IDirectoryHelper
         return $output;
     }
 
-    public function serveFallbackImage(string $contentType, string $fileName=null, $transformation=null)
+    public function serveFallbackImage(string $contentType, string $fileName = null, $transformation = null)
     {
         switch ($contentType) {
             case 'image/svg+xml':
@@ -262,10 +262,10 @@ class Media implements arch\IDirectoryHelper
     protected function _generateFallbackSvg()
     {
         return
-            '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'."\n".
-            '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'."\n".
-            '<svg width="500" height="500" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">'."\n".
-            '<rect x="0" y="0" width="500" height="500" fill="#DDD"/>'."\n".
+            '<?xml version="1.0" encoding="UTF-8" standalone="no"?>' . "\n" .
+            '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' . "\n" .
+            '<svg width="500" height="500" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">' . "\n" .
+            '<rect x="0" y="0" width="500" height="500" fill="#DDD"/>' . "\n" .
             '</svg>';
     }
 
@@ -276,7 +276,7 @@ class Media implements arch\IDirectoryHelper
             ->toString(10);
     }
 
-    public function getImageFilePath($fileId, $versionId, $isActive, $contentType, $transformation=null, $modificationDate=null)
+    public function getImageFilePath($fileId, $versionId, $isActive, $contentType, $transformation = null, $modificationDate = null)
     {
         $filePath = $this->getDownloadFileLocation($fileId, $versionId, $isActive);
 
@@ -286,7 +286,7 @@ class Media implements arch\IDirectoryHelper
         return $descriptor->getLocation();
     }
 
-    public function image($fileId, $transformation=null, $alt=null, $width=null, $height=null)
+    public function image($fileId, $transformation = null, $alt = null, $width = null, $height = null)
     {
         return $this->context->html->image($this->getImageUrl($fileId, $transformation), $alt, $width, $height);
     }
@@ -312,7 +312,7 @@ class Media implements arch\IDirectoryHelper
     }
 
 
-    public function newImageTransformation($transformation=null)
+    public function newImageTransformation($transformation = null)
     {
         return neon\raster\Transformation::factory($transformation);
     }

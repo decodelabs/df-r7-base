@@ -5,17 +5,13 @@
  */
 namespace df\core\validate\field;
 
-use df;
-use df\core;
-use df\neon;
-
 use DecodeLabs\Spectrum\Color as SpectrumColor;
+
+use df\core;
 
 class Color extends Base implements core\validate\IColorField
 {
-
-
-// Validate
+    // Validate
     public function validate()
     {
         // Sanitize

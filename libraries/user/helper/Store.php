@@ -5,8 +5,6 @@
  */
 namespace df\user\helper;
 
-use df;
-use df\core;
 use df\user;
 
 class Store extends Base implements user\ISessionBackedHelper
@@ -19,7 +17,7 @@ class Store extends Base implements user\ISessionBackedHelper
         return $this;
     }
 
-    public function get($key, $default=null)
+    public function get($key, $default = null)
     {
         if (null === ($output = $this->offsetGet($key))) {
             $output = $default;

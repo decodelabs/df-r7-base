@@ -5,12 +5,10 @@
  */
 namespace df\opal\rdbms\variant\mysql;
 
-use df;
-use df\core;
-use df\opal;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\opal;
 
 class Schema extends opal\rdbms\schema\Base implements ISchema, Dumpable
 {
@@ -124,7 +122,7 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, Dumpable
         return $this->getOption('avgRowLength');
     }
 
-    public function shouldGenerateChecksum(bool $flag=null)
+    public function shouldGenerateChecksum(bool $flag = null)
     {
         if ($flag !== null) {
             return $this->setOption('checksum', $flag);
@@ -163,7 +161,7 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, Dumpable
         return $this->getOption('indexDirectory');
     }
 
-    public function shouldDelayKeyWrite(bool $flag=null)
+    public function shouldDelayKeyWrite(bool $flag = null)
     {
         if ($flag !== null) {
             return $this->setOption('delayKeyWrite', $flag);
@@ -208,7 +206,7 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, Dumpable
         return $this->getOption('minRows');
     }
 
-    public function shouldPackKeys(bool $flag=null)
+    public function shouldPackKeys(bool $flag = null)
     {
         if ($flag !== null) {
             return $this->setOption('packKeys', $flag);
@@ -325,7 +323,7 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, Dumpable
             if (!isset($availableEngines[$compEngine])
             || $availableEngines[$compEngine]['Engine'] != $this->_options['engine']) {
                 throw Exceptional::{'df/opal/rdbms/EngineSupport,df/opal/rdbms/FeatureSupport'}(
-                    'Mysql storage engine '.$this->_options['engine'].' does not appear to be available'
+                    'Mysql storage engine ' . $this->_options['engine'] . ' does not appear to be available'
                 );
             }
         } elseif ($defaultEngine !== null) {
@@ -340,13 +338,13 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, Dumpable
         if ($this->_options['engine'] !== 'MERGE') {
             if ($this->_options['insertMethod']) {
                 throw Exceptional::{'df/opal/rdbms/FeatureSupport'}(
-                    'Mysql engine '.$this->_options['engine'].' does not support INSERT_METHOD table option'
+                    'Mysql engine ' . $this->_options['engine'] . ' does not support INSERT_METHOD table option'
                 );
             }
 
             if (!empty($this->_options['mergeTables'])) {
                 throw Exceptional::{'df/opal/rdbms/FeatureSupport'}(
-                    'Mysql engine '.$this->_options['engine'].' does not support UNION table option'
+                    'Mysql engine ' . $this->_options['engine'] . ' does not support UNION table option'
                 );
             }
         }
@@ -358,7 +356,7 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, Dumpable
         if ($index = $this->getIndex('PRIMARY')) {
             if ($this->_primaryIndex && $index !== $this->_primaryIndex) {
                 throw Exceptional::{'df/opal/rdbms/IndexConflict'}(
-                    'A primary index has been set, but another index has been defined with the name PRIMARY.'."\n".
+                    'A primary index has been set, but another index has been defined with the name PRIMARY.' . "\n" .
                     'Mysql requires the primary index to be named PRIMARY'
                 );
             }
@@ -392,7 +390,7 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, Dumpable
                     throw Exceptional::{
                         'df/opal/rdbms/ForeignKeySupport,df/opal/rdbms/FeatureSupport'
                     }(
-                        'Foreign keys are not supported by Mysql for this storage engine: '.$this->_options['engine']
+                        'Foreign keys are not supported by Mysql for this storage engine: ' . $this->_options['engine']
                     );
             }
         }

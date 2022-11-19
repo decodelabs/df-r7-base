@@ -5,11 +5,10 @@
  */
 namespace df\axis\procedure;
 
-use df;
-use df\core;
+use DecodeLabs\Exceptional;
 use df\axis;
 
-use DecodeLabs\Exceptional;
+use df\core;
 
 abstract class Base implements IProcedure
 {
@@ -22,16 +21,16 @@ abstract class Base implements IProcedure
     protected $_model;
     protected $_isPrepared = false;
 
-    public static function factory(axis\IUnit $unit, string $name, $values, $item=null): IProcedure
+    public static function factory(axis\IUnit $unit, string $name, $values, $item = null): IProcedure
     {
         $modelName = $unit->getModel()->getModelName();
         $unitName = $unit->getUnitName();
 
-        $class = 'df\\apex\\models\\'.$modelName.'\\'.$unitName.'\\procedures\\'.ucfirst($name);
+        $class = 'df\\apex\\models\\' . $modelName . '\\' . $unitName . '\\procedures\\' . ucfirst($name);
 
         if (!class_exists($class)) {
             throw Exceptional::Runtime(
-                'Unit procedure '.$modelName.'/'.$unitName.'/'.ucfirst($name).' could not be found'
+                'Unit procedure ' . $modelName . '/' . $unitName . '/' . ucfirst($name) . ' could not be found'
             );
         }
 
@@ -97,7 +96,7 @@ abstract class Base implements IProcedure
 
         if (!method_exists($this, '_execute')) {
             throw Exceptional::Logic(
-                'Unit procedure '.$this->_unit->getUnitId().'/'.$this->getName().' does not implement _execute method'
+                'Unit procedure ' . $this->_unit->getUnitId() . '/' . $this->getName() . ' does not implement _execute method'
             );
         }
 

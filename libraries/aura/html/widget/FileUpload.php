@@ -5,12 +5,10 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
+use DecodeLabs\Glitch\Dumpable;
 use df\arch;
 
-use DecodeLabs\Glitch\Dumpable;
+use df\core;
 
 class FileUpload extends Base implements IFileUploadWidget, Dumpable
 {
@@ -20,10 +18,10 @@ class FileUpload extends Base implements IFileUploadWidget, Dumpable
     use TWidget_OptionalMultipleValueInput;
     use core\lang\TAcceptTypeProcessor;
 
-    const PRIMARY_TAG = 'input.picker.file';
-    const ARRAY_INPUT = false;
+    public const PRIMARY_TAG = 'input.picker.file';
+    public const ARRAY_INPUT = false;
 
-    public function __construct(arch\IContext $context, $name, $value=null)
+    public function __construct(arch\IContext $context, $name, $value = null)
     {
         parent::__construct($context);
 

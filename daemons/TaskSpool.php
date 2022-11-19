@@ -5,16 +5,13 @@
  */
 namespace df\apex\daemons;
 
-use df;
-use df\core;
-use df\apex;
-use df\halo;
-
 use DecodeLabs\Terminus as Cli;
+
+use df\halo;
 
 class TaskSpool extends halo\daemon\Base
 {
-    const AUTOMATIC = true;
+    public const AUTOMATIC = true;
 
     protected function _setup()
     {

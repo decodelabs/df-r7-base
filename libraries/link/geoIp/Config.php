@@ -5,13 +5,12 @@
  */
 namespace df\link\geoIp;
 
-use df\core\Config as ConfigBase;
 use df\core\collection\ITree;
-use df\link\geoIp\Adapter;
+use df\core\Config as ConfigBase;
 
 class Config extends ConfigBase
 {
-    const ID = 'GeoIp';
+    public const ID = 'GeoIp';
 
     public function getDefaultValues(): array
     {
@@ -26,7 +25,7 @@ class Config extends ConfigBase
         ];
     }
 
-    public function isEnabled(bool $flag=null)
+    public function isEnabled(bool $flag = null)
     {
         if ($flag !== null) {
             $this->values->enabled = $flag;

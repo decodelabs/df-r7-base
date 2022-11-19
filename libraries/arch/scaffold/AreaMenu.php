@@ -8,10 +8,9 @@ namespace df\arch\scaffold;
 use df\arch\scaffold\Index\Decorator as IndexDecorator;
 use df\arch\scaffold\Index\DecoratorTrait as IndexDecoratorTrait;
 
-class AreaMenu extends Generic implements
-    IndexDecorator
+class AreaMenu extends Generic implements IndexDecorator
 {
-    const HEADER_BAR = true;
+    public const HEADER_BAR = true;
 
     use IndexDecoratorTrait;
 
@@ -26,7 +25,7 @@ class AreaMenu extends Generic implements
         $this->renderIntro($view);
 
         $menuId = (string)$this->context->location->getLiteralPathString();
-        $menuId = dirname($menuId).'/'.ucfirst($this->context->location->getRawNode());
+        $menuId = dirname($menuId) . '/' . ucfirst($this->context->location->getRawNode());
         $view->content->addBlockMenu($menuId);
 
         return $view;

@@ -6,15 +6,14 @@
 
 namespace df\link\http\upload;
 
-use df;
-use df\core;
-use df\link;
-
 use DecodeLabs\Atlas;
-use DecodeLabs\Typify;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Exceptional;
+use DecodeLabs\Typify;
+
+use df\core;
+use df\link;
 
 use Socket\Raw\Factory as SocketFactory;
 use Xenolope\Quahog\Client as Quahog;
@@ -48,7 +47,7 @@ class File implements link\http\IUploadFile
         $this->_extension = $parts['extension'] ?? null;
 
         $this->_fileName = $this->_extension ?
-            substr($fileName, 0, -strlen('.'.$this->_extension)) :
+            substr($fileName, 0, -strlen('.' . $this->_extension)) :
             $fileName;
 
         $this->_type = $data['type'];
@@ -104,7 +103,7 @@ class File implements link\http\IUploadFile
         $output = $this->_fileName;
 
         if ($this->_extension !== null) {
-            $output .= '.'.$this->_extension;
+            $output .= '.' . $this->_extension;
         }
 
         return $output;
@@ -188,7 +187,7 @@ class File implements link\http\IUploadFile
         }
     }
 
-    public function upload($destination, core\collection\IInputTree $inputNode, $conflictAction=link\http\IUploadFile::RENAME)
+    public function upload($destination, core\collection\IInputTree $inputNode, $conflictAction = link\http\IUploadFile::RENAME)
     {
         if ($this->_isProcessed) {
             return $this;
@@ -202,7 +201,7 @@ class File implements link\http\IUploadFile
         }
 
         $destination = Atlas::createDir((string)$destination)->getPath();
-        $fullPath = rtrim($destination, '/').'/'.$this->getBaseName();
+        $fullPath = rtrim($destination, '/') . '/' . $this->getBaseName();
         $i18n = core\i18n\Manager::getInstance();
 
         if (file_exists($fullPath)) {
@@ -271,7 +270,7 @@ class File implements link\http\IUploadFile
         if ($maxSize > 0 && $this->_size->getMegabytes() > $maxSize) {
             $inputNode->addError('tooBig', $i18n->_(
                 'The file exceeds the maximum upload file size of %m%',
-                ['%m%' => $maxSize.' mb']
+                ['%m%' => $maxSize . ' mb']
             ));
         }
 
@@ -291,7 +290,7 @@ class File implements link\http\IUploadFile
 
         if (!is_uploaded_file($this->_tempPath)) {
             $inputNode->addError('uploadNotFound', $i18n->_(
-                'There was a problem finding the uploaded file in the temp location - please try again ('.$this->getErrorCode().': '.$this->getErrorString().')'
+                'There was a problem finding the uploaded file in the temp location - please try again (' . $this->getErrorCode() . ': ' . $this->getErrorString() . ')'
             ));
             return;
         }
@@ -327,9 +326,9 @@ class File implements link\http\IUploadFile
         $basePath = dirname($fullPath);
 
         while (file_exists($fullPath)) {
-            $add = '('.$this->_renameIndex++.')';
-            $this->_fileName = $origName.$add;
-            $fullPath = $basePath.'/'.$this->getBaseName();
+            $add = '(' . $this->_renameIndex++ . ')';
+            $this->_fileName = $origName . $add;
+            $fullPath = $basePath . '/' . $this->getBaseName();
         }
 
         return $fullPath;

@@ -5,17 +5,14 @@
  */
 namespace df\apex\models\user\client;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
-use df\user;
-
 use DateTime;
+use df\opal;
+
+use df\user;
 
 class Record extends opal\record\Base implements user\IActiveClientDataObject
 {
-    const BROADCAST_HOOK_EVENTS = true;
+    public const BROADCAST_HOOK_EVENTS = true;
 
     use user\TNameExtractor;
 
@@ -37,7 +34,9 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject
         $unit = $this->getAdapter();
 
         if ($this->hasChanged('email')) {
-            $queue->after($job, 'updateLocalAdapter',
+            $queue->after(
+                $job,
+                'updateLocalAdapter',
                 $unit->getModel()->auth->update([
                         'identity' => $this['email']
                     ])
@@ -70,7 +69,9 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject
         $id = $this['id'];
         $unit = $this->getAdapter();
 
-        $queue->after($job, 'deleteAuths',
+        $queue->after(
+            $job,
+            'deleteAuths',
             $unit->getModel()->auth->delete()
                 ->where('user', '=', $id)
         );
@@ -173,7 +174,7 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject
     }
 
 
-    public function onAuthentication(user\IClient $client, bool $asAdmin=false)
+    public function onAuthentication(user\IClient $client, bool $asAdmin = false)
     {
         if ($asAdmin) {
             return;

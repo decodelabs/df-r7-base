@@ -6,12 +6,10 @@
 
 namespace df\arch\navigation\breadcrumbs;
 
-use df;
-use df\core;
+use DecodeLabs\R7\Legacy;
 use df\arch;
 
-use DecodeLabs\Genesis;
-use DecodeLabs\R7\Legacy;
+use df\core;
 
 class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, core\IDispatchAware
 {
@@ -59,7 +57,7 @@ class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, cor
             if (!$isDefaultNode && $i == $count - 1) {
                 $path .= $part;
             } else {
-                $path .= $part.'/';
+                $path .= $part . '/';
             }
 
             $title = $part;
@@ -70,7 +68,9 @@ class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, cor
 
             $title = ucwords(
                 (string)preg_replace('/([A-Z])/u', ' $1', str_replace(
-                    ['-', '_'], ' ', (string)$title
+                    ['-', '_'],
+                    ' ',
+                    (string)$title
                 ))
             );
 

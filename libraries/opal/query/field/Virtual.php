@@ -6,11 +6,9 @@
 
 namespace df\opal\query\field;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\opal;
 
 class Virtual implements opal\query\IVirtualField, Dumpable
 {
@@ -22,7 +20,7 @@ class Virtual implements opal\query\IVirtualField, Dumpable
     protected $_source;
     protected $_targetSourceAlias;
 
-    public function __construct(opal\query\ISource $source, string $name, $alias=null, array $targetFields=[])
+    public function __construct(opal\query\ISource $source, string $name, $alias = null, array $targetFields = [])
     {
         $this->_source = $source;
         $this->_name = $name;
@@ -48,7 +46,7 @@ class Virtual implements opal\query\IVirtualField, Dumpable
 
     public function getQualifiedName()
     {
-        return $this->getSourceAlias().'.'.$this->getName();
+        return $this->getSourceAlias() . '.' . $this->getName();
     }
 
     public function getName(): string
@@ -129,7 +127,7 @@ class Virtual implements opal\query\IVirtualField, Dumpable
         $output = $this->getQualifiedName();
 
         if ($this->hasDiscreetAlias()) {
-            $output .= ' as '.$this->getAlias();
+            $output .= ' as ' . $this->getAlias();
         }
 
         if (!empty($this->_targetFields)) {
@@ -139,7 +137,7 @@ class Virtual implements opal\query\IVirtualField, Dumpable
                 $targets[] = $target->getQualifiedName();
             }
 
-            $output .= '['.implode(',', $targets).']';
+            $output .= '[' . implode(',', $targets) . ']';
         }
 
         return $output;

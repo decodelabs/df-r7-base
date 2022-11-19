@@ -6,19 +6,18 @@
 
 namespace df\arch\node\form;
 
-use df;
-use df\core;
-use df\arch;
-use df\aura;
-use df\opal;
-use df\mesh;
-
-use df\opal\query\ISelectQuery as SelectQuery;
-use df\arch\IComponent as Component;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Tagged as Html;
+use df\arch;
+use df\arch\IComponent as Component;
+
+use df\aura;
+use df\core;
+
+use df\mesh;
+use df\opal;
+use df\opal\query\ISelectQuery as SelectQuery;
 
 abstract class SelectorDelegate extends Delegate implements
     arch\node\IInlineFieldRenderableModalSelectorDelegate,
@@ -79,7 +78,7 @@ abstract class SelectorDelegate extends Delegate implements
         return $this->_defaultSearchString;
     }
 
-    public function shouldAutoSelect(bool $flag=null)
+    public function shouldAutoSelect(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_autoSelect = $flag;
@@ -99,9 +98,9 @@ abstract class SelectorDelegate extends Delegate implements
 
 
     // Queries
-    abstract protected function getBaseQuery(array $fields=null): SelectQuery;
+    abstract protected function getBaseQuery(array $fields = null): SelectQuery;
 
-    protected function getQuery(?array $fields=null, ?string $search=null): SelectQuery
+    protected function getQuery(?array $fields = null, ?string $search = null): SelectQuery
     {
         $query = $this->getBaseQuery($fields);
         $this->applyFilters($query);
@@ -120,7 +119,7 @@ abstract class SelectorDelegate extends Delegate implements
         }
     }
 
-    protected function _fetchSelectionList($cache=true)
+    protected function _fetchSelectionList($cache = true)
     {
         if ($cache && $this->_selectionList !== null) {
             return $this->_selectionList;
@@ -281,7 +280,7 @@ abstract class SelectorDelegate extends Delegate implements
     }
 
 
-    protected function _renderInlineListDetails(aura\html\widget\Field $fa, int $count=0)
+    protected function _renderInlineListDetails(aura\html\widget\Field $fa, int $count = 0)
     {
         $options = $this->_getOptionsList();
         $selected = $this->_fetchSelectionList();
@@ -293,11 +292,11 @@ abstract class SelectorDelegate extends Delegate implements
             $select = Html::{'div.w.list.checkbox'}(function () use ($options) {
                 foreach ($options as $key => $val) {
                     yield $this->html->checkbox(
-                            $this->fieldName('selected['.$key.']'),
-                            $this->values->selected->{$key},
-                            $val,
-                            $key
-                        );
+                        $this->fieldName('selected[' . $key . ']'),
+                        $this->values->selected->{$key},
+                        $val,
+                        $key
+                    );
                 }
             });
         } else {
@@ -306,12 +305,12 @@ abstract class SelectorDelegate extends Delegate implements
             }
 
             $select = $this->html->select(
-                    $this->fieldName('selected'),
-                    $this->values->selected,
-                    $options
-                )
+                $this->fieldName('selected'),
+                $this->values->selected,
+                $options
+            )
                 //->isRequired($this->_isRequired)
-                ;
+            ;
         }
 
         $fa->push(
@@ -326,7 +325,7 @@ abstract class SelectorDelegate extends Delegate implements
         $this->_renderDetailsButtonGroup($ba, $selected, true);
     }
 
-    protected function _renderInlineTextDetails(aura\html\widget\Field $fa, int $count=0)
+    protected function _renderInlineTextDetails(aura\html\widget\Field $fa, int $count = 0)
     {
         $fa->push(Html::raw('<div class="w list selection"><div class="body">'));
         $selected = $this->_fetchSelectionList();
@@ -369,7 +368,7 @@ abstract class SelectorDelegate extends Delegate implements
 
                     $fa->push(
                         $this->html->hidden(
-                            $this->fieldName('selected['.$id.']'),
+                            $this->fieldName('selected[' . $id . ']'),
                             $id
                         )
                     );
@@ -386,11 +385,10 @@ abstract class SelectorDelegate extends Delegate implements
 
                 $fa->push(
                     Html::{'strong'}($resultName),
-
                     $this->html->hidden(
-                            $this->fieldName('selected'),
-                            $resultId
-                        )
+                        $this->fieldName('selected'),
+                        $resultId
+                    )
                 );
             } else {
                 // No selection
@@ -408,14 +406,14 @@ abstract class SelectorDelegate extends Delegate implements
         $fa->push(Html::raw('</div>'));
     }
 
-    protected function _renderDetailsButtonGroup(aura\html\widget\ButtonArea $ba, $selected, $isList=false)
+    protected function _renderDetailsButtonGroup(aura\html\widget\ButtonArea $ba, $selected, $isList = false)
     {
         if (method_exists($this, 'createOverlayCreateUiContent')) {
             $ba->push(
                 $this->html->eventButton(
-                        $this->eventName('beginCreate'),
-                        $this->_('Add')
-                    )
+                    $this->eventName('beginCreate'),
+                    $this->_('Add')
+                )
                     ->setIcon('add')
                     ->setDisposition('positive')
                     ->shouldValidate(false)
@@ -425,17 +423,16 @@ abstract class SelectorDelegate extends Delegate implements
         if ($isList) {
             $ba->push(
                 $this->html->eventButton(
-                        $this->eventName('beginSelect'),
-                        $this->_('Search')
-                    )
+                    $this->eventName('beginSelect'),
+                    $this->_('Search')
+                )
                     ->setIcon('search')
                     ->setDisposition('positive')
                     ->shouldValidate(false),
-
                 $this->html->eventButton(
-                        $this->eventName('endSelect'),
-                        $this->_('Update')
-                    )
+                    $this->eventName('endSelect'),
+                    $this->_('Update')
+                )
                     ->setIcon('refresh')
                     ->setDisposition('informative')
                     ->shouldValidate(false)
@@ -443,9 +440,9 @@ abstract class SelectorDelegate extends Delegate implements
         } elseif (empty($selected)) {
             $ba->push(
                 $this->html->eventButton(
-                        $this->eventName('beginSelect'),
-                        $this->_('Select')
-                    )
+                    $this->eventName('beginSelect'),
+                    $this->_('Select')
+                )
                     ->setIcon('select')
                     ->setDisposition('positive')
                     ->shouldValidate(false)
@@ -453,9 +450,9 @@ abstract class SelectorDelegate extends Delegate implements
         } else {
             $ba->push(
                 $this->html->eventButton(
-                        $this->eventName('beginSelect'),
-                        $this->_('Select')
-                    )
+                    $this->eventName('beginSelect'),
+                    $this->_('Select')
+                )
                     ->setIcon('select')
                     ->setDisposition('operative')
                     ->shouldValidate(false)
@@ -466,9 +463,9 @@ abstract class SelectorDelegate extends Delegate implements
         if (!empty($selected)) {
             $ba->push(
                 $this->html->eventButton(
-                        $this->eventName('clear'),
-                        $this->_('Clear')
-                    )
+                    $this->eventName('clear'),
+                    $this->_('Clear')
+                )
                     ->setIcon('remove')
                     ->shouldValidate(false)
             );
@@ -507,17 +504,16 @@ abstract class SelectorDelegate extends Delegate implements
             $this->_searchMessage
         )->push(
             $this->html->textbox(
-                    $this->fieldName('search'),
-                    $this->values->search
-                )
+                $this->fieldName('search'),
+                $this->values->search
+            )
                 ->setPlaceholder($this->_searchPlaceholder)
                 //->isRequired($this->_isRequired && !$this->hasSelection())
                 ->setFormEvent($this->eventName('search')),
-
             $this->html->eventButton(
-                    $this->eventName('search'),
-                    $this->_('Search')
-                )
+                $this->eventName('search'),
+                $this->_('Search')
+            )
                 ->shouldValidate(false)
                 ->setIcon('search')
         );
@@ -558,7 +554,7 @@ abstract class SelectorDelegate extends Delegate implements
             $fa = $fs->addField($this->_('Search results'));
 
             foreach ($this->values->paginator as $key => $val) {
-                $fa->addHidden($this->fieldName('paginator['.$key.']'), $val);
+                $fa->addHidden($this->fieldName('paginator[' . $key . ']'), $val);
             }
 
             $collectionWidget = $this->renderCollectionList($query);
@@ -610,17 +606,17 @@ abstract class SelectorDelegate extends Delegate implements
 
 
             $fa->addEventButton(
-                    $this->eventName('select'),
-                    !$this->_isForMany ? $this->_('Set selected') : $this->_('Add selected')
-                )
+                $this->eventName('select'),
+                !$this->_isForMany ? $this->_('Set selected') : $this->_('Add selected')
+            )
                 ->shouldValidate(false)
                 ->setIcon('add');
 
             if ($this->_isForMany) {
                 $fa->addEventButton(
-                        $this->eventName('selectAll'),
-                        $this->_('Add all matches')
-                    )
+                    $this->eventName('selectAll'),
+                    $this->_('Add all matches')
+                )
                     ->shouldValidate(false)
                     ->setDisposition('positive')
                     ->setIcon('star');
@@ -631,9 +627,9 @@ abstract class SelectorDelegate extends Delegate implements
         // Overlay buttons
         $ba = $fs->addButtonArea()->push(
             $this->html->eventButton(
-                    $this->eventName('endSelect'),
-                    $this->_('Done')
-                )
+                $this->eventName('endSelect'),
+                $this->_('Done')
+            )
                 ->setIcon('select')
                 ->setDisposition('positive')
                 ->shouldValidate(false)
@@ -665,12 +661,11 @@ abstract class SelectorDelegate extends Delegate implements
         // Buttons
         $ol->addButtonArea(
             $this->html->eventButton(
-                    $this->eventName('create'),
-                    $this->_('Save')
-                )
+                $this->eventName('create'),
+                $this->_('Save')
+            )
                 ->setIcon('save')
                 ->shouldValidate(false),
-
             $this->html->buttonGroup(
                 $this->html->resetEventButton($this->eventName('resetCreate')),
                 $this->html->cancelEventButton($this->eventName('cancelCreate'))
@@ -698,9 +693,9 @@ abstract class SelectorDelegate extends Delegate implements
 
                 $this->html->buttonArea(
                     $this->html->eventButton(
-                            $this->eventName('clear'),
-                            $this->_('Remove')
-                        )
+                        $this->eventName('clear'),
+                        $this->_('Remove')
+                    )
                         ->shouldValidate(false)
                         ->setIcon('remove')
                 )
@@ -723,15 +718,15 @@ abstract class SelectorDelegate extends Delegate implements
 
             $fa->push(
                 Html::{'div.w.list.selection'}([
-                    $this->html->hidden($this->fieldName('selected['.$id.']'), $id),
+                    $this->html->hidden($this->fieldName('selected[' . $id . ']'), $id),
 
                     Html::{'div.body'}($name),
 
                     $this->html->buttonArea(
                         $this->html->eventButton(
-                                $this->eventName('remove', $id),
-                                $this->_('Remove')
-                            )
+                            $this->eventName('remove', $id),
+                            $this->_('Remove')
+                        )
                             ->shouldValidate(false)
                             ->setIcon('remove')
                     )
@@ -746,7 +741,7 @@ abstract class SelectorDelegate extends Delegate implements
         return null;
     }
 
-    protected function _renderCheckbox($id, $name=null)
+    protected function _renderCheckbox($id, $name = null)
     {
         if (!$this->_isForMany) {
             return $this->html->radio(
@@ -757,7 +752,7 @@ abstract class SelectorDelegate extends Delegate implements
             );
         } else {
             return $this->html->checkbox(
-                $this->fieldName('selected['.$id.']'),
+                $this->fieldName('selected[' . $id . ']'),
                 $this->isSelected($id),
                 $name,
                 $id
@@ -825,7 +820,7 @@ abstract class SelectorDelegate extends Delegate implements
             }
         });
 
-        return Legacy::$http->redirect('#'.$this->elementId('selector'));
+        return Legacy::$http->redirect('#' . $this->elementId('selector'));
     }
 
     protected function onEndSelectEvent()
@@ -834,7 +829,7 @@ abstract class SelectorDelegate extends Delegate implements
             $this->_state->removeStore('originalSelection');
         });
 
-        return Legacy::$http->redirect('#'.$this->elementId('selector'));
+        return Legacy::$http->redirect('#' . $this->elementId('selector'));
     }
 
     protected function onBeginCreateEvent()
@@ -856,7 +851,7 @@ abstract class SelectorDelegate extends Delegate implements
             }
         });
 
-        return Legacy::$http->redirect('#'.$this->elementId('selector'));
+        return Legacy::$http->redirect('#' . $this->elementId('selector'));
     }
 
     protected function onCreateEvent()
@@ -880,7 +875,7 @@ abstract class SelectorDelegate extends Delegate implements
             $this->_state->removeStore('originalSelection');
         });
 
-        return Legacy::$http->redirect('#'.$this->elementId('selector'));
+        return Legacy::$http->redirect('#' . $this->elementId('selector'));
     }
 
     protected function onResetEvent(): mixed

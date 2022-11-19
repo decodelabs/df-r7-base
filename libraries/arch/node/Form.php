@@ -6,20 +6,20 @@
 
 namespace df\arch\node;
 
-use df\core;
-use df\arch;
-use df\aura;
-use df\flex;
-use df\link;
-
-use df\aura\view\IContentProvider as ViewContentProvider;
-use df\aura\view\IView;
-use df\arch\node\form\State as FormState;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy;
+use df\arch;
+
+use df\arch\node\form\State as FormState;
+use df\aura;
+use df\aura\view\IContentProvider as ViewContentProvider;
+
+use df\aura\view\IView;
+use df\core;
+use df\flex;
+use df\link;
 
 abstract class Form extends Base implements IFormNode
 {
@@ -186,10 +186,10 @@ abstract class Form extends Base implements IFormNode
         }
 
         $request->setType($ext);
-        $output = 'form://'.implode('/', $request->getLiteralPathArray());
+        $output = 'form://' . implode('/', $request->getLiteralPathArray());
 
         if (null !== ($dataId = $this->getInstanceId())) {
-            $output .= '#'.$dataId;
+            $output .= '#' . $dataId;
         }
 
         return $output;
@@ -465,7 +465,7 @@ abstract class Form extends Base implements IFormNode
 
 
 
-    private function _runPostRequest(core\collection\ITree $postData=null): void
+    private function _runPostRequest(core\collection\ITree $postData = null): void
     {
         if ($postData === null) {
             $postData = clone Legacy::$http->getPostData();
@@ -630,7 +630,7 @@ abstract class Form extends Base implements IFormNode
             $method = 'Get';
         }
 
-        $func = 'handle'.$this->context->request->getType().$method.'Request';
+        $func = 'handle' . $this->context->request->getType() . $method . 'Request';
 
         return method_exists($this, $func) ?
             $func : null;
@@ -646,8 +646,8 @@ abstract class Form extends Base implements IFormNode
         }
 
         throw Exceptional::BadRequest([
-            'message' => 'Form node '.$this->context->location->getLiteralPath().' does not support '.
-                Legacy::$http->getMethod().' http method',
+            'message' => 'Form node ' . $this->context->location->getLiteralPath() . ' does not support ' .
+                Legacy::$http->getMethod() . ' http method',
             'http' => 405
         ]);
     }

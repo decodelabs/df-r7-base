@@ -5,19 +5,18 @@
  */
 namespace df\link\http\response;
 
-use df;
-use df\core;
-use df\link;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
+
 use DecodeLabs\Deliverance\Channel;
+use df\core;
+use df\link;
 
 class Stream extends Base implements link\http\IAdaptiveStreamResponse
 {
     protected $_content;
 
-    public function __construct($content=null, $contentType=null, link\http\IResponseHeaderCollection $headers=null)
+    public function __construct($content = null, $contentType = null, link\http\IResponseHeaderCollection $headers = null)
     {
         parent::__construct($headers);
 
@@ -45,7 +44,7 @@ class Stream extends Base implements link\http\IAdaptiveStreamResponse
         return $this;
     }
 
-    public function setContent($content, $contentType=null)
+    public function setContent($content, $contentType = null)
     {
         if ($content instanceof Channel) {
             $this->setContentFileStream($content);

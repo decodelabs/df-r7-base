@@ -6,11 +6,11 @@
 
 namespace df\arch\scaffold\Record;
 
-use df\opal\query\ISelectQuery as SelectQuery;
-
 use DecodeLabs\Exceptional;
+
 use DecodeLabs\Tightrope\Manifest\Requirable;
 use DecodeLabs\Tightrope\Manifest\RequirableTrait;
+use df\opal\query\ISelectQuery as SelectQuery;
 
 class Filter implements Requirable
 {
@@ -34,9 +34,9 @@ class Filter implements Requirable
      */
     public function __construct(
         string $key,
-        ?string $label=null,
-        ?callable $optionGenerator=null,
-        bool $required=false
+        ?string $label = null,
+        ?callable $optionGenerator = null,
+        bool $required = false
     ) {
         $this->setKey($key);
         $this->setLabel($label);
@@ -83,7 +83,7 @@ class Filter implements Requirable
     /**
      * Set option generator
      */
-    public function setOptionGenerator(?callable $optionGenerator=null): Filter
+    public function setOptionGenerator(?callable $optionGenerator = null): Filter
     {
         $this->optionGenerator = $optionGenerator;
         return $this;

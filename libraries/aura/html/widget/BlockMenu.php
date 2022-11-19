@@ -5,14 +5,9 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-
-class BlockMenu extends Menu {
-
-    const PRIMARY_TAG = 'nav.menu.block';
-    const DEFAULT_LINK_WIDGET = 'BlockLink';
-    const ENFORCE_DEFAULT_LINK_WIDGET = true;
+class BlockMenu extends Menu
+{
+    public const PRIMARY_TAG = 'nav.menu.block';
+    public const DEFAULT_LINK_WIDGET = 'BlockLink';
+    public const ENFORCE_DEFAULT_LINK_WIDGET = true;
 }

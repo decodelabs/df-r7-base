@@ -5,11 +5,7 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-
-class ButtonArea extends Container {
-
-    const PRIMARY_TAG = 'div.button-area';
+class ButtonArea extends Container
+{
+    public const PRIMARY_TAG = 'div.button-area';
 }

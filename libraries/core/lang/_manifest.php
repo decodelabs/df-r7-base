@@ -6,10 +6,9 @@
 
 namespace df\core\lang;
 
-use df;
-use df\core;
-
 use DecodeLabs\Typify;
+
+use df\core;
 
 interface ICallback
 {
@@ -98,7 +97,7 @@ interface ITypeRef
 interface IChainable
 {
     public function chain($callback, ...$args);
-    public function chainIf($test, $trueCallback, $falseCallback=null);
+    public function chainIf($test, $trueCallback, $falseCallback = null);
     public function chainEach(array $list, $callback, ...$args);
 }
 
@@ -110,7 +109,7 @@ trait TChainable
         return $this;
     }
 
-    public function chainIf($test, $trueCallback, $falseCallback=null)
+    public function chainIf($test, $trueCallback, $falseCallback = null)
     {
         if ($test) {
             Callback::call($trueCallback, $this);

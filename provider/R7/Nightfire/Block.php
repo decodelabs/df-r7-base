@@ -7,11 +7,11 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Nightfire;
 
-use df\aura\view\IDeferredRenderable as DeferredRenderable;
-use df\arch\node\IDelegateProxy as DelegateProxy;
-
 use DecodeLabs\Exemplar\Serializable as XmlSerializable;
 use DecodeLabs\Tagged\Markup;
+
+use df\arch\node\IDelegateProxy as DelegateProxy;
+use df\aura\view\IDeferredRenderable as DeferredRenderable;
 
 interface Block extends
     XmlSerializable,

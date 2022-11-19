@@ -6,14 +6,12 @@
 
 namespace df\halo\daemon;
 
-use df;
-use df\core;
-use df\halo;
-use df\arch;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Exceptional;
+
 use DecodeLabs\Genesis;
+use df\arch;
+use df\core;
 
 class Manager implements IManager
 {
@@ -45,7 +43,7 @@ class Manager implements IManager
             //return $this;
         }
 
-        $path = Genesis::$hub->getLocalDataPath().'/daemons/__activity';
+        $path = Genesis::$hub->getLocalDataPath() . '/daemons/__activity';
         $launch = false;
 
         try {
@@ -65,11 +63,17 @@ class Manager implements IManager
 
             if ($spoolOnly) {
                 $taskManager->launchBackground(
-                    'tasks/spool', null, false, false
+                    'tasks/spool',
+                    null,
+                    false,
+                    false
                 );
             } else {
                 $taskManager->launchBackground(
-                    'daemons/ensure-activity', null, false, false
+                    'daemons/ensure-activity',
+                    null,
+                    false,
+                    false
                 );
             }
         }

@@ -5,14 +5,13 @@
  */
 namespace df\opal\record;
 
-use df;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
 use df\core;
-use df\opal;
-use df\user;
 use df\mesh;
 
-use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\opal;
+use df\user;
 
 class Partial implements IPartial, Dumpable
 {
@@ -27,7 +26,7 @@ class Partial implements IPartial, Dumpable
 
     protected $_isBridge = false;
 
-    public function __construct(opal\query\IAdapter $adapter=null, $row=null, array $fields=null)
+    public function __construct(opal\query\IAdapter $adapter = null, $row = null, array $fields = null)
     {
         $this->_adapter = $adapter;
 
@@ -46,7 +45,7 @@ class Partial implements IPartial, Dumpable
         return $this;
     }
 
-    public function isBridge(bool $flag=null)
+    public function isBridge(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isBridge = $flag;
@@ -58,7 +57,7 @@ class Partial implements IPartial, Dumpable
 
 
 
-    protected function _buildPrimaryKeySet(array $fields, $includeChanges=true)
+    protected function _buildPrimaryKeySet(array $fields, $includeChanges = true)
     {
         $values = [];
 

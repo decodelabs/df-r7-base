@@ -5,12 +5,10 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
+use DecodeLabs\Glitch\Dumpable;
 use df\arch;
 
-use DecodeLabs\Glitch\Dumpable;
+use df\aura;
 
 class GroupedSelect extends Base implements
     IGroupedSelectionInputWidget,
@@ -23,14 +21,14 @@ class GroupedSelect extends Base implements
     use TWidget_FocusableInput;
     use TWidget_GroupedSelectionInput;
 
-    const PRIMARY_TAG = 'select.single.grouped';
-    const ARRAY_INPUT = false;
+    public const PRIMARY_TAG = 'select.single.grouped';
+    public const ARRAY_INPUT = false;
 
     protected $_selected;
     protected $_markSelected = true;
     protected $_noSelectionLabel = '--';
 
-    public function __construct(arch\IContext $context, $name, $value=null, $options=null, $labelsAsValues=false)
+    public function __construct(arch\IContext $context, $name, $value = null, $options = null, $labelsAsValues = false)
     {
         parent::__construct($context);
 
@@ -39,7 +37,7 @@ class GroupedSelect extends Base implements
         $this->setOptions($options, $labelsAsValues);
     }
 
-    public function shouldMarkSelected(bool $flag=null)
+    public function shouldMarkSelected(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_markSelected = $flag;

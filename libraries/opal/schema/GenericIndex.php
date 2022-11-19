@@ -5,11 +5,7 @@
  */
 namespace df\opal\schema;
 
-use df;
-use df\core;
-use df\opal;
-
-class GenericIndex implements IIndex {
-    
+class GenericIndex implements IIndex
+{
     use TConstraint_Index;
 }

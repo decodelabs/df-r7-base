@@ -5,12 +5,10 @@
  */
 namespace df\arch\scaffold\Record;
 
-use df\arch\scaffold\Record\Filter;
-use df\opal\query\ISelectQuery as SelectQuery;
-
 use DecodeLabs\Tagged as Html;
+
 use DecodeLabs\Tagged\Markup;
-use DecodeLabs\Exceptional;
+use df\opal\query\ISelectQuery as SelectQuery;
 
 trait FilterProviderTrait
 {
@@ -22,9 +20,9 @@ trait FilterProviderTrait
      */
     public function newRecordFilter(
         string $key,
-        ?string $label=null,
-        ?callable $optionGenerator=null,
-        bool $required=false
+        ?string $label = null,
+        ?callable $optionGenerator = null,
+        bool $required = false
     ): Filter {
         return new Filter(
             $key,
@@ -39,7 +37,7 @@ trait FilterProviderTrait
      * Generate new switcher filter object
      */
     public function newRecordSwitcher(
-        ?callable $optionGenerator=null
+        ?callable $optionGenerator = null
     ): Filter {
         return new Filter(
             $this->getRecordKeyName(),
@@ -53,7 +51,7 @@ trait FilterProviderTrait
     /**
      * Apply clauses to query
      */
-    public function applyRecordFilters(SelectQuery $query, ?string $contextKey=null): void
+    public function applyRecordFilters(SelectQuery $query, ?string $contextKey = null): void
     {
         foreach ($this->getRecordFilters() as $filter) {
             if ($filter->isOverridden($contextKey)) {
@@ -68,7 +66,7 @@ trait FilterProviderTrait
     /**
      * Render record switchers
      */
-    public function renderRecordSwitchers(?iterable $filters=null, ?string $label=null): ?Markup
+    public function renderRecordSwitchers(?iterable $filters = null, ?string $label = null): ?Markup
     {
         if ($filters === null) {
             $filters = $this->getRecordSwitchers();
@@ -91,7 +89,6 @@ trait FilterProviderTrait
         $form->addFieldSet()->addClass('scaffold switcher')->push(
             (!empty($queryValue) && !isset($index[$keyName])) ?
                 $this->html->hidden($keyName, $this->getRecordId()) : null,
-
             function () use ($keyName, $index) {
                 foreach ($this->request->query as $key => $var) {
                     if (
@@ -105,18 +102,16 @@ trait FilterProviderTrait
                     yield $this->html->hidden($key, $var);
                 }
             },
-
             Html::label($label ?? 'Switch'),
-
             Html::{'div.inputs'}(function () use ($index) {
                 foreach ($index as $filter) {
                     $type = $filter->isGrouped() ? 'groupedSelect' : 'select';
 
                     yield $this->html->{$type}(
-                            $filter->getKey(),
-                            $filter->getValue(),
-                            iterator_to_array($filter->getOptions())
-                        )
+                        $filter->getKey(),
+                        $filter->getValue(),
+                        iterator_to_array($filter->getOptions())
+                    )
                         ->isRequired(true)
                         ->setNoSelectionLabel($filter->getLabel() ?? 'All');
                 }
@@ -131,7 +126,7 @@ trait FilterProviderTrait
     /**
      * Render filter groups
      */
-    public function renderRecordFilters(?string $contextKey=null, ?iterable $filters=null): ?Markup
+    public function renderRecordFilters(?string $contextKey = null, ?iterable $filters = null): ?Markup
     {
         if ($filters === null) {
             $filters = $this->getRecordFilters();
@@ -194,21 +189,16 @@ trait FilterProviderTrait
         $form->addFieldSet()->addClass('scaffold filters')->push(
             !empty($queryValue) && !isset($index[$keyName]) ?
                 $this->html->hidden($keyName, $this->getRecordId()) : null,
-
             isset($this->request[$contextKey]) && !isset($index[$contextKey]) ?
                 $this->html->hidden($contextKey, $this->request[$contextKey]) : null,
-
             isset($this->request['od']) ?
                 $this->html->hidden('od', $this->request['od']) : null,
-
             isset($this->request['search']) ?
                 $this->html->hidden('search', $this->request['search']) : null,
-
             $request === null ?
                 Html::label('Filter') :
                 $this->html->link($request, 'Filter')
                     ->setIcon('cross'),
-
             Html::{'div.inputs'}(function () use ($index, $contextKey) {
                 foreach ($index as $filter) {
                     $required = $filter->isRequired();
@@ -220,10 +210,10 @@ trait FilterProviderTrait
                     $type = $filter->isGrouped() ? 'groupedSelect' : 'select';
 
                     yield $this->html->{$type}(
-                            $filter->getKey(),
-                            $filter->getValue(),
-                            iterator_to_array($filter->getOptions())
-                        )
+                        $filter->getKey(),
+                        $filter->getValue(),
+                        iterator_to_array($filter->getOptions())
+                    )
                         ->isRequired($required)
                         ->setNoSelectionLabel($filter->getLabel() ?? 'All');
                 }
@@ -301,7 +291,7 @@ trait FilterProviderTrait
     /**
      * Merge record list filter fields
      */
-    protected function mergeFilterListFields(?array $fields, ?string $contextKey=null): ?array
+    protected function mergeFilterListFields(?array $fields, ?string $contextKey = null): ?array
     {
         if ($fields === null) {
             $fields = [];

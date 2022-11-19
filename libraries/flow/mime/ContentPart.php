@@ -5,15 +5,13 @@
  */
 namespace df\flow\mime;
 
-use df;
-use df\core;
-use df\flow;
-use df\flex;
-
 use DecodeLabs\Atlas\File;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+
+use df\core;
+use df\flex;
 
 class ContentPart implements IContentPart, Dumpable
 {
@@ -22,7 +20,7 @@ class ContentPart implements IContentPart, Dumpable
 
     protected $_content = null;
 
-    public function __construct($content, $headers=null, $decodeContent=false)
+    public function __construct($content, $headers = null, $decodeContent = false)
     {
         $this->_headers = core\collection\HeaderMap::factory($headers);
 
@@ -56,7 +54,7 @@ class ContentPart implements IContentPart, Dumpable
 
                 default:
                     throw Exceptional::InvalidArgument(
-                        'Invalid encoding type: '.$encoding
+                        'Invalid encoding type: ' . $encoding
                     );
             }
         }
@@ -129,7 +127,7 @@ class ContentPart implements IContentPart, Dumpable
 
             default:
                 throw Exceptional::InvalidArgument(
-                    'Invalid encoding type: '.$encoding
+                    'Invalid encoding type: ' . $encoding
                 );
         }
 
@@ -156,7 +154,7 @@ class ContentPart implements IContentPart, Dumpable
 
     public function setId(string $id)
     {
-        $this->_headers->set('content-id', '<'.$id.'>');
+        $this->_headers->set('content-id', '<' . $id . '>');
         return $this;
     }
 
@@ -181,13 +179,13 @@ class ContentPart implements IContentPart, Dumpable
         return $this->_headers->get('content-disposition', 'inline');
     }
 
-    public function setFileName($fileName, $disposition=null)
+    public function setFileName($fileName, $disposition = null)
     {
         if ($disposition === null) {
             $disposition = $this->getDisposition();
         }
 
-        $this->setDisposition($disposition.'; filename="'.$fileName.'"');
+        $this->setDisposition($disposition . '; filename="' . $fileName . '"');
         return $this;
     }
 
@@ -258,13 +256,13 @@ class ContentPart implements IContentPart, Dumpable
 
     public function toString(): string
     {
-        $output = $this->getHeaderString().IPart::LINE_END.IPart::LINE_END;
+        $output = $this->getHeaderString() . IPart::LINE_END . IPart::LINE_END;
         $output .= $this->getEncodedContent();
 
         return $output;
     }
 
-    public function getHeaderString(array $skipKeys=null)
+    public function getHeaderString(array $skipKeys = null)
     {
         $this->prepareHeaders();
 
@@ -300,7 +298,7 @@ class ContentPart implements IContentPart, Dumpable
             if ($parts[0] == 'text' || $parts[0] == 'application') {
                 $content = $this->_content;
             } else {
-                $content = strlen($this->_content).' bytes';
+                $content = strlen($this->_content) . ' bytes';
             }
 
             yield 'value' => $content;

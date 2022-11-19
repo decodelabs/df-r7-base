@@ -5,20 +5,18 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
 use df\arch;
 
-class ProgressBar extends Base {
-
-    const PRIMARY_TAG = 'progress';
+class ProgressBar extends Base
+{
+    public const PRIMARY_TAG = 'progress';
 
     protected $_value;
     protected $_min;
     protected $_max;
 
-    public function __construct(arch\IContext $context, $value, $max=100, $min=0) {
+    public function __construct(arch\IContext $context, $value, $max = 100, $min = 0)
+    {
         parent::__construct($context);
 
         $this->setValue($value);
@@ -26,7 +24,8 @@ class ProgressBar extends Base {
         $this->setMin($min);
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $tag = $this->getTag();
 
         $tag->setAttribute('value', $this->_value);
@@ -36,30 +35,36 @@ class ProgressBar extends Base {
         return $tag->render();
     }
 
-    public function setValue($value) {
+    public function setValue($value)
+    {
         $this->_value = $value;
         return $this;
     }
 
-    public function getValue() {
+    public function getValue()
+    {
         return $this->_value;
     }
 
-    public function setMin($min) {
+    public function setMin($min)
+    {
         $this->_min = $min;
         return $this;
     }
 
-    public function getMin() {
+    public function getMin()
+    {
         return $this->_min;
     }
 
-    public function setMax($max) {
+    public function setMax($max)
+    {
         $this->_max = $max;
         return $this;
     }
 
-    public function getMax() {
+    public function getMax()
+    {
         return $this->_max;
     }
 }

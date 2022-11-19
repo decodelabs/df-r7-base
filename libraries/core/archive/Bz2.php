@@ -5,9 +5,6 @@
  */
 namespace df\core\archive;
 
-use df;
-use df\core;
-
 use DecodeLabs\Exceptional;
 
 class Bz2 extends Base
@@ -21,30 +18,34 @@ class Bz2 extends Base
         }
     }
 
-    public function extractFile(string $file, string $destDir=null, bool $flattenRoot=false): string
+    public function extractFile(string $file, string $destDir = null, bool $flattenRoot = false): string
     {
         $destFile = null;
 
         if ($destDir !== null) {
-            $destFile = $destDir.'/'.$this->_getDecompressFileName($file, 'bz2');
+            $destFile = $destDir . '/' . $this->_getDecompressFileName($file, 'bz2');
         }
 
         return dirname($this->decompressFile($file, $destFile));
     }
 
-    public function decompressFile(string $file, string $destFile=null): string
+    public function decompressFile(string $file, string $destFile = null): string
     {
         $destFile = $this->_normalizeDecompressDestination($file, $destFile, 'bz2');
 
         if (false === ($output = fopen($destFile, 'w'))) {
             throw Exceptional::Runtime(
-                'Unable to open destination file for writing', null, $destFile
+                'Unable to open destination file for writing',
+                null,
+                $destFile
             );
         }
 
         if (false === ($archive = bzopen($file, 'r'))) {
             throw Exceptional::Runtime(
-                'Unable to open bz2 file for reading', null, $file
+                'Unable to open bz2 file for reading',
+                null,
+                $file
             );
         }
 

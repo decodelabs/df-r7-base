@@ -5,12 +5,10 @@
  */
 namespace df\opal\query\field;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Glitch;
+
 use DecodeLabs\Glitch\Dumpable;
+use df\opal;
 
 class Combine implements opal\query\ICombineField, Dumpable
 {
@@ -42,7 +40,7 @@ class Combine implements opal\query\ICombineField, Dumpable
 
     public function getQualifiedName()
     {
-        return $this->_combine->getParentQuery()->getSourceAlias().'.'.$this->_name;
+        return $this->_combine->getParentQuery()->getSourceAlias() . '.' . $this->_name;
     }
 
     public function setAlias($alias)
@@ -84,6 +82,6 @@ class Combine implements opal\query\ICombineField, Dumpable
 
     public function toString(): string
     {
-        return 'combine('.$this->getQualifiedName().', ['.implode(', ', array_keys($this->_combine->getFields())).'])';
+        return 'combine(' . $this->getQualifiedName() . ', [' . implode(', ', array_keys($this->_combine->getFields())) . '])';
     }
 }

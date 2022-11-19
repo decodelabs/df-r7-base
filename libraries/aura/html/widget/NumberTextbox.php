@@ -5,12 +5,9 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\arch;
 
 class NumberTextbox extends Base implements IRangeEntryWidget, Dumpable
 {
@@ -22,12 +19,12 @@ class NumberTextbox extends Base implements IRangeEntryWidget, Dumpable
     use TWidget_PlaceholderProvider;
     use TWidget_RangeEntry;
 
-    const PRIMARY_TAG = 'input.textbox.number';
-    const ARRAY_INPUT = false;
-    const INPUT_TYPE = 'number';
-    const DEFAULT_PLACEHOLDER = null;
+    public const PRIMARY_TAG = 'input.textbox.number';
+    public const ARRAY_INPUT = false;
+    public const INPUT_TYPE = 'number';
+    public const DEFAULT_PLACEHOLDER = null;
 
-    public function __construct(arch\IContext $context, $name, $value=null)
+    public function __construct(arch\IContext $context, $name, $value = null)
     {
         parent::__construct($context);
 

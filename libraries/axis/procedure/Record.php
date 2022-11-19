@@ -5,20 +5,18 @@
  */
 namespace df\axis\procedure;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
-
 use DecodeLabs\Exceptional;
+use df\axis;
+
+use df\opal;
 
 abstract class Record extends Base implements IRecordProcedure
 {
-    const CAN_CREATE = false;
+    public const CAN_CREATE = false;
 
     public $record;
 
-    public function __construct(axis\IUnit $unit, $values, $record=null)
+    public function __construct(axis\IUnit $unit, $values, $record = null)
     {
         parent::__construct($unit, $values);
 
@@ -27,7 +25,7 @@ abstract class Record extends Base implements IRecordProcedure
         }
     }
 
-    public function setRecord(opal\record\IRecord $record=null)
+    public function setRecord(opal\record\IRecord $record = null)
     {
         $this->record = $record;
         return $this;

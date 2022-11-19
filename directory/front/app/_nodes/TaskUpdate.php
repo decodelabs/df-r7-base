@@ -6,14 +6,10 @@
 
 namespace df\apex\directory\front\app\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\halo;
-use df\arch;
-use df\spur;
-
 use DecodeLabs\Terminus as Cli;
+use df\arch;
+
+use df\spur;
 
 class TaskUpdate extends arch\node\Task
 {

@@ -5,11 +5,10 @@
  */
 namespace df\opal\query;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Glitch\Dumpable;
+use df\core;
+
+use df\opal;
 
 class OrderDirective implements IOrderDirective, Dumpable
 {
@@ -19,7 +18,7 @@ class OrderDirective implements IOrderDirective, Dumpable
     protected $_nullOrder = 'ascending';
     protected $_field;
 
-    public function __construct(opal\query\IField $field, $direction=null)
+    public function __construct(opal\query\IField $field, $direction = null)
     {
         $this->setField($field);
         $this->setDirection($direction);
@@ -146,7 +145,7 @@ class OrderDirective implements IOrderDirective, Dumpable
         return $output;
     }
 
-    public function isDescending(bool $flag=null)
+    public function isDescending(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isDescending = $flag;
@@ -156,7 +155,7 @@ class OrderDirective implements IOrderDirective, Dumpable
         return $this->_isDescending;
     }
 
-    public function isAscending(bool $flag=null)
+    public function isAscending(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isDescending = !$flag;
@@ -179,7 +178,7 @@ class OrderDirective implements IOrderDirective, Dumpable
 
     public function toString(): string
     {
-        return $this->_field->getQualifiedName().' '.$this->getDirection();
+        return $this->_field->getQualifiedName() . ' ' . $this->getDirection();
     }
 
     /**

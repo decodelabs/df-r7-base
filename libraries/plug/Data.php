@@ -6,16 +6,15 @@
 
 namespace df\plug;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
-use df\flex;
-use df\mesh;
-
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Exceptional;
 use DecodeLabs\R7\Legacy;
+use df\axis;
+use df\core;
+
+use df\flex;
+use df\mesh;
+use df\opal;
 
 class Data implements core\ISharedHelper, opal\query\IEntryPoint
 {
@@ -32,17 +31,17 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
 
 
     // Query shortcuts
-    public function fetchForAction($source, $primary, $chain=null)
+    public function fetchForAction($source, $primary, $chain = null)
     {
         return $this->queryByPrimaryForAction($this->fetch()->from($source), $primary, $chain);
     }
 
-    public function selectForAction($source, $fields, $primary=null, $chain=null)
+    public function selectForAction($source, $fields, $primary = null, $chain = null)
     {
         return $this->queryByPrimaryForAction($this->select($fields)->from($source), $primary, $chain);
     }
 
-    public function fetchOrCreateForAction($source, $primary, $newChain=null, $queryChain=null)
+    public function fetchOrCreateForAction($source, $primary, $newChain = null, $queryChain = null)
     {
         $query = $this->fetch()->from($source);
         $this->applyQueryPrimaryClause($query, $primary);
@@ -68,12 +67,12 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
         return $output;
     }
 
-    public function queryByPrimaryForAction(opal\query\IReadQuery $query, $primary, $chain=null)
+    public function queryByPrimaryForAction(opal\query\IReadQuery $query, $primary, $chain = null)
     {
         if ($primary === null) {
             $name = $query->getSource()->getDisplayName();
             throw Exceptional::{'df/opal/record/NotFound'}([
-                'message' => 'Item not found - '.$name.'#NULL',
+                'message' => 'Item not found - ' . $name . '#NULL',
                 'http' => 404
             ]);
         }
@@ -84,7 +83,9 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
 
         if (!$query instanceof opal\query\IWhereClauseQuery) {
             throw Exceptional::Logic(
-                'Query is not a where clause factory', null, $query
+                'Query is not a where clause factory',
+                null,
+                $query
             );
         }
 
@@ -102,7 +103,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
 
             $name = $query->getSource()->getDisplayName();
             throw Exceptional::{'df/opal/record/NotFound'}([
-                'message' => 'Item not found - '.$name.'#'.$primary,
+                'message' => 'Item not found - ' . $name . '#' . $primary,
                 'http' => 404
             ]);
         }
@@ -127,7 +128,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
     }
 
 
-    public function queryForAction(opal\query\IReadQuery $query, $chain=null)
+    public function queryForAction(opal\query\IReadQuery $query, $chain = null)
     {
         if ($chain) {
             $query->chain($chain);
@@ -138,7 +139,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
         if ($output === null) {
             $name = $query->getSource()->getDisplayName();
             throw Exceptional::{'df/opal/record/NotFound'}([
-                'message' => 'Item not found - '.$name,
+                'message' => 'Item not found - ' . $name,
                 'http' => 404
             ]);
         }
@@ -152,7 +153,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
 
 
     // Unit objects
-    public function beginProcedure($unit, $name, $values, $item=null)
+    public function beginProcedure($unit, $name, $values, $item = null)
     {
         return $this->_normalizeUnit($unit)
             ->beginProcedure($name, $values, $item);
@@ -173,13 +174,13 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
         return $unit;
     }
 
-    public function newRecord($source, array $values=null)
+    public function newRecord($source, array $values = null)
     {
         return $this->_sourceToAdapter($source)
             ->newRecord($values);
     }
 
-    public function newPartial($source, array $values=null)
+    public function newPartial($source, array $values = null)
     {
         return $this->_sourceToAdapter($source)
             ->newPartial($values);
@@ -197,7 +198,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
         return new mesh\job\Queue();
     }
 
-    public function checkAccess($source, $action=null)
+    public function checkAccess($source, $action = null)
     {
         $actionName = $action;
 
@@ -211,7 +212,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
 
         if (!$this->context->getUserManager()->canAccess($adapter, $action)) {
             throw Exceptional::{'df/opal/record/Unauthorized'}([
-                'message' => 'Cannot '.$actionName.' '.$source->getDisplayName().' items',
+                'message' => 'Cannot ' . $actionName . ' ' . $source->getDisplayName() . ' items',
                 'http' => 401
             ]);
         }
@@ -250,12 +251,12 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
 
 
     // Data helpers
-    public function hasRelation($record, $field, $idField=null)
+    public function hasRelation($record, $field, $idField = null)
     {
         return (bool)$this->getRelationId($record, $field, $idField);
     }
 
-    public function getRelationId($record, $field, $idField=null)
+    public function getRelationId($record, $field, $idField = null)
     {
         $output = null;
 
@@ -289,7 +290,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
         return $output;
     }
 
-    public function getRelationRecord($record, $field, $allowFetch=false)
+    public function getRelationRecord($record, $field, $allowFetch = false)
     {
         if (!isset($record[$field])) {
             return null;
@@ -324,7 +325,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
         return $this->context->getMeshManager()->fetchEntity($locator);
     }
 
-    public function fetchEntityForAction($id, $action=null)
+    public function fetchEntityForAction($id, $action = null)
     {
         $actionName = $action;
 
@@ -334,14 +335,14 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
 
         if (!$output = $this->fetchEntity($id)) {
             throw Exceptional::{'df/opal/record/NotFound'}([
-                'message' => 'Entity not found - '.$id,
+                'message' => 'Entity not found - ' . $id,
                 'http' => 404
             ]);
         }
 
         if (!$this->context->getUserManager()->canAccess($output, $action)) {
             throw Exceptional::{'df/opal/record/Unauthorized'}([
-                'message' => 'Cannot '.$actionName.' entity '.$id,
+                'message' => 'Cannot ' . $actionName . ' entity ' . $id,
                 'http' => 401
             ]);
         }
@@ -352,7 +353,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
 
 
     // JSON
-    public function queryToJson(opal\query\IReadQuery $query, array $extraData=null, $rowSanitizer=null, int $flags=0): string
+    public function queryToJson(opal\query\IReadQuery $query, array $extraData = null, $rowSanitizer = null, int $flags = 0): string
     {
         if ($extraData === null) {
             $extraData = [];
@@ -377,12 +378,12 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
         return flex\Json::toString($extraData, $flags);
     }
 
-    public function toJson($data, int $flags=0): string
+    public function toJson($data, int $flags = 0): string
     {
         return flex\Json::toString($data, $flags);
     }
 
-    public function toJsonFile($path, $data, int $flags=0): File
+    public function toJsonFile($path, $data, int $flags = 0): File
     {
         return flex\Json::toFile($path, $data, $flags);
     }
@@ -409,7 +410,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
 
 
     // Crypt
-    public function hash($message, $salt=null)
+    public function hash($message, $salt = null)
     {
         if ($salt === null) {
             $salt = Legacy::getPassKey();
@@ -418,7 +419,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
         return core\crypt\Util::passwordHash($message, $salt);
     }
 
-    public function hexHash($message, $salt=null)
+    public function hexHash($message, $salt = null)
     {
         return bin2hex($this->hash($message, $salt));
     }

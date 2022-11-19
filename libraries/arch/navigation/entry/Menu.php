@@ -5,35 +5,37 @@
  */
 namespace df\arch\navigation\entry;
 
-use df;
-use df\core;
 use df\arch;
+use df\core;
 
-class Menu extends Base {
-
+class Menu extends Base
+{
     protected $_delegate;
     protected $_text;
     protected $_icon;
 
-    protected static function _fromArray(array $entry): arch\navigation\IEntry {
+    protected static function _fromArray(array $entry): arch\navigation\IEntry
+    {
         $tree = new core\collection\Tree($entry);
 
         return (new self(
-                $tree['delegate'],
-                $tree['text'],
-                $tree['icon']
-            ))
+            $tree['delegate'],
+            $tree['text'],
+            $tree['icon']
+        ))
             ->setId($tree['id'])
             ->setWeight($tree['weight']);
     }
 
-    public function __construct($delegate, $text, $icon=null) {
+    public function __construct($delegate, $text, $icon = null)
+    {
         $this->setDelegate($delegate);
         $this->setText($text);
         $this->setIcon($icon);
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return [
             'type' => 'Menu',
             'id' => $this->getId(),
@@ -44,38 +46,45 @@ class Menu extends Base {
         ];
     }
 
-    public function getId(): ?string {
-        if($this->_id === null) {
-            return $this->_id = 'menu-'.md5((string)$this->getDelegate());
+    public function getId(): ?string
+    {
+        if ($this->_id === null) {
+            return $this->_id = 'menu-' . md5((string)$this->getDelegate());
         }
 
         return parent::getId();
     }
 
-    public function setDelegate($delegate) {
+    public function setDelegate($delegate)
+    {
         $this->_delegate = (string)arch\navigation\menu\Base::normalizeId($delegate);
         return $this;
     }
 
-    public function getDelegate() {
+    public function getDelegate()
+    {
         return $this->_delegate;
     }
 
-    public function setText($text) {
+    public function setText($text)
+    {
         $this->_text = $text;
         return $this;
     }
 
-    public function getText() {
+    public function getText()
+    {
         return $this->_text;
     }
 
-    public function setIcon(string $icon=null) {
+    public function setIcon(string $icon = null)
+    {
         $this->_icon = $icon;
         return $this;
     }
 
-    public function getIcon() {
+    public function getIcon()
+    {
         return $this->_icon;
     }
 }

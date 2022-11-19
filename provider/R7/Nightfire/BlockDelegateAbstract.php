@@ -14,8 +14,6 @@ use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
 use df\arch\node\TForm_InlineFieldRenderableDelegate;
 use df\core\constraint\TRequirable;
 
-use DecodeLabs\R7\Nightfire\Block;
-
 /**
  * @template TBlock of Block
  */

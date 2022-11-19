@@ -5,18 +5,16 @@
  */
 namespace df\opal\schema;
 
-use df;
-use df\core;
-use df\opal;
-use df\flex;
-
 use DecodeLabs\Exceptional;
+use df\core;
+
+use df\flex;
 
 abstract class Primitive implements IPrimitive
 {
     use TField;
 
-    const DEFAULT_VALUE = '';
+    public const DEFAULT_VALUE = '';
 
     private $_type;
 
@@ -74,7 +72,7 @@ class Primitive_Bit extends Primitive implements IBitSizeRestrictedField
 {
     use TField_BitSizeRestricted;
 
-    const DEFAULT_VALUE = 0;
+    public const DEFAULT_VALUE = 0;
 
     public function __construct(IField $field, $size)
     {
@@ -89,7 +87,7 @@ class Primitive_Blob extends Primitive implements ILargeByteSizeRestrictedField
 {
     use TField_LargeByteSizeRestricted;
 
-    public function __construct(IField $field, $size=16)
+    public function __construct(IField $field, $size = 16)
     {
         parent::__construct($field);
         $this->setExponentSize($size);
@@ -126,7 +124,7 @@ class Primitive_DataObject extends Primitive_Blob
 
 class Primitive_Date extends Primitive
 {
-    const DEFAULT_VALUE = 'now';
+    public const DEFAULT_VALUE = 'now';
 
     public function getDefaultNonNullValue()
     {
@@ -145,7 +143,7 @@ class Primitive_Date extends Primitive
 
 class Primitive_DateTime extends Primitive
 {
-    const DEFAULT_VALUE = 'now';
+    public const DEFAULT_VALUE = 'now';
 
     public function getDefaultNonNullValue()
     {
@@ -188,7 +186,7 @@ class Primitive_Float extends Primitive implements IFloatingPointNumericField
 {
     use TField_FloatingPointNumeric;
 
-    const DEFAULT_VALUE = 0;
+    public const DEFAULT_VALUE = 0;
 
     public function __construct(IField $field, $precision, $scale)
     {
@@ -206,13 +204,13 @@ class Primitive_Decimal extends Primitive_Float
 
 class Primitive_Guid extends Primitive
 {
-    const UUID1 = 1;
-    const UUID4 = 2;
-    const COMB = 3;
+    public const UUID1 = 1;
+    public const UUID4 = 2;
+    public const COMB = 3;
 
     protected $_generator = self::COMB;
 
-    public function __construct(IField $field, $generator=self::COMB)
+    public function __construct(IField $field, $generator = self::COMB)
     {
         parent::__construct($field);
         $this->setGenerator($generator);
@@ -292,9 +290,9 @@ class Primitive_Integer extends Primitive implements
     use TField_Numeric;
     use TField_AutoIncrementable;
 
-    const DEFAULT_VALUE = 0;
+    public const DEFAULT_VALUE = 0;
 
-    public function __construct(IField $field, $size=null)
+    public function __construct(IField $field, $size = null)
     {
         parent::__construct($field);
         $this->setByteSize($size);
@@ -348,7 +346,7 @@ class Primitive_Text extends Primitive implements
     use TField_LargeByteSizeRestricted;
     use TField_CharacterSetAware;
 
-    public function __construct(IField $field, $size=16)
+    public function __construct(IField $field, $size = 16)
     {
         parent::__construct($field);
         $this->setExponentSize($size);
@@ -359,7 +357,7 @@ class Primitive_Text extends Primitive implements
 
 class Primitive_Time extends Primitive
 {
-    const DEFAULT_VALUE = 0;
+    public const DEFAULT_VALUE = 0;
 }
 
 

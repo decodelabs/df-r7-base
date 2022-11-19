@@ -5,19 +5,16 @@
  */
 namespace df\apex\models\pestControl\error;
 
-use df;
-use df\core;
-use df\apex;
 use df\opal;
-use df\axis;
 
-class Record extends opal\record\Base {
-
-    protected function onPreDelete($queue, $job) {
+class Record extends opal\record\Base
+{
+    protected function onPreDelete($queue, $job)
+    {
         $id = $this['id'];
 
         $job->addDependency($queue->asap(
-            'deleteLogs:'.$id,
+            'deleteLogs:' . $id,
             $this->getAdapter()->getModel()->errorLog->delete()
                 ->where('error', '=', $id)
         ));

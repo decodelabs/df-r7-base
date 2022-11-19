@@ -5,14 +5,12 @@
  */
 namespace df\opal\rdbms\schema;
 
-use df;
-use df\core;
-use df\opal;
-use df\mesh;
-
-use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch;
+
+use DecodeLabs\Glitch\Dumpable;
+use df\mesh;
+use df\opal;
 
 abstract class Base implements ISchema, Dumpable
 {
@@ -52,7 +50,7 @@ abstract class Base implements ISchema, Dumpable
         return $this->_adapter->getServerType();
     }
 
-    public function isTemporary(bool $flag=null)
+    public function isTemporary(bool $flag = null)
     {
         if ($flag !== null) {
             return $this->setOption('isTemporary', $flag);
@@ -67,7 +65,7 @@ abstract class Base implements ISchema, Dumpable
             foreach ($this->_foreignKeys as $name => $key) {
                 if ($key->hasField($field)) {
                     throw Exceptional::{'df/opal/rdbms/Constraint'}(
-                        'Foreign key '.$key->getName().' requires to-be-dropped field '.$field->getName().'. '.
+                        'Foreign key ' . $key->getName() . ' requires to-be-dropped field ' . $field->getName() . '. ' .
                         'You should either not drop this field, or drop this key first'
                     );
                 }
@@ -110,7 +108,10 @@ abstract class Base implements ISchema, Dumpable
     public function _createField($name, $type, array $args)
     {
         return opal\rdbms\schema\field\Base::factory(
-            $this, $type, $name, $args
+            $this,
+            $type,
+            $name,
+            $args
         );
     }
 
@@ -119,7 +120,7 @@ abstract class Base implements ISchema, Dumpable
         Glitch::incomplete($data);
     }
 
-    public function _createIndex($name, $fields=null)
+    public function _createIndex($name, $fields = null)
     {
         return new opal\rdbms\schema\constraint\Index($this, $name, $fields);
     }

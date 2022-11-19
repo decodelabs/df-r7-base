@@ -5,8 +5,6 @@
  */
 namespace df\opal\query\clause;
 
-use df;
-use df\core;
 use df\opal;
 
 class HavingList extends ListBase implements opal\query\IHavingClauseList
@@ -82,7 +80,7 @@ class HavingList extends ListBase implements opal\query\IHavingClauseList
     }
 
 
-    public function addHavingClause(opal\query\IHavingClauseProvider $clause=null)
+    public function addHavingClause(opal\query\IHavingClauseProvider $clause = null)
     {
         return $this->_addClause($clause);
     }

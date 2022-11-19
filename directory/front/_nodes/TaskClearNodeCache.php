@@ -6,27 +6,24 @@
 
 namespace df\apex\directory\front\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-
 use DecodeLabs\Atlas;
+
 use DecodeLabs\Genesis;
 use DecodeLabs\Terminus as Cli;
+use df\arch;
 
 class TaskClearNodeCache extends arch\node\Task implements arch\node\IBuildTaskNode
 {
     public function execute(): void
     {
         Cli::{'yellow'}('Clearing node cache: ');
-        $dir = Atlas::dir(Genesis::$hub->getLocalDataPath().'/node');
+        $dir = Atlas::dir(Genesis::$hub->getLocalDataPath() . '/node');
 
         if ($dir->exists()) {
-            $dir->moveTo(Genesis::$hub->getLocalDataPath().'/node-old', 'node-'.time());
+            $dir->moveTo(Genesis::$hub->getLocalDataPath() . '/node-old', 'node-' . time());
         }
 
-        Atlas::deleteDir(Genesis::$hub->getLocalDataPath().'/node-old');
+        Atlas::deleteDir(Genesis::$hub->getLocalDataPath() . '/node-old');
         Cli::success('done');
     }
 }

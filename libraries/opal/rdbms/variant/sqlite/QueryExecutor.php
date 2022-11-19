@@ -5,19 +5,16 @@
  */
 namespace df\opal\rdbms\variant\sqlite;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Glitch;
+
+use df\opal;
 
 class QueryExecutor extends opal\rdbms\QueryExecutor
 {
-
-// Truncate
+    // Truncate
     public function truncate($tableName)
     {
-        $sql = 'DELETE FROM '.$this->_adapter->quoteIdentifier($tableName);
+        $sql = 'DELETE FROM ' . $this->_adapter->quoteIdentifier($tableName);
         $this->_adapter->executeSql($sql);
         $this->_adapter->executeSql('VACUUM');
 
@@ -38,7 +35,7 @@ class QueryExecutor extends opal\rdbms\QueryExecutor
             $this->_stmt->appendSql(' OR IGNORE');
         }
 
-        $this->_stmt->appendSql(' INTO '.$this->_adapter->quoteIdentifier($tableName));
+        $this->_stmt->appendSql(' INTO ' . $this->_adapter->quoteIdentifier($tableName));
 
 
         $fields = [];
@@ -46,7 +43,7 @@ class QueryExecutor extends opal\rdbms\QueryExecutor
 
         foreach ($this->_query->getRow() as $field => $value) {
             $fields[] = $this->_adapter->quoteIdentifier($field);
-            $values[] = ':'.$field;
+            $values[] = ':' . $field;
 
             if (is_array($value)) {
                 if (count($value) == 1) {
@@ -60,7 +57,7 @@ class QueryExecutor extends opal\rdbms\QueryExecutor
             $this->_stmt->bind($field, $value);
         }
 
-        $this->_stmt->appendSql(' ('.implode(',', $fields).') VALUES ('.implode(',', $values).')');
+        $this->_stmt->appendSql(' (' . implode(',', $fields) . ') VALUES (' . implode(',', $values) . ')');
         $this->_stmt->executeWrite();
 
         return $this->_adapter->getLastInsertId();
@@ -80,7 +77,7 @@ class QueryExecutor extends opal\rdbms\QueryExecutor
             $this->_stmt->appendSql(' OR IGNORE');
         }
 
-        $this->_stmt->appendSql(' INTO '.$this->_adapter->quoteIdentifier($tableName));
+        $this->_stmt->appendSql(' INTO ' . $this->_adapter->quoteIdentifier($tableName));
 
         $fields = $bindValues = $this->_query->getFields();
 
@@ -88,13 +85,13 @@ class QueryExecutor extends opal\rdbms\QueryExecutor
             $fields[$i] = $this->_adapter->quoteIdentifier($field);
         }
 
-        $this->_stmt->appendSql(' ('.implode(',', $fields).') VALUES ');
+        $this->_stmt->appendSql(' (' . implode(',', $fields) . ') VALUES ');
 
         foreach ($bindValues as &$field) {
-            $field = ':'.$field;
+            $field = ':' . $field;
         }
 
-        $this->_stmt->appendSql('('.implode(',', $bindValues).')');
+        $this->_stmt->appendSql('(' . implode(',', $bindValues) . ')');
 
         $rows = [];
         $output = 0;
@@ -112,7 +109,7 @@ class QueryExecutor extends opal\rdbms\QueryExecutor
     }
 
     // Limit
-    public function defineLimit($limit, $offset=null)
+    public function defineLimit($limit, $offset = null)
     {
         $limit = (int)$limit;
         $offset = (int)$offset;
@@ -127,10 +124,10 @@ class QueryExecutor extends opal\rdbms\QueryExecutor
 
 
         if ($limit > 0) {
-            $output = 'LIMIT '.$limit;
+            $output = 'LIMIT ' . $limit;
 
             if ($offset > 0) {
-                $output .= ' OFFSET '.$offset;
+                $output .= ' OFFSET ' . $offset;
             }
 
             return $output;

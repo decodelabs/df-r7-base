@@ -5,24 +5,25 @@
  */
 namespace df\mint\charge;
 
-use df;
-use df\core;
 use df\mint;
 
-class Capture implements mint\IChargeCapture {
-
+class Capture implements mint\IChargeCapture
+{
     protected $_id;
 
-    public function __construct(string $id) {
+    public function __construct(string $id)
+    {
         $this->setId($id);
     }
 
-    public function setId(string $id) {
+    public function setId(string $id)
+    {
         $this->_id = $id;
         return $this;
     }
 
-    public function getId(): string {
+    public function getId(): string
+    {
         return $this->_id;
     }
 }

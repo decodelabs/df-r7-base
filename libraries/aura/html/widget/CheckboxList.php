@@ -6,12 +6,10 @@
 
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
+use DecodeLabs\Glitch\Dumpable;
 use df\arch;
 
-use DecodeLabs\Glitch\Dumpable;
+use df\core;
 
 class CheckboxList extends Base implements Dumpable
 {
@@ -54,7 +52,7 @@ class CheckboxList extends Base implements Dumpable
         return $this->_options;
     }
 
-    public function shouldWrapBody(bool $flag=null)
+    public function shouldWrapBody(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_shouldWrapBody = $flag;
@@ -75,7 +73,7 @@ class CheckboxList extends Base implements Dumpable
         return $this->_labelClass;
     }
 
-    public function isInline(bool $flag=null)
+    public function isInline(bool $flag = null)
     {
         if ($flag !== null) {
             if ($flag) {

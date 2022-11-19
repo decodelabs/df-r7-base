@@ -6,21 +6,18 @@
 
 namespace df\fire\slot;
 
-use df;
-use df\core;
-use df\fire;
-use df\flex;
-use df\arch;
-use df\aura;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\Exemplar\Element as XmlElement;
-use DecodeLabs\Exemplar\Writer as XmlWriter;
 use DecodeLabs\Exemplar\Serializable as XmlSerializable;
+
 use DecodeLabs\Exemplar\SerializableTrait as XmlSerializableTrait;
+use DecodeLabs\Exemplar\Writer as XmlWriter;
 use DecodeLabs\R7\Nightfire\Block;
 use DecodeLabs\R7\Nightfire\Block\Error as ErrorBlock;
 use DecodeLabs\R7\Nightfire\BlockAbstract;
+use df\aura;
+use df\core;
+use df\fire;
 
 class Content implements fire\ISlotContent
 {
@@ -33,7 +30,7 @@ class Content implements fire\ISlotContent
     protected $_isNested = false;
     protected $_hasChanged = false;
 
-    public function __construct(string $id=null)
+    public function __construct(string $id = null)
     {
         $this->blocks = new core\collection\Queue();
 
@@ -88,7 +85,7 @@ class Content implements fire\ISlotContent
 
 
     // Changes
-    public function hasChanged(bool $flag=null)
+    public function hasChanged(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_hasChanged = $flag;
@@ -203,7 +200,7 @@ class Content implements fire\ISlotContent
                 try {
                     $block = BlockAbstract::fromXml($element);
                 } catch (Exceptional\NotFoundException $e) {
-                    /** @var ErrorBlock */
+                    /** @var ErrorBlock $block */
                     $block = BlockAbstract::factory('Error');
                     $block->setError($e);
                     $block->setType($element['type']);
@@ -215,7 +212,7 @@ class Content implements fire\ISlotContent
             }
 
             throw Exceptional::UnexpectedValue(
-                'Slot content object expected slot xml element - found '.$element->getTagName()
+                'Slot content object expected slot xml element - found ' . $element->getTagName()
             );
         }
 
@@ -225,7 +222,7 @@ class Content implements fire\ISlotContent
             try {
                 $block = BlockAbstract::fromXml($blockNode);
             } catch (Exceptional\NotFoundException $e) {
-                /** @var ErrorBlock */
+                /** @var ErrorBlock $block */
                 $block = BlockAbstract::factory('Error');
                 $block->setError($e);
                 $block->setType($blockNode['type']);

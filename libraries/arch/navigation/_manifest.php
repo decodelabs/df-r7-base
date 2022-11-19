@@ -6,13 +6,11 @@
 
 namespace df\arch\navigation;
 
-use df;
-use df\core;
-use df\arch;
-use df\arch\navigation\entry;
-use df\user;
-
 use DecodeLabs\Exceptional;
+use df\arch;
+use df\core;
+
+use df\user;
 
 // Interfaces
 interface IEntry extends core\IArrayInterchange
@@ -37,9 +35,9 @@ interface IEntryList extends core\IArrayInterchange, \Countable
     public function setEntries(...$entries);
     public function addEntries(...$entries);
     public function addEntry($entry);
-    public function addLink($uri, $body, $icon=null);
+    public function addLink($uri, $body, $icon = null);
     public function addSpacer();
-    public function addMenu($delegate, $text, $icon=null);
+    public function addMenu($delegate, $text, $icon = null);
     public function getEntry($id);
     public function getEntryByIndex($index);
     public function getLastEntry();
@@ -50,7 +48,7 @@ interface IEntryList extends core\IArrayInterchange, \Countable
 
 interface IEntryListGenerator
 {
-    public function generateEntries(IEntryList $entryList=null): arch\navigation\IEntryList;
+    public function generateEntries(IEntryList $entryList = null): arch\navigation\IEntryList;
 }
 
 
@@ -71,7 +69,7 @@ trait TEntryGenerator
         }
 
         throw Exceptional::BadMethodCall(
-            'Method '.$method.' does not exist'
+            'Method ' . $method . ' does not exist'
         );
     }
 }
@@ -130,7 +128,7 @@ trait TEntryList
         return $this;
     }
 
-    public function addLink($uri, $body, $icon=null)
+    public function addLink($uri, $body, $icon = null)
     {
         $entry = new arch\navigation\entry\Link($uri, $body, $icon);
         $this->addEntry($entry);
@@ -144,7 +142,7 @@ trait TEntryList
         return $entry;
     }
 
-    public function addMenu($delegate, $text, $icon=null)
+    public function addMenu($delegate, $text, $icon = null)
     {
         $entry = new arch\navigation\entry\Menu($delegate, $text, $icon);
         $this->addEntry($entry);
@@ -238,7 +236,7 @@ trait TEntryList
 interface ILink extends user\IAccessControlled
 {
     // Uri
-    public function setUri($uri, $setAsMatchRequest=false);
+    public function setUri($uri, $setAsMatchRequest = false);
     public function getUri();
 
     // Body
@@ -250,7 +248,7 @@ interface ILink extends user\IAccessControlled
     public function getMatchRequest();
 
     // Icon
-    public function setIcon(string $icon=null);
+    public function setIcon(string $icon = null);
     public function getIcon();
 
     // Note
@@ -260,10 +258,10 @@ interface ILink extends user\IAccessControlled
     // Description
     public function setDescription($description);
     public function getDescription();
-    public function shouldShowDescription(bool $flag=null);
+    public function shouldShowDescription(bool $flag = null);
 
     // Visibility
-    public function shouldHideIfInaccessible(bool $flag=null);
+    public function shouldHideIfInaccessible(bool $flag = null);
 
     // Disposition
     public function setDisposition($disposition);
@@ -289,7 +287,7 @@ trait TSharedLinkComponents
     protected $_altMatches = [];
 
     // Uri
-    public function setUri($uri, $setAsMatchRequest=false)
+    public function setUri($uri, $setAsMatchRequest = false)
     {
         $this->_uri = $uri;
 
@@ -361,7 +359,7 @@ trait TSharedLinkComponents
         return $this->_description;
     }
 
-    public function shouldShowDescription(bool $flag=null)
+    public function shouldShowDescription(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_showDescription = $flag;
@@ -373,7 +371,7 @@ trait TSharedLinkComponents
 
 
     // Visibility
-    public function shouldHideIfInaccessible(bool $flag=null)
+    public function shouldHideIfInaccessible(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_hideIfInaccessible = $flag;

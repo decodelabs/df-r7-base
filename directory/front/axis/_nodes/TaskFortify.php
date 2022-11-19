@@ -6,11 +6,10 @@
 
 namespace df\apex\directory\front\axis\_nodes;
 
-use df\core;
-use df\arch;
-use df\axis;
-
 use DecodeLabs\Terminus as Cli;
+use df\arch;
+
+use df\axis;
 
 class TaskFortify extends arch\node\Task
 {
@@ -51,7 +50,8 @@ class TaskFortify extends arch\node\Task
         if (isset($this->request['fortify'])
         && $unit->getUnitId() == $this->request['unit']) {
             axis\fortify\Base::factory(
-                $unit, $this->request['fortify']
+                $unit,
+                $this->request['fortify']
             )->dispatch();
             return;
         }
@@ -59,7 +59,7 @@ class TaskFortify extends arch\node\Task
         $tasks = axis\fortify\Base::loadAll($unit);
 
         foreach ($tasks as $name => $task) {
-            Cli::{'yellow'}($unit->getUnitId().'/'.$name.': ');
+            Cli::{'yellow'}($unit->getUnitId() . '/' . $name . ': ');
             $task->dispatch();
             Cli::newLine();
         }

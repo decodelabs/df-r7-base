@@ -5,12 +5,11 @@
  */
 namespace df\arch\navigation\menu\source;
 
-use df;
-use df\core;
+use DecodeLabs\Exceptional;
 use df\arch;
 use df\axis;
 
-use DecodeLabs\Exceptional;
+use df\core;
 
 class Model extends Base
 {
@@ -22,7 +21,7 @@ class Model extends Base
 
         if (!$model instanceof arch\navigation\menu\ISourceAdapter) {
             throw Exceptional::NotFound(
-                'Model '.$modelName.' is not a menu source adapter'
+                'Model ' . $modelName . ' is not a menu source adapter'
             );
         }
 

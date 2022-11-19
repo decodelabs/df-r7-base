@@ -6,15 +6,12 @@
 
 namespace df\arch\component;
 
-use df;
-use df\core;
-use df\arch;
+use DecodeLabs\Dictum;
+use DecodeLabs\Glitch\Dumpable;
+
 use df\aura;
 
-use DecodeLabs\Tagged as Html;
-use DecodeLabs\Dictum;
-
-use DecodeLabs\Glitch\Dumpable;
+use df\core;
 
 class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Dumpable
 {
@@ -23,7 +20,7 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Dumpa
     protected $fields = [];
     protected $viewArg;
 
-    protected function init(array $fields=null, $record=null)
+    protected function init(array $fields = null, $record = null)
     {
         if ($record) {
             $this->setRecord($record);
@@ -51,7 +48,7 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Dumpa
     }
 
     // Error
-    public function shouldRenderIfEmpty(bool $flag=null)
+    public function shouldRenderIfEmpty(bool $flag = null)
     {
         if ($flag !== null) {
             $this->renderIfEmpty = $flag;
@@ -178,7 +175,7 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Dumpa
                     $title = null;
                 }
 
-                $list->addField('divider'.($divider++), function ($data, $context) use ($title) {
+                $list->addField('divider' . ($divider++), function ($data, $context) use ($title) {
                     if ($title) {
                         $context->setDivider($title);
                     } else {
@@ -192,7 +189,7 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy, Dumpa
             }
 
             if ($value === true) {
-                $func = 'add'.ucfirst($key).'Field';
+                $func = 'add' . ucfirst($key) . 'Field';
 
                 if (method_exists($this, $func)) {
                     $this->{$func}($list);

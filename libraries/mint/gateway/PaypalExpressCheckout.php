@@ -5,11 +5,9 @@
  */
 namespace df\mint\gateway;
 
-use df;
-use df\core;
-use df\mint;
-
 use DecodeLabs\Glitch;
+
+use df\mint;
 
 class PaypalExpressCheckout extends Base
 {

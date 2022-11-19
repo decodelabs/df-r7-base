@@ -6,18 +6,16 @@
 
 namespace df\link\http\cookieJar;
 
-use df;
-use df\core;
-use df\link;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\link;
 
 class Memory implements link\http\ICookieJar, Dumpable
 {
     protected $_cookies = [];
 
-    public function __construct(array $cookies=null)
+    public function __construct(array $cookies = null)
     {
         if ($cookies) {
             foreach ($cookies as $cookie) {
@@ -119,7 +117,7 @@ class Memory implements link\http\ICookieJar, Dumpable
         return $this;
     }
 
-    public function clear($domain=null, $path=null, $name=null)
+    public function clear($domain = null, $path = null, $name = null)
     {
         if (!$domain) {
             $this->_cookies = [];
@@ -156,7 +154,7 @@ class Memory implements link\http\ICookieJar, Dumpable
     public function glitchDump(): iterable
     {
         foreach ($this->_cookies as $cookie) {
-            yield 'value:'.$cookie->getName() => $cookie->toString();
+            yield 'value:' . $cookie->getName() => $cookie->toString();
         }
     }
 }

@@ -5,9 +5,7 @@
  */
 namespace df\spur\vcs\github;
 
-use df;
 use df\core;
-use df\spur;
 
 class Repository implements IRepository
 {
@@ -199,12 +197,12 @@ class Repository implements IRepository
         return $this->_mediator->getRepositoryRelease($this->_fullName, $id);
     }
 
-    public function getWatchers($name, $page=null)
+    public function getWatchers($name, $page = null)
     {
         return $this->_mediator->getRepositoryWatchers($name, $page);
     }
 
-    public function getSubscribers($name, $page=null)
+    public function getSubscribers($name, $page = null)
     {
         return $this->_mediator->getRepositorySubscribers($name, $page);
     }

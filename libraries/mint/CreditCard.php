@@ -6,13 +6,11 @@
 
 namespace df\mint;
 
-use df;
-use df\core;
-use df\mint;
-use df\user;
-
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
+
+use df\core;
+use df\user;
 
 class CreditCard implements ICreditCard, Dumpable
 {
@@ -261,12 +259,12 @@ class CreditCard implements ICreditCard, Dumpable
 
     public function getStartString(): ?string
     {
-        return $this->_startMonth.'/'.$this->_startYear;
+        return $this->_startMonth . '/' . $this->_startYear;
     }
 
     public function getStartDate(): ?core\time\IDate
     {
-        return new core\time\Date($this->_startYear.'-'.$this->_startMonth.'-1');
+        return new core\time\Date($this->_startYear . '-' . $this->_startMonth . '-1');
     }
 
 
@@ -306,7 +304,9 @@ class CreditCard implements ICreditCard, Dumpable
         /** @phpstan-ignore-next-line */
         if ($month === null || $year === null) {
             throw Exceptional::InvalidArgument(
-                'Invalid expiry date string', null, $expiry
+                'Invalid expiry date string',
+                null,
+                $expiry
             );
         }
 
@@ -320,12 +320,12 @@ class CreditCard implements ICreditCard, Dumpable
 
     public function getExpiryString(): ?string
     {
-        return $this->_expiryMonth.'/'.$this->_expiryYear;
+        return $this->_expiryMonth . '/' . $this->_expiryYear;
     }
 
     public function getExpiryDate(): ?core\time\IDate
     {
-        return new core\time\Date($this->_expiryYear.'-'.$this->_expiryMonth.'-1');
+        return new core\time\Date($this->_expiryYear . '-' . $this->_expiryMonth . '-1');
     }
 
 
@@ -356,7 +356,7 @@ class CreditCard implements ICreditCard, Dumpable
 
 
     // Billing address
-    public function setBillingAddress(user\IPostalAddress $address=null)
+    public function setBillingAddress(user\IPostalAddress $address = null)
     {
         $this->_billingAddress = $address;
         return $this;

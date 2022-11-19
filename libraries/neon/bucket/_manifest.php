@@ -5,9 +5,7 @@
  */
 namespace df\neon\bucket;
 
-use df;
 use df\core;
-use df\neon;
 
 interface IBucket extends core\lang\IAcceptTypeProcessor
 {

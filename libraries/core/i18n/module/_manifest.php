@@ -5,8 +5,6 @@
  */
 namespace df\core\i18n\module;
 
-use df\core;
-
 interface IModule
 {
     public function getModuleName();
@@ -16,7 +14,7 @@ interface IModule
 interface IListModule extends IModule
 {
     public function getName($id);
-    public function getList(array $ids=null);
+    public function getList(array $ids = null);
     public function getCodeList();
     public function isValidId($id);
 }
@@ -40,18 +38,18 @@ interface IDatesModules extends IModule
 {
     public function getCalendarList();
     public function getDefaultCalendar();
-    public function getDayName($day=null, $calendar=null);
-    public function getDayList($calendar=null);
-    public function getAbbreviatedDayList($calendar=null);
-    public function getMonthName($month=null, $calendar=null);
-    public function getMonthList($calendar=null);
-    public function getAbbreviatedMonthList($calendar=null);
+    public function getDayName($day = null, $calendar = null);
+    public function getDayList($calendar = null);
+    public function getAbbreviatedDayList($calendar = null);
+    public function getMonthName($month = null, $calendar = null);
+    public function getMonthList($calendar = null);
+    public function getAbbreviatedMonthList($calendar = null);
 }
 
 interface ITimezonesModule extends IListModule
 {
-    public function forCountry($country=null);
-    public function suggestForCountry($country=null);
+    public function forCountry($country = null);
+    public function suggestForCountry($country = null);
     public function forContinent($continent);
     public function getContinentList();
     public function getCountryList();
@@ -60,20 +58,20 @@ interface ITimezonesModule extends IListModule
 
 interface INumbersModule extends IModule
 {
-    const INT32 = 'int32';
-    const INT64 = 'int64';
-    const DOUBLE = 'double';
+    public const INT32 = 'int32';
+    public const INT64 = 'int64';
+    public const DOUBLE = 'double';
 
-    public function format($number, $format=null);
-    public function parse($number, $type=self::DOUBLE, &$pos=0, $format=null);
-    public function formatPercent($number, int $maxDigits=3);
-    public function formatRatioPercent($number, int $maxDigits=3);
+    public function format($number, $format = null);
+    public function parse($number, $type = self::DOUBLE, &$pos = 0, $format = null);
+    public function formatPercent($number, int $maxDigits = 3);
+    public function formatRatioPercent($number, int $maxDigits = 3);
     public function parsePercent($number);
     public function parseRatioPercent($number);
     public function formatCurrency($amount, $code);
     public function parseCurrency($amount, $code);
     public function getCurrencyName($code);
-    public function getCurrencySymbol($code, $amount=1);
+    public function getCurrencySymbol($code, $amount = 1);
     public function getCurrencyList();
     public function isValidCurrency($code);
     public function formatScientific($number);

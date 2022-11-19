@@ -5,25 +5,22 @@
  */
 namespace df\apex\models\media;
 
-use df;
-use df\core;
+use DecodeLabs\Dictum;
+use DecodeLabs\Disciple;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Typify;
 use df\apex;
 use df\axis;
-use df\neon;
-use df\flex;
-use df\opal;
 
-use DecodeLabs\Disciple;
-use DecodeLabs\Dictum;
-use DecodeLabs\Typify;
-use DecodeLabs\Exceptional;
+use df\core;
+use df\flex;
+use df\neon;
+use df\opal;
 
 class Model extends axis\Model
 {
-
-
-// IO
-    public function publishFile($filePath, $bucket, $fileData=null, $publishIfMissing=false)
+    // IO
+    public function publishFile($filePath, $bucket, $fileData = null, $publishIfMissing = false)
     {
         $isMissing = false;
 
@@ -149,7 +146,7 @@ class Model extends axis\Model
         return $file;
     }
 
-    public function publishVersion(apex\models\media\file\Record $file, $filePath, $fileData=null, $publishIfMissing=false)
+    public function publishVersion(apex\models\media\file\Record $file, $filePath, $fileData = null, $publishIfMissing = false)
     {
         $isMissing = false;
 
@@ -238,7 +235,7 @@ class Model extends axis\Model
         return $version;
     }
 
-    public function activateVersion(apex\models\media\file\Record $file, apex\models\media\version\Record $version, $fileData=null)
+    public function activateVersion(apex\models\media\file\Record $file, apex\models\media\version\Record $version, $fileData = null)
     {
         if ($version['#file'] != $file['id']) {
             throw Exceptional::Runtime(
@@ -355,12 +352,12 @@ class Model extends axis\Model
         return $this->getMediaHandler()->getVersionDownloadUrl($this->_normalizeId($fileId), $this->_normalizeId($versionId), $isActive);
     }
 
-    public function getImageUrl($fileId, $transformation=null)
+    public function getImageUrl($fileId, $transformation = null)
     {
         return $this->getMediaHandler()->getImageUrl($this->_normalizeId($fileId), $transformation);
     }
 
-    public function getVersionImageUrl($fileId, $versionId, $isActive, $transformation=null)
+    public function getVersionImageUrl($fileId, $versionId, $isActive, $transformation = null)
     {
         return $this->getMediaHandler()->getVersionImageUrl($this->_normalizeId($fileId), $this->_normalizeId($versionId), $isActive, $transformation);
     }
@@ -403,7 +400,7 @@ class Model extends axis\Model
 
         if (!$output) {
             throw Exceptional::NotFound(
-                'File version for '.$fileId.' could not be found',
+                'File version for ' . $fileId . ' could not be found',
                 ['http' => 404]
             );
         }
@@ -422,14 +419,14 @@ class Model extends axis\Model
 
         if (!$output) {
             throw Exceptional::NotFound(
-                'File version '.$versionId.' could not be found',
+                'File version ' . $versionId . ' could not be found',
                 ['http' => 404]
             );
         }
 
         if ($output['purgeDate'] !== null) {
             throw Exceptional::Runtime(
-                'File version '.$versionId.' has been purged'
+                'File version ' . $versionId . ' has been purged'
             );
         }
 
@@ -487,7 +484,7 @@ class Model extends axis\Model
         return $output;
     }
 
-    public function normalizeFileId($fileId, &$transformation=null)
+    public function normalizeFileId($fileId, &$transformation = null)
     {
         if (false === strpos($fileId, '[')) {
             $fileId = str_replace('|', '-', $fileId);
@@ -497,7 +494,7 @@ class Model extends axis\Model
             $fileId = $matches[1];
 
             if (isset($matches[3])) {
-                $transformation = $matches[3].'|'.$transformation;
+                $transformation = $matches[3] . '|' . $transformation;
             }
 
             $test = $this->legacyMap->select('new')

@@ -7,12 +7,9 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Nightfire;
 
-use df\core;
-use df\fire;
-
 use DecodeLabs\Archetype;
-use DecodeLabs\R7\Nightfire\Block;
-use DecodeLabs\R7\Nightfire\BlockAbstract;
+
+use df\core;
 
 abstract class CategoryAbstract implements Category
 {

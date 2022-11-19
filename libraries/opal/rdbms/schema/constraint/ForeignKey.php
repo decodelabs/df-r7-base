@@ -5,7 +5,6 @@
  */
 namespace df\opal\rdbms\schema\constraint;
 
-use df\core;
 use df\opal;
 
 class ForeignKey implements opal\rdbms\schema\IForeignKey

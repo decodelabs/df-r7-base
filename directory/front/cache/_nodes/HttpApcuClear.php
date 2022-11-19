@@ -5,19 +5,16 @@
  */
 namespace df\apex\directory\front\cache\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-
 use DecodeLabs\Exceptional;
+
+use df\arch;
 
 class HttpApcuClear extends arch\node\Base
 {
     use TApcuClear;
 
-    const DEFAULT_ACCESS = arch\IAccess::ALL;
-    const OPTIMIZE = true;
+    public const DEFAULT_ACCESS = arch\IAccess::ALL;
+    public const OPTIMIZE = true;
 
     public function executeAsJson()
     {
@@ -32,7 +29,7 @@ class HttpApcuClear extends arch\node\Base
 
         return $this->data->toJson([
             'cleared' => $cleared,
-            'addr' => $_SERVER['REMOTE_ADDR'].' => '.$_SERVER['SERVER_ADDR']
+            'addr' => $_SERVER['REMOTE_ADDR'] . ' => ' . $_SERVER['SERVER_ADDR']
         ]);
     }
 }

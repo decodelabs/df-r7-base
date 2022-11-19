@@ -5,10 +5,6 @@
  */
 namespace df\spur\vcs\git;
 
-use df;
-use df\core;
-use df\spur;
-
 class Remote implements IRemote
 {
     use TRepository;
@@ -64,7 +60,7 @@ class Remote implements IRemote
         return Repository::createClone($this->_url, $path);
     }
 
-    protected function _splitRefList($result, $callback=null)
+    protected function _splitRefList($result, $callback = null)
     {
         $result = str_replace(["\t", "\r\n"], [' ', "\n"], trim($result));
         $lines = explode("\n", $result);
@@ -91,7 +87,7 @@ class Remote implements IRemote
 
 
     // Commands
-    public function _runCommand($command, array $arguments=null)
+    public function _runCommand($command, array $arguments = null)
     {
         return self::_runCommandIn(null, $command, $arguments, $this->_session, $this->_gitUser);
     }

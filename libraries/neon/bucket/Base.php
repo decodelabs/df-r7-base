@@ -6,13 +6,10 @@
 
 namespace df\neon\bucket;
 
-use df;
-use df\core;
-use df\neon;
-use df\flex;
-
 use DecodeLabs\Dictum;
+
 use DecodeLabs\R7\Legacy;
+use df\core;
 
 class Base implements IBucket
 {
@@ -51,7 +48,7 @@ class Base implements IBucket
             return $name;
         }
 
-        $class = 'df\\neon\\bucket\\'.Dictum::id($name);
+        $class = 'df\\neon\\bucket\\' . Dictum::id($name);
 
         if (!class_exists($class)) {
             $class = __CLASS__;

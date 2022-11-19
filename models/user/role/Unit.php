@@ -5,13 +5,11 @@
  */
 namespace df\apex\models\user\role;
 
-use df;
-use df\core;
 use df\axis;
 
-class Unit extends axis\unit\Table {
-
-    const DEFAULT_MANIFEST = [
+class Unit extends axis\unit\Table
+{
+    public const DEFAULT_MANIFEST = [
         '30dc3f8f-ee05-c1e8-f701-c05c8cb96c35' => [
             'name' => 'Super user',
             'signifier' => 'developer',
@@ -63,13 +61,14 @@ class Unit extends axis\unit\Table {
         ]
     ];
 
-    const ORDERABLE_FIELDS = [
+    public const ORDERABLE_FIELDS = [
         'name', 'signifier', 'priority'
     ];
 
-    const DEFAULT_ORDER = ['priority DESC', 'name ASC'];
+    public const DEFAULT_ORDER = ['priority DESC', 'name ASC'];
 
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('id', 'Guid');
 
         $schema->addField('name', 'Text', 64);
@@ -83,7 +82,8 @@ class Unit extends axis\unit\Table {
         $schema->addField('keys', 'OneToMany', 'key', 'role');
     }
 
-    public function getDefaultManifest() {
+    public function getDefaultManifest()
+    {
         return self::DEFAULT_MANIFEST;
     }
 }

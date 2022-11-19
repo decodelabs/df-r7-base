@@ -5,9 +5,7 @@
  */
 namespace df\core\validate\field;
 
-use df;
 use df\core;
-use df\opal;
 use df\mesh;
 
 class EntityLocator extends Base implements core\validate\IEntityLocatorField

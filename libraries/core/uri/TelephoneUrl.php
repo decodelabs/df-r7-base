@@ -6,10 +6,9 @@
 
 namespace df\core\uri;
 
-use df;
-use df\core;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\core;
 
 class TelephoneUrl implements ITelephoneUrl, Dumpable
 {
@@ -27,14 +26,14 @@ class TelephoneUrl implements ITelephoneUrl, Dumpable
         return new $class($url);
     }
 
-    public function __construct($url=null)
+    public function __construct($url = null)
     {
         if ($url !== null) {
             $this->import($url);
         }
     }
 
-    public function import($url='')
+    public function import($url = '')
     {
         if ($url !== null) {
             $this->reset();
@@ -91,12 +90,12 @@ class TelephoneUrl implements ITelephoneUrl, Dumpable
     // String
     public function toString(): string
     {
-        return 'tel:'.$this->getCanonicalNumber();
+        return 'tel:' . $this->getCanonicalNumber();
     }
 
     public function toReadableString()
     {
-        return 'tel:'.$this->_number;
+        return 'tel:' . $this->_number;
     }
 
     /**

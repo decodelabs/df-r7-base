@@ -5,7 +5,6 @@
  */
 namespace df\mesh\entity;
 
-use df;
 use df\core;
 use df\mesh;
 
@@ -35,9 +34,9 @@ interface ILocator extends ILocatorProvider, core\IStringProvider
 
     public function setNodes(array $nodes);
     public function addNodes(array $nodes);
-    public function addNode($location, $type, $id=null);
+    public function addNode($location, $type, $id = null);
     public function importNode(array $node);
-    public function setNode($index, $location, $type, $id=null);
+    public function setNode($index, $location, $type, $id = null);
     public function setNodeArray($index, array $node);
     public function hasNode($index);
     public function getNode($index);
@@ -52,7 +51,7 @@ interface ILocator extends ILocatorProvider, core\IStringProvider
     public function removeNode($index);
     public function getNodes();
 
-    public function setFirstNode($location, $type, $id=null);
+    public function setFirstNode($location, $type, $id = null);
     public function getFirstNode();
     public function setFirstNodeLocation($location);
     public function getFirstNodeLocation();
@@ -61,7 +60,7 @@ interface ILocator extends ILocatorProvider, core\IStringProvider
     public function setFirstNodeId($id);
     public function getFirstNodeId();
 
-    public function setLastNode($location, $type, $id=null);
+    public function setLastNode($location, $type, $id = null);
     public function getLastNode();
     public function setLastNodeLocation($location);
     public function getLastNodeLocation();

@@ -6,16 +6,13 @@
 
 namespace df\apex\directory\front\cache\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\link;
-use df\flex;
-
 use DecodeLabs\Genesis;
-use DecodeLabs\Terminus as Cli;
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\Terminus as Cli;
+
+use df\arch;
+use df\core;
+use df\flex;
 
 use GuzzleHttp\Client as HttpClient;
 
@@ -48,7 +45,7 @@ class TaskApcuClear extends arch\node\Task
 
         if ($isCli && extension_loaded('apcu') && ini_get('apc.enable_cli')) {
             $count = $this->_clearApcu();
-            Cli::info('Cleared '.$count.' CLI APCU entries');
+            Cli::info('Cleared ' . $count . ' CLI APCU entries');
         }
 
         if ($isHttp) {
@@ -92,9 +89,9 @@ class TaskApcuClear extends arch\node\Task
             $type = $url->isSecure() ? 'HTTPS' : 'HTTP';
 
             if ($cleared === null) {
-                Cli::warning('APCU unable to pass IP check via '.$json['addr']);
+                Cli::warning('APCU unable to pass IP check via ' . $json['addr']);
             } else {
-                Cli::notice('Cleared '.$cleared.' '.$type.' APCU entries via '.$json['addr']);
+                Cli::notice('Cleared ' . $cleared . ' ' . $type . ' APCU entries via ' . $json['addr']);
             }
         }
     }

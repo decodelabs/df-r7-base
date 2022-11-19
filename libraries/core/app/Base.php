@@ -6,15 +6,13 @@
 
 namespace df\core\app;
 
-use df;
-use df\core;
-use df\flex;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Sanctum\Definition as Csp;
-use DecodeLabs\Veneer;
+use df\core;
+use df\flex;
 
 abstract class Base implements core\IApp
 {
@@ -40,7 +38,7 @@ abstract class Base implements core\IApp
                 );
             }
         } else {
-            $filePath = Genesis::$hub->getApplicationPath().'/App.php';
+            $filePath = Genesis::$hub->getApplicationPath() . '/App.php';
 
             if (!file_exists($filePath)) {
                 self::_generateClass($filePath);
@@ -54,7 +52,7 @@ abstract class Base implements core\IApp
 
     private static function _generateClass(string $path): void
     {
-        $configPath = dirname($path).'/config/Application.php';
+        $configPath = dirname($path) . '/config/Application.php';
 
         if (file_exists($configPath)) {
             $appData = require $configPath;
@@ -68,7 +66,7 @@ abstract class Base implements core\IApp
             $uniquePrefix = strtolower(flex\Generator::random(3, 3));
             $passKey = flex\Generator::passKey();
 
-            if (file_exists(dirname(Genesis::$build->path).'/webCore/Package.php')) {
+            if (file_exists(dirname(Genesis::$build->path) . '/webCore/Package.php')) {
                 $packages = ['webCore' => true];
             } else {
                 $packages = [];

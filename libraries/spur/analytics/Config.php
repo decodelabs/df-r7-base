@@ -5,19 +5,19 @@
  */
 namespace df\spur\analytics;
 
-use df;
 use df\core;
 use df\spur;
 
-class Config extends core\Config {
+class Config extends core\Config
+{
+    public const ID = 'Analytics';
 
-    const ID = 'Analytics';
-
-    public function getDefaultValues(): array {
+    public function getDefaultValues(): array
+    {
         $output = [];
 
-        foreach(spur\analytics\adapter\Base::loadAll() as $name => $adapter) {
-            if($adapter instanceof ILegacyAdapter) {
+        foreach (spur\analytics\adapter\Base::loadAll() as $name => $adapter) {
+            if ($adapter instanceof ILegacyAdapter) {
                 continue;
             }
 
@@ -28,7 +28,7 @@ class Config extends core\Config {
 
             $attrs = $adapter->getDefaultUserAttributes();
 
-            if(!empty($attrs)) {
+            if (!empty($attrs)) {
                 $set['userAttributes'] = $attrs;
             }
 
@@ -38,9 +38,10 @@ class Config extends core\Config {
         return $output;
     }
 
-    public function isEnabled() {
-        foreach($this->values as $adapter) {
-            if(!$adapter->get('enabled', true)) {
+    public function isEnabled()
+    {
+        foreach ($this->values as $adapter) {
+            if (!$adapter->get('enabled', true)) {
                 continue;
             }
 
@@ -50,15 +51,17 @@ class Config extends core\Config {
         return false;
     }
 
-    public function getAdapters() {
+    public function getAdapters()
+    {
         return clone $this->values;
     }
 
-    public function getEnabledAdapters() {
+    public function getEnabledAdapters()
+    {
         $output = [];
 
-        foreach($this->values as $name => $adapter) {
-            if($adapter->get('enabled', true)) {
+        foreach ($this->values as $name => $adapter) {
+            if ($adapter->get('enabled', true)) {
                 $output[$name] = clone $adapter;
             }
         }
@@ -66,8 +69,9 @@ class Config extends core\Config {
         return $output;
     }
 
-    public function setAdapter($name, $isEnabled=true, array $options=[], array $defaultUserAttributes=[]) {
-        if($name instanceof IAdapter) {
+    public function setAdapter($name, $isEnabled = true, array $options = [], array $defaultUserAttributes = [])
+    {
+        if ($name instanceof IAdapter) {
             $options = $name->getOptions();
             $defaultUserAttributes = $name->getDefaultUserAttributes();
             $name = $name->getName();
@@ -82,32 +86,35 @@ class Config extends core\Config {
         return $this;
     }
 
-    public function getAdapter($name) {
-        if(!isset($this->values->{$name})) {
+    public function getAdapter($name)
+    {
+        if (!isset($this->values->{$name})) {
             return null;
         }
 
         return $this->values->{$name};
     }
 
-    public function isAdapterEnabled($name, bool $flag=null) {
-        if($flag !== null) {
-            if(isset($this->values->{$name})) {
+    public function isAdapterEnabled($name, bool $flag = null)
+    {
+        if ($flag !== null) {
+            if (isset($this->values->{$name})) {
                 $this->values->{$name}->enabled = $flag;
             }
 
             return $this;
         }
 
-        if(!isset($this->values->{$name})) {
+        if (!isset($this->values->{$name})) {
             return false;
         }
 
         return $this->values->{$name}->get('enabled', true);
     }
 
-    public function removeAdapter($name) {
-        if($name instanceof IAdapter) {
+    public function removeAdapter($name)
+    {
+        if ($name instanceof IAdapter) {
             $name = $name->getName();
         }
 

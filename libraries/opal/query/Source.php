@@ -5,13 +5,11 @@
  */
 namespace df\opal\query;
 
-use df;
-use df\core;
-use df\opal;
-use df\axis;
-
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
+
+use df\axis;
+use df\opal;
 
 class Source implements ISource, Dumpable
 {
@@ -48,7 +46,7 @@ class Source implements ISource, Dumpable
 
     public function getUniqueId()
     {
-        return $this->getId().' as '.$this->getAlias();
+        return $this->getId() . ' as ' . $this->getAlias();
     }
 
     public function getHash()
@@ -66,7 +64,7 @@ class Source implements ISource, Dumpable
         return $this->_adapter instanceof IDerivedSourceAdapter;
     }
 
-    public function isPrimary(bool $flag=null)
+    public function isPrimary(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isPrimary = $flag;
@@ -88,7 +86,7 @@ class Source implements ISource, Dumpable
 
 
     // Fields
-    public function extrapolateIntegralAdapterField($name, $alias=null, opal\schema\IField $field=null)
+    public function extrapolateIntegralAdapterField($name, $alias = null, opal\schema\IField $field = null)
     {
         if ($this->isDerived()) {
             return $this->getAdapter()
@@ -133,7 +131,9 @@ class Source implements ISource, Dumpable
             if ($name == '@name') {
                 if (!$this->_adapter instanceof axis\ISchemaBasedStorageUnit) {
                     throw Exceptional::Runtime(
-                        'Adapter cannot provide record name field', null, $this->_adapter
+                        'Adapter cannot provide record name field',
+                        null,
+                        $this->_adapter
                     );
                 }
 
@@ -144,7 +144,7 @@ class Source implements ISource, Dumpable
 
             if (substr($name, 0, 1) == '@') {
                 throw Exceptional::Runtime(
-                    'Unknown symbolic field: '.$name
+                    'Unknown symbolic field: ' . $name
                 );
             }
 
@@ -187,7 +187,7 @@ class Source implements ISource, Dumpable
 
             if (substr($name, 0, 1) == '@') {
                 throw Exceptional::Runtime(
-                    'Unknown symbolic field: '.$name
+                    'Unknown symbolic field: ' . $name
                 );
             }
 
@@ -200,7 +200,7 @@ class Source implements ISource, Dumpable
         }
     }
 
-    public function extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, opal\schema\IField $field=null)
+    public function extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, opal\schema\IField $field = null)
     {
         if ($field instanceof opal\schema\IMultiPrimitiveField) {
             $privateFields = [];
@@ -300,7 +300,7 @@ class Source implements ISource, Dumpable
         return $fields;
     }
 
-    public function removeWildcardOutputField($name, $alias=null)
+    public function removeWildcardOutputField($name, $alias = null)
     {
         if (!isset($this->_outputFields[$name])) {
             return false;
@@ -372,7 +372,7 @@ class Source implements ISource, Dumpable
     }
 
 
-    public function setKeyField(IField $field=null)
+    public function setKeyField(IField $field = null)
     {
         $this->_keyField = $field;
         return $this;
@@ -490,11 +490,11 @@ class Source implements ISource, Dumpable
         yield 'definition' => $this->getId();
 
         foreach ($this->_outputFields as $alias => $field) {
-            yield 'property:'.$alias => $field->getQualifiedName();
+            yield 'property:' . $alias => $field->getQualifiedName();
         }
 
         foreach ($this->_privateFields as $alias => $field) {
-            yield 'property:!'.$alias => $field->getQualifiedName();
+            yield 'property:!' . $alias => $field->getQualifiedName();
         }
     }
 }

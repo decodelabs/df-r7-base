@@ -5,10 +5,8 @@
  */
 namespace df\spur\vcs\github;
 
-use df;
 use df\core;
 use df\spur;
-use df\link;
 
 interface IMediator extends spur\IGuzzleMediator
 {
@@ -35,15 +33,15 @@ interface IMediator extends spur\IGuzzleMediator
     public function getRepositoryLabels($name);
     public function getRepositoryReleases($name);
     public function getRepositoryRelease($name, $id);
-    public function getRepositoryWatchers($name, $page=null);
-    public function getRepositorySubscribers($name, $page=null);
+    public function getRepositoryWatchers($name, $page = null);
+    public function getRepositorySubscribers($name, $page = null);
 }
 
 
 interface IApiObject
 {
     public function getId(): ?string;
-    public function getUrl($key=null);
+    public function getUrl($key = null);
 }
 
 trait TApiObject
@@ -81,7 +79,7 @@ trait TApiObject
         return $this->_id;
     }
 
-    public function getUrl($key=null)
+    public function getUrl($key = null)
     {
         if ($key === null) {
             $key = 'api';
@@ -163,8 +161,8 @@ interface IRepository extends IApiObject
     public function getLabels();
     public function getReleases();
     public function getRelease($id);
-    public function getWatchers($name, $page=null);
-    public function getSubscribers($name, $page=null);
+    public function getWatchers($name, $page = null);
+    public function getSubscribers($name, $page = null);
 }
 
 interface IBranch

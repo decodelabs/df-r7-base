@@ -6,13 +6,10 @@
 
 namespace df\apex\directory\front\test\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\flex;
-
 use DecodeLabs\Terminus as Cli;
+use df\arch;
+
+use df\flex;
 
 class TaskSyntax extends arch\node\Task
 {
@@ -29,7 +26,7 @@ class TaskSyntax extends arch\node\Task
         $errors = [];
 
         foreach ($scanner->locations as $location) {
-            Cli::{'brightMagenta'}(' '.$location->id);
+            Cli::{'brightMagenta'}(' ' . $location->id);
             $errors = array_merge($errors, $location->scan($scanner)['syntax']->getErrors());
         }
 

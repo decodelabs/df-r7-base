@@ -6,12 +6,11 @@
 
 namespace df\aura\view\content;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-
 use DecodeLabs\Glitch\Dumpable;
+use df\arch;
+use df\aura;
+
+use df\core;
 
 class WidgetContentProvider extends aura\html\Element implements
     aura\view\ICollapsibleContentProvider,
@@ -42,7 +41,7 @@ class WidgetContentProvider extends aura\html\Element implements
         return $this;
     }
 
-    public function shouldWrap(bool $flag=null)
+    public function shouldWrap(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_wrap = $flag;

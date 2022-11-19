@@ -6,13 +6,11 @@
 
 namespace df\mint\gateway;
 
-use df;
-use df\core;
-use df\mint;
-use df\spur;
-
-use Stripe as StripePHP;
 use DecodeLabs\Exceptional;
+use df\core;
+
+use df\mint;
+use Stripe as StripePHP;
 
 class Stripe extends Base implements
     mint\ICaptureProviderGateway,
@@ -232,7 +230,9 @@ class Stripe extends Base implements
         return $this->_execute(function () use ($refund) {
             if (!$amount = $refund->getAmount()) {
                 throw Exceptional::UnexpectedValue(
-                    'Refund amount has not been set', null, $refund
+                    'Refund amount has not been set',
+                    null,
+                    $refund
                 );
             }
 
@@ -326,10 +326,10 @@ class Stripe extends Base implements
     protected function _wrapCustomer(StripePHP\Customer $customer): mint\ICustomer
     {
         $output = (new mint\Customer(
-                $customer['id'],
-                $customer['email'],
-                $customer['description']
-            ))
+            $customer['id'],
+            $customer['email'],
+            $customer['description']
+        ))
             ->isDelinquent((bool)$customer['delinquent'])
             ->setLocalId($customer->metadata['localId'])
             ->setUserId($customer->metadata['userId']);
@@ -429,11 +429,11 @@ class Stripe extends Base implements
     protected function _wrapPlan(StripePHP\Plan $plan): mint\IPlan
     {
         return (new mint\Plan(
-                $plan['id'],
-                $plan['nickname'],
-                new mint\Currency($plan['amount'], $plan['currency']),
-                $plan['interval']
-            ))
+            $plan['id'],
+            $plan['nickname'],
+            new mint\Currency($plan['amount'], $plan['currency']),
+            $plan['interval']
+        ))
             ->setIntervalCount($plan['interval_count'])
             ->setTrialDays($plan['trial_period_days']);
     }
@@ -441,7 +441,7 @@ class Stripe extends Base implements
     public function clearPlanCache()
     {
         $cache = Stripe_Cache::getInstance();
-        $key = $this->_getCacheKeyPrefix().'plans';
+        $key = $this->_getCacheKeyPrefix() . 'plans';
         $cache->remove($key);
         return $this;
     }
@@ -532,13 +532,13 @@ class Stripe extends Base implements
         }, 'Subscription');
     }
 
-    public function endSubscriptionTrial(string $subscriptionId, int $inDays=null): mint\ISubscription
+    public function endSubscriptionTrial(string $subscriptionId, int $inDays = null): mint\ISubscription
     {
         return $this->_execute(function () use ($subscriptionId, $inDays) {
             if ($inDays === null || $inDays <= 0) {
                 $date = 'now';
             } else {
-                $date = $this->_normalizeDate(core\time\Date::factory('+'.$inDays.' days'));
+                $date = $this->_normalizeDate(core\time\Date::factory('+' . $inDays . ' days'));
             }
 
             $subscription = StripePHP\Subscription::update($subscriptionId, [
@@ -551,7 +551,7 @@ class Stripe extends Base implements
         });
     }
 
-    public function cancelSubscription(string $subscriptionId, bool $atPeriodEnd=false): mint\ISubscription
+    public function cancelSubscription(string $subscriptionId, bool $atPeriodEnd = false): mint\ISubscription
     {
         return $this->_execute(function () use ($subscriptionId, $atPeriodEnd) {
             $subscription = StripePHP\Subscription::retrieve($subscriptionId, [
@@ -569,10 +569,10 @@ class Stripe extends Base implements
     protected function _wrapSubscription(StripePHP\Subscription $subscription): mint\ISubscription
     {
         return (new mint\Subscription(
-                $subscription['id'],
-                $subscription['customer'],
-                $subscription->plan['id']
-            ))
+            $subscription['id'],
+            $subscription['customer'],
+            $subscription->plan['id']
+        ))
             ->setLocalId($subscription->metadata['localId'])
             ->setTrialStart($subscription['trial_start'])
             ->setTrialEnd($subscription['trial_end'])
@@ -638,13 +638,13 @@ class Stripe extends Base implements
 
     protected function _getCacheKeyPrefix()
     {
-        return $this->_apiKey.'-';
+        return $this->_apiKey . '-';
     }
 
-    protected function _getCachedValue(string $key, callable $generator, string $eType=null)
+    protected function _getCachedValue(string $key, callable $generator, string $eType = null)
     {
         $cache = Stripe_Cache::getInstance();
-        $key = $this->_getCacheKeyPrefix().$key;
+        $key = $this->_getCacheKeyPrefix() . $key;
         $output = $cache->get($key);
 
         if ($output === null) {
@@ -654,7 +654,7 @@ class Stripe extends Base implements
         return $output;
     }
 
-    protected function _execute(callable $func, string $eType=null)
+    protected function _execute(callable $func, string $eType = null)
     {
         try {
             return $func();

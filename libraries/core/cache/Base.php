@@ -6,12 +6,11 @@
 
 namespace df\core\cache;
 
-use df;
-use df\core;
-
 use DecodeLabs\Exceptional;
-use DecodeLabs\Terminus\Session;
+
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\Terminus\Session;
+use df\core;
 
 abstract class Base implements ICache
 {
@@ -24,7 +23,7 @@ abstract class Base implements ICache
 
     private $_backend;
 
-    public static function purgeApp(Session $session=null): void
+    public static function purgeApp(Session $session = null): void
     {
         if (function_exists('opcache_reset')) {
             opcache_reset();
@@ -38,7 +37,7 @@ abstract class Base implements ICache
         }
     }
 
-    public static function purgeAll(?Session $session=null): void
+    public static function purgeAll(?Session $session = null): void
     {
         if (function_exists('opcache_reset')) {
             opcache_reset();
@@ -72,7 +71,7 @@ abstract class Base implements ICache
 
         if (!$backendName) {
             throw Exceptional::Setup(
-                'There are no available backends for cache '.$this->getCacheId()
+                'There are no available backends for cache ' . $this->getCacheId()
             );
         }
 
@@ -81,9 +80,9 @@ abstract class Base implements ICache
         return $output;
     }
 
-    public static function backendFactory(ICache $cache, $name, core\collection\ITree $options, $lifeTime=0): IBackend
+    public static function backendFactory(ICache $cache, $name, core\collection\ITree $options, $lifeTime = 0): IBackend
     {
-        $class = 'df\\core\\cache\\backend\\'.$name;
+        $class = 'df\\core\\cache\\backend\\' . $name;
 
         if (isset($options->lifeTime)) {
             $lifeTime = (int)$options['lifeTime'];
@@ -121,7 +120,7 @@ abstract class Base implements ICache
 
 
     // Access
-    public function set($key, $value, $lifeTime=null)
+    public function set($key, $value, $lifeTime = null)
     {
         if ($lifeTime !== null) {
             $lifeTime = (int)$lifeTime;
@@ -135,7 +134,7 @@ abstract class Base implements ICache
         return $this;
     }
 
-    public function get($key, $default=null)
+    public function get($key, $default = null)
     {
         return $this->_backend->get($key, $default);
     }

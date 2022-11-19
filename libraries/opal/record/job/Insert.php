@@ -5,12 +5,10 @@
  */
 namespace df\opal\record\job;
 
-use df;
-use df\core;
-use df\opal;
+use DecodeLabs\Exceptional;
 use df\mesh;
 
-use DecodeLabs\Exceptional;
+use df\opal;
 
 class Insert extends mesh\job\Base implements opal\record\IJob
 {
@@ -29,7 +27,7 @@ class Insert extends mesh\job\Base implements opal\record\IJob
         return 'Insert';
     }
 
-    public function ifNotExists(bool $flag=null)
+    public function ifNotExists(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_ifNotExists = $flag;
@@ -46,7 +44,9 @@ class Insert extends mesh\job\Base implements opal\record\IJob
 
         if (!$adapter instanceof opal\query\IEntryPoint) {
             throw Exceptional::Logic(
-                'Adapter is not capable of creating queries', null, $adapter
+                'Adapter is not capable of creating queries',
+                null,
+                $adapter
             );
         }
 

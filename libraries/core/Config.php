@@ -6,14 +6,14 @@
 
 namespace df\core;
 
-use df;
-use df\core;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Exceptional;
+
 use DecodeLabs\Genesis;
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\R7\Legacy;
+use df;
+use df\core;
 
 abstract class Config implements IConfig, Dumpable
 {
@@ -41,7 +41,7 @@ abstract class Config implements IConfig, Dumpable
     {
         if (!static::ID) {
             throw Exceptional::Definition(
-                'Invalid config id set for '.get_called_class()
+                'Invalid config id set for ' . get_called_class()
             );
         }
 
@@ -52,12 +52,12 @@ abstract class Config implements IConfig, Dumpable
     {
         if (empty($id)) {
             throw Exceptional::Implementation(
-                'Invalid config id passed for '.static::class
+                'Invalid config id passed for ' . static::class
             );
         }
 
         if (static::STORE_IN_MEMORY) {
-            if (!$config = Legacy::getRegistryObject(self::REGISTRY_PREFIX.$id)) {
+            if (!$config = Legacy::getRegistryObject(self::REGISTRY_PREFIX . $id)) {
                 Legacy::setRegistryObject(
                     $config = new static($id)
                 );
@@ -109,7 +109,7 @@ abstract class Config implements IConfig, Dumpable
 
     final public function getRegistryObjectKey(): string
     {
-        return self::REGISTRY_PREFIX.$this->_id;
+        return self::REGISTRY_PREFIX . $this->_id;
     }
 
     final public function getConfigValues(): array
@@ -140,7 +140,7 @@ abstract class Config implements IConfig, Dumpable
         return $this;
     }
 
-    public function get($key, $default=null)
+    public function get($key, $default = null)
     {
         if (isset($this->values[$key])) {
             return $this->values[$key];
@@ -220,14 +220,14 @@ abstract class Config implements IConfig, Dumpable
         $basePath = $this->_getBasePath();
 
         if (!empty($parts)) {
-            $basePath .= '/'.implode('/', $parts);
+            $basePath .= '/' . implode('/', $parts);
         }
 
-        $basePath .= '/'.$name;
+        $basePath .= '/' . $name;
         $paths = [];
 
-        $paths[] = $basePath.'#'.$envId.'.php';
-        $paths[] = $basePath.'.php';
+        $paths[] = $basePath . '#' . $envId . '.php';
+        $paths[] = $basePath . '.php';
         $output = null;
 
 
@@ -261,11 +261,11 @@ abstract class Config implements IConfig, Dumpable
             $basePath = $this->_getBasePath();
 
             if (!empty($parts)) {
-                $basePath .= '/'.implode('/', $parts);
+                $basePath .= '/' . implode('/', $parts);
             }
 
-            $corePath = $basePath.'/'.$name.'.php';
-            $environmentPath = $basePath.'/'.$name.'#'.$envId.'.php';
+            $corePath = $basePath . '/' . $name . '.php';
+            $environmentPath = $basePath . '/' . $name . '#' . $envId . '.php';
             $isEnvironment = static::USE_ENVIRONMENT_ID_BY_DEFAULT || is_file($environmentPath);
 
             if ($isEnvironment) {
@@ -276,13 +276,13 @@ abstract class Config implements IConfig, Dumpable
         }
 
         $values = $this->values->toArray();
-        $content = '<?php'."\n".'return '.core\collection\Util::exportArray($values).';';
+        $content = '<?php' . "\n" . 'return ' . core\collection\Util::exportArray($values) . ';';
         Atlas::createFile($savePath, $content);
     }
 
     private function _getBasePath()
     {
-        return Genesis::$hub->getApplicationPath().'/config';
+        return Genesis::$hub->getApplicationPath() . '/config';
     }
 
 

@@ -6,13 +6,11 @@
 
 namespace df\arch\component;
 
-use df;
-use df\core;
-use df\arch;
-use df\aura;
-
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
+
+use df\aura;
+use df\core;
 
 class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dumpable
 {
@@ -27,7 +25,7 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dump
     protected $mode = 'get';
     protected $postEvent = 'paginate';
 
-    protected function init(array $fields=null, $collection=null)
+    protected function init(array $fields = null, $collection = null)
     {
         if (static::DEFAULT_ERROR_MESSAGE !== null) {
             $this->errorMessage = $this->_(static::DEFAULT_ERROR_MESSAGE);
@@ -97,7 +95,7 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dump
     }
 
     // Error
-    public function setErrorMessage(string $message=null)
+    public function setErrorMessage(string $message = null)
     {
         $this->errorMessage = $message;
         return $this;
@@ -108,7 +106,7 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dump
         return $this->errorMessage;
     }
 
-    public function shouldRenderIfEmpty(bool $flag=null)
+    public function shouldRenderIfEmpty(bool $flag = null)
     {
         if ($flag !== null) {
             $this->renderIfEmpty = $flag;
@@ -245,7 +243,7 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Dump
 
         foreach ($this->fields as $key => $value) {
             if ($value === true) {
-                $func = 'add'.ucfirst($key).'Field';
+                $func = 'add' . ucfirst($key) . 'Field';
 
                 if (method_exists($this, $func)) {
                     $this->{$func}($output);

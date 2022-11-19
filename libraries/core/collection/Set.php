@@ -5,9 +5,6 @@
  */
 namespace df\core\collection;
 
-use df;
-use df\core;
-
 use DecodeLabs\Glitch\Dumpable;
 
 class Set implements ISet, \IteratorAggregate, Dumpable

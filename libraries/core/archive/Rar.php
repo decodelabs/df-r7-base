@@ -5,9 +5,6 @@
  */
 namespace df\core\archive;
 
-use df;
-use df\core;
-
 use DecodeLabs\Exceptional;
 
 class Rar extends Base
@@ -21,7 +18,7 @@ class Rar extends Base
         }
     }
 
-    public function extractFile(string $file, string $destination=null, bool $flattenRoot=false): string
+    public function extractFile(string $file, string $destination = null, bool $flattenRoot = false): string
     {
         $destination = $this->_normalizeExtractDestination($file, $destination);
 
@@ -29,13 +26,13 @@ class Rar extends Base
 
         if (false === ($archive = rar_open($file))) {
             throw Exceptional::NotFound(
-                'Unable to open rar archive: '.$file
+                'Unable to open rar archive: ' . $file
             );
         }
 
         if (false === ($files = rar_list($archive))) {
             throw Exceptional::Runtime(
-                'Unable to read file list from rar archive: '.$file
+                'Unable to read file list from rar archive: ' . $file
             );
         }
 

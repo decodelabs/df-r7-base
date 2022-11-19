@@ -5,15 +5,13 @@
  */
 namespace df\opal\rdbms;
 
-use df;
-use df\core;
-use df\opal;
-use df\user;
-use df\mesh;
-
+use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+
+use df\mesh;
+use df\opal;
+use df\user;
 
 class Table implements ITable, Dumpable
 {
@@ -38,7 +36,7 @@ class Table implements ITable, Dumpable
     protected function _setName($name)
     {
         $this->_name = $name;
-        $this->_querySourceId = 'opal://rdbms/'.$this->_adapter->getServerType().':"'.addslashes($this->_adapter->getDsn()->getConnectionString()).'"/Table:'.$this->_name;
+        $this->_querySourceId = 'opal://rdbms/' . $this->_adapter->getServerType() . ':"' . addslashes($this->_adapter->getDsn()->getConnectionString()) . '"/Table:' . $this->_name;
     }
 
     public function getName(): string
@@ -78,7 +76,7 @@ class Table implements ITable, Dumpable
 
     public function getQuerySourceDisplayName()
     {
-        return $this->_adapter->getDsn()->getDisplayString().'/'.$this->_name;
+        return $this->_adapter->getDsn()->getDisplayString() . '/' . $this->_name;
     }
 
     public function getDelegateQueryAdapter()
@@ -155,11 +153,12 @@ class Table implements ITable, Dumpable
     }
 
 
-    public function create(opal\rdbms\schema\ISchema $schema, $dropIfExists=false)
+    public function create(opal\rdbms\schema\ISchema $schema, $dropIfExists = false)
     {
         if ($schema->getName() != $this->_name) {
             throw Exceptional::{'df/opal/rdbms/TableNotFound,NotFound'}(
-                'Schema name '.$schema->getName().' does not match table name '.$this->_name, null,
+                'Schema name ' . $schema->getName() . ' does not match table name ' . $this->_name,
+                null,
                 [
                     'database' => $this->_adapter->getDsn()->getDatabase(),
                     'table' => $this->_name
@@ -174,7 +173,8 @@ class Table implements ITable, Dumpable
                 $exec->drop($this->_name);
             } else {
                 throw Exceptional::{'df/opal/rdbms/TableConflict'}(
-                    'Table '.$schema->getName().' already exists', null,
+                    'Table ' . $schema->getName() . ' already exists',
+                    null,
                     [
                         'database' => $this->_adapter->getDsn()->getDatabase(),
                         'table' => $this->_name
@@ -246,7 +246,7 @@ class Table implements ITable, Dumpable
 
 
     // Character sets
-    public function setCharacterSet($set, $collation=null, $convert=false)
+    public function setCharacterSet($set, $collation = null, $convert = false)
     {
         if (is_bool($collation)) {
             $convert = $collation;
@@ -262,7 +262,7 @@ class Table implements ITable, Dumpable
         return SchemaExecutor::factory($this->_adapter)->getCharacterSet($this->_name);
     }
 
-    public function setCollation($collation, $convert=false)
+    public function setCollation($collation, $convert = false)
     {
         SchemaExecutor::factory($this->_adapter)->setCollation($this->_name, $collation, $convert);
         return $this;
@@ -415,12 +415,12 @@ class Table implements ITable, Dumpable
 
 
     // Record
-    public function newRecord(array $values=null)
+    public function newRecord(array $values = null)
     {
         return new opal\record\Base($this, $values);
     }
 
-    public function newPartial(array $values=null)
+    public function newPartial(array $values = null)
     {
         return new opal\record\Partial($this, $values);
     }
@@ -437,12 +437,12 @@ class Table implements ITable, Dumpable
         return 'rdbms';
     }
 
-    public function lookupAccessKey(array $keys, $action=null)
+    public function lookupAccessKey(array $keys, $action = null)
     {
         Glitch::incomplete([$keys, $action]);
     }
 
-    public function getDefaultAccess($action=null)
+    public function getDefaultAccess($action = null)
     {
         return true;
     }

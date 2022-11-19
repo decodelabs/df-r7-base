@@ -6,15 +6,13 @@
 
 namespace df\core\cache\backend;
 
-use df;
-use df\core;
-use df\flex;
-
 use DecodeLabs\Atlas;
+
 use DecodeLabs\Dictum;
-use DecodeLabs\Glitch;
 use DecodeLabs\Genesis;
+use DecodeLabs\Glitch;
 use DecodeLabs\Terminus\Session;
+use df\core;
 
 class LocalFile implements core\cache\IBackend
 {
@@ -26,19 +24,19 @@ class LocalFile implements core\cache\IBackend
     protected $_cache;
     protected $_dir;
 
-    public static function purgeApp(core\collection\ITree $options, ?Session $session=null)
+    public static function purgeApp(core\collection\ITree $options, ?Session $session = null)
     {
         self::purgeAll($options);
     }
 
-    public static function purgeAll(core\collection\ITree $options, ?Session $session=null)
+    public static function purgeAll(core\collection\ITree $options, ?Session $session = null)
     {
         if (!self::isLoadable()) {
             return;
         }
 
-        $path1 = Genesis::$hub->getSharedDataPath().'/cache/';
-        $path2 = Genesis::$hub->getLocalDataPath().'/cache/';
+        $path1 = Genesis::$hub->getSharedDataPath() . '/cache/';
+        $path2 = Genesis::$hub->getLocalDataPath() . '/cache/';
 
         Atlas::emptyOut($path1);
         Atlas::emptyOut($path2);
@@ -47,12 +45,12 @@ class LocalFile implements core\cache\IBackend
     public static function prune(core\collection\ITree $options)
     {
         $paths = [
-            Genesis::$hub->getSharedDataPath().'/cache',
-            Genesis::$hub->getLocalDataPath().'/cache'
+            Genesis::$hub->getSharedDataPath() . '/cache',
+            Genesis::$hub->getLocalDataPath() . '/cache'
         ];
 
         clearstatcache();
-        $stamp = core\time\Date::factory('-'.self::PRUNE_LIFETIME)->toTimestamp();
+        $stamp = core\time\Date::factory('-' . self::PRUNE_LIFETIME)->toTimestamp();
         $output = 0;
 
         foreach ($paths as $basePath) {
@@ -92,7 +90,7 @@ class LocalFile implements core\cache\IBackend
             $path = Genesis::$hub->getLocalDataPath();
         }
 
-        $path .= '/cache/'.Dictum::fileName($cache->getCacheId());
+        $path .= '/cache/' . Dictum::fileName($cache->getCacheId());
         $this->_dir = Atlas::createDir($path);
         unset($options);
     }
@@ -129,19 +127,19 @@ class LocalFile implements core\cache\IBackend
         return $this->_lifeTime;
     }
 
-    public function set($key, $value, $lifeTime=null)
+    public function set($key, $value, $lifeTime = null)
     {
         $value = serialize($value);
         $key = $this->_normalizeKey($key);
-        $file = $this->_dir->createFile('cache-'.$key, $value);
+        $file = $this->_dir->createFile('cache-' . $key, $value);
 
         return true;
     }
 
-    public function get($key, $default=null)
+    public function get($key, $default = null)
     {
         $key = $this->_normalizeKey($key);
-        $file = $this->_dir->getFile('cache-'.$key);
+        $file = $this->_dir->getFile('cache-' . $key);
         clearstatcache(false, $file->getPath());
 
         if (!$file->exists()) {
@@ -170,7 +168,7 @@ class LocalFile implements core\cache\IBackend
     {
         foreach ($keys as $key) {
             $key = $this->_normalizeKey($key);
-            $file = $this->_dir->getFile('cache-'.$key);
+            $file = $this->_dir->getFile('cache-' . $key);
             clearstatcache(false, $file->getPath());
 
             if (!$file->exists()) {
@@ -192,7 +190,7 @@ class LocalFile implements core\cache\IBackend
     {
         foreach ($keys as $key) {
             $key = $this->_normalizeKey($key);
-            $this->_dir->getFile('cache-'.$key)->delete();
+            $this->_dir->getFile('cache-' . $key)->delete();
         }
 
         return true;
@@ -248,7 +246,7 @@ class LocalFile implements core\cache\IBackend
     public function getCreationTime(string $key): ?int
     {
         $key = $this->_normalizeKey($key);
-        $file = $this->_dir->getFile('cache-'.$key);
+        $file = $this->_dir->getFile('cache-' . $key);
         clearstatcache(false, $file->getPath());
 
         if (!$file->exists()) {

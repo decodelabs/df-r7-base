@@ -6,20 +6,17 @@
 
 namespace df\axis\schema\field;
 
-use df;
-use df\core;
-use df\axis;
-use df\fire;
-use df\opal;
-use df\flex;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+use df\axis;
+
+use df\fire;
+use df\opal;
 
 class ContentSlot extends Base
 {
-// Values
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    // Values
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord = null)
     {
         if (!isset($row[$key])) {
             return null;
@@ -76,7 +73,7 @@ class ContentSlot extends Base
         return $this->sanitizeValue($value);
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    public function sanitizeValue($value, opal\record\IRecord $forRecord = null)
     {
         if ($value === null) {
             if ($this->isNullable()) {

@@ -6,10 +6,8 @@
 
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
 use df\arch;
+use df\aura;
 use df\spur;
 
 class Recaptcha extends Base
@@ -18,7 +16,7 @@ class Recaptcha extends Base
 
     protected $_siteKey = null;
 
-    public function __construct(arch\IContext $context, $siteKey=null)
+    public function __construct(arch\IContext $context, $siteKey = null)
     {
         parent::__construct($context);
         $this->setSiteKey($siteKey);
@@ -67,6 +65,6 @@ class Recaptcha extends Base
             $script->setAttribute('nonce', $nonce);
         }
 
-        return $script->render().$tag->render();
+        return $script->render() . $tag->render();
     }
 }

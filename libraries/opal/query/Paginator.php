@@ -5,11 +5,9 @@
  */
 namespace df\opal\query;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\core;
 
 class Paginator implements IPaginator, Dumpable
 {
@@ -66,7 +64,8 @@ class Paginator implements IPaginator, Dumpable
             }
 
             $this->_orderableFields[$key] = new OrderDirective(
-                $field, $direction
+                $field,
+                $direction
             );
         }
 
@@ -114,7 +113,8 @@ class Paginator implements IPaginator, Dumpable
             }
 
             $directive = new OrderDirective(
-                $field, array_shift($parts)
+                $field,
+                array_shift($parts)
             );
 
             $this->_order[$key] = $directive;
@@ -138,13 +138,13 @@ class Paginator implements IPaginator, Dumpable
     {
         if (empty($this->_order)) {
             $fields = $this->getOrderableFieldNames();
-            return array_shift($fields).' ASC';
+            return array_shift($fields) . ' ASC';
         }
 
         $output = [];
 
         foreach ($this->_order as $directive) {
-            $output[] = $directive->getField()->getAlias().' '.$directive->getDirection();
+            $output[] = $directive->getField()->getAlias() . ' ' . $directive->getDirection();
         }
 
         return implode(',', $output);
@@ -154,10 +154,10 @@ class Paginator implements IPaginator, Dumpable
     {
         if (!$directive = $this->getFirstOrderDirective()) {
             $fields = $this->getOrderableFieldNames();
-            return array_shift($fields).' ASC';
+            return array_shift($fields) . ' ASC';
         }
 
-        return $directive->getField()->getAlias().' '.$directive->getDirection();
+        return $directive->getField()->getAlias() . ' ' . $directive->getDirection();
     }
 
 
@@ -208,7 +208,7 @@ class Paginator implements IPaginator, Dumpable
             // Set first orderable field as default
 
             foreach ($this->_orderableFields as $key => $directive) {
-                $this->setDefaultOrder($key.' ASC');
+                $this->setDefaultOrder($key . ' ASC');
                 break;
             }
         }
@@ -221,11 +221,12 @@ class Paginator implements IPaginator, Dumpable
             $search = $this->_query->getSearch();
 
             $directive = new OrderDirective(
-                $search, 'DESC'
+                $search,
+                'DESC'
             );
 
             $this->_order = array_merge([$search->getAlias() => $directive], $this->_order);
-            $this->addOrderableFields($search->getAlias().' DESC');
+            $this->addOrderableFields($search->getAlias() . ' DESC');
         }
 
         if (!$data instanceof core\collection\ITree) {

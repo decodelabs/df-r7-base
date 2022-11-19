@@ -6,14 +6,12 @@
 
 namespace df\core\validate\field;
 
-use df;
-use df\core;
-use df\arch;
-use df\spur;
-
 use DecodeLabs\Disciple;
 use DecodeLabs\Genesis;
+
 use DecodeLabs\R7\Legacy;
+use df\core;
+use df\spur;
 
 class Recaptcha extends Base implements core\validate\IRecaptchaField
 {

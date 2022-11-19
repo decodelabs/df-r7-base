@@ -6,14 +6,10 @@
 
 namespace df\spur;
 
-use df;
 use df\core;
-use df\spur;
 use df\link;
-use df\flex;
 
 use GuzzleHttp\Client as HttpClient;
-use GuzzleHttp\Psr7\Request as HttpRequest;
 use Psr\Http\Message\ResponseInterface;
 
 interface IGuzzleMediator
@@ -21,10 +17,10 @@ interface IGuzzleMediator
     public function setHttpClient(HttpClient $client);
     public function getHttpClient(): HttpClient;
 
-    public function requestRaw(string $method, string $path, array $data=[], array $headers=[]): ResponseInterface;
-    public function requestJson(string $method, string $path, array $data=[], array $headers=[]): core\collection\ITree;
+    public function requestRaw(string $method, string $path, array $data = [], array $headers = []): ResponseInterface;
+    public function requestJson(string $method, string $path, array $data = [], array $headers = []): core\collection\ITree;
     public function createUrl(string $path): link\http\IUrl;
-    public function createRequest(string $method, string $path, array $data=[], array $headers=[]): link\http\IRequest;
+    public function createRequest(string $method, string $path, array $data = [], array $headers = []): link\http\IRequest;
     public function sendRequest(link\http\IRequest $request): ResponseInterface;
 }
 
@@ -45,7 +41,7 @@ class DataObject extends core\collection\Tree implements IDataObject
 
     protected $_type;
 
-    public function __construct(string $type, core\collection\ITree $data, $callback=null)
+    public function __construct(string $type, core\collection\ITree $data, $callback = null)
     {
         parent::__construct();
         $this->setType($type);
@@ -112,7 +108,7 @@ interface IDataList extends core\IArrayProvider, \IteratorAggregate
 // Filter
 interface IFilter extends core\IArrayProvider
 {
-    public static function normalize(IFilter &$filter=null, callable $callback=null, array $extra=null): array;
+    public static function normalize(IFilter &$filter = null, callable $callback = null, array $extra = null): array;
 
     public function setLimit(?int $limit);
     public function getLimit(): ?int;
@@ -122,7 +118,7 @@ trait TFilter
 {
     protected $_limit = null;
 
-    public static function normalize(IFilter &$filter=null, callable $callback=null, array $extra=null): array
+    public static function normalize(IFilter &$filter = null, callable $callback = null, array $extra = null): array
     {
         if (!$filter) {
             $filter = new static();

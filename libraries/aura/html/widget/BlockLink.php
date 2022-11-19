@@ -5,35 +5,35 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
 use df\arch;
+use df\aura;
 
-class BlockLink extends Link {
+class BlockLink extends Link
+{
+    public const PRIMARY_TAG = 'a.block';
 
-    const PRIMARY_TAG = 'a.block';
-
-    public function __construct(arch\IContext $context, $uri, $body=null, $description=null, $matchRequest=null) {
+    public function __construct(arch\IContext $context, $uri, $body = null, $description = null, $matchRequest = null)
+    {
         parent::__construct($context, $uri, $body, $matchRequest);
 
-        if($description !== null) {
+        if ($description !== null) {
             $this->setDescription($description);
         }
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $body = $this->_body;
         $description = $this->_description;
         $iconName = $this->_icon;
 
         $icon = $note = null;
 
-        if($this->_icon) {
+        if ($this->_icon) {
             $icon = $this->_context->html->icon($this->_icon);
         }
 
-        if($this->_note !== null) {
+        if ($this->_note !== null) {
             $note = $this->_note;
             $this->_note = null;
 
@@ -45,7 +45,7 @@ class BlockLink extends Link {
 
         $body = [new aura\html\Element('header', [$icon, $body])];
 
-        if($this->_showDescription) {
+        if ($this->_showDescription) {
             $body[] = new aura\html\Element('p', $description, ['class' => 'description']);
         }
 

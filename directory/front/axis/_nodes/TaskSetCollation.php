@@ -6,13 +6,9 @@
 
 namespace df\apex\directory\front\axis\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\opal;
-
 use DecodeLabs\Terminus as Cli;
+
+use df\arch;
 
 class TaskSetCollation extends arch\node\Task
 {
@@ -25,7 +21,7 @@ class TaskSetCollation extends arch\node\Task
         $adapter = $unit->getUnitAdapter()->getQuerySourceAdapter()->getAdapter();
 
         if ($adapter->getServerType() != 'mysql') {
-            Cli::error('Default connection is '.$adapter->getServerType().', not mysql');
+            Cli::error('Default connection is ' . $adapter->getServerType() . ', not mysql');
             return;
         }
 
@@ -39,7 +35,7 @@ class TaskSetCollation extends arch\node\Task
 
         $charset = $this->request->query->get('charset', explode('_', $collation)[0]);
 
-        if (!Cli::confirm('Are you sure you want to convert all databases to '.$charset.' / '.$collation.'?', true)) {
+        if (!Cli::confirm('Are you sure you want to convert all databases to ' . $charset . ' / ' . $collation . '?', true)) {
             return;
         }
 
@@ -55,14 +51,14 @@ class TaskSetCollation extends arch\node\Task
                 continue;
             }
 
-            Cli::notice('Switching db: '.$dbName);
-            Cli::{'yellow'}($dbName.' : '.$charset.' / '.$collation.' ');
+            Cli::notice('Switching db: ' . $dbName);
+            Cli::{'yellow'}($dbName . ' : ' . $charset . ' / ' . $collation . ' ');
             $database = $server->getDatabase($dbName);
             $database->setCharacterSet($charset, $collation, true);
             Cli::success('done');
 
             foreach ($database->getTableList() as $tableName) {
-                Cli::{'yellow'}($tableName.' : '.$charset.' / '.$collation.' ');
+                Cli::{'yellow'}($tableName . ' : ' . $charset . ' / ' . $collation . ' ');
                 $table = $database->getTable($tableName);
                 $table->setCharacterSet($charset, $collation);
                 Cli::success('done');

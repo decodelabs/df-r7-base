@@ -6,11 +6,9 @@
 
 namespace df\spur\auth\recaptcha;
 
-use df;
-use df\core;
-use df\spur;
-
 use DecodeLabs\Compass\Ip;
+
+use df\spur;
 
 interface IMediator extends spur\IGuzzleMediator
 {
@@ -19,7 +17,7 @@ interface IMediator extends spur\IGuzzleMediator
 
     public function verify(
         string $key,
-        Ip|string|null $ip=null
+        Ip|string|null $ip = null
     ): IResult;
 }
 

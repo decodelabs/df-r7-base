@@ -5,30 +5,33 @@
  */
 namespace df\apex\models\user\auth;
 
-use df\core;
-use df\axis;
 use df\opal;
 use df\user;
 
-class Record extends opal\record\Base implements user\authentication\IDomainInfo {
-
-    public function getIdentity() {
+class Record extends opal\record\Base implements user\authentication\IDomainInfo
+{
+    public function getIdentity()
+    {
         return $this['identity'];
     }
 
-    public function getPassword() {
+    public function getPassword()
+    {
         return $this['password'];
     }
 
-    public function getBindDate() {
+    public function getBindDate()
+    {
         return $this['bindDate'];
     }
 
-    public function getClientData() {
+    public function getClientData()
+    {
         return $this['user'];
     }
 
-    public function onAuthentication(bool $asAdmin=false) {
+    public function onAuthentication(bool $asAdmin = false)
+    {
         $this->loginDate = 'now';
         $this->save();
 

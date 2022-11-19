@@ -6,13 +6,11 @@
 
 namespace df\apex\directory\front\cache\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-
-use DecodeLabs\Terminus as Cli;
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\Terminus as Cli;
+
+use df\arch;
+use df\core;
 
 class TaskPrune extends arch\node\Task
 {
@@ -24,14 +22,14 @@ class TaskPrune extends arch\node\Task
         $config = core\cache\Config::getInstance();
 
         foreach (Legacy::getLoader()->lookupClassList('core/cache/backend') as $name => $class) {
-            Cli::{'yellow'}($name.': ');
+            Cli::{'yellow'}($name . ': ');
             $options = $config->getBackendOptions($name);
             $count = (int)$class::prune($options);
-            Cli::success($count.' removed');
+            Cli::success($count . ' removed');
         }
 
         Cli::{'yellow'}('FileStore: ');
         $count = core\cache\FileStore::prune('1 week');
-        Cli::success($count.' removed');
+        Cli::success($count . ' removed');
     }
 }

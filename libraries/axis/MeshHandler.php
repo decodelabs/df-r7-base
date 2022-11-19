@@ -5,12 +5,10 @@
  */
 namespace df\axis;
 
-use df;
-use df\core;
-use df\axis;
-use df\mesh;
-
 use DecodeLabs\Exceptional;
+use df\axis;
+
+use df\mesh;
 
 class MeshHandler implements mesh\IEntityHandler
 {
@@ -31,7 +29,7 @@ class MeshHandler implements mesh\IEntityHandler
 
                     if (!$unit instanceof axis\ISchemaBasedStorageUnit) {
                         throw Exceptional::Logic(
-                            'Model unit '.$unit->getUnitName().' does not provide a schema'
+                            'Model unit ' . $unit->getUnitName() . ' does not provide a schema'
                         );
                     }
 

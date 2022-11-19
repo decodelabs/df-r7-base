@@ -6,13 +6,11 @@
 
 namespace df\neon\mediaHandler;
 
-use df;
-use df\core;
-use df\neon;
-use df\opal;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+
+use df\core;
+use df\opal;
 
 abstract class Base implements IMediaHandler
 {
@@ -21,11 +19,11 @@ abstract class Base implements IMediaHandler
 
     public static function factory($name)
     {
-        $class = 'df\\neon\\mediaHandler\\'.ucfirst($name);
+        $class = 'df\\neon\\mediaHandler\\' . ucfirst($name);
 
         if (!class_exists($class)) {
             throw Exceptional::Runtime(
-                'Media handler '.$name.' could not be found'
+                'Media handler ' . $name . ' could not be found'
             );
         }
 
@@ -33,7 +31,7 @@ abstract class Base implements IMediaHandler
 
         if (!$output instanceof IMediaHandler) {
             throw Exceptional::Runtime(
-                'Media handler name '.$name.' did not produce a valid media handler object'
+                'Media handler name ' . $name . ' did not produce a valid media handler object'
             );
         }
 
@@ -52,7 +50,7 @@ abstract class Base implements IMediaHandler
         $output = [];
 
         foreach ($config->getEnabledHandlers() as $name) {
-            $class = 'df\\neon\\mediaHandler\\'.ucfirst($name);
+            $class = 'df\\neon\\mediaHandler\\' . ucfirst($name);
 
             if (!class_exists($class)) {
                 continue;
@@ -80,27 +78,27 @@ abstract class Base implements IMediaHandler
         return $this->getDownloadUrl($fileId);
     }
 
-    public function getImageUrl($fileId, $transformation=null)
+    public function getImageUrl($fileId, $transformation = null)
     {
-        $output = '/media/image?file='.$this->_normalizeId($fileId);
+        $output = '/media/image?file=' . $this->_normalizeId($fileId);
 
         if ($transformation !== null) {
-            $output .= '&transform='.$transformation;
+            $output .= '&transform=' . $transformation;
         }
 
         if (Genesis::$build->shouldCacheBust()) {
-            $output .= '&cts='.Genesis::$build->getCacheBuster();
+            $output .= '&cts=' . Genesis::$build->getCacheBuster();
         }
 
         return $output;
     }
 
-    public function getVersionImageUrl($fileId, $versionId, $isActive, $transformation=null)
+    public function getVersionImageUrl($fileId, $versionId, $isActive, $transformation = null)
     {
-        $output = '/media/image?version='.$this->_normalizeId($versionId);
+        $output = '/media/image?version=' . $this->_normalizeId($versionId);
 
         if ($transformation !== null) {
-            $output .= '&transform='.$transformation;
+            $output .= '&transform=' . $transformation;
         }
 
         return $output;
@@ -144,6 +142,6 @@ abstract class Base implements IMediaHandler
         $k1 = hexdec($fileId[0]);
         $k2 = hexdec($fileId[1]);
         $k3 = hexdec($fileId[2]);
-        return $fileId[$k3].$fileId[$k2].$fileId[$k1];
+        return $fileId[$k3] . $fileId[$k2] . $fileId[$k1];
     }
 }

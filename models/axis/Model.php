@@ -5,11 +5,8 @@
  */
 namespace df\apex\models\axis;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis as axisLib;
 
-class Model extends axisLib\Model {
-    
+class Model extends axisLib\Model
+{
 }

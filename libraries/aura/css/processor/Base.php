@@ -5,18 +5,17 @@
  */
 namespace df\aura\css\processor;
 
-use df;
-use df\core;
-use df\aura;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\Terminus\Session;
+
+use df\aura;
+use df\core;
 
 abstract class Base implements aura\css\IProcessor
 {
     public $settings;
 
-    public static function factory($name, $settings=null): aura\css\IProcessor
+    public static function factory($name, $settings = null): aura\css\IProcessor
     {
         if ($name instanceof aura\css\IProcessor) {
             if ($settings) {
@@ -26,18 +25,18 @@ abstract class Base implements aura\css\IProcessor
             return $name;
         }
 
-        $class = 'df\\aura\\css\\processor\\'.ucfirst($name);
+        $class = 'df\\aura\\css\\processor\\' . ucfirst($name);
 
         if (!class_exists($class)) {
             throw Exceptional::NotFound(
-                'Css processor '.$name.' could not be found'
+                'Css processor ' . $name . ' could not be found'
             );
         }
 
         return new $class($settings);
     }
 
-    public function __construct($settings=null)
+    public function __construct($settings = null)
     {
         $this->settings = core\collection\Tree::factory($settings);
     }
@@ -47,7 +46,7 @@ abstract class Base implements aura\css\IProcessor
         return $this->settings;
     }
 
-    public function setup(?Session $session=null)
+    public function setup(?Session $session = null)
     {
     }
 }

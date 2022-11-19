@@ -5,7 +5,6 @@
  */
 namespace df\opal\rdbms\schema\field;
 
-use df\core;
 use df\opal;
 
 class Char extends Base implements
@@ -17,7 +16,7 @@ class Char extends Base implements
     use opal\schema\TField_BinaryCollationProvider;
     use opal\schema\TField_LengthRestricted;
 
-    protected function _init($length=null)
+    protected function _init($length = null)
     {
         $this->setLength($length);
     }
@@ -37,10 +36,10 @@ class Char extends Base implements
     // String
     public function toString(): string
     {
-        $output = $this->_name.' '.strtoupper($this->_type);
+        $output = $this->_name . ' ' . strtoupper($this->_type);
 
         if ($this->_length !== null) {
-            $output .= '('.$this->_length.')';
+            $output .= '(' . $this->_length . ')';
         }
 
         if ($this->_binaryCollation) {
@@ -52,18 +51,18 @@ class Char extends Base implements
         }
 
         if ($this->_defaultValue !== null) {
-            $output .= ' DEFAULT \''.$this->_defaultValue.'\'';
+            $output .= ' DEFAULT \'' . $this->_defaultValue . '\'';
         }
 
         if ($this->_characterSet !== null) {
-            $output .= ' CHARSET '.$this->_characterSet;
+            $output .= ' CHARSET ' . $this->_characterSet;
         }
 
         if ($this->_collation) {
-            $output .= ' COLLATION '.$this->_collation;
+            $output .= ' COLLATION ' . $this->_collation;
         }
 
-        $output .= ' ['.$this->_sqlVariant.']';
+        $output .= ' [' . $this->_sqlVariant . ']';
 
         return $output;
     }

@@ -5,28 +5,25 @@
  */
 namespace df\axis\schema\field;
 
-use df;
-use df\core;
+use DecodeLabs\Exceptional;
 use df\axis;
-use df\opal;
 use df\mesh;
 
-use DecodeLabs\Exceptional;
+use df\opal;
 
 class EntityLocator extends Base implements
     opal\schema\IMultiPrimitiveField,
     opal\schema\IQueryClauseRewriterField
 {
-
-// Values
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    // Values
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord = null)
     {
-        if (!isset($row[$key.'_domain'])) {
+        if (!isset($row[$key . '_domain'])) {
             return null;
         }
 
-        $id = $row[$key.'_id'] ?? null;
-        return mesh\entity\Locator::domainFactory($row[$key.'_domain'], $id);
+        $id = $row[$key . '_id'] ?? null;
+        return mesh\entity\Locator::domainFactory($row[$key . '_domain'], $id);
     }
 
     public function deflateValue($value)
@@ -35,18 +32,18 @@ class EntityLocator extends Base implements
 
         if (empty($value)) {
             return [
-                $this->_name.'_domain' => null,
-                $this->_name.'_id' => null
+                $this->_name . '_domain' => null,
+                $this->_name . '_id' => null
             ];
         }
 
         return [
-            $this->_name.'_domain' => $value->getDomain(),
-            $this->_name.'_id' => $value->getId()
+            $this->_name . '_domain' => $value->getDomain(),
+            $this->_name . '_id' => $value->getId()
         ];
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    public function sanitizeValue($value, opal\record\IRecord $forRecord = null)
     {
         if (empty($value)) {
             if ($this->isNullable()) {
@@ -76,13 +73,13 @@ class EntityLocator extends Base implements
 
 
     // Rewriters
-    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false)
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr = false)
     {
         switch ($operator) {
             case 'between':
             case 'not between':
                 throw Exceptional::Logic(
-                    'EntityLocator fields cannot be filtered with "'.$operator.'" operators'
+                    'EntityLocator fields cannot be filtered with "' . $operator . '" operators'
                 );
 
             case 'in':
@@ -111,13 +108,13 @@ class EntityLocator extends Base implements
         }
     }
 
-    protected function _createSubClause(opal\query\IClauseFactory $parent, opal\query\IField $field, $value, $operator, $isOr=false)
+    protected function _createSubClause(opal\query\IClauseFactory $parent, opal\query\IField $field, $value, $operator, $isOr = false)
     {
         $output = new opal\query\clause\WhereList($parent, $isOr);
         $sourceAlias = $field->getSource()->getAlias();
 
         if ($value instanceof opal\query\IField) {
-            $output->whereField($sourceAlias.'.'.$this->_name.'_id', '=', $value->getName());
+            $output->whereField($sourceAlias . '.' . $this->_name . '_id', '=', $value->getName());
             return $output;
         }
 
@@ -125,14 +122,14 @@ class EntityLocator extends Base implements
 
         if ($locator === null) {
             return $output
-                ->where($sourceAlias.'.'.$this->_name.'_id', '=', $locator)
-                ->where($sourceAlias.'.'.$this->_name.'_domain', '=', $locator);
+                ->where($sourceAlias . '.' . $this->_name . '_id', '=', $locator)
+                ->where($sourceAlias . '.' . $this->_name . '_domain', '=', $locator);
         }
 
         switch ($operator) {
             case 'begins':
             case 'not begins':
-                return $output->where($sourceAlias.'.'.$this->_name.'_domain', $operator, $locator->getDomain());
+                return $output->where($sourceAlias . '.' . $this->_name . '_domain', $operator, $locator->getDomain());
 
 
             default:
@@ -143,8 +140,8 @@ class EntityLocator extends Base implements
                 }
 
                 return $output
-                    ->where($sourceAlias.'.'.$this->_name.'_domain', $operator, $locator->getDomain())
-                    ->where($sourceAlias.'.'.$this->_name.'_id', $idOperator, $locator->getId());
+                    ->where($sourceAlias . '.' . $this->_name . '_domain', $operator, $locator->getDomain())
+                    ->where($sourceAlias . '.' . $this->_name . '_id', $idOperator, $locator->getId());
         }
     }
 
@@ -153,16 +150,16 @@ class EntityLocator extends Base implements
     public function getPrimitiveFieldNames()
     {
         return [
-            $this->_name.'_domain',
-            $this->_name.'_id'
+            $this->_name . '_domain',
+            $this->_name . '_id'
         ];
     }
 
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
     {
         return new opal\schema\Primitive_MultiField($this, [
-            $this->_name.'_domain' => (new opal\schema\Primitive_Varchar($this, 255)),
-            $this->_name.'_id' => (new opal\schema\Primitive_Varchar($this, 64))
+            $this->_name . '_domain' => (new opal\schema\Primitive_Varchar($this, 255)),
+            $this->_name . '_id' => (new opal\schema\Primitive_Varchar($this, 64))
         ]);
     }
 

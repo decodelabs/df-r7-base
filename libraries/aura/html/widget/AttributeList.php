@@ -5,16 +5,14 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
+use DecodeLabs\Glitch\Dumpable;
 use df\arch;
 
-use DecodeLabs\Glitch\Dumpable;
+use df\aura;
 
 class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWidget, Dumpable
 {
-    const PRIMARY_TAG = 'div.list.attributes';
+    public const PRIMARY_TAG = 'div.list.attributes';
 
     use TWidget_DataDrivenList;
     use TWidget_MappedList;
@@ -23,14 +21,14 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
 
     protected $_skipEmptyRows = false;
 
-    public function __construct(arch\IContext $context, $data=null, $renderer=null)
+    public function __construct(arch\IContext $context, $data = null, $renderer = null)
     {
         parent::__construct($context);
         $this->setData($data);
         $this->setRenderer($renderer);
     }
 
-    public function shouldSkipEmptyRows(bool $flag=null)
+    public function shouldSkipEmptyRows(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_skipEmptyRows = $flag;
@@ -82,7 +80,7 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
     protected function _renderRow($rows, $renderContext, $field, $key, $data, &$even)
     {
         $row = new aura\html\ElementContent();
-        $trTag = new aura\html\Tag('tr', ['class' => 'field-'.$key]);
+        $trTag = new aura\html\Tag('tr', ['class' => 'field-' . $key]);
         $trTag->addClass(($even = !$even) ? 'even' : 'odd');
         $thTag = new aura\html\Element('th');
         $tdTag = new aura\html\Tag('td');
@@ -96,7 +94,8 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
             if (!$rows->isEmpty()) {
                 $rows->push((new aura\html\Element('tr.spacer', [
                     new aura\html\Element(
-                        'td', null,
+                        'td',
+                        null,
                         ['colspan' => 2]
                     )
                 ]))->render());
@@ -135,7 +134,7 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
     public function glitchDump(): iterable
     {
         yield 'properties' => [
-            '%data' => count($this->_data).' rows',
+            '%data' => count($this->_data) . ' rows',
             '%tag' => $this->getTag()
         ];
 

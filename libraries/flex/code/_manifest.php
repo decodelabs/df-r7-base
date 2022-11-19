@@ -5,14 +5,13 @@
  */
 namespace df\flex\code;
 
-use df;
 use df\core;
 
 interface IScanner
 {
     public function setLocations(array $locations);
     public function addLocations(array $locations);
-    public function addFrameworkPackageLocations(bool $allRoot=false, array $blackList=null);
+    public function addFrameworkPackageLocations(bool $allRoot = false, array $blackList = null);
     public function addLocation(Location $location);
     public function getLocation($id);
     public function hasLocation($id);

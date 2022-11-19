@@ -11,8 +11,6 @@ use df\arch\node\IDelegate;
 use df\arch\node\IInlineFieldRenderableDelegate;
 use df\arch\node\IResultProviderDelegate;
 
-use DecodeLabs\R7\Nightfire\Block;
-
 interface BlockDelegate extends
     IDelegate,
     IInlineFieldRenderableDelegate,

@@ -6,14 +6,9 @@
 
 namespace df\opal\mmdb;
 
-use df;
-use df\core;
-use df\opal;
-use df\link;
-
 use DecodeLabs\Atlas;
-use DecodeLabs\Atlas\Mode;
 use DecodeLabs\Atlas\File;
+use DecodeLabs\Atlas\Mode;
 use DecodeLabs\Compass\Ip;
 use DecodeLabs\Exceptional;
 
@@ -63,7 +58,7 @@ class Reader implements IReader
             for ($j = 0; $j < $markerLength; $j++) {
                 $this->_file->setPosition($this->_fileSize - $i - $j - 1);
                 $matchBit = $this->_file->readChar();
-                $read = $matchBit.$read;
+                $read = $matchBit . $read;
 
                 if ($matchBit != $marker[$markerLength - $j - 1]) {
                     continue 2;
@@ -103,7 +98,9 @@ class Reader implements IReader
     {
         if (false === ($packed = inet_pton((string)$ip))) {
             throw Exceptional::Runtime(
-                'Unable to pack IP string', null, $ip
+                'Unable to pack IP string',
+                null,
+                $ip
             );
         }
 
@@ -160,7 +157,7 @@ class Reader implements IReader
         switch ($this->_metaData['record_size']) {
             case 24:
                 $bytes = $this->_file->readFrom($baseOffset + $index * 3, 3);
-                list(, $node) = unpack('N', "\x00".$bytes);
+                list(, $node) = unpack('N', "\x00" . $bytes);
                 return $node;
 
             case 28:
@@ -174,7 +171,7 @@ class Reader implements IReader
                 }
 
                 $bytes = $this->_file->readFrom($baseOffset + $index * 4, 3);
-                list(, $node) = unpack('N', chr($middle).$bytes);
+                list(, $node) = unpack('N', chr($middle) . $bytes);
                 return $node;
 
             case 32:
@@ -184,7 +181,7 @@ class Reader implements IReader
 
             default:
                 throw Exceptional::UnexpectedValue(
-                    'Unknown record size: '.$this->_metaData['record_size']
+                    'Unknown record size: ' . $this->_metaData['record_size']
                 );
         }
     }

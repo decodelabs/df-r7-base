@@ -5,29 +5,30 @@
  */
 namespace df\spur\mail\mailchimp3\filter;
 
-use df;
-use df\core;
 use df\spur;
 
-class InterestCategory extends Base implements spur\mail\mailchimp3\IInterestCategoryFilter {
-
-    const KEY_NAME = 'categories';
+class InterestCategory extends Base implements spur\mail\mailchimp3\IInterestCategoryFilter
+{
+    public const KEY_NAME = 'categories';
 
     protected $_type;
 
-    public function setType(?string $type) {
+    public function setType(?string $type)
+    {
         $this->_type = $type;
         return $this;
     }
 
-    public function getType(): ?string {
+    public function getType(): ?string
+    {
         return $this->_type;
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         $output = parent::toArray();
 
-        if($this->_type !== null) {
+        if ($this->_type !== null) {
             $output['type'] = $this->_type;
         }
 

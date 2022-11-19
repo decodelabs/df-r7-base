@@ -5,11 +5,9 @@
  */
 namespace df\link\http;
 
-use df;
-use df\core;
-use df\link;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\core;
 
 class CookieCollection implements ICookieCollection, Dumpable
 {
@@ -74,7 +72,7 @@ class CookieCollection implements ICookieCollection, Dumpable
         return $this;
     }
 
-    public function isEmpty($includeRemoved=true): bool
+    public function isEmpty($includeRemoved = true): bool
     {
         $output = empty($this->_set);
 
@@ -112,7 +110,7 @@ class CookieCollection implements ICookieCollection, Dumpable
     }
 
 
-    public function set($name, $cookie=null)
+    public function set($name, $cookie = null)
     {
         if ($name instanceof ICookie) {
             $cookie = $name;
@@ -130,7 +128,7 @@ class CookieCollection implements ICookieCollection, Dumpable
         return $this;
     }
 
-    public function get($name, $default=null)
+    public function get($name, $default = null)
     {
         if (isset($this->_set[$name])) {
             return $this->_set[$name];
@@ -229,11 +227,11 @@ class CookieCollection implements ICookieCollection, Dumpable
         $output = [];
 
         foreach ($this->_set as $cookie) {
-            $output[] = 'Set-Cookie: '.$cookie->toString();
+            $output[] = 'Set-Cookie: ' . $cookie->toString();
         }
 
         foreach ($this->_remove as $cookie) {
-            $output[] = 'Set-Cookie: '.$cookie->toInvalidateString();
+            $output[] = 'Set-Cookie: ' . $cookie->toInvalidateString();
         }
 
         return implode("\r\n", $output);
@@ -246,11 +244,11 @@ class CookieCollection implements ICookieCollection, Dumpable
     public function glitchDump(): iterable
     {
         foreach ($this->_set as $cookie) {
-            yield 'value:+ '.$cookie->getName() => $cookie->toString();
+            yield 'value:+ ' . $cookie->getName() => $cookie->toString();
         }
 
         foreach ($this->_remove as $cookie) {
-            yield 'value:- '.$cookie->getName() => $cookie->toInvalidateString();
+            yield 'value:- ' . $cookie->getName() => $cookie->toInvalidateString();
         }
     }
 }

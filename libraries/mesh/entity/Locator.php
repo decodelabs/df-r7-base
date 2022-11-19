@@ -5,12 +5,10 @@
  */
 namespace df\mesh\entity;
 
-use df;
-use df\core;
-use df\mesh;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
 
 class Locator implements ILocator, Dumpable
 {
@@ -35,7 +33,7 @@ class Locator implements ILocator, Dumpable
         return new self($locator);
     }
 
-    public static function domainFactory($domain, $id=null)
+    public static function domainFactory($domain, $id = null)
     {
         $output = self::factory($domain);
 
@@ -66,7 +64,7 @@ class Locator implements ILocator, Dumpable
     // handler://[path/to/]Entity[:id][/[path/to/]SubEntity[:id]]]
     private function _parseString($path)
     {
-        $path = trim($path, '/').'/';
+        $path = trim($path, '/') . '/';
         $length = strlen($path);
         $mode = 0;
         $part = '';
@@ -94,13 +92,13 @@ class Locator implements ILocator, Dumpable
                         $part .= $char;
                     } else {
                         throw Exceptional::InvalidArgument(
-                            'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
+                            'Unexpected char: ' . $char . ' in locator: ' . $path . ' at char: ' . $i
                         );
                     }
 
                     break;
 
-                // Entity type name
+                    // Entity type name
                 case 1:
                     if ($char == ':') {
                         $node['type'] = ucfirst($part);
@@ -123,13 +121,13 @@ class Locator implements ILocator, Dumpable
                         $part .= $char;
                     } else {
                         throw Exceptional::InvalidArgument(
-                            'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
+                            'Unexpected char: ' . $char . ' in locator: ' . $path . ' at char: ' . $i
                         );
                     }
 
                     break;
 
-                // Entity id
+                    // Entity id
                 case 2:
                     if ($char == '"') {
                         $mode = 3;
@@ -148,13 +146,13 @@ class Locator implements ILocator, Dumpable
                         $part .= $char;
                     } else {
                         throw Exceptional::InvalidArgument(
-                            'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
+                            'Unexpected char: ' . $char . ' in locator: ' . $path . ' at char: ' . $i
                         );
                     }
 
                     break;
 
-                // Entity id quote
+                    // Entity id quote
                 case 3:
                     if ($char == '\\') {
                         $mode = 4; // Escape
@@ -166,17 +164,17 @@ class Locator implements ILocator, Dumpable
 
                     break;
 
-                // Entity id escape
+                    // Entity id escape
                 case 4:
                     $part .= $char;
                     $mode = 3; // Quote
                     break;
 
-                // Entity id end quote
+                    // Entity id end quote
                 case 5:
                     if ($char != '/') {
                         throw Exceptional::InvalidArgument(
-                            'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
+                            'Unexpected char: ' . $char . ' in locator: ' . $path . ' at char: ' . $i
                         );
                     }
 
@@ -197,11 +195,11 @@ class Locator implements ILocator, Dumpable
 
         if (empty($output)) {
             throw Exceptional::InvalidArgument(
-                'No entity type definition detected in: '.$path
+                'No entity type definition detected in: ' . $path
             );
         } elseif ($mode != 0) {
             throw Exceptional::InvalidArgument(
-                'Unexpected end of locator: '.$path
+                'Unexpected end of locator: ' . $path
             );
         }
 
@@ -247,7 +245,7 @@ class Locator implements ILocator, Dumpable
         return $this;
     }
 
-    public function addNode($location, $type, $id=null)
+    public function addNode($location, $type, $id = null)
     {
         return $this->importNode([
             'location' => $location,
@@ -264,7 +262,7 @@ class Locator implements ILocator, Dumpable
         return $this;
     }
 
-    public function setNode($index, $location, $type, $id=null)
+    public function setNode($index, $location, $type, $id = null)
     {
         return $this->setNodeArray($index, [
             'location' => $location,
@@ -435,7 +433,7 @@ class Locator implements ILocator, Dumpable
         return $this->_nodes;
     }
 
-    public function setFirstNode($location, $type, $id=null)
+    public function setFirstNode($location, $type, $id = null)
     {
         return $this->setNode(0, $location, $type, $id);
     }
@@ -491,7 +489,7 @@ class Locator implements ILocator, Dumpable
         return $this->_nodes[0]['id'];
     }
 
-    public function setLastNode($location, $type, $id=null)
+    public function setLastNode($location, $type, $id = null)
     {
         return $this->setNode(-1, $location, $type, $id);
     }
@@ -607,9 +605,9 @@ class Locator implements ILocator, Dumpable
 
         if ($node['id'] !== null) {
             if (strpbrk($node['id'], '" :/\'\\')) {
-                $type .= ':"'.addslashes($node['id']).'"';
+                $type .= ':"' . addslashes($node['id']) . '"';
             } else {
-                $type .= ':'.$node['id'];
+                $type .= ':' . $node['id'];
             }
         }
 
@@ -632,7 +630,7 @@ class Locator implements ILocator, Dumpable
             $last['id'] = null;
             $nodes[] = $this->_nodeToString($last);
 
-            $this->_domainString = $this->_scheme.'://'.implode('/', $nodes);
+            $this->_domainString = $this->_scheme . '://' . implode('/', $nodes);
         }
 
         return $this->_domainString;
@@ -657,7 +655,7 @@ class Locator implements ILocator, Dumpable
                 $nodes[] = $this->_nodeToString($node);
             }
 
-            $this->_string = $this->_scheme.'://'.implode('/', $nodes);
+            $this->_string = $this->_scheme . '://' . implode('/', $nodes);
         }
 
         return $this->_string;
@@ -683,7 +681,7 @@ class Locator implements ILocator, Dumpable
             }
         }
 
-        return $this->_scheme.'://'.implode('/', $nodes);
+        return $this->_scheme . '://' . implode('/', $nodes);
     }
 
     protected function _clearCache()

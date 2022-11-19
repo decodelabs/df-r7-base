@@ -5,12 +5,7 @@
  */
 namespace df\aura\view;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-
-class Generic extends Base implements IResponseView {
-
+class Generic extends Base implements IResponseView
+{
     use TView_Response;
 }

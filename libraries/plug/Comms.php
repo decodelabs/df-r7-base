@@ -5,14 +5,11 @@
  */
 namespace df\plug;
 
-use df;
-use df\core;
-use df\plug;
-use df\flow;
-use df\arch;
-use df\aura;
-
 use DecodeLabs\Dictum;
+use df\arch;
+use df\core;
+
+use df\flow;
 
 class Comms implements core\ISharedHelper
 {
@@ -33,17 +30,17 @@ class Comms implements core\ISharedHelper
 
 
     // Flash messages
-    public function flash($id, $message=null, $type=null)
+    public function flash($id, $message = null, $type = null)
     {
         return $this->_manager->flash($id, $message, $type);
     }
 
-    public function flashNow($id, $message=null, $type=null)
+    public function flashNow($id, $message = null, $type = null)
     {
         return $this->_manager->flashNow($id, $message, $type);
     }
 
-    public function flashAlways($id, $message=null, $type=null)
+    public function flashAlways($id, $message = null, $type = null)
     {
         return $this->_manager->flashAlways($id, $message, $type);
     }
@@ -62,35 +59,35 @@ class Comms implements core\ISharedHelper
 
 
     // Flash shortcuts
-    public function flashInfo($id, $message=null)
+    public function flashInfo($id, $message = null)
     {
         return $this->flash($id, $message, 'info');
     }
 
-    public function flashSuccess($id, $message=null)
+    public function flashSuccess($id, $message = null)
     {
         return $this->flash($id, $message, 'success');
     }
 
-    public function flashWarning($id, $message=null)
+    public function flashWarning($id, $message = null)
     {
         return $this->flash($id, $message, 'warning');
     }
 
-    public function flashError($id, $message=null)
+    public function flashError($id, $message = null)
     {
         return $this->flash($id, $message, 'error');
     }
 
-    public function flashDebug($id, $message=null)
+    public function flashDebug($id, $message = null)
     {
         return $this->flash($id, $message, 'debug');
     }
 
-    public function flashSaveSuccess($itemName, $message=null)
+    public function flashSaveSuccess($itemName, $message = null)
     {
         return $this->flash(
-            Dictum::id($itemName).'.save',
+            Dictum::id($itemName) . '.save',
             $message ?? $this->context->_('The %i% was successfully saved', ['%i%' => $itemName]),
             'success'
         );
@@ -110,31 +107,31 @@ class Comms implements core\ISharedHelper
             ->setBodyText($body);
     }
 
-    public function newAdminMail($subject, $body, $forceSend=false)
+    public function newAdminMail($subject, $body, $forceSend = false)
     {
         return $this->newMail($subject, $body, true)
             ->shouldForceSend($forceSend);
     }
 
-    public function newAdminTextMail($subject, $body, $forceSend=false)
+    public function newAdminTextMail($subject, $body, $forceSend = false)
     {
         return $this->newTextMail($subject, $body, true)
             ->shouldForceSend($forceSend);
     }
 
-    public function sendAdminMail($subject, $body, $forceSend=false)
+    public function sendAdminMail($subject, $body, $forceSend = false)
     {
         return $this->newAdminMail($subject, $body, $forceSend)->send();
     }
 
-    public function sendAdminTextMail($subject, $body, $forceSend=false)
+    public function sendAdminTextMail($subject, $body, $forceSend = false)
     {
         return $this->newAdminTextMail($subject, $body, $forceSend)->send();
     }
 
 
 
-    public function prepareMail($path, array $slots=null, $forceSend=false)
+    public function prepareMail($path, array $slots = null, $forceSend = false)
     {
         if (!($context = $this->context) instanceof arch\IContext) {
             $context = arch\Context::factory();
@@ -150,7 +147,7 @@ class Comms implements core\ISharedHelper
         return $output;
     }
 
-    public function prepareAdminMail($path, array $slots=null, $forceSend=false)
+    public function prepareAdminMail($path, array $slots = null, $forceSend = false)
     {
         return $this->prepareMail($path, $slots, $forceSend)->shouldSendToAdmin(true);
     }
@@ -162,12 +159,12 @@ class Comms implements core\ISharedHelper
         return $output;
     }
 
-    public function sendPreparedMail($path, array $slots=null, $forceSend=false)
+    public function sendPreparedMail($path, array $slots = null, $forceSend = false)
     {
         return $this->prepareMail($path, $slots, $forceSend)->send();
     }
 
-    public function sendPreparedAdminMail($path, array $slots=null, $forceSend=false)
+    public function sendPreparedAdminMail($path, array $slots = null, $forceSend = false)
     {
         return $this->prepareAdminMail($path, $slots, $forceSend)->send();
     }

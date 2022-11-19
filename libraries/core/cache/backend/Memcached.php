@@ -6,11 +6,10 @@
 
 namespace df\core\cache\backend;
 
-use df;
-use df\core;
+use DecodeLabs\R7\Legacy;
 
 use DecodeLabs\Terminus\Session;
-use DecodeLabs\R7\Legacy;
+use df\core;
 
 class Memcached implements core\cache\IBackend
 {
@@ -21,12 +20,12 @@ class Memcached implements core\cache\IBackend
     protected $_lifeTime;
     protected $_cache;
 
-    public static function purgeApp(core\collection\ITree $options, ?Session $session=null)
+    public static function purgeApp(core\collection\ITree $options, ?Session $session = null)
     {
         self::purgeAll($options);
     }
 
-    public static function purgeAll(core\collection\ITree $options, ?Session $session=null)
+    public static function purgeAll(core\collection\ITree $options, ?Session $session = null)
     {
         if (!self::isLoadable()) {
             return;
@@ -78,7 +77,7 @@ class Memcached implements core\cache\IBackend
     {
         $this->_cache = $cache;
         $this->_lifeTime = $lifeTime;
-        $this->_prefix = Legacy::getUniquePrefix().'-'.$cache->getCacheId().':';
+        $this->_prefix = Legacy::getUniquePrefix() . '-' . $cache->getCacheId() . ':';
 
         $this->_connection = self::_loadConnection($options);
     }
@@ -89,7 +88,7 @@ class Memcached implements core\cache\IBackend
         $output = [];
 
         foreach ($servers as $server) {
-            $output[] = $server['host'].':'.$server['port'];
+            $output[] = $server['host'] . ':' . $server['port'];
         }
 
         return implode(' + ', $output);
@@ -112,22 +111,22 @@ class Memcached implements core\cache\IBackend
     }
 
 
-    public function set($key, $value, $lifeTime=null)
+    public function set($key, $value, $lifeTime = null)
     {
         if ($lifeTime === null) {
             $lifeTime = $this->_lifeTime;
         }
 
         return $this->_connection->set(
-            $this->_prefix.$key,
+            $this->_prefix . $key,
             [serialize($value), time()],
             $lifeTime
         );
     }
 
-    public function get($key, $default=null)
+    public function get($key, $default = null)
     {
-        $val = $this->_connection->get($this->_prefix.$key);
+        $val = $this->_connection->get($this->_prefix . $key);
 
         if (is_array($val)) {
             try {
@@ -144,7 +143,7 @@ class Memcached implements core\cache\IBackend
     public function has(...$keys)
     {
         foreach ($keys as $key) {
-            if (is_array($this->_connection->get($this->_prefix.$key))) {
+            if (is_array($this->_connection->get($this->_prefix . $key))) {
                 return true;
             }
         }
@@ -155,7 +154,7 @@ class Memcached implements core\cache\IBackend
     public function remove(...$keys)
     {
         foreach ($keys as $key) {
-            $this->_connection->delete($this->_prefix.$key);
+            $this->_connection->delete($this->_prefix . $key);
         }
 
         return true;
@@ -232,7 +231,7 @@ class Memcached implements core\cache\IBackend
 
     public function getCreationTime(string $key): ?int
     {
-        $val = $this->_connection->get($this->_prefix.$key);
+        $val = $this->_connection->get($this->_prefix . $key);
 
         if (is_array($val)) {
             return $val[1];

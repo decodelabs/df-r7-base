@@ -5,10 +5,8 @@
  */
 namespace df\spur\mail\amazonSes;
 
-use df;
-use df\core;
-use df\spur;
 use df\flow;
+use df\spur;
 
 // Interfaces
 interface IMediator extends spur\IGuzzleMediator
@@ -28,5 +26,5 @@ interface IMediator extends spur\IGuzzleMediator
     public function sendMessage(flow\mail\IMessage $message, flow\mime\IMultiPart $mime);
     public function sendRawMessage(flow\mail\IMessage $message, flow\mime\IMultiPart $mime);
 
-    public function requestXml($method, array $data=[], array $headers=[]);
+    public function requestXml($method, array $data = [], array $headers = []);
 }

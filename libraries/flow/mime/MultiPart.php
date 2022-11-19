@@ -6,12 +6,10 @@
 
 namespace df\flow\mime;
 
-use df;
-use df\core;
-use df\flow;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
 
 class MultiPart implements IMultiPart, Dumpable
 {
@@ -28,7 +26,7 @@ class MultiPart implements IMultiPart, Dumpable
         return self::_createPartFromString($string, $class);
     }
 
-    protected static function _createPartFromString($string, $class=null)
+    protected static function _createPartFromString($string, $class = null)
     {
         if ($class === null) {
             $class = __CLASS__;
@@ -43,7 +41,7 @@ class MultiPart implements IMultiPart, Dumpable
         if (substr($contentType, 0, 10) == 'multipart/') {
             $output = new $class($contentType, $headers);
             $boundary = $output->getBoundary();
-            $parts = explode("\n".'--'.$boundary, "\n".trim($body));
+            $parts = explode("\n" . '--' . $boundary, "\n" . trim($body));
 
             array_shift($parts);
             array_pop($parts);
@@ -58,14 +56,14 @@ class MultiPart implements IMultiPart, Dumpable
         return $output;
     }
 
-    public function __construct($type=IMultiPart::MIXED, $headers=null)
+    public function __construct($type = IMultiPart::MIXED, $headers = null)
     {
         $this->_headers = core\collection\HeaderMap::factory($headers);
 
         $this->setContentType($type);
 
         if (!$this->_headers->hasDelimitedValue('content-type', 'boundary')) {
-            $this->_headers->setDelimitedValue('content-type', 'boundary', md5(microtime(true).self::$_boundaryCounter++));
+            $this->_headers->setDelimitedValue('content-type', 'boundary', md5(microtime(true) . self::$_boundaryCounter++));
         }
     }
 
@@ -88,7 +86,7 @@ class MultiPart implements IMultiPart, Dumpable
             case IMultiPart::PARALLEL:
             case IMultiPart::DIGEST:
                 if ($suffix) {
-                    $type .= ';'.$suffix;
+                    $type .= ';' . $suffix;
                 }
 
                 $this->_headers->set('content-type', $type);
@@ -96,7 +94,7 @@ class MultiPart implements IMultiPart, Dumpable
 
             default:
                 throw Exceptional::InvalidArgument(
-                    'Invalid multi part type '.$type
+                    'Invalid multi part type ' . $type
                 );
         }
 
@@ -185,7 +183,7 @@ class MultiPart implements IMultiPart, Dumpable
         return $output;
     }
 
-    public function newMultiPart($type=IMultiPart::MIXED)
+    public function newMultiPart($type = IMultiPart::MIXED)
     {
         $output = new MultiPart($type);
         $this->addPart($output);
@@ -194,13 +192,13 @@ class MultiPart implements IMultiPart, Dumpable
 
     public function toString(): string
     {
-        $output = $this->getHeaderString().IPart::LINE_END.IPart::LINE_END;
+        $output = $this->getHeaderString() . IPart::LINE_END . IPart::LINE_END;
         $output .= $this->getBodyString();
 
         return $output;
     }
 
-    public function getHeaderString(array $skipKeys=null)
+    public function getHeaderString(array $skipKeys = null)
     {
         $this->prepareHeaders();
 
@@ -236,16 +234,16 @@ class MultiPart implements IMultiPart, Dumpable
             $boundary = $this->getBoundary();
 
             foreach ($this->_parts as $part) {
-                $output .= '--'.$boundary.$lineEnd;
+                $output .= '--' . $boundary . $lineEnd;
 
                 //if($part->isMessage()) {
                 //    $output .= 'Content-Type: message/rfc822'.$lineEnd.$lineEnd;
                 //}
 
-                $output .= $part->toString().$lineEnd;
+                $output .= $part->toString() . $lineEnd;
             }
 
-            $output .= '--'.$boundary.'--'.$lineEnd;
+            $output .= '--' . $boundary . '--' . $lineEnd;
         } elseif ($this->_parts[0]) {
             $output .= $this->_parts[0]->getBodyString();
         }
@@ -282,7 +280,7 @@ class MultiPart implements IMultiPart, Dumpable
 
     public function valid(): bool
     {
-        return ($this->current() !== false);
+        return $this->current() !== false;
     }
 
     public function hasChildren(): bool

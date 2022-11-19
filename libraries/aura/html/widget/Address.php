@@ -5,33 +5,31 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\user;
-use df\arch;
-
 use DecodeLabs\Glitch\Dumpable;
+use df\arch;
+use df\aura;
+
+use df\user;
 
 class Address extends Base implements Dumpable
 {
-    const PRIMARY_TAG = 'div.address';
+    public const PRIMARY_TAG = 'div.address';
 
-    const SHORT = 'short';
-    const LONG = 'long';
-    const FULL = 'full';
+    public const SHORT = 'short';
+    public const LONG = 'long';
+    public const FULL = 'full';
 
     protected $_address;
     protected $_mode = self::FULL;
     protected $_shouldShowCountry = true;
 
-    public function __construct(arch\IContext $context, $address=null)
+    public function __construct(arch\IContext $context, $address = null)
     {
         parent::__construct($context);
         $this->setAddress($address);
     }
 
-    public function setAddress($address=null)
+    public function setAddress($address = null)
     {
         if (is_array($address)) {
             $address = user\PostalAddress::fromArray($address);
@@ -48,7 +46,7 @@ class Address extends Base implements Dumpable
         return $this->_address;
     }
 
-    public function shouldShowCountry(bool $flag=null)
+    public function shouldShowCountry(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_shouldShowCountry = $flag;
@@ -146,7 +144,9 @@ class Address extends Base implements Dumpable
             }
 
             $content->push(new aura\html\Element(
-                $blockTag, $country, ['class' => 'country']
+                $blockTag,
+                $country,
+                ['class' => 'country']
             ));
         }
 

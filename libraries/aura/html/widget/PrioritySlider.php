@@ -5,20 +5,19 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
 use df\arch;
+use df\aura;
+use df\core;
 
 class PrioritySlider extends Base implements IInputWidget
 {
     use TWidget_FormData;
     use TWidget_Input;
 
-    const PRIMARY_TAG = 'div.range';
-    const ARRAY_INPUT = false;
+    public const PRIMARY_TAG = 'div.range';
+    public const ARRAY_INPUT = false;
 
-    public function __construct(arch\IContext $context, $name, $value=null)
+    public function __construct(arch\IContext $context, $name, $value = null)
     {
         parent::__construct($context);
 

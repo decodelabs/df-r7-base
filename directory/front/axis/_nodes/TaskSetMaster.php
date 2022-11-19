@@ -6,16 +6,13 @@
 
 namespace df\apex\directory\front\axis\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\axis;
-use df\opal;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Genesis;
 use DecodeLabs\Terminus as Cli;
+
+use df\arch;
+use df\axis;
+use df\opal;
 
 class TaskSetMaster extends arch\node\Task
 {
@@ -36,16 +33,16 @@ class TaskSetMaster extends arch\node\Task
 
         $check = Dictum::toBoolean($this->request['check']);
 
-        if ($current && (!$check || Cli::confirm('Use current: '.opal\rdbms\Dsn::factory($current)->getDisplayString(true), true))) {
+        if ($current && (!$check || Cli::confirm('Use current: ' . opal\rdbms\Dsn::factory($current)->getDisplayString(true), true))) {
             if (!$check) {
-                Cli::info('Sticking with current: '.opal\rdbms\Dsn::factory($current)->getDisplayString(true));
+                Cli::info('Sticking with current: ' . opal\rdbms\Dsn::factory($current)->getDisplayString(true));
             }
 
             return;
         }
 
         $dsn = new opal\rdbms\Dsn(
-            'mysql://localhost/'.basename(dirname(
+            'mysql://localhost/' . basename(dirname(
                 Genesis::$hub->getApplicationPath()
             ))
         );
@@ -82,7 +79,7 @@ class TaskSetMaster extends arch\node\Task
             }, $dsn->getDatabase());
             $dsn->setDatabase($database);
 
-            if (!Cli::confirm('Is this correct? '.$dsn->getDisplayString(true), true)) {
+            if (!Cli::confirm('Is this correct? ' . $dsn->getDisplayString(true), true)) {
                 continue;
             }
 

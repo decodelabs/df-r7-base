@@ -7,8 +7,8 @@ namespace df\arch\scaffold\Record;
 
 use df\arch\IRequest as DirectoryRequest;
 use df\arch\Scaffold;
-use df\opal\record\IRecord as Record;
 use df\opal\query\ISelectQuery as SelectQuery;
+use df\opal\record\IRecord as Record;
 
 interface DataProvider extends Scaffold
 {
@@ -24,14 +24,14 @@ interface DataProvider extends Scaffold
     public function getRecordAdapter();
 
     // Record IO
-    public function newRecord(array $values=null): Record;
+    public function newRecord(array $values = null): Record;
     public function getRecordUrlId(): ?string;
     public function getRecord();
     public function getActiveRow(): array;
-    public function deleteRecord(Record $record, array $flags=[]);
+    public function deleteRecord(Record $record, array $flags = []);
 
     // List IO
-    public function queryRecordList(string $mode, array $fields=null): SelectQuery;
+    public function queryRecordList(string $mode, array $fields = null): SelectQuery;
     public function extendRecordList(SelectQuery $query, string $mode): SelectQuery;
     public function applyRecordListSearch(SelectQuery $query, ?string $search): SelectQuery;
 
@@ -59,7 +59,7 @@ interface DataProvider extends Scaffold
     public function areRecordsShared(): bool;
 
     // URL locations
-    public function getRecordUri($record, ?string $node=null, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]): DirectoryRequest;
+    public function getRecordUri($record, ?string $node = null, array $query = null, $redirFrom = null, $redirTo = null, array $propagationFilter = []): DirectoryRequest;
     public function getRecordParentUri(array $record): DirectoryRequest;
     public function getRecordPreviewUri(array $record): ?DirectoryRequest;
 }

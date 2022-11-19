@@ -6,18 +6,17 @@
 
 namespace df\user;
 
-use df;
-use df\core;
-use df\user;
-use df\link;
-use df\mesh;
-use df\flex;
-
 use DateTime;
 use DecodeLabs\Dictum;
 use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+
+use df\core;
+use df\flex;
+use df\link;
+use df\mesh;
+use df\user;
 
 class Client implements IClient, \Serializable, mesh\entity\IEntity
 {
@@ -382,7 +381,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
     }
 
 
-    public function canAccess(IAccessLock $lock, $action=null, $linkTo=false)
+    public function canAccess(IAccessLock $lock, $action = null, $linkTo = false)
     {
         $domain = $lock->getAccessLockDomain();
 
@@ -390,10 +389,10 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
             return $lock->getDefaultAccess($action);
         }
 
-        $lockId = $domain.'://'.$lock->getAccessLockId();
+        $lockId = $domain . '://' . $lock->getAccessLockId();
 
         if ($action !== null) {
-            $lockId .= '#'.$action;
+            $lockId .= '#' . $action;
         }
 
         if (array_key_exists($lockId, $this->_accessCache)) {

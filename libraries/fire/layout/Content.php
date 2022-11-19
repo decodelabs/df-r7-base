@@ -5,19 +5,14 @@
  */
 namespace df\fire\layout;
 
-use df;
-use df\core;
-use df\fire;
-use df\flex;
-use df\arch;
-use df\aura;
-
-use DecodeLabs\Exemplar\Element as XmlElement;
-use DecodeLabs\Exemplar\Writer as XmlWriter;
-use DecodeLabs\Exemplar\Serializable as XmlSerializable;
-use DecodeLabs\Exemplar\SerializableTrait as XmlSerializableTrait;
-
 use DecodeLabs\Exceptional;
+use DecodeLabs\Exemplar\Element as XmlElement;
+
+use DecodeLabs\Exemplar\SerializableTrait as XmlSerializableTrait;
+use DecodeLabs\Exemplar\Writer as XmlWriter;
+use df\core;
+
+use df\fire;
 
 class Content implements fire\ILayoutContent
 {
@@ -26,7 +21,7 @@ class Content implements fire\ILayoutContent
 
     protected $_slots = [];
 
-    public function __construct(string $id=null)
+    public function __construct(string $id = null)
     {
         if ($id !== null) {
             $this->setId($id);

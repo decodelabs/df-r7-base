@@ -5,12 +5,9 @@
  */
 namespace df\spur\packaging\bower\resolver;
 
-use df;
-use df\core;
-use df\spur;
-use df\link;
-
 use DecodeLabs\Atlas;
+
+use df\spur;
 
 class Url implements spur\packaging\bower\IResolver
 {
@@ -19,16 +16,16 @@ class Url implements spur\packaging\bower\IResolver
         return $package->name;
     }
 
-    public function fetchPackage(spur\packaging\bower\Package $package, $cachePath, $currentVersion=null)
+    public function fetchPackage(spur\packaging\bower\Package $package, $cachePath, $currentVersion = null)
     {
         if ($currentVersion) {
             return false;
         }
 
-        $package->cacheFileName = $package->name.'-'.md5($package->url).'.zip';
+        $package->cacheFileName = $package->name . '-' . md5($package->url) . '.zip';
         $package->version = time();
 
-        Atlas::$http->getFile($package->url, $cachePath.'/packages/'.$package->cacheFileName);
+        Atlas::$http->getFile($package->url, $cachePath . '/packages/' . $package->cacheFileName);
         return true;
     }
 

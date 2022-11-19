@@ -5,12 +5,10 @@
  */
 namespace df\spur\vcs\github;
 
-use df;
 use df\core;
-use df\spur;
 
-class Profile extends User implements IProfile {
-
+class Profile extends User implements IProfile
+{
     protected $_name;
     protected $_email;
     protected $_company;
@@ -24,7 +22,8 @@ class Profile extends User implements IProfile {
     protected $_creationDate;
     protected $_updateDate;
 
-    protected function _importData(core\collection\ITree $data) {
+    protected function _importData(core\collection\ITree $data)
+    {
         parent::_importData($data);
 
         $this->_name = $data['name'];
@@ -41,51 +40,63 @@ class Profile extends User implements IProfile {
         $this->_updateDate = core\time\Date::factory($data['updated_at'] ?? $this->_creationDate);
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->_name;
     }
 
-    public function getEmail() {
+    public function getEmail()
+    {
         return $this->_email;
     }
 
-    public function getCompany() {
+    public function getCompany()
+    {
         return $this->_company;
     }
 
-    public function getLocation() {
+    public function getLocation()
+    {
         return $this->_location;
     }
 
-    public function isHireable() {
+    public function isHireable()
+    {
         return $this->_isHireable;
     }
 
-    public function getBio() {
+    public function getBio()
+    {
         return $this->_bio;
     }
 
-    public function countPublicRepos() {
+    public function countPublicRepos()
+    {
         return $this->_publicRepos;
     }
 
-    public function countPublicGists() {
+    public function countPublicGists()
+    {
         return $this->_publicGists;
     }
 
-    public function countFollowers() {
+    public function countFollowers()
+    {
         return $this->_followers;
     }
 
-    public function countFollowing() {
+    public function countFollowing()
+    {
         return $this->_following;
     }
 
-    public function getCreationDate() {
+    public function getCreationDate()
+    {
         return $this->_creationDate;
     }
 
-    public function getUpdateDate() {
+    public function getUpdateDate()
+    {
         return $this->_updateDate;
     }
 }

@@ -37,7 +37,7 @@ interface Socket
     public function isActive();
     public function isReadingEnabled();
     public function isWritingEnabled();
-    public function shouldBlock(bool $flag=null);
+    public function shouldBlock(bool $flag = null);
 
     // Shutdown
     public function shutdownReading();

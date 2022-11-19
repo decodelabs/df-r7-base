@@ -5,17 +5,11 @@
  */
 namespace df\plug;
 
-use df;
-use df\core;
-use df\apex;
+use DecodeLabs\Dictum;
 use df\arch;
-use df\spur;
-use df\link;
-use df\flow;
-use df\opal;
 use df\flex;
 
-use DecodeLabs\Dictum;
+use df\opal;
 
 class Account extends arch\Helper
 {
@@ -24,7 +18,7 @@ class Account extends arch\Helper
         return flex\Generator::random(6, 10);
     }
 
-    public function lookup(string $fullName, ?string $nickName, string $email, ?string &$password, ?bool &$isNew=null): opal\record\IRecord
+    public function lookup(string $fullName, ?string $nickName, string $email, ?string &$password, ?bool &$isNew = null): opal\record\IRecord
     {
         if ($password === null) {
             $password = $this->generatePassword();

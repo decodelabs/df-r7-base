@@ -5,18 +5,16 @@
  */
 namespace df\axis\schema\translator;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
-
 use DecodeLabs\Exceptional;
+use df\axis;
+
+use df\opal;
 
 class Rdbms extends Base
 {
     protected $_rdbmsAdapter;
 
-    public function __construct(axis\ISchemaBasedStorageUnit $unit, opal\rdbms\IAdapter $rdbmsAdapter, axis\schema\ISchema $axisSchema, opal\schema\ISchema $targetSchema=null)
+    public function __construct(axis\ISchemaBasedStorageUnit $unit, opal\rdbms\IAdapter $rdbmsAdapter, axis\schema\ISchema $axisSchema, opal\schema\ISchema $targetSchema = null)
     {
         $this->_rdbmsAdapter = $rdbmsAdapter;
         parent::__construct($unit, $axisSchema, $targetSchema);
@@ -69,13 +67,17 @@ class Rdbms extends Base
     protected function _createBlobField(opal\schema\Primitive_Blob $primitive)
     {
         switch ($size = $primitive->getExponentSize()) {
-            case 8: $type = 'tinyblob'; break;
-            case 16: $type = 'blob'; break;
-            case 24: $type = 'mediumblob'; break;
-            case 32: $type = 'longblob'; break;
+            case 8: $type = 'tinyblob';
+                break;
+            case 16: $type = 'blob';
+                break;
+            case 24: $type = 'mediumblob';
+                break;
+            case 32: $type = 'longblob';
+                break;
             default:
                 throw Exceptional::UnexpectedValue(
-                    'Unsupported blob size: '.$size
+                    'Unsupported blob size: ' . $size
                 );
         }
 
@@ -170,14 +172,19 @@ class Rdbms extends Base
     protected function _createIntegerField(opal\schema\Primitive_Integer $primitive)
     {
         switch ($size = $primitive->getByteSize()) {
-            case 1: $type = 'tinyint'; break;
-            case 2: $type = 'smallint'; break;
-            case 3: $type = 'mediumint'; break;
-            case 4: $type = 'int'; break;
-            case 8: $type = 'bigint'; break;
+            case 1: $type = 'tinyint';
+                break;
+            case 2: $type = 'smallint';
+                break;
+            case 3: $type = 'mediumint';
+                break;
+            case 4: $type = 'int';
+                break;
+            case 8: $type = 'bigint';
+                break;
             default:
                 throw Exceptional::UnexpectedValue(
-                    'Unsupported byte size: '.$size
+                    'Unsupported byte size: ' . $size
                 );
         }
 
@@ -206,13 +213,17 @@ class Rdbms extends Base
     protected function _createTextField(opal\schema\Primitive_Text $primitive)
     {
         switch ($size = $primitive->getExponentSize()) {
-            case 8: $type = 'tinytext'; break;
-            case 16: $type = 'text'; break;
-            case 24: $type = 'mediumtext'; break;
-            case 32: $type = 'longtext'; break;
+            case 8: $type = 'tinytext';
+                break;
+            case 16: $type = 'text';
+                break;
+            case 24: $type = 'mediumtext';
+                break;
+            case 32: $type = 'longtext';
+                break;
             default:
                 throw Exceptional::UnexpectedValue(
-                    'Unsupported text size: '.$size
+                    'Unsupported text size: ' . $size
                 );
         }
 
@@ -288,7 +299,7 @@ class Rdbms extends Base
 
 
     // Indexes
-    protected function _getIndexName(opal\schema\IIndex $axisIndex, $isPrimary, opal\schema\IPrimitive $primitive=null)
+    protected function _getIndexName(opal\schema\IIndex $axisIndex, $isPrimary, opal\schema\IPrimitive $primitive = null)
     {
         if ($isPrimary && $this->_rdbmsAdapter->getServerType() == 'mysql') {
             return 'PRIMARY';

@@ -5,26 +5,22 @@
  */
 namespace df\core\unit;
 
-use df;
-use df\core;
-use df\aura;
-
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
 
 class DisplaySize implements IDisplaySize, Dumpable
 {
     use TSingleValueUnit;
 
-    const DEFAULT_FONT_SIZE = '16px';
-    const DEFAULT_UNIT = 'px';
-    const UNITS = ['%', 'in', 'cm', 'mm', 'em', 'ex', 'pt', 'pc', 'px', 'ch', 'rem', 'vh', 'vw', 'vmin', 'vmax'];
+    public const DEFAULT_FONT_SIZE = '16px';
+    public const DEFAULT_UNIT = 'px';
+    public const UNITS = ['%', 'in', 'cm', 'mm', 'em', 'ex', 'pt', 'pc', 'px', 'ch', 'rem', 'vh', 'vw', 'vmin', 'vmax'];
 
     protected $_value;
     protected $_unit;
     protected $_dpi = 96;
 
-    public static function factory($value, $unit=null, $allowPlainNumbers=false)
+    public static function factory($value, $unit = null, $allowPlainNumbers = false)
     {
         if ($value instanceof IDisplaySize) {
             return $value;
@@ -168,7 +164,7 @@ class DisplaySize implements IDisplaySize, Dumpable
     }
 
 
-    public function extractAbsolute($length, $fontSize=null, $viewportWidth=null, $viewportHeight=null)
+    public function extractAbsolute($length, $fontSize = null, $viewportWidth = null, $viewportHeight = null)
     {
         if ($this->isAbsolute()) {
             return clone $this;
@@ -343,7 +339,7 @@ class DisplaySize implements IDisplaySize, Dumpable
 
             default:
                 throw Exceptional::InvalidArgument(
-                    'Unsupported display size unit: '.$inUnit
+                    'Unsupported display size unit: ' . $inUnit
                 );
         }
 

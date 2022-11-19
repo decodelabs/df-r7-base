@@ -6,9 +6,7 @@
 
 namespace df\flow\mime;
 
-use df;
 use df\core;
-use df\flow;
 
 interface IPart extends core\IStringProvider, core\collection\IHeaderMapProvider
 {
@@ -37,7 +35,7 @@ interface IContentPart extends IPart
     public function getDisposition();
     public function getFullDisposition();
 
-    public function setFileName($fileName, $disposition=null);
+    public function setFileName($fileName, $disposition = null);
     public function getFileName();
     public function setDescription($description);
     public function getDescription();
@@ -70,5 +68,5 @@ interface IMultiPart extends IPart, \Countable, \Iterator
     public function isEmpty(): bool;
 
     public function newContentPart($content);
-    public function newMultiPart($type=IMultiPart::MIXED);
+    public function newMultiPart($type = IMultiPart::MIXED);
 }

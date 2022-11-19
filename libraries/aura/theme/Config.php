@@ -6,10 +6,10 @@
 
 namespace df\aura\theme;
 
-use df\core;
+use DecodeLabs\R7\Theme\Config as ConfigInterface;
 use df\arch;
 
-use DecodeLabs\R7\Theme\Config as ConfigInterface;
+use df\core;
 
 class Config extends core\Config implements ConfigInterface
 {

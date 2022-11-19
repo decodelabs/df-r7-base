@@ -6,12 +6,10 @@
 
 namespace df\apex\directory\front\tasks\_nodes;
 
-use df;
-use df\core;
-use df\apex;
+use DecodeLabs\Terminus as Cli;
 use df\arch;
 
-use DecodeLabs\Terminus as Cli;
+use df\core;
 
 class TaskQueueScheduled extends arch\node\Task
 {
@@ -57,7 +55,7 @@ class TaskQueueScheduled extends arch\node\Task
             }
         }
 
-        Cli::success($this->_count.' tasks queued');
+        Cli::success($this->_count . ' tasks queued');
     }
 
     protected function _trigger($task)

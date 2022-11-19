@@ -5,20 +5,19 @@
  */
 namespace df\link\http\response;
 
-use df;
-use df\core;
-use df\link;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Mode;
-use DecodeLabs\Typify;
+
 use DecodeLabs\Exceptional;
+use DecodeLabs\Typify;
+use df\core;
+use df\link;
 
 class File extends Base implements link\http\IFileResponse
 {
     protected $_file;
 
-    public function __construct($file, $checkPath=true, link\http\IResponseHeaderCollection $headers=null)
+    public function __construct($file, $checkPath = true, link\http\IResponseHeaderCollection $headers = null)
     {
         parent::__construct($headers);
         $this->setFile($file, $checkPath);
@@ -32,7 +31,7 @@ class File extends Base implements link\http\IFileResponse
             */
     }
 
-    public function setFile($file, $checkPath=true)
+    public function setFile($file, $checkPath = true)
     {
         $file = Atlas::file($file);
 

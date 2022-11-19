@@ -6,12 +6,9 @@
 
 namespace df\apex\directory\front\mail\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-
 use DecodeLabs\Terminus as Cli;
+
+use df\arch;
 
 class TaskPurgeJournal extends arch\node\Task
 {
@@ -27,6 +24,6 @@ class TaskPurgeJournal extends arch\node\Task
             ->where('expireDate', '<', 'now')
             ->execute();
 
-        Cli::success($deleted.' deleted');
+        Cli::success($deleted . ' deleted');
     }
 }

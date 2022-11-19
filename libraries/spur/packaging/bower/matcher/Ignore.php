@@ -5,14 +5,11 @@
  */
 namespace df\spur\packaging\bower\matcher;
 
-use df;
-use df\core;
-
 use DecodeLabs\Atlas;
 
-use RecursiveIteratorIterator;
-use RecursiveDirectoryIterator;
 use FilesystemIterator;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 class Ignore
 {
@@ -35,7 +32,7 @@ class Ignore
     }
 
 
-    public function match(array $patterns, array $blacklist=[]): iterable
+    public function match(array $patterns, array $blacklist = []): iterable
     {
         $it = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator(
@@ -86,7 +83,7 @@ class Ignore
                 // Root slash
                 if (substr($pattern, 0, 1) == '/'
                 || substr($testPath, 0, 1) == '.') {
-                    $testPath = '/'.$testPath;
+                    $testPath = '/' . $testPath;
                 }
 
 
@@ -127,12 +124,12 @@ class Ignore
             $start = array_shift($sections);
             $prev = $last = $section = null;
 
-            if (!empty($start) && !fnmatch($start.'*', $path, \FNM_CASEFOLD)) {
+            if (!empty($start) && !fnmatch($start . '*', $path, \FNM_CASEFOLD)) {
                 return false;
             }
 
             foreach ($sections as $section) {
-                if (!fnmatch('*/'.$section.'*', $path, \FNM_CASEFOLD)) {
+                if (!fnmatch('*/' . $section . '*', $path, \FNM_CASEFOLD)) {
                     return false;
                 }
 
@@ -166,14 +163,14 @@ class Ignore
                 $path = implode('/', $pathParts);
 
                 if ($last !== null) {
-                    $path = $last.'/'.$path;
+                    $path = $last . '/' . $path;
                 }
             }
 
             $pattern = $section;
 
             if ($prev !== null) {
-                $path = $prev.'/'.$path;
+                $path = $prev . '/' . $path;
             }
         }
 
@@ -186,7 +183,7 @@ class Ignore
             $pattern = substr($pattern, 0, -1);
 
             return fnmatch($pattern, $path, \FNM_CASEFOLD) ||
-                fnmatch($pattern, $path.'/');
+                fnmatch($pattern, $path . '/');
         }
 
 

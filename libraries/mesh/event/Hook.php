@@ -6,14 +6,12 @@
 
 namespace df\mesh\event;
 
-use df;
-use df\core;
-use df\mesh;
-use df\axis;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+
 use DecodeLabs\R7\Legacy;
+use df\core;
+use df\mesh;
 
 abstract class Hook implements IHook
 {
@@ -34,7 +32,7 @@ abstract class Hook implements IHook
         return $output;
     }
 
-    public static function toggleEnabled(bool $flag=null)
+    public static function toggleEnabled(bool $flag = null)
     {
         if ($flag === null) {
             $flag = !self::$_enabled;
@@ -43,7 +41,7 @@ abstract class Hook implements IHook
         self::$_enabled = $flag;
     }
 
-    public static function triggerEvent(IEvent $event, core\IContext $context=null)
+    public static function triggerEvent(IEvent $event, core\IContext $context = null)
     {
         if (!self::$_enabled) {
             return;
@@ -88,7 +86,7 @@ abstract class Hook implements IHook
         foreach ($entitySet[$action] as $target) {
             list($hookName, $methodName) = explode(':', $target);
             $hook = self::factory($hookName, $context);
-            $method = 'on'.ucfirst($methodName);
+            $method = 'on' . ucfirst($methodName);
 
             $ref = new \ReflectionClass($hook);
 
@@ -140,15 +138,15 @@ abstract class Hook implements IHook
                     }
 
                     foreach ($val as $i => $methodName) {
-                        $method = 'on'.ucfirst($methodName);
+                        $method = 'on' . ucfirst($methodName);
 
                         if (!method_exists($hook, $method)) {
                             throw Exceptional::UnexpectedValue(
-                                'Action map method '.$method.' could not be found on hook '.$name
+                                'Action map method ' . $method . ' could not be found on hook ' . $name
                             );
                         }
 
-                        $val[$i] = $name.':'.$methodName;
+                        $val[$i] = $name . ':' . $methodName;
                     }
 
                     if (!isset($map[$domain][$key])) {
@@ -163,13 +161,13 @@ abstract class Hook implements IHook
         return $map;
     }
 
-    public static function factory($name, core\IContext $context=null)
+    public static function factory($name, core\IContext $context = null)
     {
-        $class = 'df\\apex\\hooks\\'.ucfirst($name);
+        $class = 'df\\apex\\hooks\\' . ucfirst($name);
 
         if (!class_exists($class)) {
             throw Exceptional::Runtime(
-                'Hook '.$name.' could not be found'
+                'Hook ' . $name . ' could not be found'
             );
         }
 

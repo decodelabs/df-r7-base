@@ -6,12 +6,10 @@
 
 namespace df\opal\record;
 
-use df;
-use df\core;
-use df\opal;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
 
 class PrimaryKeySet implements IPrimaryKeySet, Dumpable
 {
@@ -23,7 +21,7 @@ class PrimaryKeySet implements IPrimaryKeySet, Dumpable
     {
         if (substr($id, 0, 7) != 'keySet?') {
             throw Exceptional::InvalidArgument(
-                'Invalid entity id: '.$id
+                'Invalid entity id: ' . $id
             );
         }
 
@@ -44,7 +42,7 @@ class PrimaryKeySet implements IPrimaryKeySet, Dumpable
         return new self(array_keys($values), $values);
     }
 
-    public function __construct(array $fields, $values=[])
+    public function __construct(array $fields, $values = [])
     {
         $this->_keys = array_fill_keys($fields, null);
         $this->updateWith($values);
@@ -80,7 +78,7 @@ class PrimaryKeySet implements IPrimaryKeySet, Dumpable
         foreach ($this->_keys as $key => $value) {
             if ($value instanceof self) {
                 foreach ($value->toArray() as $subKey => $subValue) {
-                    $output[$key.'_'.$subKey] = $subValue;
+                    $output[$key . '_' . $subKey] = $subValue;
                 }
             } else {
                 $output[$key] = $value;
@@ -97,17 +95,17 @@ class PrimaryKeySet implements IPrimaryKeySet, Dumpable
         foreach ($this->_keys as $key => $value) {
             if ($value instanceof self) {
                 foreach ($value->toArray() as $subKey => $subValue) {
-                    $output[$key.'_'.$subKey] = $fieldName.'_'.$key.'_'.$subKey;
+                    $output[$key . '_' . $subKey] = $fieldName . '_' . $key . '_' . $subKey;
                 }
             } else {
-                $output[$key] = $fieldName.'_'.$key;
+                $output[$key] = $fieldName . '_' . $key;
             }
         }
 
         return $output;
     }
 
-    public function getIntrinsicFieldMap($fieldName=null): array
+    public function getIntrinsicFieldMap($fieldName = null): array
     {
         if ($fieldName === null) {
             return $this->toArray();
@@ -118,10 +116,10 @@ class PrimaryKeySet implements IPrimaryKeySet, Dumpable
         foreach ($this->_keys as $key => $value) {
             if ($value instanceof self) {
                 foreach ($value->toArray() as $subKey => $subValue) {
-                    $output[$fieldName.'_'.$key.'_'.$subKey] = $subValue;
+                    $output[$fieldName . '_' . $key . '_' . $subKey] = $subValue;
                 }
             } else {
-                $output[$fieldName.'_'.$key] = $value;
+                $output[$fieldName . '_' . $key] = $value;
             }
         }
 
@@ -156,7 +154,7 @@ class PrimaryKeySet implements IPrimaryKeySet, Dumpable
                     if ($key == $field) {
                         $inner = $value;
                         break;
-                    } elseif (0 === strpos($key, $field.'_')) {
+                    } elseif (0 === strpos($key, $field . '_')) {
                         $inner = [];
                         $parts = explode('_', $key, 2);
                         $inner[array_pop($parts)] = $value;
@@ -228,7 +226,7 @@ class PrimaryKeySet implements IPrimaryKeySet, Dumpable
             }
 
             if ($key instanceof self) {
-                $key = '['.$key->getCombinedId().']';
+                $key = '[' . $key->getCombinedId() . ']';
             }
 
             $strings[] = (string)$key;
@@ -255,7 +253,7 @@ class PrimaryKeySet implements IPrimaryKeySet, Dumpable
 
             if ($value instanceof self) {
                 $returnFirst = false;
-                $value = '['.$value->getEntityId().']';
+                $value = '[' . $value->getEntityId() . ']';
             }
 
             if ($returnFirst) {
@@ -265,7 +263,7 @@ class PrimaryKeySet implements IPrimaryKeySet, Dumpable
             $output->{$key} = (string)$value;
         }
 
-        return 'keySet?'.$output->toArrayDelimitedString();
+        return 'keySet?' . $output->toArrayDelimitedString();
     }
 
     public function getValue()

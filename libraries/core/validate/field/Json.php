@@ -5,7 +5,6 @@
  */
 namespace df\core\validate\field;
 
-use df;
 use df\core;
 use df\flex;
 
@@ -14,7 +13,7 @@ class Json extends Base implements core\validate\IStructureField
     protected $_allowEmpty = false;
 
     // Options
-    public function shouldAllowEmpty(bool $flag=null)
+    public function shouldAllowEmpty(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_allowEmpty = $flag;

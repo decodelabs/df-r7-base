@@ -5,12 +5,7 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-
-class MenuBar extends Menu {
-
-    const PRIMARY_TAG = 'nav.menu.bar';
+class MenuBar extends Menu
+{
+    public const PRIMARY_TAG = 'nav.menu.bar';
 }

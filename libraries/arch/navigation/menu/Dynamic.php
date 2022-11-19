@@ -6,11 +6,9 @@
 
 namespace df\arch\navigation\menu;
 
-use df;
-use df\core;
-use df\arch;
-
 use DecodeLabs\Exceptional;
+
+use df\arch;
 
 class Dynamic extends Base
 {

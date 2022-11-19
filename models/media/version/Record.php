@@ -5,15 +5,13 @@
  */
 namespace df\apex\models\media\version;
 
-use df;
-use df\core;
-use df\axis;
 use df\opal;
 
-class Record extends opal\record\Base {
-
-    protected function onPreSave($queue) {
-        if((!$this['number'] || ($this->isNew() && !$this->hasChanged('number')))
+class Record extends opal\record\Base
+{
+    protected function onPreSave($queue)
+    {
+        if ((!$this['number'] || ($this->isNew() && !$this->hasChanged('number')))
         && ($fileId = $this['#file'])) {
             $this->number = $this->getAdapter()->select('MAX(number) as number')
                 ->where('file', '=', $fileId)
@@ -22,11 +20,13 @@ class Record extends opal\record\Base {
         }
     }
 
-    public function getDownloadUrl() {
+    public function getDownloadUrl()
+    {
         return $this->getAdapter()->getModel()->getVersionDownloadUrl($this['#file'], $this['id'], $this['isActive']);
     }
 
-    public function getImageUrl($transformation=null) {
+    public function getImageUrl($transformation = null)
+    {
         return $this->getAdapter()->getModel()->getVersionImageUrl($this['#file'], $this['id'], $this['isActive'], $transformation);
     }
 }

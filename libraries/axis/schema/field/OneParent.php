@@ -5,23 +5,22 @@
  */
 namespace df\axis\schema\field;
 
-use df;
-use df\core;
 use df\axis;
-use df\opal;
 
-class OneParent extends One implements axis\schema\IOneParentField {
-    
+class OneParent extends One implements axis\schema\IOneParentField
+{
     use axis\schema\TInverseRelationField;
 
-    protected function _init($targetUnit, $targetField=null) {
+    protected function _init($targetUnit, $targetField = null)
+    {
         $this->setTargetUnitId($targetUnit);
         $this->setTargetField($targetField);
     }
     
     
 // Validate
-    public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema) {
+    public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema)
+    {
         // Target
         $targetUnit = $this->_validateTargetUnit($localUnit);
         $targetSchema = $targetUnit->getTransientUnitSchema();
@@ -33,12 +32,14 @@ class OneParent extends One implements axis\schema\IOneParentField {
     }
 
 // Ext. serialize
-    protected function _importStorageArray(array $data) {
+    protected function _importStorageArray(array $data)
+    {
         parent::_importStorageArray($data);
         $this->_setInverseRelationStorageArray($data);
     }
     
-    public function toStorageArray() {
+    public function toStorageArray()
+    {
         return array_merge(
             parent::toStorageArray(),
             $this->_getInverseRelationStorageArray()

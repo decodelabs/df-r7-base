@@ -6,11 +6,10 @@
 
 namespace df\opal\query\clause;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Glitch\Dumpable;
+use df\core;
+
+use df\opal;
 
 class ListBase implements opal\query\IClauseList, Dumpable
 {
@@ -21,7 +20,7 @@ class ListBase implements opal\query\IClauseList, Dumpable
     protected $_clauses = [];
     protected $_parent;
 
-    public function __construct(opal\query\IClauseFactory $parent, $isOr=false)
+    public function __construct(opal\query\IClauseFactory $parent, $isOr = false)
     {
         $this->_parent = $parent;
         $this->_isOr = (bool)$isOr;
@@ -61,7 +60,7 @@ class ListBase implements opal\query\IClauseList, Dumpable
         return $this->_clauses;
     }
 
-    public function isOr(bool $flag=null)
+    public function isOr(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isOr = $flag;
@@ -71,7 +70,7 @@ class ListBase implements opal\query\IClauseList, Dumpable
         return $this->_isOr;
     }
 
-    public function isAnd(bool $flag=null)
+    public function isAnd(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isOr = !$flag;
@@ -81,7 +80,7 @@ class ListBase implements opal\query\IClauseList, Dumpable
         return !$this->_isOr;
     }
 
-    public function _addClause(opal\query\IClauseProvider $clause=null)
+    public function _addClause(opal\query\IClauseProvider $clause = null)
     {
         if ($clause !== null) {
             $this->_clauses[] = $clause;
@@ -146,7 +145,7 @@ class ListBase implements opal\query\IClauseList, Dumpable
         return $this;
     }
 
-    public function getClausesFor(opal\query\ISource $source, opal\query\IClauseFactory $parent=null)
+    public function getClausesFor(opal\query\ISource $source, opal\query\IClauseFactory $parent = null)
     {
         if ($parent === null) {
             $parent = $this->_parent;
@@ -176,7 +175,7 @@ class ListBase implements opal\query\IClauseList, Dumpable
         return $output;
     }
 
-    public function extractClausesFor(opal\query\ISource $source, $checkValues=true)
+    public function extractClausesFor(opal\query\ISource $source, $checkValues = true)
     {
         $output = [];
         $sourceAlias = $source->getAlias();

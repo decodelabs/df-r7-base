@@ -7,12 +7,12 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Nightfire\Block\Heading;
 
-use df\aura\html\widget\Field as FieldWidget;
-
 use DecodeLabs\Coercion;
+
 use DecodeLabs\R7\Nightfire\Block;
-use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
 use DecodeLabs\R7\Nightfire\Block\Heading;
+use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
+use df\aura\html\widget\Field as FieldWidget;
 
 /**
  * @extends BlockDelegateAbstract<Heading>
@@ -37,7 +37,6 @@ class FormDelegate extends BlockDelegateAbstract
         $field->push(
             $inner = $this->html->field()->push(
                 $this->html->select($this->fieldName('level'), $this->values->level, Heading::OPTIONS),
-
                 $this->html->textbox($this->fieldName('heading'), $this->values->heading)
                     ->isRequired($this->_isRequired)
                     ->setPlaceholder('Heading text')

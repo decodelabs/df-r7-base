@@ -5,15 +5,12 @@
  */
 namespace df\aura\view;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-use df\link;
-use df\flow;
-use df\flex;
-
 use DecodeLabs\Tagged\Markup;
+use df\arch;
+use df\aura;
+use df\core;
+
+use df\link;
 
 interface IRenderable
 {
@@ -22,7 +19,7 @@ interface IRenderable
 
 interface IRenderTargetProvider
 {
-    public function setRenderTarget(IRenderTarget $target=null);
+    public function setRenderTarget(IRenderTarget $target = null);
     public function getRenderTarget();
     public function getView();
 }
@@ -50,8 +47,8 @@ interface ISlotContainer
     public function hasSlot(string ...$keys): bool;
     public function slotExists(string $key);
     public function checkSlots(string ...$keys);
-    public function getSlot(string $key, $default=null);
-    public function renderSlot(string $key, $default=null);
+    public function getSlot(string $key, $default = null);
+    public function renderSlot(string $key, $default = null);
     public function removeSlot(string $key);
 }
 
@@ -112,7 +109,7 @@ class Base implements IView
     public static function factory(string $type, arch\IContext $context): IView
     {
         $type = ucfirst($type);
-        $class = 'df\\aura\\view\\'.$type;
+        $class = 'df\\aura\\view\\' . $type;
 
         if (!class_exists($class)) {
             $class = 'df\\aura\\view\\Generic';
@@ -138,7 +135,7 @@ interface IThemedView extends IView, aura\theme\IFacetProvider
 
 interface ILayoutView extends IThemedView
 {
-    public function shouldUseLayout(bool $flag=null);
+    public function shouldUseLayout(bool $flag = null);
     public function setLayout($layout);
     public function getLayout();
 }
@@ -154,9 +151,9 @@ interface IAjaxView extends IResponseView
 {
     public function setRedirect($request);
     public function getRedirect();
-    public function shouldForceRedirect(bool $flag=null);
-    public function isComplete(bool $flag=null);
-    public function shouldReload(bool $flag=null);
+    public function shouldForceRedirect(bool $flag = null);
+    public function isComplete(bool $flag = null);
+    public function shouldReload(bool $flag = null);
 }
 
 
@@ -201,15 +198,15 @@ interface IHtmlView extends IResponseView, ILayoutView
     public function removeData($key);
 
     // Robots
-    public function canIndex(bool $flag=null, $bot='robots');
-    public function canFollow(bool $flag=null, $bot='robots');
+    public function canIndex(bool $flag = null, $bot = 'robots');
+    public function canFollow(bool $flag = null, $bot = 'robots');
     public function setRobots($value);
     public function getRobots();
     public function hasRobots();
     public function removeRobots();
 
     // Link
-    public function addLink($id, $rel, $url, array $attributes=null);
+    public function addLink($id, $rel, $url, array $attributes = null);
     public function getLinks();
     public function getLink($id);
     public function removeLink($id);
@@ -225,8 +222,8 @@ interface IHtmlView extends IResponseView, ILayoutView
     public function linkFavicon($uri);
 
     // CSS
-    public function linkCss($uri, $weight=null, array $attributes=null, $condition=null);
-    public function linkConditionalCss($condition, $uri, $weight=null, array $attributes=null);
+    public function linkCss($uri, $weight = null, array $attributes = null, $condition = null);
+    public function linkConditionalCss($condition, $uri, $weight = null, array $attributes = null);
     public function getCss();
     public function clearCss();
 
@@ -242,10 +239,10 @@ interface IHtmlView extends IResponseView, ILayoutView
     public function hasStyle(...$selectors);
 
     // Js
-    public function linkJs($uri, $weight=null, array $attributes=null, $condition=null);
-    public function linkConditionalJs($condition, $uri, $weight=null, array $attributes=null);
-    public function linkFootJs($uri, $weight=null, array $attributes=null, $condition=null);
-    public function linkConditionalFootJs($condition, $uri, $weight=null, array $attributes=null);
+    public function linkJs($uri, $weight = null, array $attributes = null, $condition = null);
+    public function linkConditionalJs($condition, $uri, $weight = null, array $attributes = null);
+    public function linkFootJs($uri, $weight = null, array $attributes = null, $condition = null);
+    public function linkConditionalFootJs($condition, $uri, $weight = null, array $attributes = null);
     public function getJs();
     public function getHeadJs();
     public function getFootJs();
@@ -254,9 +251,9 @@ interface IHtmlView extends IResponseView, ILayoutView
     public function clearFootJs();
 
     // Scripts
-    public function addScript($id, $script, $condition=null, $noScript=null);
-    public function addHeadScript($id, $script, $condition=null, $noScript=null);
-    public function addFootScript($id, $script, $condition=null, $noScript=null);
+    public function addScript($id, $script, $condition = null, $noScript = null);
+    public function addHeadScript($id, $script, $condition = null, $noScript = null);
+    public function addFootScript($id, $script, $condition = null, $noScript = null);
     public function getHeadScript($id);
     public function getFootScript($id);
     public function removeScript($id);
@@ -268,7 +265,7 @@ interface IHtmlView extends IResponseView, ILayoutView
 
 
     // Rendering
-    public function shouldRenderBase(bool $flag=null);
+    public function shouldRenderBase(bool $flag = null);
 }
 
 

@@ -5,11 +5,9 @@
  */
 namespace df\user;
 
-use df;
-use df\core;
-use df\user;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\core;
 
 class PostalAddress implements IPostalAddress, Dumpable
 {
@@ -31,7 +29,7 @@ class PostalAddress implements IPostalAddress, Dumpable
 
         foreach ($data as $key => $value) {
             if (in_array($key, $keys)) {
-                $output->{'_'.$key} = $value;
+                $output->{'_' . $key} = $value;
             }
         }
 

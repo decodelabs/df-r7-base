@@ -5,22 +5,21 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
 use df\arch;
+use df\aura;
+use df\core;
 use df\mint;
 
 class Currency extends NumberTextbox
 {
-    const PRIMARY_TAG = 'input.textbox.number.currency';
+    public const PRIMARY_TAG = 'input.textbox.number.currency';
 
     protected $_inputCurrency = 'GBP';
     protected $_currencySelectable = false;
     protected $_showCurrency = true;
     protected $_precision = 2;
 
-    public function __construct(arch\IContext $context, $name, $value=null, string $inputCurrency=null, bool $allowSelection=false, int $precision=2)
+    public function __construct(arch\IContext $context, $name, $value = null, string $inputCurrency = null, bool $allowSelection = false, int $precision = 2)
     {
         $this->_currencySelectable = (bool)$allowSelection;
 
@@ -36,7 +35,7 @@ class Currency extends NumberTextbox
 
     protected function _render()
     {
-        $currencyFieldName = $this->getName().'[currency]';
+        $currencyFieldName = $this->getName() . '[currency]';
         $selectValue = mint\Currency::normalizeCode($this->_inputCurrency);
 
         $output = parent::_render();
@@ -84,7 +83,7 @@ class Currency extends NumberTextbox
         return $this->_currencySelectable;
     }
 
-    public function shouldShowCurrency(bool $flag=null)
+    public function shouldShowCurrency(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_showCurrency = $flag;

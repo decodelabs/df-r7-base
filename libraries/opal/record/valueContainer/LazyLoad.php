@@ -5,11 +5,10 @@
  */
 namespace df\opal\record\valueContainer;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Glitch;
+use df\core;
+
+use df\opal;
 
 class LazyLoad implements opal\record\IPreparedValueContainer
 {
@@ -50,7 +49,7 @@ class LazyLoad implements opal\record\IPreparedValueContainer
         return $this;
     }
 
-    public function getValue($default=null)
+    public function getValue($default = null)
     {
         //if($this->_isLoaded) {
         return $this->_value;

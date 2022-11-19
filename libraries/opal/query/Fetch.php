@@ -5,11 +5,9 @@
  */
 namespace df\opal\query;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\opal;
 
 class Fetch implements IFetchQuery, Dumpable
 {
@@ -51,7 +49,7 @@ class Fetch implements IFetchQuery, Dumpable
         });
     }
 
-    protected function _fetchSourceData($keyField=null, $valField=null)
+    protected function _fetchSourceData($keyField = null, $valField = null)
     {
         if ($keyField !== null) {
             $keyField = $this->_sourceManager->extrapolateDataField($this->_source, $keyField);

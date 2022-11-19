@@ -5,23 +5,20 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-use df\flex;
-
 use DecodeLabs\Glitch\Dumpable;
+use df\arch;
+
+use df\flex;
 
 class Label extends Base implements ILabelWidget, Dumpable
 {
     use TWidget_BodyContentAware;
 
-    const PRIMARY_TAG = 'label';
+    public const PRIMARY_TAG = 'label';
 
     protected $_inputId;
 
-    public function __construct(arch\IContext $context, $body, $inputId=null)
+    public function __construct(arch\IContext $context, $body, $inputId = null)
     {
         parent::__construct($context);
 
@@ -52,7 +49,7 @@ class Label extends Base implements ILabelWidget, Dumpable
             $inputId = $widget->getId();
 
             if (!$inputId) {
-                $widget->setId($inputId = 'input-'.flex\Generator::random());
+                $widget->setId($inputId = 'input-' . flex\Generator::random());
             }
         }
 

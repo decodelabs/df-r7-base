@@ -5,13 +5,11 @@
  */
 namespace df\apex\models\user\group;
 
-use df;
-use df\core;
 use df\axis;
 
-class Unit extends axis\unit\Table {
-
-    const DEFAULT_MANIFEST = [
+class Unit extends axis\unit\Table
+{
+    public const DEFAULT_MANIFEST = [
         '77abfc6a-bab7-c3fa-f701-e08615a46c35' => [
             'name' => 'Developers',
             'signifier' => 'developer',
@@ -29,13 +27,14 @@ class Unit extends axis\unit\Table {
         ]
     ];
 
-    const ORDERABLE_FIELDS = [
+    public const ORDERABLE_FIELDS = [
         'name', 'signifier'
     ];
 
-    const DEFAULT_ORDER = 'name ASC';
+    public const DEFAULT_ORDER = 'name ASC';
 
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('id', 'Guid');
 
         $schema->addField('name', 'Text', 64);
@@ -47,7 +46,8 @@ class Unit extends axis\unit\Table {
             ->isDominant(true);
     }
 
-    public function getDefaultManifest() {
+    public function getDefaultManifest()
+    {
         return self::DEFAULT_MANIFEST;
     }
 }

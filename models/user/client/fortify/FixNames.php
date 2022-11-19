@@ -5,12 +5,9 @@
  */
 namespace df\apex\models\user\client\fortify;
 
-use df;
-use df\core;
-use df\apex;
-use df\axis;
-
 use DecodeLabs\Dictum;
+
+use df\axis;
 
 class FixNames extends axis\fortify\Base
 {
@@ -38,6 +35,6 @@ class FixNames extends axis\fortify\Base
             }
         }
 
-        yield $count.' updated';
+        yield $count . ' updated';
     }
 }

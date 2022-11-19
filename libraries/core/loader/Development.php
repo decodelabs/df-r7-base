@@ -6,10 +6,9 @@
 
 namespace df\core\loader;
 
-use df;
-use df\core;
-
 use DecodeLabs\Genesis;
+
+use df\core;
 
 class Development extends Base
 {
@@ -41,13 +40,13 @@ class Development extends Base
                         $pathPackageName = strtolower($packageName);
                     }
 
-                    $output[] = $location.'/'.$pathPackageName.'/'.$pathName.'.php';
-                    $output[] = $location.'/r7-'.$pathPackageName.'/'.$pathName.'.php';
+                    $output[] = $location . '/' . $pathPackageName . '/' . $pathName . '.php';
+                    $output[] = $location . '/r7-' . $pathPackageName . '/' . $pathName . '.php';
                     return $output;
 
                 default:
                     foreach ($this->_packages as $package) {
-                        $output[] = $package->path.'/'.$section.'/'.$pathName.'.php';
+                        $output[] = $package->path . '/' . $section . '/' . $pathName . '.php';
                     }
 
                     array_unshift($parts, $section);
@@ -59,7 +58,7 @@ class Development extends Base
         $basePath = $library;
 
         if (!empty($parts)) {
-            $basePath .= '/'.implode('/', $parts);
+            $basePath .= '/' . implode('/', $parts);
         }
 
         if (false !== ($pos = strpos($fileName, '_'))) {
@@ -67,13 +66,13 @@ class Development extends Base
         }
 
         $paths = [
-            $basePath.'/'.$fileName.'.php',
-            $basePath.'/_manifest.php'
+            $basePath . '/' . $fileName . '.php',
+            $basePath . '/_manifest.php'
         ];
 
         foreach ($this->_packages as $package) {
             foreach ($paths as $path) {
-                $output[] = $package->path.'/libraries/'.$path;
+                $output[] = $package->path . '/libraries/' . $path;
             }
         }
 
@@ -89,7 +88,7 @@ class Development extends Base
 
         if (!$library = array_shift($parts)) {
             foreach ($this->_packages as $package) {
-                $output[] = $package->path.'/libraries/';
+                $output[] = $package->path . '/libraries/';
             }
 
             return $output;
@@ -99,11 +98,11 @@ class Development extends Base
 
         if ($library == 'apex') {
             foreach ($this->_packages as $package) {
-                $output[] = $package->path.'/'.$pathName;
+                $output[] = $package->path . '/' . $pathName;
             }
         } else {
             foreach ($this->_packages as $package) {
-                $output[] = $package->path.'/libraries/'.$library.'/'.$pathName;
+                $output[] = $package->path . '/libraries/' . $library . '/' . $pathName;
             }
         }
 

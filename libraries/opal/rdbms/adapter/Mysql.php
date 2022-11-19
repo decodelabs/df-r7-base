@@ -5,17 +5,14 @@
  */
 namespace df\opal\rdbms\adapter;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Exceptional;
+
+use df\opal;
 
 class Mysql extends Base_Pdo
 {
-
-// Connection
-    protected function _connect($global=false)
+    // Connection
+    protected function _connect($global = false)
     {
         parent::_connect($global);
 
@@ -33,10 +30,10 @@ class Mysql extends Base_Pdo
 
     protected function _createDb()
     {
-        $this->executeSql('CREATE DATABASE `'.$this->_dsn->getDatabase().'` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $this->executeSql('CREATE DATABASE `' . $this->_dsn->getDatabase() . '` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
     }
 
-    protected function _getPdoDsn($global=false)
+    protected function _getPdoDsn($global = false)
     {
         if (!($charset = $this->_dsn->getOption('encoding'))) {
             $charset = 'utf8';
@@ -48,13 +45,13 @@ class Mysql extends Base_Pdo
             $charset = 'utf8mb4';
         }
 
-        $output = 'mysql:host='.$this->_dsn->getHostname();
+        $output = 'mysql:host=' . $this->_dsn->getHostname();
 
         if (!$global) {
-            $output .= ';dbname='.$this->_dsn->getDatabase();
+            $output .= ';dbname=' . $this->_dsn->getDatabase();
         }
 
-        $output .= ';charset='.$charset;
+        $output .= ';charset=' . $charset;
         return $output;
     }
 
@@ -123,7 +120,7 @@ class Mysql extends Base_Pdo
         return opal\rdbms\variant\mysql\Server::getConnectionException($this, $number, $message);
     }
 
-    public function _getQueryException($number, $message, $sql=null)
+    public function _getQueryException($number, $message, $sql = null)
     {
         return opal\rdbms\variant\mysql\Server::getQueryException($this, $number, $message, $sql);
     }
@@ -133,7 +130,7 @@ class Mysql extends Base_Pdo
     public function lockTable($table)
     {
         try {
-            $this->executeSql('LOCK TABLE '.$table.' WRITE');
+            $this->executeSql('LOCK TABLE ' . $table . ' WRITE');
         } catch (opal\rdbms\Exception $e) {
             return false;
         }
@@ -159,7 +156,7 @@ class Mysql extends Base_Pdo
         $parts = explode('.', $identifier);
 
         foreach ($parts as $key => $part) {
-            $parts[$key] = '`'.trim($part, '`\'').'`';
+            $parts[$key] = '`' . trim($part, '`\'') . '`';
         }
 
         return implode('.', $parts);
@@ -167,12 +164,12 @@ class Mysql extends Base_Pdo
 
     public function quoteFieldAliasDefinition($alias)
     {
-        return '"'.trim($alias, '`\'').'"';
+        return '"' . trim($alias, '`\'') . '"';
     }
 
     public function quoteFieldAliasReference($alias)
     {
-        return '`'.trim($alias, '`\'').'`';
+        return '`' . trim($alias, '`\'') . '`';
     }
 
     public function quoteValue($value)

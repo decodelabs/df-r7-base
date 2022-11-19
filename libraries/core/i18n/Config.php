@@ -5,13 +5,13 @@
  */
 namespace df\core\i18n;
 
-use df\core;
-
 use DecodeLabs\Exceptional;
+
+use df\core;
 
 class Config extends core\Config
 {
-    const ID = 'I18n';
+    public const ID = 'I18n';
 
     public function getDefaultValues(): array
     {
@@ -36,7 +36,7 @@ class Config extends core\Config
 
         if (!$this->isLocaleAllowed($locale)) {
             throw Exceptional::Runtime(
-                'Default locale '.$locale.' is not allowed'
+                'Default locale ' . $locale . ' is not allowed'
             );
         }
 
@@ -90,7 +90,7 @@ class Config extends core\Config
 
         $test = array_unique([
             (string)$locale,
-            $locale->getLanguage().'_'.$locale->getRegion(),
+            $locale->getLanguage() . '_' . $locale->getRegion(),
             $locale->getLanguage()
         ]);
 
@@ -122,7 +122,7 @@ class Config extends core\Config
     }
 
     // Detect
-    public function shouldDetectClientLocale(bool $flag=null)
+    public function shouldDetectClientLocale(bool $flag = null)
     {
         if ($flag !== null) {
             $this->values->locale->detectClient = $flag;
@@ -133,7 +133,7 @@ class Config extends core\Config
     }
 
     // Translation
-    public function isTranslationEnabled(bool $flag=null)
+    public function isTranslationEnabled(bool $flag = null)
     {
         if ($flag !== null) {
             $this->values->translation->enabled = $flag;

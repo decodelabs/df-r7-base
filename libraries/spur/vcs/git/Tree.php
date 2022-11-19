@@ -5,12 +5,8 @@
  */
 namespace df\spur\vcs\git;
 
-use df;
-use df\core;
-use df\spur;
-
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
 
 class Tree implements ITree, Dumpable
 {
@@ -19,7 +15,7 @@ class Tree implements ITree, Dumpable
     protected $_mode = null;
     protected $_repository;
 
-    public function __construct(ILocalRepository $repo, string $id, $name=null)
+    public function __construct(ILocalRepository $repo, string $id, $name = null)
     {
         $this->_id = $id;
         $this->_name = $name;
@@ -85,7 +81,7 @@ class Tree implements ITree, Dumpable
 
                     default:
                         throw Exceptional::UnexpectedValue(
-                            'Unknown object type: '.$type
+                            'Unknown object type: ' . $type
                         );
                 }
 

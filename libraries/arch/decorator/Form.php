@@ -6,10 +6,9 @@
 
 namespace df\arch\decorator;
 
-use df;
-use df\core;
 use df\arch;
 use df\aura;
+use df\core;
 
 abstract class Form implements IFormDecorator
 {
@@ -34,13 +33,13 @@ abstract class Form implements IFormDecorator
         }
 
         $parts[] = '_decorators';
-        $parts[] = ucfirst($request->getNode()).'Form';
+        $parts[] = ucfirst($request->getNode()) . 'Form';
         $end = implode('\\', $parts);
 
-        $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.$end;
+        $class = 'df\\apex\\directory\\' . $request->getArea() . '\\' . $end;
 
         if (!class_exists($class)) {
-            $class = 'df\\apex\\directory\\shared\\'.$end;
+            $class = 'df\\apex\\directory\\shared\\' . $end;
 
             if (!class_exists($class)) {
                 return null;
@@ -169,7 +168,7 @@ abstract class Form implements IFormDecorator
 
     final public function getStore(
         string $key,
-        mixed $default=null
+        mixed $default = null
     ): mixed {
         return $this->form->getStore($key, $default);
     }

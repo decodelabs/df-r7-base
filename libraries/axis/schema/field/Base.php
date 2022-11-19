@@ -6,27 +6,25 @@
 
 namespace df\axis\schema\field;
 
-use df;
-use df\core;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
+
 use df\axis;
 use df\opal;
-
-use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
 
 abstract class Base implements axis\schema\IField, \Serializable, Dumpable
 {
     use opal\schema\TField;
 
-    public static function factory(axis\schema\ISchema $schema, string $name, string $type, $args=null): axis\schema\IField
+    public static function factory(axis\schema\ISchema $schema, string $name, string $type, $args = null): axis\schema\IField
     {
         $parts = explode(':', $type);
         $superType = (string)array_shift($parts);
-        $class = 'df\\axis\\schema\\field\\'.ucfirst($superType);
+        $class = 'df\\axis\\schema\\field\\' . ucfirst($superType);
 
         if (!class_exists($class)) {
             throw Exceptional::NotFound(
-                'Field type '.$superType.' could not be found'
+                'Field type ' . $superType . ' could not be found'
             );
         }
 
@@ -37,7 +35,7 @@ abstract class Base implements axis\schema\IField, \Serializable, Dumpable
         axis\schema\ISchema $schema,
         $type,
         $name,
-        $args=null
+        $args = null
     ) {
         $schema->getName();
         $this->_setName($name);
@@ -55,14 +53,14 @@ abstract class Base implements axis\schema\IField, \Serializable, Dumpable
         }
 
         if ($subType = array_shift($parts)) {
-            $method = '_initAs'.ucfirst($subType);
+            $method = '_initAs' . ucfirst($subType);
 
             if (method_exists($this, $method)) {
                 $hasInit = true;
                 $this->{$method}(...$args);
             } else {
                 throw Exceptional::NotFound(
-                    'Field type '.$superType.' does not support sub type '.$subType
+                    'Field type ' . $superType . ' does not support sub type ' . $subType
                 );
             }
         }
@@ -116,7 +114,7 @@ abstract class Base implements axis\schema\IField, \Serializable, Dumpable
 
 
     // Values
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord = null)
     {
         if (isset($row[$key])) {
             return $row[$key];
@@ -135,12 +133,12 @@ abstract class Base implements axis\schema\IField, \Serializable, Dumpable
         return $this->sanitizeValue($value);
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    public function sanitizeValue($value, opal\record\IRecord $forRecord = null)
     {
         return $value;
     }
 
-    public function normalizeSavedValue($value, opal\record\IRecord $forRecord=null)
+    public function normalizeSavedValue($value, opal\record\IRecord $forRecord = null)
     {
         return $value;
     }
@@ -249,7 +247,7 @@ abstract class Base implements axis\schema\IField, \Serializable, Dumpable
     public function getFieldSchemaString()
     {
         $type = $this->getFieldTypeDisplayName();
-        $output = $this->_name.' '.$type;
+        $output = $this->_name . ' ' . $type;
 
         $args = [];
 
@@ -266,21 +264,21 @@ abstract class Base implements axis\schema\IField, \Serializable, Dumpable
 
         if ($this instanceof opal\schema\IBitSizeRestrictedField
         && (null !== ($size = $this->getBitSize()))) {
-            $args[] = $size.' bits';
+            $args[] = $size . ' bits';
         }
 
         if ($this instanceof opal\schema\IByteSizeRestrictedField
         && (null !== ($size = $this->getByteSize()))) {
-            $args[] = $size.' bytes';
+            $args[] = $size . ' bytes';
         }
 
         if ($this instanceof opal\schema\ILargeByteSizeRestrictedField
         && (null !== ($size = $this->getExponentSize()))) {
-            $args[] = '2 ^ '.$size.' bytes';
+            $args[] = '2 ^ ' . $size . ' bytes';
         }
 
         if (!empty($args)) {
-            $output .= '('.implode(', ', $args).')';
+            $output .= '(' . implode(', ', $args) . ')';
         }
 
         if ($this->_isNullable) {
@@ -290,7 +288,7 @@ abstract class Base implements axis\schema\IField, \Serializable, Dumpable
         if ($this instanceof opal\schema\IAutoTimestampField && $this->shouldTimestampAsDefault()) {
             $output .= ' DEFAULT now';
         } elseif ($this->_defaultValue !== null) {
-            $output .= ' DEFAULT \''.$this->_defaultValue.'\'';
+            $output .= ' DEFAULT \'' . $this->_defaultValue . '\'';
         }
 
         if ($this instanceof opal\schema\IAutoTimestampField && $this->shouldTimestampOnUpdate()) {
@@ -298,7 +296,7 @@ abstract class Base implements axis\schema\IField, \Serializable, Dumpable
         }
 
         if ($this instanceof opal\schema\ICharacterSetAwareField && (null !== ($characterSet = $this->getCharacterSet()))) {
-            $output .= ' CHARSET '.$characterSet;
+            $output .= ' CHARSET ' . $characterSet;
         }
 
         return $output;

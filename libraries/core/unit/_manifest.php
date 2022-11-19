@@ -5,10 +5,9 @@
  */
 namespace df\core\unit;
 
-use df;
-use df\core;
-
 use DecodeLabs\Exceptional;
+
+use df\core;
 
 interface IUnit
 {
@@ -22,10 +21,10 @@ interface ICssCompatibleUnit
 
 interface ISingleValueUnit
 {
-    public function parse($angle, $unit=null, $allowPlainNumbers=false);
+    public function parse($angle, $unit = null, $allowPlainNumbers = false);
     public function setValue($value);
     public function getValue();
-    public function setUnit($unit, $convertValue=true);
+    public function setUnit($unit, $convertValue = true);
     public function getUnit();
 }
 
@@ -35,12 +34,12 @@ trait TSingleValueUnit
 
     //const UNITS = [];
 
-    public function __construct($value, $unit=null, $allowPlainNumbers=false)
+    public function __construct($value, $unit = null, $allowPlainNumbers = false)
     {
         $this->parse($value, $unit, $allowPlainNumbers);
     }
 
-    public function parse($value, $unit=null, $allowPlainNumbers=false)
+    public function parse($value, $unit = null, $allowPlainNumbers = false)
     {
         if (preg_match('/^([0-9.\-+e]+) *([^0-9.\-+]+)$/i', $value, $matches)) {
             $value = $matches[1];
@@ -76,7 +75,7 @@ trait TSingleValueUnit
         return $this->_value;
     }
 
-    public function setUnit($unit, $convertValue=true)
+    public function setUnit($unit, $convertValue = true)
     {
         $unit = strtolower($unit);
 
@@ -99,7 +98,7 @@ trait TSingleValueUnit
 
             if (!$found) {
                 throw Exceptional::InvalidArgument(
-                    $unit.' is not a valid unit option'
+                    $unit . ' is not a valid unit option'
                 );
             }
         }
@@ -119,7 +118,7 @@ trait TSingleValueUnit
 
     public function toString(): string
     {
-        return $this->_value.$this->_unit;
+        return $this->_value . $this->_unit;
     }
 
     public function toCssString(): string
@@ -182,7 +181,7 @@ interface IDisplaySize extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core
     public function setViewportMin($vmin);
     public function setViewportMax($vmax);
 
-    public function extractAbsolute($length, $fontSize=null, $viewportWidth=null, $viewportHeight=null);
+    public function extractAbsolute($length, $fontSize = null, $viewportWidth = null, $viewportHeight = null);
     public function extractAbsoluteFromLength($length);
     public function extractAbsoluteFromFontSize($size);
     public function extractAbsoluteFromViewport($width, $height);
@@ -190,7 +189,7 @@ interface IDisplaySize extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core
 
 interface IDisplayPosition extends IUnit, ICssCompatibleUnit, core\IStringProvider
 {
-    public function parse($position, $position2=null);
+    public function parse($position, $position2 = null);
     public function setX($value);
     public function getX();
     public function setXAnchor($anchor);
@@ -208,8 +207,8 @@ interface IDisplayPosition extends IUnit, ICssCompatibleUnit, core\IStringProvid
     public function hasRelativeAnchor();
     public function hasRelativeXAnchor();
     public function hasRelativeYAnchor();
-    public function convertRelativeAnchors($width=null, $height=null);
-    public function extractAbsolute($width, $height, $compositeWidth=null, $compositeHeight=null);
+    public function convertRelativeAnchors($width = null, $height = null);
+    public function extractAbsolute($width, $height, $compositeWidth = null, $compositeHeight = null);
 }
 
 interface IFileSize extends IUnit, ISingleValueUnit, core\IStringProvider
@@ -246,7 +245,7 @@ interface IFrequency extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\I
 
 interface IRatio extends IUnit, ICssCompatibleUnit, core\IStringProvider
 {
-    public function parse($value, $denominator=null);
+    public function parse($value, $denominator = null);
     public function setFraction($numerator, $denominator);
     public function getNumerator();
     public function getDenominator();
@@ -269,15 +268,15 @@ interface IResolution extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\
 ## ENUMS
 class Priority extends core\lang\Enum
 {
-    const TRIVIAL = null;
-    const LOW = null;
-    const MEDIUM = null;
-    const HIGH = null;
-    const CRITICAL = null;
+    public const TRIVIAL = null;
+    public const LOW = null;
+    public const MEDIUM = null;
+    public const HIGH = null;
+    public const CRITICAL = null;
 }
 
 class Gender extends core\lang\Enum
 {
-    const MALE = 'Male';
-    const FEMALE = 'Female';
+    public const MALE = 'Male';
+    public const FEMALE = 'Female';
 }

@@ -5,9 +5,8 @@
  */
 namespace df\axis\unit;
 
-use df;
-use df\core;
 use df\axis;
+use df\core;
 
 abstract class FileStore extends core\cache\FileStore implements axis\IUnit
 {
@@ -17,7 +16,7 @@ abstract class FileStore extends core\cache\FileStore implements axis\IUnit
     {
         $parts = explode('\\', get_called_class());
         $parts = array_slice($parts, 3, -1);
-        return 'axis/unit/'.implode('/', $parts);
+        return 'axis/unit/' . implode('/', $parts);
     }
 
     public function __construct(axis\IModel $model)

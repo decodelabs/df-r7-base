@@ -6,10 +6,9 @@
 
 namespace df\arch\decorator;
 
-use df;
-use df\core;
 use df\arch;
 use df\aura;
+use df\core;
 
 abstract class Delegate implements IDelegateDecorator
 {
@@ -37,13 +36,13 @@ abstract class Delegate implements IDelegateDecorator
         $name = array_pop($dClass);
 
         $parts[] = '_decorators';
-        $parts[] = $name.'Delegate';
+        $parts[] = $name . 'Delegate';
         $end = implode('\\', $parts);
 
-        $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.$end;
+        $class = 'df\\apex\\directory\\' . $request->getArea() . '\\' . $end;
 
         if (!class_exists($class)) {
-            $class = 'df\\apex\\directory\\shared\\'.$end;
+            $class = 'df\\apex\\directory\\shared\\' . $end;
 
             if (!class_exists($class)) {
                 return null;
@@ -175,7 +174,7 @@ abstract class Delegate implements IDelegateDecorator
 
     final public function getStore(
         string $key,
-        mixed $default=null
+        mixed $default = null
     ): mixed {
         return $this->delegate->getStore($key, $default);
     }

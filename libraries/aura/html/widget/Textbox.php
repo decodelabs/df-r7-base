@@ -5,12 +5,9 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\arch;
 
 class Textbox extends Base implements ITextboxWidget, Dumpable
 {
@@ -22,16 +19,16 @@ class Textbox extends Base implements ITextboxWidget, Dumpable
     use TWidget_TextEntry;
     use TWidget_DataListEntry;
 
-    const PRIMARY_TAG = 'input.textbox.text';
-    const ARRAY_INPUT = false;
+    public const PRIMARY_TAG = 'input.textbox.text';
+    public const ARRAY_INPUT = false;
 
-    const INPUT_TYPE = 'text';
-    const DEFAULT_PLACEHOLDER = null;
+    public const INPUT_TYPE = 'text';
+    public const DEFAULT_PLACEHOLDER = null;
 
     protected $_pattern;
     protected $_formEvent;
 
-    public function __construct(arch\IContext $context, $name, $value=null)
+    public function __construct(arch\IContext $context, $name, $value = null)
     {
         parent::__construct($context);
 

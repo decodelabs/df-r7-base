@@ -5,17 +5,16 @@
  */
 namespace df\spur\mail\mailchimp3\filter;
 
-use df;
-use df\core;
 use df\spur;
 
-class MailingList extends Base implements spur\mail\mailchimp3\IListFilter {
-
+class MailingList extends Base implements spur\mail\mailchimp3\IListFilter
+{
     use TFilter_Directional;
 
-    const KEY_NAME = 'lists';
+    public const KEY_NAME = 'lists';
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         $output = parent::toArray();
 
         $this->_applyDirection($output);

@@ -6,12 +6,11 @@
 
 namespace df\user\helper;
 
-use df;
+use DecodeLabs\Glitch\Dumpable;
 use df\core;
-use df\user;
 use df\mesh;
 
-use DecodeLabs\Glitch\Dumpable;
+use df\user;
 
 class Options extends Base implements
     user\ISessionBackedHelper,
@@ -54,7 +53,7 @@ class Options extends Base implements
         return $this;
     }
 
-    public function get($key, $default=null)
+    public function get($key, $default = null)
     {
         $this->_ensureSessionData();
 

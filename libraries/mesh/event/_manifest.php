@@ -5,19 +5,18 @@
  */
 namespace df\mesh\event;
 
-use df;
 use df\core;
 use df\mesh;
 
 interface IEmitter
 {
-    public function emitEvent($entity, $action, array $data=null, mesh\job\IQueue $jobQueue=null, mesh\job\IJob $job=null);
+    public function emitEvent($entity, $action, array $data = null, mesh\job\IQueue $jobQueue = null, mesh\job\IJob $job = null);
     public function emitEventObject(IEvent $event);
 }
 
 trait TEmitter
 {
-    public function emitEvent($entity, $action, array $data=null, mesh\job\IQueue $jobQueue=null, mesh\job\IJob $job=null)
+    public function emitEvent($entity, $action, array $data = null, mesh\job\IQueue $jobQueue = null, mesh\job\IJob $job = null)
     {
         if ($entity === null) {
             return $this;
@@ -44,9 +43,9 @@ interface IEvent extends core\collection\IMap
     public function getAction();
 
     // Job
-    public function setJobQueue(mesh\job\IQueue $queue=null);
+    public function setJobQueue(mesh\job\IQueue $queue = null);
     public function getJobQueue(): ?mesh\job\IQueue;
-    public function setJob(mesh\job\IJob $job=null);
+    public function setJob(mesh\job\IJob $job = null);
     public function getJob(): ?mesh\job\IJob;
 }
 

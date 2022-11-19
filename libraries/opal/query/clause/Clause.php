@@ -6,12 +6,11 @@
 
 namespace df\opal\query\clause;
 
-use df;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
+
 use df\core;
 use df\opal;
-
-use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
 
 class Clause implements opal\query\IClause, Dumpable
 {
@@ -49,7 +48,7 @@ class Clause implements opal\query\IClause, Dumpable
     protected $_hasPreparedValue = null;
 
 
-    public static function factory(opal\query\IClauseFactory $parent, opal\query\IField $field, $operator, $value, $isOr=false)
+    public static function factory(opal\query\IClauseFactory $parent, opal\query\IField $field, $operator, $value, $isOr = false)
     {
         if ($value instanceof opal\query\IQuery
         && !$value instanceof opal\query\ICorrelationQuery) {
@@ -65,7 +64,7 @@ class Clause implements opal\query\IClause, Dumpable
         return new self($field, $operator, $value, $isOr);
     }
 
-    private static function _virtualFactory(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false)
+    private static function _virtualFactory(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr = false)
     {
         $source = $field->getSource();
         $name = $field->getName();
@@ -88,7 +87,7 @@ class Clause implements opal\query\IClause, Dumpable
 
                 default:
                     throw Exceptional::InvalidArgument(
-                        'Query field '.$field->getName().' has no virtual field rewriter'
+                        'Query field ' . $field->getName() . ' has no virtual field rewriter'
                     );
             }
         }
@@ -118,7 +117,7 @@ class Clause implements opal\query\IClause, Dumpable
         );
     }
 
-    public function __construct(opal\query\IField $field, $operator, $value, $isOr=false)
+    public function __construct(opal\query\IField $field, $operator, $value, $isOr = false)
     {
         $this->setField($field);
         $this->setOperator($operator);
@@ -126,7 +125,7 @@ class Clause implements opal\query\IClause, Dumpable
         $this->isOr($isOr);
     }
 
-    public function isOr(bool $flag=null)
+    public function isOr(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isOr = $flag;
@@ -136,7 +135,7 @@ class Clause implements opal\query\IClause, Dumpable
         return $this->_isOr;
     }
 
-    public function isAnd(bool $flag=null)
+    public function isAnd(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isOr = !$flag;
@@ -223,7 +222,7 @@ class Clause implements opal\query\IClause, Dumpable
 
             default:
                 throw Exceptional::{'df/opal/query/Operator'}(
-                    'Operator '.$operator.' is not recognized'
+                    'Operator ' . $operator . ' is not recognized'
                 );
         }
     }
@@ -262,7 +261,7 @@ class Clause implements opal\query\IClause, Dumpable
 
                 default:
                     throw Exceptional::{'df/opal/query/Operator'}(
-                        'Operator '.$operator.' is not recognized'
+                        'Operator ' . $operator . ' is not recognized'
                     );
             }
         }
@@ -351,7 +350,7 @@ class Clause implements opal\query\IClause, Dumpable
 
                 default:
                     throw Exceptional::UnexpectedValue(
-                        'Correlation clauses cannot use operator '.$this->_operator
+                        'Correlation clauses cannot use operator ' . $this->_operator
                     );
             }
         } else {
@@ -449,8 +448,8 @@ class Clause implements opal\query\IClause, Dumpable
                 case self::OP_IN:
                 case self::OP_NOT_IN:
                     //if(count($this->_value) > self::BETWEEN_CONVERSION_THRESHOLD) {
-                        // TODO: convert to between set
-                        //dd($this->_value);
+                    // TODO: convert to between set
+                    //dd($this->_value);
                     //}
 
                 case self::OP_BETWEEN:
@@ -634,15 +633,15 @@ class Clause implements opal\query\IClause, Dumpable
         }
 
         foreach ($value as $key => $innerValue) {
-            if (0 === strpos($name, $key.'_')) {
+            if (0 === strpos($name, $key . '_')) {
                 return $innerValue;
-            } elseif (substr($name, -(strlen($key) + 1)) == '_'.$key) {
+            } elseif (substr($name, -(strlen($key) + 1)) == '_' . $key) {
                 return $innerValue;
             }
         }
 
         throw Exceptional::InvalidArgument(
-            'Could not extract multi key field value for '.$name
+            'Could not extract multi key field value for ' . $name
         );
     }
 
@@ -679,7 +678,7 @@ class Clause implements opal\query\IClause, Dumpable
         if ($this->_value instanceof opal\query\IField) {
             $value = $this->_value->getQualifiedName();
         } elseif ($this->_value instanceof opal\record\IPrimaryKeySetProvider) {
-            $value = $this->_value->getAdapter()->getQuerySourceId().' : '.$this->_value->getPrimaryKeySet();
+            $value = $this->_value->getAdapter()->getQuerySourceId() . ' : ' . $this->_value->getPrimaryKeySet();
         } elseif ($this->_value instanceof opal\query\IQuery) {
             $value = $this->_value;
         } elseif ($this->_value === null) {
@@ -687,15 +686,15 @@ class Clause implements opal\query\IClause, Dumpable
         } elseif (is_bool($this->_value)) {
             $value = $this->_value ? 'TRUE' : 'FALSE';
         } elseif (is_array($this->_value)) {
-            $value = '(\''.implode('\', \'', $this->_value).'\')';
+            $value = '(\'' . implode('\', \'', $this->_value) . '\')';
         } else {
-            $value = '\''.(string)$this->_value.'\'';
+            $value = '\'' . (string)$this->_value . '\'';
         }
 
         if (is_string($value)) {
-            yield 'definition' => $type.' '.$field.' '.$this->_operator.' '.$value;
+            yield 'definition' => $type . ' ' . $field . ' ' . $this->_operator . ' ' . $value;
         } else {
-            yield 'definition' => $type.' '.$field.' '.$this->_operator;
+            yield 'definition' => $type . ' ' . $field . ' ' . $this->_operator;
             yield 'value' => $value;
         }
     }

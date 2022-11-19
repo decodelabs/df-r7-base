@@ -6,13 +6,10 @@
 
 namespace df\apex\directory\front\daemons\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\halo;
-
 use DecodeLabs\Terminus as Cli;
+use df\arch;
+
+use df\halo;
 
 class TaskRemote extends arch\node\Task
 {

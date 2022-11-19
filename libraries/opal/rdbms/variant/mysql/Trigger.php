@@ -5,17 +5,16 @@
  */
 namespace df\opal\rdbms\variant\mysql;
 
-use df;
-use df\core;
 use df\opal;
 
-class Trigger extends opal\rdbms\schema\constraint\Trigger {
-    
-    protected function _hasFieldReference(array $fields) {
-        $regex = '/(OLD|NEW)[`]?\.[`]?('.implode('|', $fields).')[`]?/i';
+class Trigger extends opal\rdbms\schema\constraint\Trigger
+{
+    protected function _hasFieldReference(array $fields)
+    {
+        $regex = '/(OLD|NEW)[`]?\.[`]?(' . implode('|', $fields) . ')[`]?/i';
         
-        foreach($this->_statements as $statement) {
-            if(preg_match($regex, $statement)) {
+        foreach ($this->_statements as $statement) {
+            if (preg_match($regex, $statement)) {
                 return true;
             }
         }

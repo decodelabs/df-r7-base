@@ -6,15 +6,13 @@
 
 namespace df\user\session\perpetuator;
 
-use df;
-use df\core;
-use df\user;
-use df\arch;
-use df\link;
-use df\axis;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\R7\Legacy;
+use df\arch;
+use df\axis;
+
+use df\link;
+use df\user;
 
 class Cookie implements user\session\IPerpetuator
 {
@@ -90,7 +88,10 @@ class Cookie implements user\session\IPerpetuator
     {
         $augmentor = Legacy::$http->getResponseAugmentor();
         $augmentor->setCookieForAnyRequest($augmentor->newCookie(
-            self::SESSION_NAME, $outputId, null, true
+            self::SESSION_NAME,
+            $outputId,
+            null,
+            true
         ));
     }
 
@@ -100,12 +101,18 @@ class Cookie implements user\session\IPerpetuator
 
         // Remove session cookie
         $augmentor->removeCookieForAnyRequest($augmentor->newCookie(
-            self::SESSION_NAME, 'deleted', null, true
+            self::SESSION_NAME,
+            'deleted',
+            null,
+            true
         ));
 
         // Set remember cookie to ''
         $augmentor->setCookieForAnyRequest($augmentor->newCookie(
-            self::REMEMBER_NAME, '', null, true
+            self::REMEMBER_NAME,
+            '',
+            null,
+            true
         ));
 
         return $this;
@@ -129,7 +136,7 @@ class Cookie implements user\session\IPerpetuator
         $httpRequest = Legacy::$http->getRequest();
         $router = Legacy::$http->getRouter();
 
-        $request = $router->requestToUrl(arch\Request::factory('account/join-session?key='.bin2hex($key)));
+        $request = $router->requestToUrl(arch\Request::factory('account/join-session?key=' . bin2hex($key)));
         $request->query->rf = $router->urlToRequest($httpRequest->getUrl())->encode();
         $redirect = new link\http\response\Redirect($request);
 
@@ -163,7 +170,7 @@ class Cookie implements user\session\IPerpetuator
         if (!empty($value)) {
             return new user\session\RecallKey(
                 substr($value, 20, 1),
-                substr($value, 0, 20).substr($value, 21)
+                substr($value, 0, 20) . substr($value, 21)
             );
         }
     }
@@ -173,7 +180,10 @@ class Cookie implements user\session\IPerpetuator
         $augmentor = Legacy::$http->getResponseAugmentor();
 
         $augmentor->removeCookieForAnyRequest($augmentor->newCookie(
-            self::REMEMBER_NAME, '', null, true
+            self::REMEMBER_NAME,
+            '',
+            null,
+            true
         ));
 
         return $this;
@@ -199,7 +209,10 @@ class Cookie implements user\session\IPerpetuator
         $augmentor = Legacy::$http->getResponseAugmentor();
 
         $augmentor->removeCookieForAnyRequest($augmentor->newCookie(
-            self::JOIN_NAME, '', null, true
+            self::JOIN_NAME,
+            '',
+            null,
+            true
         ));
 
         return $this;

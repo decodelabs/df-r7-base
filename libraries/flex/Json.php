@@ -5,26 +5,23 @@
  */
 namespace df\flex;
 
-use df;
-use df\core;
-use df\flex;
-use df\opal;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
+
+use df\core;
+use df\opal;
 
 use JsonSerializable;
 
 class Json implements IJson
 {
-
-// Encode
-    public static function toString($data, int $flags=0): string
+    // Encode
+    public static function toString($data, int $flags = 0): string
     {
         return (string)json_encode(self::prepare($data), $flags);
     }
 
-    public static function toFile($path, $data, int $flags=0): File
+    public static function toFile($path, $data, int $flags = 0): File
     {
         return Atlas::createFile((string)$path, self::toString($data, $flags));
     }

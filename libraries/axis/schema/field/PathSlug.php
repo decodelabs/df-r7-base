@@ -5,14 +5,11 @@
  */
 namespace df\axis\schema\field;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
-use df\flex;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+
+use df\axis;
+use df\opal;
 
 class PathSlug extends Base implements
     axis\schema\IAutoUniqueField,
@@ -22,22 +19,22 @@ class PathSlug extends Base implements
     use axis\schema\TAutoUniqueField;
 
     // Values
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord = null)
     {
-        if (!isset($row[$key.'_name'])) {
+        if (!isset($row[$key . '_name'])) {
             return null;
         }
 
-        $output = $row[$key.'_name'];
+        $output = $row[$key . '_name'];
 
-        if (isset($row[$key.'_location'])) {
-            $location = trim($row[$key.'_location'], '/');
+        if (isset($row[$key . '_location'])) {
+            $location = trim($row[$key . '_location'], '/');
         } else {
             $location = null;
         }
 
         if (!empty($location)) {
-            $output = $location.'/'.$output;
+            $output = $location . '/' . $output;
         }
 
         return $output;
@@ -54,12 +51,12 @@ class PathSlug extends Base implements
         }
 
         return [
-            $this->_name.'_location' => $location,
-            $this->_name.'_name' => $name
+            $this->_name . '_location' => $location,
+            $this->_name . '_name' => $name
         ];
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    public function sanitizeValue($value, opal\record\IRecord $forRecord = null)
     {
         if ($value === null && $this->isNullable()) {
             return null;
@@ -81,13 +78,13 @@ class PathSlug extends Base implements
 
 
     // Rewriters
-    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false)
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr = false)
     {
         switch ($operator) {
             case 'between':
             case 'not between':
                 throw Exceptional::Logic(
-                    'PathSlug fields cannot be filtered with "'.$operator.'" operators'
+                    'PathSlug fields cannot be filtered with "' . $operator . '" operators'
                 );
 
             case 'in':
@@ -124,26 +121,26 @@ class PathSlug extends Base implements
 
         if ($slug === null) {
             return $output
-                ->where($sourceAlias.'.'.$this->_name.'_name', '=', $slug)
-                ->where($sourceAlias.'.'.$this->_name.'_location', '=', $slug);
+                ->where($sourceAlias . '.' . $this->_name . '_name', '=', $slug)
+                ->where($sourceAlias . '.' . $this->_name . '_location', '=', $slug);
         }
 
         switch ($operator) {
             case 'begins':
             case 'not begins':
-                return $output->where($sourceAlias.'.'.$this->_name.'_location', $operator, $slug);
+                return $output->where($sourceAlias . '.' . $this->_name . '_location', $operator, $slug);
 
             case 'ends':
             case 'not ends':
-                return $output->where($sourceAlias.'.'.$this->_name.'_name', $operator, $slug);
+                return $output->where($sourceAlias . '.' . $this->_name . '_name', $operator, $slug);
 
             case 'contains':
             case 'not contains':
             case 'matches':
             case 'not matches':
                 return $output
-                    ->where($sourceAlias.'.'.$this->_name.'_name', $operator, $slug)
-                    ->orWhere($sourceAlias.'.'.$this->_name.'_location', $operator, $slug);
+                    ->where($sourceAlias . '.' . $this->_name . '_name', $operator, $slug)
+                    ->orWhere($sourceAlias . '.' . $this->_name . '_location', $operator, $slug);
 
             default:
                 $parts = explode('/', $slug);
@@ -165,8 +162,8 @@ class PathSlug extends Base implements
                 }
 
                 return $output
-                    ->where($sourceAlias.'.'.$this->_name.'_location', $operator, $location)
-                    ->where($sourceAlias.'.'.$this->_name.'_name', $nameOperator, $name);
+                    ->where($sourceAlias . '.' . $this->_name . '_location', $operator, $location)
+                    ->where($sourceAlias . '.' . $this->_name . '_name', $nameOperator, $name);
         }
     }
 
@@ -175,16 +172,16 @@ class PathSlug extends Base implements
     public function getPrimitiveFieldNames()
     {
         return [
-            $this->_name.'_location',
-            $this->_name.'_name'
+            $this->_name . '_location',
+            $this->_name . '_name'
         ];
     }
 
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
     {
         return new opal\schema\Primitive_MultiField($this, [
-            $this->_name.'_location' => (new opal\schema\Primitive_Varchar($this, 255)),
-            $this->_name.'_name' => (new opal\schema\Primitive_Varchar($this, 255))
+            $this->_name . '_location' => (new opal\schema\Primitive_Varchar($this, 255)),
+            $this->_name . '_name' => (new opal\schema\Primitive_Varchar($this, 255))
         ]);
     }
 

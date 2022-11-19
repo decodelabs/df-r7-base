@@ -5,8 +5,6 @@
  */
 namespace df\axis\schema\field;
 
-use df;
-use df\core;
 use df\axis;
 use df\opal;
 
@@ -18,7 +16,7 @@ class ManyToOne extends One implements axis\schema\IManyToOneField, opal\schema\
 {
     use axis\schema\TInverseRelationField;
 
-    protected function _init($targetUnit, $targetField=null)
+    protected function _init($targetUnit, $targetField = null)
     {
         $this->setTargetUnitId($targetUnit);
         $this->setTargetField($targetField);
@@ -26,10 +24,14 @@ class ManyToOne extends One implements axis\schema\IManyToOneField, opal\schema\
 
 
     // Clause
-    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false)
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr = false)
     {
         return opal\query\clause\Clause::mapVirtualClause(
-            $parent, $field, $operator, $value, $isOr
+            $parent,
+            $field,
+            $operator,
+            $value,
+            $isOr
         );
     }
 
@@ -68,10 +70,10 @@ class ManyToOne extends One implements axis\schema\IManyToOneField, opal\schema\
     public function glitchDump(): iterable
     {
         $def = $this->getFieldSchemaString();
-        $def .= '('.$this->_targetUnitId;
+        $def .= '(' . $this->_targetUnitId;
 
         if ($this->_targetField) {
-            $def .= ' -> '.$this->_targetField;
+            $def .= ' -> ' . $this->_targetField;
         }
 
         $def .= ')';

@@ -5,9 +5,7 @@
  */
 namespace df\apex\models\task\schedule;
 
-use df;
 use df\core;
-use df\axis;
 use df\opal;
 
 class Record extends opal\record\Base
@@ -37,7 +35,7 @@ class Record extends opal\record\Base
         return true;
     }
 
-    protected function _match($pattern, $value, $low, $high, $checkTime=false)
+    protected function _match($pattern, $value, $low, $high, $checkTime = false)
     {
         $parts = explode(',', $pattern);
         $partCount = count($parts);

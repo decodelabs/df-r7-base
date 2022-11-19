@@ -5,12 +5,10 @@
  */
 namespace df\axis\schema\field;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
-
 use DecodeLabs\Glitch;
+use df\axis;
+
+use df\opal;
 
 class KeyGroup extends Base implements
     axis\schema\IRelationField,
@@ -28,7 +26,7 @@ class KeyGroup extends Base implements
 
 
     // Values
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord = null)
     {
         $value = $this->getTargetRelationManifest()->extractFromRow($key, $row);
 
@@ -42,7 +40,9 @@ class KeyGroup extends Base implements
 
         // Need to build a value container
         return new axis\unit\table\record\OneRelationValueContainer(
-            $this, $forRecord, $value
+            $this,
+            $forRecord,
+            $value
         );
     }
 
@@ -61,20 +61,22 @@ class KeyGroup extends Base implements
                 $value = $field->deflateValue($value);
             }
 
-            $output[$this->_name.'_'.$key] = $value;
+            $output[$this->_name . '_' . $key] = $value;
         }
 
         return $output;
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    public function sanitizeValue($value, opal\record\IRecord $forRecord = null)
     {
         if (!$forRecord) {
             return $value;
         }
 
         return new axis\unit\table\record\OneRelationValueContainer(
-            $this, $forRecord, $value
+            $this,
+            $forRecord,
+            $value
         );
     }
 
@@ -86,10 +88,14 @@ class KeyGroup extends Base implements
 
 
     // Clause
-    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false)
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr = false)
     {
         return opal\query\clause\Clause::mapVirtualClause(
-            $parent, $field, $operator, $value, $isOr
+            $parent,
+            $field,
+            $operator,
+            $value,
+            $isOr
         );
     }
 
@@ -102,7 +108,7 @@ class KeyGroup extends Base implements
         $parentSourceAlias = $populate->getParentSourceAlias();
         $targetSourceAlias = $populate->getSourceAlias();
 
-        $output->on($targetSourceAlias.'.@primary', '=', $parentSourceAlias.'.'.$this->_name);
+        $output->on($targetSourceAlias . '.@primary', '=', $parentSourceAlias . '.' . $this->_name);
         $output->asOne($this->_name);
 
         return $output;

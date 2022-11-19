@@ -5,24 +5,23 @@
  */
 namespace df\aura\html\widget;
 
-use df;
 use df\core;
-use df\aura;
 
-class CheckboxGroup extends RadioGroup implements IMultipleSelectionInputWidget {
-
-    const PRIMARY_TAG = 'div.group.checkbox';
-    const INPUT_TYPE = 'checkbox';
-    const ARRAY_INPUT = true;
-    const WIDGET_CLASS = 'w.check.checkbox';
+class CheckboxGroup extends RadioGroup implements IMultipleSelectionInputWidget
+{
+    public const PRIMARY_TAG = 'div.group.checkbox';
+    public const INPUT_TYPE = 'checkbox';
+    public const ARRAY_INPUT = true;
+    public const WIDGET_CLASS = 'w.check.checkbox';
 
     protected $_allRequired = false;
 
-    public function isAllRequired(bool $flag=null) {
-        if($flag !== null) {
+    public function isAllRequired(bool $flag = null)
+    {
+        if ($flag !== null) {
             $this->_allRequired = $flag;
 
-            if($this->_allRequired) {
+            if ($this->_allRequired) {
                 $this->_isRequired = true;
             }
 
@@ -32,7 +31,8 @@ class CheckboxGroup extends RadioGroup implements IMultipleSelectionInputWidget 
         return $this->_allRequired;
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $required = $this->_isRequired;
         $this->_isRequired = $this->_allRequired;
 
@@ -42,30 +42,32 @@ class CheckboxGroup extends RadioGroup implements IMultipleSelectionInputWidget 
         return $output;
     }
 
-    protected function _checkSelected($value, &$selectionFound) {
+    protected function _checkSelected($value, &$selectionFound)
+    {
         return $this->_value->contains($value);
     }
 
-    public function setValue($value) {
-        if(!$value instanceof core\collection\IInputTree) {
-            if($value instanceof core\collection\ICollection) {
+    public function setValue($value)
+    {
+        if (!$value instanceof core\collection\IInputTree) {
+            if ($value instanceof core\collection\ICollection) {
                 $value = $value->toArray();
             }
 
-            if($value instanceof core\IValueContainer) {
+            if ($value instanceof core\IValueContainer) {
                 $value = $value->getValue();
             }
 
-            if(!is_array($value)) {
+            if (!is_array($value)) {
                 $value = [$value];
             }
 
             $newValue = [];
 
-            foreach($value as $val) {
+            foreach ($value as $val) {
                 $val = (string)$val;
 
-                if(!strlen($val)) {
+                if (!strlen($val)) {
                     continue;
                 }
 
@@ -80,7 +82,8 @@ class CheckboxGroup extends RadioGroup implements IMultipleSelectionInputWidget 
         return $this;
     }
 
-    public function getValueString() {
+    public function getValueString()
+    {
         return implode(', ', $this->getValue()->toArray());
     }
 }

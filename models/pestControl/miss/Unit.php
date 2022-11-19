@@ -5,24 +5,21 @@
  */
 namespace df\apex\models\pestControl\miss;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
 use df\opal;
 
 class Unit extends axis\unit\Table
 {
-    const SEARCH_FIELDS = [
+    public const SEARCH_FIELDS = [
         'mode' => 1,
         'request' => 4
     ];
 
-    const ORDERABLE_FIELDS = [
+    public const ORDERABLE_FIELDS = [
         'mode', 'request', 'seen', 'botsSeen', 'firstSeen', 'lastSeen'
     ];
 
-    const DEFAULT_ORDER = ['lastSeen DESC', 'seen DESC'];
+    public const DEFAULT_ORDER = ['lastSeen DESC', 'seen DESC'];
 
     protected function createSchema($schema)
     {

@@ -6,9 +6,9 @@
 
 namespace df\apex\models\pestControl\accessLog;
 
-use df\axis;
-
 use DecodeLabs\Genesis;
+
+use df\axis;
 
 class Unit extends axis\unit\Table
 {
@@ -50,7 +50,7 @@ class Unit extends axis\unit\Table
         $schema->addField('isArchived', 'Boolean');
     }
 
-    public function logAccess($code=403, $request=null, $message=null)
+    public function logAccess($code = 403, $request = null, $message = null)
     {
         $mode = Genesis::$kernel->getMode();
         $request = $this->_model->normalizeLogRequest($request, $mode);

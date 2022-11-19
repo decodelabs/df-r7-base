@@ -6,11 +6,10 @@
 
 namespace df\core\uri;
 
-use df;
-use df\core;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
 
 class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
 {
@@ -82,7 +81,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
         return $ref->newInstanceArgs($args);
     }
 
-    public function __construct($input=null, $autoCanonicalize=false, $separator=null)
+    public function __construct($input = null, $autoCanonicalize = false, $separator = null)
     {
         $this->canAutoCanonicalize($autoCanonicalize);
 
@@ -134,7 +133,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
         return $this->_separator;
     }
 
-    public function isAbsolute(bool $flag=null)
+    public function isAbsolute(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isAbsolute = $flag;
@@ -144,7 +143,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
         return $this->hasWinDrive() || $this->_isAbsolute;
     }
 
-    public function shouldAddTrailingSlash(bool $flag=null)
+    public function shouldAddTrailingSlash(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_addTrailingSlash = $flag;
@@ -154,7 +153,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
         return $this->_addTrailingSlash;
     }
 
-    public function canAutoCanonicalize(bool $flag=null)
+    public function canAutoCanonicalize(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_autoCanonicalize = $flag;
@@ -350,7 +349,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
     // Accessors
     public function getDirname()
     {
-        return dirname($this->toString().'a').'/';
+        return dirname($this->toString() . 'a') . '/';
     }
 
     public function setBaseName($baseName)
@@ -381,7 +380,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
             strlen((string)($extension = $this->getExtension())) ||
             substr($this->getLast(), -1) == '.'
         ) {
-            $fileName .= '.'.$extension;
+            $fileName .= '.' . $extension;
         }
 
         return $this->setBaseName($fileName);
@@ -429,7 +428,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
         $fileName = $this->getFileName();
 
         if ($extension !== null) {
-            $fileName .= '.'.$extension;
+            $fileName .= '.' . $extension;
         }
 
         if (strlen($fileName)) {
@@ -499,7 +498,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
         return $this->_pathToString(true);
     }
 
-    protected function _pathToString($encode=false)
+    protected function _pathToString($encode = false)
     {
         $output = '';
         $separator = $this->_separator;

@@ -5,13 +5,10 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
 use df\arch;
 
-class Textarea extends Base implements ITextareaWidget {
-
+class Textarea extends Base implements ITextareaWidget
+{
     use TWidget_FormData;
     use TWidget_Input;
     use TWidget_VisualInput;
@@ -19,22 +16,24 @@ class Textarea extends Base implements ITextareaWidget {
     use TWidget_PlaceholderProvider;
     use TWidget_TextEntry;
 
-    const PRIMARY_TAG = 'textarea.textbox.multiline';
-    const ARRAY_INPUT = false;
+    public const PRIMARY_TAG = 'textarea.textbox.multiline';
+    public const ARRAY_INPUT = false;
 
     protected $_columns;
     protected $_rows;
     protected $_directionInputName;
     protected $_wrap;
 
-    public function __construct(arch\IContext $context, $name, $value=null) {
+    public function __construct(arch\IContext $context, $name, $value = null)
+    {
         parent::__construct($context);
 
         $this->setName($name);
         $this->setValue($value);
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $tag = $this->getTag();
 
         $this->_applyFormDataAttributes($tag, false);
@@ -44,19 +43,19 @@ class Textarea extends Base implements ITextareaWidget {
         $this->_applyPlaceholderAttributes($tag);
         $this->_applyTextEntryAttributes($tag);
 
-        if($this->_columns !== null) {
+        if ($this->_columns !== null) {
             $tag->setAttribute('cols', (int)$this->_columns);
         }
 
-        if($this->_rows !== null) {
+        if ($this->_rows !== null) {
             $tag->setAttribute('rows', (int)$this->_rows);
         }
 
-        if($this->_directionInputName !== null) {
+        if ($this->_directionInputName !== null) {
             $tag->setAttribute('dirname', $this->_directionInputName);
         }
 
-        if($this->_wrap !== null) {
+        if ($this->_wrap !== null) {
             $tag->setAttribute('wrap', $this->_wrap);
         }
 
@@ -65,44 +64,51 @@ class Textarea extends Base implements ITextareaWidget {
 
 
 // Columns
-    public function setColumns($columns) {
+    public function setColumns($columns)
+    {
         $this->_columns = $columns;
         return $this;
     }
 
-    public function getColumns() {
+    public function getColumns()
+    {
         return $this->_columns;
     }
 
 
 // Rows
-    public function setRows($rows) {
+    public function setRows($rows)
+    {
         $this->_rows = $rows;
         return $this;
     }
 
-    public function getRows() {
+    public function getRows()
+    {
         return $this->_rows;
     }
 
 
 // Direction
-    public function setDirectionInputName($id) {
+    public function setDirectionInputName($id)
+    {
         $this->_directionInputName = $id;
         return $this;
     }
 
-    public function getDirectionInputName() {
+    public function getDirectionInputName()
+    {
         return $this->_directionInputName;
     }
 
 
 // Wrap
-    public function setWrap($wrap) {
-        if(!$wrap) {
+    public function setWrap($wrap)
+    {
+        if (!$wrap) {
             $this->_wrap = null;
         } else {
-            switch($wrap = strtolower($wrap)) {
+            switch ($wrap = strtolower($wrap)) {
                 case 'soft':
                 case 'hard':
                     $this->_wrap = $wrap;
@@ -117,7 +123,8 @@ class Textarea extends Base implements ITextareaWidget {
         return $this;
     }
 
-    public function getWrap() {
+    public function getWrap()
+    {
         return $this->_wrap;
     }
 }

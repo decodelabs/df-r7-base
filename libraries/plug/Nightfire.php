@@ -6,15 +6,14 @@
 
 namespace df\plug;
 
-use df;
-use df\arch;
-use df\aura;
-use df\fire;
-
 use DecodeLabs\Genesis;
 use DecodeLabs\Metamorph;
 use DecodeLabs\R7\Nightfire\Block;
+
 use DecodeLabs\R7\Nightfire\BlockAbstract;
+use df\arch;
+use df\aura;
+use df\fire;
 
 class Nightfire implements arch\IDirectoryHelper
 {
@@ -52,7 +51,7 @@ class Nightfire implements arch\IDirectoryHelper
         return $output;
     }
 
-    public function renderBlockPreview($block, $length=null)
+    public function renderBlockPreview($block, $length = null)
     {
         $output = $this->renderBlock($block);
 
@@ -93,7 +92,7 @@ class Nightfire implements arch\IDirectoryHelper
         return $output;
     }
 
-    public function renderSlotPreview($slot, $length=null)
+    public function renderSlotPreview($slot, $length = null)
     {
         $output = $this->renderSlot($slot);
 
@@ -102,7 +101,7 @@ class Nightfire implements arch\IDirectoryHelper
         ]);
     }
 
-    public function newSlotDefinition($category=null): fire\ISlotDefinition
+    public function newSlotDefinition($category = null): fire\ISlotDefinition
     {
         return (new fire\slot\Definition())
             ->setCategory($category);
@@ -133,7 +132,7 @@ class Nightfire implements arch\IDirectoryHelper
 
         if (!$body) {
             if (!Genesis::$environment->isProduction()) {
-                return $this->getView()->html->flashMessage('Dynamic element \''.$slug.'\' not found', 'error');
+                return $this->getView()->html->flashMessage('Dynamic element \'' . $slug . '\' not found', 'error');
             }
 
             return;

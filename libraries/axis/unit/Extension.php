@@ -5,19 +5,19 @@
  */
 namespace df\axis\unit;
 
-use df;
-use df\core;
 use df\axis;
 
-abstract class Extension implements axis\IUnit {
-
+abstract class Extension implements axis\IUnit
+{
     use axis\TUnit;
 
-    public function __construct(axis\IModel $model) {
+    public function __construct(axis\IModel $model)
+    {
         $this->_model = $model;
     }
 
-    public function getUnitType() {
+    public function getUnitType()
+    {
         return 'extension';
     }
 }

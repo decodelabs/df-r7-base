@@ -5,17 +5,14 @@
  */
 namespace df\apex\models\session\descriptor;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
-use df\user;
 
-class Unit extends axis\unit\Table {
+class Unit extends axis\unit\Table
+{
+    public const BROADCAST_HOOK_EVENTS = false;
 
-    const BROADCAST_HOOK_EVENTS = false;
-
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('id', 'Binary', 20)
             ->isConstantLength(true);
 

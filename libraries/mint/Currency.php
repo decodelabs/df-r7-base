@@ -5,18 +5,16 @@
  */
 namespace df\mint;
 
-use df;
-use df\core;
-use df\mint;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
 
 class Currency implements ICurrency, Dumpable
 {
     use core\TStringProvider;
 
-    const CURRENCIES = [
+    public const CURRENCIES = [
         '784' => 'AED',
         '971' => 'AFN',
         '008' => 'ALL',
@@ -156,7 +154,7 @@ class Currency implements ICurrency, Dumpable
         '967' => 'ZMW'
     ];
 
-    const DECIMALS = [
+    public const DECIMALS = [
         'BIF' => 0,
         'CLP' => 0,
         'DJF' => 0,
@@ -178,7 +176,7 @@ class Currency implements ICurrency, Dumpable
     protected $_amount;
     protected $_code;
 
-    public static function factory($amount, $code=null): ICurrency
+    public static function factory($amount, $code = null): ICurrency
     {
         if ($amount instanceof ICurrency) {
             return $amount;
@@ -382,7 +380,7 @@ class Currency implements ICurrency, Dumpable
     // String
     public function toString(): string
     {
-        return $this->getFormattedAmount().' '.$this->_code;
+        return $this->getFormattedAmount() . ' ' . $this->_code;
     }
 
     /**

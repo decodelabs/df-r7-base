@@ -6,15 +6,13 @@
 
 namespace df\opal\rdbms\adapter\statement;
 
-use df;
-use df\core;
-use df\opal;
-use df\flex;
-
 use DecodeLabs\Dictum;
+use DecodeLabs\Exceptional;
+
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
+use df\opal;
 
 use Traversable;
 
@@ -34,7 +32,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
 
     private $_keyIndex = 0;
 
-    public function __construct(opal\rdbms\IAdapter $adapter, $sql=null)
+    public function __construct(opal\rdbms\IAdapter $adapter, $sql = null)
     {
         $this->_adapter = $adapter;
         $this->setSql($sql);
@@ -55,7 +53,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
         return $this;
     }
 
-    public function isUnbuffered(bool $flag=null)
+    public function isUnbuffered(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isUnbuffered = $flag;
@@ -86,7 +84,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
             );
         }
 
-        $this->_sql = $sql.$this->_sql;
+        $this->_sql = $sql . $this->_sql;
         return $this;
     }
 
@@ -269,7 +267,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
         return $this->_countAffectedRows();
     }
 
-    abstract protected function _execute($forWrite=false);
+    abstract protected function _execute($forWrite = false);
     abstract protected function _countAffectedRows();
 
 

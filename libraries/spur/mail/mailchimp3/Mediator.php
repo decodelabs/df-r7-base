@@ -6,15 +6,13 @@
 
 namespace df\spur\mail\mailchimp3;
 
-use df;
-use df\core;
-use df\spur;
-use df\flow;
-use df\link;
-use df\flex;
-use df\user;
-
 use DecodeLabs\Compass\Ip;
+use df\core;
+use df\flex;
+use df\link;
+use df\spur;
+
+use df\user;
 use Psr\Http\Message\ResponseInterface;
 
 class Mediator implements IMediator
@@ -28,7 +26,7 @@ class Mediator implements IMediator
     protected $_dataCenter = 'us1';
     protected $_activeUrl;
 
-    public function __construct(string $apiKey, bool $secure=true)
+    public function __construct(string $apiKey, bool $secure = true)
     {
         $this->setApiKey($apiKey);
         $this->isSecure($secure);
@@ -36,7 +34,7 @@ class Mediator implements IMediator
 
 
     // Transport
-    public function isSecure(bool $flag=null)
+    public function isSecure(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isSecure = $flag;
@@ -105,7 +103,7 @@ class Mediator implements IMediator
     // Lists
     public function fetchList(string $id): IDataObject
     {
-        $data = $this->requestJson('get', 'lists/'.$id, ['exclude_fields' => '_links']);
+        $data = $this->requestJson('get', 'lists/' . $id, ['exclude_fields' => '_links']);
         return new DataObject('list', $data, [$this, '_processList']);
     }
 
@@ -115,7 +113,7 @@ class Mediator implements IMediator
         return new spur\mail\mailchimp3\filter\MailingList();
     }
 
-    public function fetchLists(IListFilter $filter=null): IDataList
+    public function fetchLists(IListFilter $filter = null): IDataList
     {
         $data = $this->requestJson(
             'get',
@@ -144,7 +142,7 @@ class Mediator implements IMediator
     // Interest categories
     public function fetchInterestCategory(string $listId, string $categoryId): IDataObject
     {
-        $data = $this->requestJson('get', 'lists/'.$listId.'/interest-categories/'.$categoryId, ['exclude_fields' => '_links']);
+        $data = $this->requestJson('get', 'lists/' . $listId . '/interest-categories/' . $categoryId, ['exclude_fields' => '_links']);
         return new DataObject('interest-category', $data);
     }
 
@@ -153,11 +151,11 @@ class Mediator implements IMediator
         return new spur\mail\mailchimp3\filter\InterestCategory();
     }
 
-    public function fetchInterestCategories(string $listId, IInterestCategoryFilter $filter=null): IDataList
+    public function fetchInterestCategories(string $listId, IInterestCategoryFilter $filter = null): IDataList
     {
         $data = $this->requestJson(
             'get',
-            'lists/'.$listId.'/interest-categories',
+            'lists/' . $listId . '/interest-categories',
             spur\mail\mailchimp3\filter\InterestCategory::normalize($filter)
         );
 
@@ -169,7 +167,7 @@ class Mediator implements IMediator
     // Interests
     public function fetchInterest(string $listId, string $categoryId, string $interestId): IDataObject
     {
-        $data = $this->requestJson('get', 'lists/'.$listId.'/interest-categories/'.$categoryId.'/interests/'.$interestId, ['exclude_fields' => '_links']);
+        $data = $this->requestJson('get', 'lists/' . $listId . '/interest-categories/' . $categoryId . '/interests/' . $interestId, ['exclude_fields' => '_links']);
         return new DataObject('interest', $data);
     }
 
@@ -179,11 +177,11 @@ class Mediator implements IMediator
         return new spur\mail\mailchimp3\filter\Interest();
     }
 
-    public function fetchInterests(string $listId, string $categoryId, IInterestFilter $filter=null): IDataList
+    public function fetchInterests(string $listId, string $categoryId, IInterestFilter $filter = null): IDataList
     {
         $data = $this->requestJson(
             'get',
-            'lists/'.$listId.'/interest-categories/'.$categoryId.'/interests',
+            'lists/' . $listId . '/interest-categories/' . $categoryId . '/interests',
             spur\mail\mailchimp3\filter\Interest::normalize($filter)
         );
 
@@ -200,7 +198,7 @@ class Mediator implements IMediator
 
     public function fetchMemberByHash(string $listId, string $hash): IDataObject
     {
-        $data = $this->requestJson('get', 'lists/'.$listId.'/members/'.$hash, ['exclude_fields' => '_links']);
+        $data = $this->requestJson('get', 'lists/' . $listId . '/members/' . $hash, ['exclude_fields' => '_links']);
         return new DataObject('member', $data, [$this, '_processMember']);
     }
 
@@ -210,11 +208,11 @@ class Mediator implements IMediator
         return new spur\mail\mailchimp3\filter\Member();
     }
 
-    public function fetchMembers(string $listId, IMemberFilter $filter=null): IDataList
+    public function fetchMembers(string $listId, IMemberFilter $filter = null): IDataList
     {
         $data = $this->requestJson(
             'get',
-            'lists/'.$listId.'/members',
+            'lists/' . $listId . '/members',
             spur\mail\mailchimp3\filter\Member::normalize($filter)
         );
 
@@ -222,7 +220,7 @@ class Mediator implements IMediator
     }
 
 
-    public function ensureSubscription(string $listId, user\IClientDataObject $user, array $groups=[], ?array $extraData=null): IDataObject
+    public function ensureSubscription(string $listId, user\IClientDataObject $user, array $groups = [], ?array $extraData = null): IDataObject
     {
         $input = [
             'email_address' => $email = $user->getEmail(),
@@ -258,7 +256,7 @@ class Mediator implements IMediator
         }
 
         $hash = md5($email);
-        $data = $this->requestJson('put', 'lists/'.$listId.'/members/'.$hash, $input);
+        $data = $this->requestJson('put', 'lists/' . $listId . '/members/' . $hash, $input);
         return new DataObject('member', $data, [$this, '_processMember']);
     }
 
@@ -267,7 +265,7 @@ class Mediator implements IMediator
         $hash = md5($email);
 
         try {
-            $data = $this->requestJson('patch', 'lists/'.$listId.'/members/'.$hash, [
+            $data = $this->requestJson('patch', 'lists/' . $listId . '/members/' . $hash, [
                 'exclude_fields' => '_links',
                 'status' => 'unsubscribed'
             ]);
@@ -308,7 +306,7 @@ class Mediator implements IMediator
             }
         }
 
-        $data = $this->requestJson('patch', 'lists/'.$listId.'/members/'.$hash, $input);
+        $data = $this->requestJson('patch', 'lists/' . $listId . '/members/' . $hash, $input);
         return new DataObject('member', $data, [$this, '_processMember']);
     }
 
@@ -317,7 +315,7 @@ class Mediator implements IMediator
     public function deleteMember(string $listId, string $email)
     {
         $hash = md5(strtolower($email));
-        $this->requestRaw('delete', 'lists/'.$listId.'/members/'.$hash);
+        $this->requestRaw('delete', 'lists/' . $listId . '/members/' . $hash);
         return $this;
     }
 
@@ -349,7 +347,7 @@ class Mediator implements IMediator
 
 
     // IO
-    public function createRequest(string $method, string $path, array $args=[], array $headers=[]): link\http\IRequest
+    public function createRequest(string $method, string $path, array $args = [], array $headers = []): link\http\IRequest
     {
         $url = $this->createUrl($path);
         $request = link\http\request\Base::factory($url);
@@ -389,7 +387,7 @@ class Mediator implements IMediator
     {
         if (!$this->_activeUrl) {
             $this->_activeUrl = link\http\Url::factory(self::API_URL);
-            $this->_activeUrl->setDomain($this->_dataCenter.'.'.$this->_activeUrl->getDomain());
+            $this->_activeUrl->setDomain($this->_dataCenter . '.' . $this->_activeUrl->getDomain());
             $this->_activeUrl->isSecure($this->_isSecure);
             $this->_activeUrl->setCredentials('x', $this->_apiKey);
         }
@@ -406,11 +404,11 @@ class Mediator implements IMediator
         $error = $data['detail'] ?? 'Undefined chimp calamity!';
 
         if (isset($data['title'])) {
-            $error = $data['title'].' - '.$error;
+            $error = $data['title'] . ' - ' . $error;
         }
 
         if (isset($data['status'])) {
-            $error = '['.$data['status'].'] '.$error;
+            $error = '[' . $data['status'] . '] ' . $error;
         }
 
         return $error;

@@ -6,9 +6,9 @@
 
 namespace df\apex\models\pestControl\errorLog;
 
-use df\axis;
-
 use DecodeLabs\Genesis;
+
+use df\axis;
 
 class Unit extends axis\unit\Table
 {
@@ -48,7 +48,7 @@ class Unit extends axis\unit\Table
     }
 
     // IO
-    public function logException(\Throwable $e, $request=null)
+    public function logException(\Throwable $e, $request = null)
     {
         while ($prev = $e->getPrevious()) {
             $e = $prev;

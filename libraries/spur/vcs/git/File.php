@@ -5,10 +5,6 @@
  */
 namespace df\spur\vcs\git;
 
-use df;
-use df\core;
-use df\spur;
-
 use DecodeLabs\Glitch\Dumpable;
 
 class File implements IFile, Dumpable
@@ -20,7 +16,7 @@ class File implements IFile, Dumpable
     protected $_size = null;
     protected $_repository;
 
-    public function __construct(ILocalRepository $repo, string $id, $name=null)
+    public function __construct(ILocalRepository $repo, string $id, $name = null)
     {
         $this->_id = $id;
         $this->_repository = $repo;

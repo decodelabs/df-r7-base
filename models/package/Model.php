@@ -6,15 +6,12 @@
 
 namespace df\apex\models\package;
 
-use df;
-use df\core;
-use df\apex;
+use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
+
+use DecodeLabs\Terminus\Session;
 use df\axis;
 use df\spur;
-
-use DecodeLabs\Genesis;
-use DecodeLabs\Terminus\Session;
-use DecodeLabs\R7\Legacy;
 
 class Model extends axis\Model
 {
@@ -30,7 +27,7 @@ class Model extends axis\Model
         $location = dirname(Genesis::$build->path);
 
         foreach (new \DirectoryIterator($location) as $item) {
-            if (!$item->isDir() || !is_file($item->getPathname().'/Package.php')) {
+            if (!$item->isDir() || !is_file($item->getPathname() . '/Package.php')) {
                 continue;
             }
 
@@ -46,7 +43,7 @@ class Model extends axis\Model
                 $package = $packages[$name];
             }
 
-            if (is_dir($path.'/.git') && basename(dirname(dirname($path))) !== 'vendor') {
+            if (is_dir($path . '/.git') && basename(dirname(dirname($path))) !== 'vendor') {
                 $repo = new spur\vcs\git\Repository($path);
             }
 
@@ -71,7 +68,7 @@ class Model extends axis\Model
         }
 
         foreach ($remainingPackages as $package) {
-            if (is_dir($package->path.'/.git') && basename(dirname(dirname($package->path))) !== 'vendor') {
+            if (is_dir($package->path . '/.git') && basename(dirname(dirname($package->path))) !== 'vendor') {
                 $repo = new spur\vcs\git\Repository($package->path);
             } else {
                 $repo = null;
@@ -107,7 +104,7 @@ class Model extends axis\Model
     }
 
     // Update remote
-    public function updateRemote($name, ?Session $session=null)
+    public function updateRemote($name, ?Session $session = null)
     {
         foreach ($this->getInstalledPackageList() as $package) {
             if ($package['name'] == $name && $package['repo']) {
@@ -119,7 +116,7 @@ class Model extends axis\Model
         return false;
     }
 
-    public function updateRemotes(?Session $session=null)
+    public function updateRemotes(?Session $session = null)
     {
         $output = [];
 
@@ -137,7 +134,7 @@ class Model extends axis\Model
 
 
     // Pull
-    public function pull($name, ?Session $session=null)
+    public function pull($name, ?Session $session = null)
     {
         foreach ($this->getInstalledPackageList() as $package) {
             if ($package['name'] == $name && $package['repo']) {
@@ -149,7 +146,7 @@ class Model extends axis\Model
         return false;
     }
 
-    public function pullAll(?Session $session=null)
+    public function pullAll(?Session $session = null)
     {
         $output = [];
 

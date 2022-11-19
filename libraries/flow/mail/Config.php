@@ -6,14 +6,12 @@
 
 namespace df\flow\mail;
 
-use df;
-use df\core;
-use df\flow;
-use df\halo;
-use df\link;
-
-use DecodeLabs\Systemic;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Systemic;
+use df\core;
+
+use df\flow;
+use df\link;
 
 class Config extends core\Config
 {
@@ -44,7 +42,7 @@ class Config extends core\Config
     {
         if (!flow\mail\transport\Base::isValidTransport($name)) {
             throw Exceptional::InvalidArgument(
-                'Transport '.$name.' is not available'
+                'Transport ' . $name . ' is not available'
             );
         }
 
@@ -57,7 +55,7 @@ class Config extends core\Config
         return $this->values->get('defaultTransport', 'Mail');
     }
 
-    public function getDefaultTransportSettings($checkName=null)
+    public function getDefaultTransportSettings($checkName = null)
     {
         return $this->values->transports->{$this->getDefaultTransport()};
     }
@@ -69,13 +67,13 @@ class Config extends core\Config
 
 
     // Default addresses
-    public function setDefaultAddress($address, $name=null)
+    public function setDefaultAddress($address, $name = null)
     {
         $address = Address::factory($address, $name);
 
         if (!$address || !$address->isValid()) {
             throw Exceptional::InvalidArgument(
-                'Email address '.(string)$address.' is invalid'
+                'Email address ' . (string)$address . ' is invalid'
             );
         }
 
@@ -100,7 +98,7 @@ class Config extends core\Config
 
         if (!$address || !$address->isValid()) {
             throw Exceptional::InvalidArgument(
-                'Return path '.(string)$address.' is invalid'
+                'Return path ' . (string)$address . ' is invalid'
             );
         }
 
@@ -157,7 +155,7 @@ class Config extends core\Config
             $domain = gethostname();
         }
 
-        return $name.'@'.$domain;
+        return $name . '@' . $domain;
     }
 
 
@@ -195,7 +193,7 @@ class Config extends core\Config
 
 
     // Capture
-    public function shouldCaptureInTesting(bool $flag=null)
+    public function shouldCaptureInTesting(bool $flag = null)
     {
         if ($flag !== null) {
             $this->values->captureInTesting = $flag;

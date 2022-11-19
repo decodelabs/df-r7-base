@@ -2,14 +2,13 @@
 
 namespace df\apex\models\user\auth;
 
-use df\core;
-use df\axis;
-
 use DecodeLabs\Disciple;
+
+use df\axis;
 
 class Unit extends axis\unit\Table
 {
-    const BROADCAST_HOOK_EVENTS = false;
+    public const BROADCAST_HOOK_EVENTS = false;
 
     protected function createSchema($schema)
     {

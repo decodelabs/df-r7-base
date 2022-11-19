@@ -5,8 +5,6 @@
  */
 namespace df\mint\charge;
 
-use df;
-use df\core;
 use df\mint;
 
 class Request implements mint\IChargeRequest
@@ -16,7 +14,7 @@ class Request implements mint\IChargeRequest
     protected $_email;
     protected $_description;
 
-    public function __construct(mint\ICurrency $amount, mint\ICreditCardReference $card, string $description=null, string $email=null)
+    public function __construct(mint\ICurrency $amount, mint\ICreditCardReference $card, string $description = null, string $email = null)
     {
         $this->setAmount($amount)
             ->setCard($card)

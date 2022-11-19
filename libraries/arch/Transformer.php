@@ -6,12 +6,11 @@
 
 namespace df\arch;
 
-use df;
-use df\core;
-use df\arch;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+
+use df\arch;
+use df\core;
 
 abstract class Transformer implements ITransformer
 {
@@ -26,7 +25,8 @@ abstract class Transformer implements ITransformer
 
             if ($output && !$output instanceof arch\node\INode) {
                 throw Exceptional::{'df/arch/InvalidNode,UnexpectedValue'}(
-                    'Transformer '.get_class($transformer).' returned an invalid node', [
+                    'Transformer ' . get_class($transformer) . ' returned an invalid node',
+                    [
                         'data' => $output
                     ]
                 );
@@ -61,14 +61,14 @@ abstract class Transformer implements ITransformer
         return new $class($context);
     }
 
-    public static function getClassFor(IRequest $request, string $runMode='Http')
+    public static function getClassFor(IRequest $request, string $runMode = 'Http')
     {
         $runMode = ucfirst($runMode);
         $mainParts = $sharedParts = explode('/', $request->getDirectoryLocation());
         $class = null;
 
         while (!empty($mainParts)) {
-            $class = 'df\\apex\\directory\\'.implode('\\', $mainParts).'\\'.$runMode.'Transformer';
+            $class = 'df\\apex\\directory\\' . implode('\\', $mainParts) . '\\' . $runMode . 'Transformer';
 
             if (class_exists($class)) {
                 break;
@@ -83,7 +83,7 @@ abstract class Transformer implements ITransformer
             $sharedParts[0] = 'shared';
 
             while (!empty($sharedParts)) {
-                $class = 'df\\apex\\directory\\'.implode('\\', $sharedParts).'\\'.$runMode.'Transformer';
+                $class = 'df\\apex\\directory\\' . implode('\\', $sharedParts) . '\\' . $runMode . 'Transformer';
 
                 if (class_exists($class)) {
                     break;

@@ -6,15 +6,14 @@
 
 namespace df\arch\node\form;
 
-use df\core;
+use DecodeLabs\Dictum;
+use DecodeLabs\Fluidity\CastTrait;
 use df\arch;
-use df\aura;
 
 use df\arch\node\IDelegate;
 
-use DecodeLabs\Dictum;
-use DecodeLabs\Exceptional;
-use DecodeLabs\Fluidity\CastTrait;
+use df\aura;
+use df\core;
 
 class Delegate implements IDelegate
 {
@@ -110,7 +109,7 @@ class Delegate implements IDelegate
     public function setRenderContext(
         aura\view\IView $view,
         aura\view\content\WidgetContentProvider $content,
-        $isRenderingInline=false
+        $isRenderingInline = false
     ): static {
         $this->view = $view;
         $this->content = $content;
@@ -200,12 +199,12 @@ class Delegate implements IDelegate
         $parts = explode('[', $name, 2);
         $parts[0] .= ']';
 
-        return '_delegates['.$this->_delegateId.']['.implode('[', $parts);
+        return '_delegates[' . $this->_delegateId . '][' . implode('[', $parts);
     }
 
     public function elementId(string $name): string
     {
-        return Dictum::slug($this->getDelegateId().'-'.$name);
+        return Dictum::slug($this->getDelegateId() . '-' . $name);
     }
 
 
@@ -215,7 +214,7 @@ class Delegate implements IDelegate
         $output = [
             'isValid' => $this->isValid(),
             'isNew' => $this->_isNew,
-            'values' => $this->values->toArrayDelimitedSet('_delegates['.$this->_delegateId.']'),
+            'values' => $this->values->toArrayDelimitedSet('_delegates[' . $this->_delegateId . ']'),
             'errors' => []
         ];
 

@@ -5,12 +5,11 @@
  */
 namespace df\mesh\event;
 
-use df;
 use df\core;
 use df\mesh;
 
-class Event implements IEvent {
-
+class Event implements IEvent
+{
     use core\collection\TArrayCollection_Map;
 
     protected $_action;
@@ -19,8 +18,9 @@ class Event implements IEvent {
     protected $_jobQueue;
     protected $_job;
 
-    public function __construct($entity, $action, array $data=null, mesh\job\IQueue $jobQueue=null, mesh\job\IJob $job=null) {
-        if(!$entity instanceof mesh\entity\ILocatorProvider) {
+    public function __construct($entity, $action, array $data = null, mesh\job\IQueue $jobQueue = null, mesh\job\IJob $job = null)
+    {
+        if (!$entity instanceof mesh\entity\ILocatorProvider) {
             $entity = mesh\entity\Locator::factory($entity);
         }
 
@@ -29,15 +29,16 @@ class Event implements IEvent {
         $this->setJobQueue($jobQueue);
         $this->setJob($job);
 
-        if($data !== null) {
+        if ($data !== null) {
             $this->import($data);
         }
     }
 
 
 // Entity
-    public function setEntity(mesh\entity\ILocatorProvider $entity) {
-        if($entity instanceof mesh\entity\IEntity) {
+    public function setEntity(mesh\entity\ILocatorProvider $entity)
+    {
+        if ($entity instanceof mesh\entity\IEntity) {
             $this->_entity = $entity;
         }
 
@@ -45,13 +46,15 @@ class Event implements IEvent {
         return $this;
     }
 
-    public function hasEntity() {
+    public function hasEntity()
+    {
         return $this->_entity !== null;
     }
 
-    public function getEntity() {
-        if(!$this->_entity) {
-            if(!$this->_entityLocator) {
+    public function getEntity()
+    {
+        if (!$this->_entity) {
+            if (!$this->_entityLocator) {
                 return null;
             }
 
@@ -61,51 +64,61 @@ class Event implements IEvent {
         return $this->_entity;
     }
 
-    public function getEntityLocator() {
+    public function getEntityLocator()
+    {
         return $this->_entityLocator;
     }
 
-    public function hasCachedEntity() {
+    public function hasCachedEntity()
+    {
         return $this->_entity !== null;
     }
 
-    public function getCachedEntity() {
+    public function getCachedEntity()
+    {
         return $this->_entity;
     }
 
-    public function clearCachedEntity() {
+    public function clearCachedEntity()
+    {
         $this->_entity = null;
         return $this;
     }
 
 
 // Action
-    public function setAction($action) {
+    public function setAction($action)
+    {
         $this->_action = lcfirst($action);
         return $this;
     }
 
-    public function getAction() {
+    public function getAction()
+    {
         return $this->_action;
     }
 
 
 // Job
-    public function setJobQueue(mesh\job\IQueue $queue=null) {
+    public function setJobQueue(mesh\job\IQueue $queue = null)
+    {
         $this->_jobQueue = $queue;
         return $this;
     }
 
-    public function getJobQueue(): ?mesh\job\IQueue {
+    public function getJobQueue(): ?mesh\job\IQueue
+    {
         return $this->_jobQueue;
     }
 
-    public function setJob(mesh\job\IJob $job=null) {
+    public function setJob(mesh\job\IJob $job = null)
+    {
         $this->_job = $job;
         return $this;
     }
 
-    public function getJob(): ?mesh\job\IJob {
+    public function getJob(): ?mesh\job\IJob
+    {
         return $this->_job;
     }
 }

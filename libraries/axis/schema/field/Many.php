@@ -5,12 +5,10 @@
  */
 namespace df\axis\schema\field;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
-
 use DecodeLabs\Exceptional;
+use df\axis;
+
+use df\opal;
 
 /*
  * This type, like One does not care about inverses.
@@ -22,10 +20,10 @@ class Many extends Base implements axis\schema\IManyField
     use axis\schema\TRelationField;
     use axis\schema\TBridgedRelationField;
 
-    public function __construct(axis\schema\ISchema $schema, $type, $name, $args=null)
+    public function __construct(axis\schema\ISchema $schema, $type, $name, $args = null)
     {
         parent::__construct($schema, $type, $name, $args);
-        $this->_bridgeUnitId = $this->_getBridgeUnitType().'('.$schema->getName().'.'.$this->_name.')';
+        $this->_bridgeUnitId = $this->_getBridgeUnitType() . '(' . $schema->getName() . '.' . $this->_name . ')';
     }
 
     protected function _init($targetTableUnit)
@@ -34,13 +32,13 @@ class Many extends Base implements axis\schema\IManyField
     }
 
 
-    public function isDominant(bool $flag=null)
+    public function isDominant(bool $flag = null)
     {
         return true;
     }
 
     // Values
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord = null)
     {
         $value = null;
 
@@ -66,7 +64,7 @@ class Many extends Base implements axis\schema\IManyField
         return null;
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    public function sanitizeValue($value, opal\record\IRecord $forRecord = null)
     {
         if ($forRecord) {
             $output = new axis\unit\table\record\BridgedManyRelationValueContainer($this);
@@ -90,20 +88,22 @@ class Many extends Base implements axis\schema\IManyField
     }
 
     // Clause
-    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false)
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr = false)
     {
         $localRelationManifest = $this->getLocalRelationManifest();
 
         if (!$localRelationManifest->isSingleField()) {
             throw Exceptional::Runtime(
-                'Query clause on field '.$this->_name.' cannot be executed as it relies on a multi-field primary key. '.
+                'Query clause on field ' . $this->_name . ' cannot be executed as it relies on a multi-field primary key. ' .
                 'You should probably use a fieldless join constraint instead'
             );
         }
 
         if (!$parent instanceof opal\query\ISourceProvider) {
             throw Exceptional::Logic(
-                'Clause factory is not a source provider', null, $parent
+                'Clause factory is not a source provider',
+                null,
+                $parent
             );
         }
 
@@ -112,7 +112,7 @@ class Many extends Base implements axis\schema\IManyField
         $localUnit = $source->getAdapter();
 
         $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId);
-        $targetField = $sourceManager->extrapolateIntrinsicField($source, $source->getAlias().'.'.$localRelationManifest->getSingleFieldName());
+        $targetField = $sourceManager->extrapolateIntrinsicField($source, $source->getAlias() . '.' . $localRelationManifest->getSingleFieldName());
 
         $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId);
 
@@ -121,7 +121,7 @@ class Many extends Base implements axis\schema\IManyField
 
         $query = opal\query\Initiator::factory()
             ->beginCorrelation($parent, $localFieldName, 'id')
-            ->from($bridgeUnit, $localFieldName.'Bridge');
+            ->from($bridgeUnit, $localFieldName . 'Bridge');
 
         $mainOperator = 'in';
 
@@ -175,22 +175,22 @@ class Many extends Base implements axis\schema\IManyField
         $bridgeTargetFieldName = $this->getBridgeTargetFieldName();
 
         $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId);
-        $bridgeSourceAlias = $populate->getFieldName().'_bridge';
+        $bridgeSourceAlias = $populate->getFieldName() . '_bridge';
 
         $output = opal\query\Initiator::beginAttachFromPopulate($populate);
 
         if ($populate->isSelect()) {
             $output->rightJoin($bridgeUnit->getBridgeFieldNames($this->_name, [$bridgeLocalFieldName, $bridgeTargetFieldName]))
                     ->from($bridgeUnit, $bridgeSourceAlias)
-                    ->on($bridgeSourceAlias.'.'.$bridgeTargetFieldName, '=', $targetSourceAlias.'.@primary')
+                    ->on($bridgeSourceAlias . '.' . $bridgeTargetFieldName, '=', $targetSourceAlias . '.@primary')
                     ->endJoin()
-                ->on($bridgeSourceAlias.'.'.$bridgeLocalFieldName, '=', $parentSourceAlias.'.@primary');
+                ->on($bridgeSourceAlias . '.' . $bridgeLocalFieldName, '=', $parentSourceAlias . '.@primary');
         } else {
             $output->rightJoinConstraint()
                     ->from($bridgeUnit, $bridgeSourceAlias)
-                    ->on($bridgeSourceAlias.'.'.$bridgeTargetFieldName, '=', $targetSourceAlias.'.@primary')
+                    ->on($bridgeSourceAlias . '.' . $bridgeTargetFieldName, '=', $targetSourceAlias . '.@primary')
                     ->endJoin()
-                ->on($bridgeSourceAlias.'.'.$bridgeLocalFieldName, '=', $parentSourceAlias.'.@primary');
+                ->on($bridgeSourceAlias . '.' . $bridgeLocalFieldName, '=', $parentSourceAlias . '.@primary');
         }
 
         $output->asMany($this->_name);
@@ -209,7 +209,7 @@ class Many extends Base implements axis\schema\IManyField
         // Local ids
         if (!$localPrimaryIndex = $localSchema->getPrimaryIndex()) {
             throw Exceptional::Runtime(
-                'Relation table '.$localUnit->getUnitId().' does not have a primary index'
+                'Relation table ' . $localUnit->getUnitId() . ' does not have a primary index'
             );
         }
 

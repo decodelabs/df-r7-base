@@ -6,10 +6,6 @@
 
 namespace df\opal\mmdb;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Exceptional;
 
@@ -26,14 +22,14 @@ class Decoder implements IDecoder
     protected $_pointerBase = 0;
     protected $_isLittleEndian = false;
 
-    public function __construct(File $file, $pointerBase=0)
+    public function __construct(File $file, $pointerBase = 0)
     {
         $this->_file = $file;
         $this->_pointerBase = (int)$pointerBase;
         $this->_isLittleEndian = $this->_isPlatformLittleEndian();
     }
 
-    public function decode($offset=null)
+    public function decode($offset = null)
     {
         if ($offset === null) {
             $offset = $this->_pointerBase;
@@ -117,7 +113,7 @@ class Decoder implements IDecoder
 
             default:
                 throw Exceptional::UnexpectedValue(
-                    'Unknown type: '.$type
+                    'Unknown type: ' . $type
                 );
         }
     }
@@ -187,7 +183,7 @@ class Decoder implements IDecoder
 
         $packed = $pointerSize == 4 ?
             $buffer :
-            (pack('C', $ctrlByte & 0x7)).$buffer;
+            (pack('C', $ctrlByte & 0x7)) . $buffer;
 
         $unpacked = $this->_decodeUint32($packed);
         $pointer = $unpacked + $this->_pointerBase + self::POINTER_VALUE_OFFSET[$pointerSize];
@@ -226,7 +222,7 @@ class Decoder implements IDecoder
         $longs = $size / 4;
         $output = 0;
         $bytes = $this->_zeroPadLeft($bytes, $size);
-        $unpacked = array_merge(unpack('N'.$longs, $bytes));
+        $unpacked = array_merge(unpack('N' . $longs, $bytes));
 
         foreach ($unpacked as $part) {
             $output = bcadd(bcmul((string)$output, bcpow('2', '32')), $part);
@@ -282,7 +278,7 @@ class Decoder implements IDecoder
     {
         if ($expected != $actual) {
             throw Exceptional::UnexpectedValue(
-                'Data size incorrect - read '.$actual.', expected '.$expected
+                'Data size incorrect - read ' . $actual . ', expected ' . $expected
             );
         }
     }

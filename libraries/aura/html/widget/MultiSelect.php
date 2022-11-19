@@ -5,59 +5,60 @@
  */
 namespace df\aura\html\widget;
 
-use df;
 use df\core;
-use df\aura;
-use df\arch;
 
-class MultiSelect extends Select implements IMultiSelectWidget {
-
-    const PRIMARY_TAG = 'select.multi';
-    const ARRAY_INPUT = true;
+class MultiSelect extends Select implements IMultiSelectWidget
+{
+    public const PRIMARY_TAG = 'select.multi';
+    public const ARRAY_INPUT = true;
 
     protected $_size;
     protected $_value = [];
     protected $_noSelectionLabel = null;
 
-    public function setNoSelectionLabel($label) {
+    public function setNoSelectionLabel($label)
+    {
         return $this;
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $tag = $this->getTag();
         $tag->setAttribute('multiple', 'multiple');
 
-        if($this->_size !== null) {
+        if ($this->_size !== null) {
             $tag->setAttribute('size', (int)$this->_size);
         }
 
         return parent::_render();
     }
 
-    protected function _checkSelected($value, &$selectionFound) {
+    protected function _checkSelected($value, &$selectionFound)
+    {
         return $this->_value->contains($value);
     }
 
-    public function setValue($value) {
-        if(!$value instanceof core\collection\IInputTree) {
-            if($value instanceof core\collection\ICollection) {
+    public function setValue($value)
+    {
+        if (!$value instanceof core\collection\IInputTree) {
+            if ($value instanceof core\collection\ICollection) {
                 $value = $value->toArray();
             }
 
-            if($value instanceof core\IValueContainer) {
+            if ($value instanceof core\IValueContainer) {
                 $value = $value->getValue();
             }
 
-            if(!is_array($value)) {
+            if (!is_array($value)) {
                 $value = [$value];
             }
 
             $newValue = [];
 
-            foreach($value as $val) {
+            foreach ($value as $val) {
                 $val = (string)$val;
 
-                if(!strlen($val)) {
+                if (!strlen($val)) {
                     continue;
                 }
 
@@ -72,18 +73,20 @@ class MultiSelect extends Select implements IMultiSelectWidget {
         return $this;
     }
 
-    public function getValueString() {
+    public function getValueString()
+    {
         return implode(', ', $this->getValue()->toArray());
     }
 
 // Size
-    public function setSize($size) {
-        if($size === true) {
+    public function setSize($size)
+    {
+        if ($size === true) {
             $size = count($this->_options);
 
-            if($size < 5) {
+            if ($size < 5) {
                 $size = 5;
-            } else if($size > 50) {
+            } elseif ($size > 50) {
                 $size = 50;
             }
         }
@@ -92,7 +95,8 @@ class MultiSelect extends Select implements IMultiSelectWidget {
         return $this;
     }
 
-    public function getSize() {
+    public function getSize()
+    {
         return $this->_size;
     }
 }

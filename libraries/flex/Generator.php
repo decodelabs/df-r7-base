@@ -6,15 +6,11 @@
 
 namespace df\flex;
 
-use df;
-use df\core;
-use df\flex;
-
 use DecodeLabs\Dictum\Text;
 
 abstract class Generator implements IGenerator
 {
-    public static function random($minLength=6, $maxLength=14, $additionalChars=null)
+    public static function random($minLength = 6, $maxLength = 14, $additionalChars = null)
     {
         $characters = new Text('abcdefghijklmnopqrstuvwxyz');
 
@@ -25,7 +21,7 @@ abstract class Generator implements IGenerator
         return self::_generateRandom($characters, $minLength, $maxLength);
     }
 
-    public static function randomNumber($minLength=6, $maxLength=14)
+    public static function randomNumber($minLength = 6, $maxLength = 14)
     {
         $characters = new Text('0123456789');
         return self::_generateRandom($characters, $minLength, $maxLength);
@@ -73,7 +69,7 @@ abstract class Generator implements IGenerator
         return self::random(10, 20, '!£$%^&*()_-+=#');
     }
 
-    public static function sessionId($raw=false)
+    public static function sessionId($raw = false)
     {
         $output = self::passKey();
 
@@ -132,12 +128,12 @@ abstract class Generator implements IGenerator
 
 
     // UUID
-    public static function uuid1($node=null, $time=null)
+    public static function uuid1($node = null, $time = null)
     {
         return Guid::uuid1($node, $time)->toString();
     }
 
-    public static function uuid3($name, $namespace=null)
+    public static function uuid3($name, $namespace = null)
     {
         return Guid::uuid3($name, $namespace)->toString();
     }
@@ -147,7 +143,7 @@ abstract class Generator implements IGenerator
         return Guid::uuid4()->toString();
     }
 
-    public static function uuid5($name, $namespace=null)
+    public static function uuid5($name, $namespace = null)
     {
         return Guid::uuid5($name, $namespace)->toString();
     }

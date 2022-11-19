@@ -6,13 +6,10 @@
 
 namespace df\apex\directory\front\axis\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\axis;
-
 use DecodeLabs\Terminus as Cli;
+use df\arch;
+
+use df\axis;
 
 class TaskRebuildSchemas extends arch\node\Task
 {
@@ -28,11 +25,11 @@ class TaskRebuildSchemas extends arch\node\Task
             try {
                 $unit = axis\Model::loadUnitFromId($unitId);
             } catch (axis\Exception $e) {
-                Cli::operative('Skipped '.$unitId.', definition not found');
+                Cli::operative('Skipped ' . $unitId . ', definition not found');
                 continue;
             }
 
-            Cli::{'yellow'}($unitId.': ');
+            Cli::{'yellow'}($unitId . ': ');
 
             $schema = $unit->buildInitialSchema();
             $unit->updateUnitSchema($schema);

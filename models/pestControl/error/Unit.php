@@ -6,13 +6,11 @@
 
 namespace df\apex\models\pestControl\error;
 
-use df;
-use df\core;
-use df\apex;
-use df\axis;
-use df\opal;
-
 use DecodeLabs\Glitch;
+use df\axis;
+use df\core;
+
+use df\opal;
 
 class Unit extends axis\unit\Table
 {
@@ -108,7 +106,7 @@ class Unit extends axis\unit\Table
         }
 
         if (strlen($type) > 255) {
-            $type = substr($type, 0, 252).'...';
+            $type = substr($type, 0, 252) . '...';
         }
 
         return $this->logError(

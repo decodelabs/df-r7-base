@@ -6,9 +6,8 @@
 
 namespace df\axis\schema;
 
-use df;
-use df\core;
 use df\axis;
+use df\core;
 
 class Manager implements IManager
 {
@@ -19,7 +18,7 @@ class Manager implements IManager
     protected $_transient = [];
     protected $_storeSchema;
 
-    public function fetchFor(axis\ISchemaBasedStorageUnit $unit, $transient=false)
+    public function fetchFor(axis\ISchemaBasedStorageUnit $unit, $transient = false)
     {
         $schema = null;
         $cache = Cache::getInstance();
@@ -165,7 +164,7 @@ class Manager implements IManager
         return $this;
     }
 
-    public function clearCache(axis\ISchemaBasedStorageUnit $unit=null)
+    public function clearCache(axis\ISchemaBasedStorageUnit $unit = null)
     {
         $cache = Cache::getInstance();
 

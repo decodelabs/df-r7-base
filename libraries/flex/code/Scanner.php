@@ -6,20 +6,17 @@
 
 namespace df\flex\code;
 
-use df;
-use df\core;
-use df\flex;
-use df\axis;
-
 use DecodeLabs\Exceptional;
+
 use DecodeLabs\R7\Legacy;
+use df\axis;
 
 class Scanner implements IScanner
 {
     public $locations = [];
     public $probes = [];
 
-    public function __construct(array $locations=null, array $probes=null)
+    public function __construct(array $locations = null, array $probes = null)
     {
         if (!empty($locations)) {
             $this->addLocations($locations);
@@ -55,7 +52,7 @@ class Scanner implements IScanner
         return $this;
     }
 
-    public function addFrameworkPackageLocations(bool $allRoot=false, array $blackList=null)
+    public function addFrameworkPackageLocations(bool $allRoot = false, array $blackList = null)
     {
         if ($allRoot) {
             $model = axis\Model::factory('package');

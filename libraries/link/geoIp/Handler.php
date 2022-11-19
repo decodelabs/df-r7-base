@@ -6,9 +6,6 @@
 
 namespace df\link\geoIp;
 
-use df\link\geoIp\Adapter;
-use df\link\geoIp\Result;
-
 use DecodeLabs\Compass\Ip;
 use DecodeLabs\Exceptional;
 use DecodeLabs\R7\Legacy;
@@ -17,7 +14,7 @@ class Handler
 {
     protected $_adapter;
 
-    public static function factory($adapter=null): Handler
+    public static function factory($adapter = null): Handler
     {
         if (!$adapter instanceof Adapter) {
             $config = Config::getInstance();
@@ -30,11 +27,11 @@ class Handler
                 $adapter = $config->getDefaultAdapter();
             }
 
-            $class = 'df\\link\\geoIp\\Adapter\\'.ucfirst($adapter);
+            $class = 'df\\link\\geoIp\\Adapter\\' . ucfirst($adapter);
 
             if (!class_exists($class)) {
                 throw Exceptional::Runtime(
-                    'GeoIp adapter '.$adapter.' could not be found'
+                    'GeoIp adapter ' . $adapter . ' could not be found'
                 );
             }
 
@@ -50,7 +47,7 @@ class Handler
 
     public static function isAdapterAvailable(string $name): bool
     {
-        $class = 'df\\link\\geoIp\\Adapter\\'.ucfirst($name);
+        $class = 'df\\link\\geoIp\\Adapter\\' . ucfirst($name);
 
         if (!class_exists($class)) {
             return false;
@@ -84,7 +81,7 @@ class Handler
         return $output;
     }
 
-    public function __construct(Adapter $adapter=null)
+    public function __construct(Adapter $adapter = null)
     {
         $this->_adapter = $adapter;
     }

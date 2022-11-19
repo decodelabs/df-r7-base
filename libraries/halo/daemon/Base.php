@@ -6,21 +6,19 @@
 
 namespace df\halo\daemon;
 
-use df;
-use df\core;
-use df\halo;
-use df\flex;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Deliverance;
+
 use DecodeLabs\Dictum;
 use DecodeLabs\Eventful\Dispatcher as EventDispatcher;
 use DecodeLabs\Eventful\Factory as EventFactory;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
 use DecodeLabs\Systemic;
 use DecodeLabs\Terminus as Cli;
-use DecodeLabs\R7\Legacy;
+use df\core;
+use df\flex;
 
 abstract class Base implements IDaemon
 {
@@ -50,14 +48,14 @@ abstract class Base implements IDaemon
     protected $_user;
     protected $_group;
 
-    public static function launch($name, $user=null)
+    public static function launch($name, $user = null)
     {
         if ($user === null) {
             $user = core\environment\Config::getInstance()->getDaemonUser();
         }
 
-        $path = Genesis::$hub->getApplicationPath().'/entry/';
-        $path .= Genesis::$environment->getName().'.php';
+        $path = Genesis::$hub->getApplicationPath() . '/entry/';
+        $path .= Genesis::$environment->getName() . '.php';
 
         return Systemic::$process->launchScript($path, ['daemon', $name], null, $user);
     }
@@ -85,11 +83,11 @@ abstract class Base implements IDaemon
         $parts = explode('/', $name);
         $top = ucfirst((string)array_pop($parts));
         $parts[] = $top;
-        $class = 'df\\apex\\daemons\\'.implode('\\', $parts);
+        $class = 'df\\apex\\daemons\\' . implode('\\', $parts);
 
         if (!class_exists($class)) {
             throw Exceptional::NotFound(
-                'Daemon '.$name.' could not be found'
+                'Daemon ' . $name . ' could not be found'
             );
         }
 
@@ -148,7 +146,7 @@ abstract class Base implements IDaemon
     {
         if ($this->_isRunning || $this->_isStopping || $this->_isStopped) {
             throw Exceptional::Logic(
-                'Daemon '.$this->getName().' has already been run'
+                'Daemon ' . $this->getName() . ' has already been run'
             );
         }
 
@@ -156,14 +154,14 @@ abstract class Base implements IDaemon
         $this->context = new core\SharedContext();
         $this->process = Systemic::$process->getCurrent();
 
-        $basePath = Genesis::$hub->getLocalDataPath().'/daemons/'.Dictum::fileName($this->getName());
+        $basePath = Genesis::$hub->getLocalDataPath() . '/daemons/' . Dictum::fileName($this->getName());
         Atlas::createDir(dirname($basePath));
 
         $this->_startTime = time();
-        $this->_statusPath = $basePath.'.status';
+        $this->_statusPath = $basePath . '.status';
 
         if (!Genesis::$environment->isProduction()) {
-            $this->_endTime = core\time\Date::factory('+'.self::DEV_RUN_TIME)->toTimestamp();
+            $this->_endTime = core\time\Date::factory('+' . self::DEV_RUN_TIME)->toTimestamp();
         }
 
 
@@ -171,7 +169,7 @@ abstract class Base implements IDaemon
             $broker = Deliverance::newCliBroker();
         } else {
             $broker = Deliverance::newBroker()
-                ->addOutputReceiver(Atlas::file($basePath.'.log', 'w'));
+                ->addOutputReceiver(Atlas::file($basePath . '.log', 'w'));
         }
 
         Cli::setSession(
@@ -185,7 +183,7 @@ abstract class Base implements IDaemon
 
         if (!$isPrivileged && static::REQUIRES_PRIVILEGED_PROCESS) {
             throw Exceptional::Runtime(
-                'Daemon '.$this->getName().' must be running from a privileged process'
+                'Daemon ' . $this->getName() . ' must be running from a privileged process'
             );
         }
 
@@ -200,7 +198,7 @@ abstract class Base implements IDaemon
         try {
             $this->_runForked();
         } catch (\Throwable $e) {
-            file_put_contents(Genesis::$hub->getApplicationPath().'/daemon-error', (string)$e);
+            file_put_contents(Genesis::$hub->getApplicationPath() . '/daemon-error', (string)$e);
             throw $e;
         }
     }
@@ -208,7 +206,7 @@ abstract class Base implements IDaemon
     private function _runForked()
     {
         $this->events = EventFactory::newDispatcher();
-        $this->process->setTitle(Genesis::$hub->getApplicationName().' - '.$this->getName());
+        $this->process->setTitle(Genesis::$hub->getApplicationName() . ' - ' . $this->getName());
 
         $pidPath = $this->getPidFilePath();
 
@@ -232,7 +230,7 @@ abstract class Base implements IDaemon
             $this->process->setIdentity($user, $group);
         } else {
             if ($user != $this->process->getOwnerName()) {
-                Cli::error('You are trying to run this daemon as a user with conflicting permissions - either run it as '.$user.' or with sudo!');
+                Cli::error('You are trying to run this daemon as a user with conflicting permissions - either run it as ' . $user . ' or with sudo!');
                 return;
             }
         }
@@ -283,7 +281,7 @@ abstract class Base implements IDaemon
         }
     }
 
-    protected function _setupDefaultEvents(EventDispatcher $events, $pauseEvents=false)
+    protected function _setupDefaultEvents(EventDispatcher $events, $pauseEvents = false)
     {
         $events
             ->setCycleHandler(function () use ($pauseEvents) {
@@ -312,14 +310,14 @@ abstract class Base implements IDaemon
             ->bindSignal('pause', ['SIGTSTP'], [$this, 'pause'])
             ->bindSignal('resume', ['SIGCONT'], [$this, 'resume'])
             ->bindSignal('restart', ['SIGABRT'], [$this, 'restart'])
-            ;
+        ;
 
         return $events;
     }
 
     public function getPidFilePath()
     {
-        return Genesis::$hub->getLocalDataPath().'/daemons/'.Dictum::fileName($this->getName()).'.pid';
+        return Genesis::$hub->getLocalDataPath() . '/daemons/' . Dictum::fileName($this->getName()) . '.pid';
     }
 
     protected function _setup()

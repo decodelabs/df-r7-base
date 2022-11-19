@@ -5,13 +5,11 @@
  */
 namespace df\opal\native;
 
-use df;
-use df\core;
-use df\opal;
-use df\flex;
-
-use DecodeLabs\Glitch;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch;
+
+use df\flex;
+use df\opal;
 
 class ClauseMatcher implements IClauseMatcher
 {
@@ -19,7 +17,7 @@ class ClauseMatcher implements IClauseMatcher
     protected $_isFieldComparison = false;
 
 
-    public function __construct(array $clauses, $isFieldComparison=false)
+    public function __construct(array $clauses, $isFieldComparison = false)
     {
         $this->_isFieldComparison = (bool)$isFieldComparison;
 
@@ -113,7 +111,10 @@ class ClauseMatcher implements IClauseMatcher
 
                         $source->addOutputField(
                             new opal\query\field\Aggregate(
-                                $source, 'MAX', $targetField, 'max'
+                                $source,
+                                'MAX',
+                                $targetField,
+                                'max'
                             )
                         );
 
@@ -126,7 +127,10 @@ class ClauseMatcher implements IClauseMatcher
 
                         $source->addOutputField(
                             new opal\query\field\Aggregate(
-                                $source, 'MIN', $targetField, 'min'
+                                $source,
+                                'MIN',
+                                $targetField,
+                                'min'
                             )
                         );
 
@@ -137,13 +141,13 @@ class ClauseMatcher implements IClauseMatcher
                     case opal\query\clause\Clause::OP_BETWEEN:
                     case opal\query\clause\Clause::OP_NOT_BETWEEN:
                         throw Exceptional::{'df/opal/query/Operator'}(
-                            'Operator '.$operator.' is not valid for clause subqueries'
+                            'Operator ' . $operator . ' is not valid for clause subqueries'
                         );
 
 
                     default:
                         throw Exceptional::{'df/opal/query/Operator'}(
-                            'Operator '.$operator.' is not recognized'
+                            'Operator ' . $operator . ' is not recognized'
                         );
                 }
 
@@ -157,7 +161,7 @@ class ClauseMatcher implements IClauseMatcher
     }
 
 
-    public function testRow(array $row, array &$matchedFields=[])
+    public function testRow(array $row, array &$matchedFields = [])
     {
         if (empty($this->_index)) {
             return true;
@@ -298,15 +302,15 @@ class ClauseMatcher implements IClauseMatcher
                 return !flex\Matcher::ends($compare, $value);
 
             case opal\query\clause\Clause::OP_MATCHES:
-                return flex\Matcher::isLike('*'.$compare.'*', $value);
+                return flex\Matcher::isLike('*' . $compare . '*', $value);
 
             case opal\query\clause\Clause::OP_NOT_MATCHES:
-                return !flex\Matcher::isLike('*'.$compare.'*', $value);
+                return !flex\Matcher::isLike('*' . $compare . '*', $value);
 
 
             default:
                 throw Exceptional::{'df/opal/query/Operator'}(
-                    'Operator '.$operator.' is not recognized'
+                    'Operator ' . $operator . ' is not recognized'
                 );
         }
     }

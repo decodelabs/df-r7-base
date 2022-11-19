@@ -6,13 +6,12 @@
 
 namespace df\flow\mailingList;
 
-use df;
+use DecodeLabs\Exceptional;
+use df\axis;
 use df\core;
 use df\flow;
-use df\user;
-use df\axis;
 
-use DecodeLabs\Exceptional;
+use df\user;
 
 class Source implements ISource
 {
@@ -59,7 +58,7 @@ class Source implements ISource
     {
         $cache = Cache::getInstance();
 
-        if (!$manifest = $cache->get('manifest:'.$this->_id)) {
+        if (!$manifest = $cache->get('manifest:' . $this->_id)) {
             $manifest = $this->_getManifestFromStore();
 
             if (($manifest['__manifest_version__'] ?? null) !== self::MANIFEST_VERSION) {
@@ -67,7 +66,7 @@ class Source implements ISource
             }
 
             unset($manifest['__manifest_version__']);
-            $cache->set('manifest:'.$this->_id, $manifest);
+            $cache->set('manifest:' . $this->_id, $manifest);
         }
 
         return $manifest;
@@ -119,7 +118,7 @@ class Source implements ISource
 
         foreach ($manifest as $id => $list) {
             if (!isset($list['name'])) {
-                $list['name'] = $this->_adapter->getName().': '.$list['id'];
+                $list['name'] = $this->_adapter->getName() . ': ' . $list['id'];
             }
 
             if (!isset($list['groupSets'])) {
@@ -140,7 +139,7 @@ class Source implements ISource
                 }
 
                 if (!isset($group['name'])) {
-                    $group['name'] = 'Group: '.$groupId;
+                    $group['name'] = 'Group: ' . $groupId;
                 }
 
                 if (!isset($group['groupSet'])) {
@@ -239,14 +238,14 @@ class Source implements ISource
 
         foreach ($this->getManifest() as $listId => $list) {
             foreach ($list['groupSets'] as $setId => $setName) {
-                $output[$listId.'/'.$setId] = $setName;
+                $output[$listId . '/' . $setId] = $setName;
             }
         }
 
         return $output;
     }
 
-    public function getGroupOptions(bool $nested=false, bool $showSets=true): array
+    public function getGroupOptions(bool $nested = false, bool $showSets = true): array
     {
         $output = [];
         $manifest = $this->getManifest();
@@ -258,14 +257,14 @@ class Source implements ISource
 
                 if ($showSets) {
                     $cat .= isset($list['groupSets'][$group['groupSet']]) ?
-                        ' / '.$list['groupSets'][$group['groupSet']] : null;
+                        ' / ' . $list['groupSets'][$group['groupSet']] : null;
                 }
 
                 if ($nested) {
-                    $output[$cat][$listId.'/'.$groupId] = $group['name'];
+                    $output[$cat][$listId . '/' . $groupId] = $group['name'];
                 } else {
-                    $output[$listId.'/'.$groupId] = $showSets ?
-                        $cat.' / '.$group['name'] : $group['name'];
+                    $output[$listId . '/' . $groupId] = $showSets ?
+                        $cat . ' / ' . $group['name'] : $group['name'];
                 }
             }
         }
@@ -290,7 +289,7 @@ class Source implements ISource
         return $output;
     }
 
-    public function getGroupOptionsFor(?string $listId, bool $nested=false, bool $showSets=true): array
+    public function getGroupOptionsFor(?string $listId, bool $nested = false, bool $showSets = true): array
     {
         $manifest = $this->getManifest();
 
@@ -308,7 +307,7 @@ class Source implements ISource
                 $output[$groupSet][$groupId] = $group['name'];
             } else {
                 $output[$groupId] = $showSets ?
-                    $groupSet.' / '.$group['name'] : $group['name'];
+                    $groupSet . ' / ' . $group['name'] : $group['name'];
             }
         }
 
@@ -328,13 +327,13 @@ class Source implements ISource
 
 
 
-    public function subscribeUserToList(user\IClientDataObject $client, string $listId, array $groups=null, bool $replace=false, ?array $extraData=null): ISubscribeResult
+    public function subscribeUserToList(user\IClientDataObject $client, string $listId, array $groups = null, bool $replace = false, ?array $extraData = null): ISubscribeResult
     {
         $manifest = $this->getManifest();
 
         if (!isset($manifest[$listId])) {
             throw Exceptional::{'Api,NotFound'}(
-                'List id '.$listId.' could not be found on source '.$this->_id
+                'List id ' . $listId . ' could not be found on source ' . $this->_id
             );
         }
 
@@ -394,7 +393,7 @@ class Source implements ISource
         }
     }
 
-    protected function _getClientManifest(array $listIds=null): array
+    protected function _getClientManifest(array $listIds = null): array
     {
         $userId = user\Manager::getInstance()->getId();
 

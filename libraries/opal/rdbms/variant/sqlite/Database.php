@@ -5,11 +5,9 @@
  */
 namespace df\opal\rdbms\variant\sqlite;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Glitch;
+
+use df\opal;
 
 class Database extends opal\rdbms\Database
 {
@@ -27,12 +25,12 @@ class Database extends opal\rdbms\Database
         return $output;
     }
 
-    public function rename($newName, $overwrite=false)
+    public function rename($newName, $overwrite = false)
     {
         Glitch::incomplete($newName);
     }
 
-    public function setCharacterSet($set, $collation=null)
+    public function setCharacterSet($set, $collation = null)
     {
         Glitch::incomplete($set);
     }

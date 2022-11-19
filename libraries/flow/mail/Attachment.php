@@ -5,10 +5,6 @@
  */
 namespace df\flow\mail;
 
-use df;
-use df\core;
-use df\flow;
-
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Typify;
 
@@ -18,7 +14,7 @@ class Attachment implements IAttachment
     protected $_fileName;
     protected $_contentId;
 
-    public function __construct(File $file, string $contentId=null)
+    public function __construct(File $file, string $contentId = null)
     {
         $this->setFile($file);
 
@@ -39,7 +35,7 @@ class Attachment implements IAttachment
     }
 
 
-    public function setFileName(string $fileName=null)
+    public function setFileName(string $fileName = null)
     {
         $this->_fileName = $fileName;
         return $this;

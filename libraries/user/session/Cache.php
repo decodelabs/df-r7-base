@@ -5,15 +5,13 @@
  */
 namespace df\user\session;
 
-use df;
 use df\core;
-use df\user;
 
 class Cache extends core\cache\Base implements ICache
 {
     public function insertDescriptor(Descriptor $descriptor)
     {
-        $id = 'd:'.$descriptor->getPublicKeyHex();
+        $id = 'd:' . $descriptor->getPublicKeyHex();
 
         $justStarted = $descriptor->justStarted;
         $descriptor->justStarted = false;
@@ -26,32 +24,32 @@ class Cache extends core\cache\Base implements ICache
 
     public function fetchDescriptor($publicKey)
     {
-        return $this->get('d:'.bin2hex($publicKey));
+        return $this->get('d:' . bin2hex($publicKey));
     }
 
     public function removeDescriptor(Descriptor $descriptor)
     {
-        $id = 'd:'.$descriptor->getPublicKeyHex();
+        $id = 'd:' . $descriptor->getPublicKeyHex();
         $this->remove($id);
     }
 
 
     public function fetchNode(IBucket $bucket, $key)
     {
-        $id = 'i:'.$bucket->getDescriptor()->getIdHex().'/'.$bucket->getName().'#'.$key;
+        $id = 'i:' . $bucket->getDescriptor()->getIdHex() . '/' . $bucket->getName() . '#' . $key;
         return $this->get($id);
     }
 
     public function insertNode(IBucket $bucket, Node $node)
     {
-        $id = 'i:'.$bucket->getDescriptor()->getIdHex().'/'.$bucket->getName().'#'.$node->key;
+        $id = 'i:' . $bucket->getDescriptor()->getIdHex() . '/' . $bucket->getName() . '#' . $node->key;
         $this->set($id, $node);
         return $node;
     }
 
     public function removeNode(IBucket $bucket, $key)
     {
-        $id = 'i:'.$bucket->getDescriptor()->getIdHex().'/'.$bucket->getName().'#'.$key;
+        $id = 'i:' . $bucket->getDescriptor()->getIdHex() . '/' . $bucket->getName() . '#' . $key;
         $this->remove($id);
     }
 

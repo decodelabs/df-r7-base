@@ -7,12 +7,11 @@
 namespace df\aura\theme;
 
 use df;
-use df\core;
 use df\aura;
 
 interface IFacetProvider
 {
-    public function loadFacet($name, $config=null);
+    public function loadFacet($name, $config = null);
     public function hasFacet($name);
     public function getFacet($name);
     public function removeFacet($name);

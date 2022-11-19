@@ -6,9 +6,9 @@
 
 namespace df\aura\theme\facet;
 
-use df\aura;
-
 use DecodeLabs\Genesis;
+
+use df\aura;
 
 class GoogleTagManager extends Base
 {
@@ -82,28 +82,29 @@ class GoogleTagManager extends Base
             !empty($this->_devAuth) &&
             !empty($this->_devEnv)
         ) {
-            $devQuery = '&gtm_auth='.$this->_devAuth.'&gtm_preview='.$this->_devEnv.'&gtm_cookies_win=x';
-            $devSuffix = "+ '".$devQuery."'";
+            $devQuery = '&gtm_auth=' . $this->_devAuth . '&gtm_preview=' . $this->_devEnv . '&gtm_cookies_win=x';
+            $devSuffix = "+ '" . $devQuery . "'";
         }
 
-        $view->addScript('gtm',
-            '(function(w,d,s,l,i){'."\n".
-            'var h=\'\';var n=d.querySelector(\'[nonce]\'); h=(n.nonce||n.getAttribute(\'nonce\'));'."\n".
-            'w[l]=w[l]||[];w[l].push({\'gtm.start\':'."\n".
-            'new Date().getTime(),event:\'gtm.js\',nonce:h});var f=d.getElementsByTagName(s)[0],'."\n".
-            'j=d.createElement(s),dl=l!=\'dataLayer\'?\'&l=\'+l:\'\';j.async=true;j.src='."\n".
-            '\'https://www.googletagmanager.com/gtm.js?id=\'+i+dl'.$devSuffix.';'."\n".
-            'j.setAttribute(\'nonce\',h);f.parentNode.insertBefore(j,f);'."\n".
-            '})(window,document,\'script\',\'dataLayer\',\''.$this->_id.'\');'
+        $view->addScript(
+            'gtm',
+            '(function(w,d,s,l,i){' . "\n" .
+            'var h=\'\';var n=d.querySelector(\'[nonce]\'); h=(n.nonce||n.getAttribute(\'nonce\'));' . "\n" .
+            'w[l]=w[l]||[];w[l].push({\'gtm.start\':' . "\n" .
+            'new Date().getTime(),event:\'gtm.js\',nonce:h});var f=d.getElementsByTagName(s)[0],' . "\n" .
+            'j=d.createElement(s),dl=l!=\'dataLayer\'?\'&l=\'+l:\'\';j.async=true;j.src=' . "\n" .
+            '\'https://www.googletagmanager.com/gtm.js?id=\'+i+dl' . $devSuffix . ';' . "\n" .
+            'j.setAttribute(\'nonce\',h);f.parentNode.insertBefore(j,f);' . "\n" .
+            '})(window,document,\'script\',\'dataLayer\',\'' . $this->_id . '\');'
         );
 
         $content =
-            '<!-- Google Tag Manager (noscript) -->'."\n".
-            '<noscript><iframe src="//www.googletagmanager.com/ns.html?id='.$this->_id.$devQuery.'"'."\n".
-            'height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>'."\n".
-            '<!-- End Google Tag Manager (noscript) -->'."\n".
+            '<!-- Google Tag Manager (noscript) -->' . "\n" .
+            '<noscript><iframe src="//www.googletagmanager.com/ns.html?id=' . $this->_id . $devQuery . '"' . "\n" .
+            'height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>' . "\n" .
+            '<!-- End Google Tag Manager (noscript) -->' . "\n" .
             $content
-            ;
+        ;
 
         return $content;
     }

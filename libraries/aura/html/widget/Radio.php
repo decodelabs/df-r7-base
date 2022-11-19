@@ -5,12 +5,10 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
+use DecodeLabs\Glitch\Dumpable;
 use df\arch;
 
-use DecodeLabs\Glitch\Dumpable;
+use df\aura;
 
 class Radio extends Base implements ICheckInputWidget, Dumpable
 {
@@ -20,14 +18,14 @@ class Radio extends Base implements ICheckInputWidget, Dumpable
     use TWidget_FocusableInput;
     use TWidget_CheckInput;
 
-    const PRIMARY_TAG = 'input.check.radio';
-    const ARRAY_INPUT = false;
-    const INPUT_TYPE = 'radio';
+    public const PRIMARY_TAG = 'input.check.radio';
+    public const ARRAY_INPUT = false;
+    public const INPUT_TYPE = 'radio';
 
     protected $_shouldWrapBody = true;
     protected $_labelClass = null;
 
-    public function __construct(arch\IContext $context, $name, $isChecked=false, $body=null, $value='1')
+    public function __construct(arch\IContext $context, $name, $isChecked = false, $body = null, $value = '1')
     {
         parent::__construct($context);
 
@@ -49,7 +47,7 @@ class Radio extends Base implements ICheckInputWidget, Dumpable
         $this->_applyCheckInputAttributes($tag);
 
         $output = $tag;
-        $widgetClass = 'w.'.static::INPUT_TYPE;
+        $widgetClass = 'w.' . static::INPUT_TYPE;
 
         if (!$this->_body->isEmpty()) {
             $label = $this->_body;
@@ -58,7 +56,7 @@ class Radio extends Base implements ICheckInputWidget, Dumpable
                 $label = new aura\html\Element('span', $label);
             }
 
-            $output = new aura\html\Element('label.'.$widgetClass, $label);
+            $output = new aura\html\Element('label.' . $widgetClass, $label);
 
             if ($this->_isDisabled) {
                 $output->addClass('disabled');
@@ -74,7 +72,7 @@ class Radio extends Base implements ICheckInputWidget, Dumpable
         return $output;
     }
 
-    public function shouldWrapBody(bool $flag=null)
+    public function shouldWrapBody(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_shouldWrapBody = $flag;

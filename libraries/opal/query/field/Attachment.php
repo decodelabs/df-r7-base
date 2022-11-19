@@ -5,12 +5,10 @@
  */
 namespace df\opal\query\field;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Glitch;
+
 use DecodeLabs\Glitch\Dumpable;
+use df\opal;
 
 class Attachment implements opal\query\IAttachmentField, Dumpable
 {
@@ -42,7 +40,7 @@ class Attachment implements opal\query\IAttachmentField, Dumpable
 
     public function getQualifiedName()
     {
-        return $this->_attachment->getParentQuery()->getSourceAlias().'.'.$this->_name;
+        return $this->_attachment->getParentQuery()->getSourceAlias() . '.' . $this->_name;
     }
 
     public function setAlias($alias)
@@ -96,6 +94,6 @@ class Attachment implements opal\query\IAttachmentField, Dumpable
 
     public function toString(): string
     {
-        return 'attach('.$this->getQualifiedName().')';
+        return 'attach(' . $this->getQualifiedName() . ')';
     }
 }

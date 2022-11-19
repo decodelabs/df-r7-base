@@ -5,13 +5,12 @@
  */
 namespace df\flow\mail;
 
-use df;
-use df\core;
-use df\flow;
-use df\user;
-
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Exceptional;
+use df\core;
+
+use df\flow;
+use df\user;
 
 class Message implements IMessage
 {
@@ -83,7 +82,7 @@ class Message implements IMessage
 
 
     // From
-    public function setFromAddress($address, $name=null)
+    public function setFromAddress($address, $name = null)
     {
         $this->_from = Address::factory($address, $name);
         return $this;
@@ -110,7 +109,7 @@ class Message implements IMessage
 
 
     // Reply to
-    public function setReplyToAddress($address=null)
+    public function setReplyToAddress($address = null)
     {
         $this->_replyTo = Address::factory($address);
         return $this;
@@ -123,7 +122,7 @@ class Message implements IMessage
 
 
     // Return path
-    public function setReturnPath($address=null)
+    public function setReturnPath($address = null)
     {
         $this->_returnPath = Address::factory($address);
         return $this;
@@ -151,7 +150,7 @@ class Message implements IMessage
         return $this;
     }
 
-    public function addRecipient($to, $name=null)
+    public function addRecipient($to, $name = null)
     {
         if ($to === true) {
             $this->shouldSendToAdmin(true);
@@ -205,7 +204,7 @@ class Message implements IMessage
             + $this->_toAddresses->count()
             + $this->_ccAddresses->count()
             + $this->_bccAddresses->count()
-            + $this->_toAdmin ? 1: 0;
+            + $this->_toAdmin ? 1 : 0;
     }
 
     public function hasRecipients(): bool
@@ -316,7 +315,7 @@ class Message implements IMessage
         return $this;
     }
 
-    public function shouldSendToAdmin(bool $flag=null)
+    public function shouldSendToAdmin(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_toAdmin = $flag;
@@ -326,7 +325,7 @@ class Message implements IMessage
         return $this->_toAdmin;
     }
 
-    public function shouldFilterClient(bool $flag=null)
+    public function shouldFilterClient(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_filterClient = $flag;
@@ -455,7 +454,7 @@ class Message implements IMessage
         return $this;
     }
 
-    public function addToAddress($address, $name=null)
+    public function addToAddress($address, $name = null)
     {
         $this->_toAddresses->add($address, $name);
         return $this;
@@ -507,7 +506,7 @@ class Message implements IMessage
         return $this;
     }
 
-    public function addCcAddress($address, $name=null)
+    public function addCcAddress($address, $name = null)
     {
         $this->_ccAddresses->add($address, $name);
         return $this;
@@ -559,7 +558,7 @@ class Message implements IMessage
         return $this;
     }
 
-    public function addBccAddress($address, $name=null)
+    public function addBccAddress($address, $name = null)
     {
         $this->_bccAddresses->add($address, $name);
         return $this;
@@ -599,7 +598,7 @@ class Message implements IMessage
 
 
     // Body
-    public function setBodyHtml(string $body=null)
+    public function setBodyHtml(string $body = null)
     {
         $this->_bodyHtml = $body;
         return $this;
@@ -610,7 +609,7 @@ class Message implements IMessage
         return $this->_bodyHtml;
     }
 
-    public function setBodyText(string $body=null)
+    public function setBodyText(string $body = null)
     {
         $this->_bodyText = $body;
         return $this;
@@ -623,7 +622,7 @@ class Message implements IMessage
 
 
     // Attachments
-    public function attach(File $file, string $contentId=null): IAttachment
+    public function attach(File $file, string $contentId = null): IAttachment
     {
         $attachment = new Attachment($file, $contentId);
         $this->addAttachment($attachment);
@@ -677,7 +676,7 @@ class Message implements IMessage
 
 
     // Journal
-    public function setJournalName(string $name=null)
+    public function setJournalName(string $name = null)
     {
         $this->_journalName = $name;
         return $this;
@@ -688,7 +687,7 @@ class Message implements IMessage
         return $this->_journalName;
     }
 
-    public function setJournalDuration(core\time\IDuration $duration=null)
+    public function setJournalDuration(core\time\IDuration $duration = null)
     {
         $this->_journalDuration = $duration;
         return $this;
@@ -726,7 +725,7 @@ class Message implements IMessage
     }
 
 
-    public function shouldJournal(bool $flag=null)
+    public function shouldJournal(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_shouldJournal = $flag;
@@ -738,13 +737,13 @@ class Message implements IMessage
 
 
     // Send
-    public function send(ITransport $transport=null)
+    public function send(ITransport $transport = null)
     {
         flow\Manager::getInstance()->sendMail($this, $transport);
         return $this;
     }
 
-    public function shouldForceSend(bool $flag=null)
+    public function shouldForceSend(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_forceSend = $flag;

@@ -5,21 +5,19 @@
  */
 namespace df\arch\navigation\entry;
 
-use df;
-use df\core;
-use df\arch;
-
-class Spacer extends Base {
-
-    public function getId(): ?string {
-        if($this->_id === null) {
-            return $this->_id = 'spacer-'.md5(uniqid('spacer', true));
+class Spacer extends Base
+{
+    public function getId(): ?string
+    {
+        if ($this->_id === null) {
+            return $this->_id = 'spacer-' . md5(uniqid('spacer', true));
         }
 
         return parent::getId();
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return [
             'type' => 'Spacer',
             'weight' => $this->_weight,

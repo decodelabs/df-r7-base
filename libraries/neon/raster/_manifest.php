@@ -5,51 +5,49 @@
  */
 namespace df\neon\raster;
 
-use df;
-use df\core;
-use df\neon;
+use DecodeLabs\Atlas\File;
 
 use DecodeLabs\Spectrum\Color;
-use DecodeLabs\Atlas\File;
+use df\core;
 
 // Interfaces
 interface IDimension
 {
-    const WIDTH = 'w';
-    const HEIGHT = 'h';
+    public const WIDTH = 'w';
+    public const HEIGHT = 'h';
 
-    const PROPORTIONAL = 'p';
-    const STRETCH = 's';
-    const FIT = 'f';
+    public const PROPORTIONAL = 'p';
+    public const STRETCH = 's';
+    public const FIT = 'f';
 }
 
 interface IPosition
 {
-    const TILE = 'tile';
+    public const TILE = 'tile';
 
-    const TOP = 't';
-    const BOTTOM = 'b';
-    const LEFT = 'l';
-    const RIGHT = 'r';
-    const CENTER = 'c';
+    public const TOP = 't';
+    public const BOTTOM = 'b';
+    public const LEFT = 'l';
+    public const RIGHT = 'r';
+    public const CENTER = 'c';
 }
 
 interface IImageManipulationController
 {
-    public function resize(?int $width, int $height=null, string $mode=null);
+    public function resize(?int $width, int $height = null, string $mode = null);
     public function crop(int $x, int $y, int $width, int $height);
-    public function cropZoom(?int $width, int $height=null);
-    public function frame(?int $width, int $height=null, $color=null);
-    public function rotate($angle, $background=null);
+    public function cropZoom(?int $width, int $height = null);
+    public function frame(?int $width, int $height = null, $color = null);
+    public function rotate($angle, $background = null);
     public function mirror();
     public function flip();
 }
 
 interface IImageCompositeController
 {
-    public function composite(IImage $image, $x=IPosition::CENTER, $y=IPosition::CENTER);
-    public function watermark(IImage $image, $x=IPosition::RIGHT, $y=IPosition::BOTTOM, $scaleFactor=1.0);
-    public function textWatermark(string $text, int $fontSize, $color, $x=IPosition::RIGHT, $y=IPosition::BOTTOM);
+    public function composite(IImage $image, $x = IPosition::CENTER, $y = IPosition::CENTER);
+    public function watermark(IImage $image, $x = IPosition::RIGHT, $y = IPosition::BOTTOM, $scaleFactor = 1.0);
+    public function textWatermark(string $text, int $fontSize, $color, $x = IPosition::RIGHT, $y = IPosition::BOTTOM);
 }
 
 interface IImageFilterController
@@ -57,14 +55,14 @@ interface IImageFilterController
     public function brightness($brightness);
     public function contrast($contrast);
     public function greyscale();
-    public function colorize($color, $alpha=null);
+    public function colorize($color, $alpha = null);
     public function invert();
     public function detectEdges();
     public function emboss();
     public function blur();
     public function gaussianBlur();
     public function removeMean();
-    public function smooth($amount=null);
+    public function smooth($amount = null);
 }
 
 interface IImageDrawingController
@@ -80,7 +78,7 @@ interface IImage extends IImageManipulationController, IImageFilterController
     public function getWidth();
     public function getHeight();
 
-    public function transform($string=null);
+    public function transform($string = null);
 
     public function setOutputFormat($format);
     public function getOutputFormat();
@@ -88,9 +86,9 @@ interface IImage extends IImageManipulationController, IImageFilterController
     public function setSavePath($savePath);
     public function getSavePath();
 
-    public function saveTo($savePath, $quality=100);
-    public function save($quality=100);
-    public function toString($quality=100): string;
+    public function saveTo($savePath, $quality = 100);
+    public function save($quality = 100);
+    public function toString($quality = 100): string;
 }
 
 
@@ -106,7 +104,7 @@ interface IDriver
 
     public function loadFile($file);
     public function loadString($string);
-    public function loadCanvas($width, $height, Color $color=null);
+    public function loadCanvas($width, $height, Color $color = null);
 
     public function getWidth();
     public function getHeight();
@@ -123,7 +121,7 @@ interface IImageManipulationDriver extends IDriver
     public function resize(int $width, int $height);
     public function crop(int $x, int $y, int $width, int $height);
     public function composite(IDriver $image, $x, $y);
-    public function rotate(core\unit\IAngle $angle, Color $background=null);
+    public function rotate(core\unit\IAngle $angle, Color $background = null);
 }
 
 interface IImageFilterDriver extends IDriver
@@ -170,8 +168,8 @@ interface IDescriptor
     public function getSourceLocation(): string;
     public function isSourceLocal(): bool;
 
-    public function applyTransformation($transformation, core\time\IDate $modificationDate=null);
-    public function shouldOptimizeTransformation(bool $flag=null);
+    public function applyTransformation($transformation, core\time\IDate $modificationDate = null);
+    public function shouldOptimizeTransformation(bool $flag = null);
     public function getTransformation(): ?ITransformation;
     public function toIcon(int ...$sizes);
 
@@ -180,7 +178,7 @@ interface IDescriptor
 
     public function setFileName(?string $fileName);
     public function getFileName(): string;
-    public function shouldIncludeTransformationInFileName(bool $flag=null);
+    public function shouldIncludeTransformationInFileName(bool $flag = null);
 
     public function getContentType(): string;
 }

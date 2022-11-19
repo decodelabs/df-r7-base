@@ -5,9 +5,7 @@
  */
 namespace df\core\validate\field;
 
-use df;
 use df\core;
-use df\mesh;
 
 class Enum extends Base implements core\validate\IEnumField
 {

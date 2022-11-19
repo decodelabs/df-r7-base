@@ -6,13 +6,11 @@
 
 namespace df\apex\directory\front\media\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\neon;
-
 use DecodeLabs\Terminus as Cli;
+use df\arch;
+use df\core;
+
+use df\neon;
 
 class TaskUpdateHashes extends arch\node\Task
 {
@@ -34,13 +32,13 @@ class TaskUpdateHashes extends arch\node\Task
 
         Cli::{'yellow'}('Fetching objects: ');
         $count = $list->count();
-        Cli::success($count.' found');
+        Cli::success($count . ' found');
         $count = 0;
 
         foreach ($list as $version) {
             $timer = new core\time\Timer();
 
-            Cli::{'brightMagenta'}(str_pad($version['fileName'].': ', 45));
+            Cli::{'brightMagenta'}(str_pad($version['fileName'] . ': ', 45));
 
             $version->hash = $hash = $handler->hashFile(
                 $version['file']['id'],
@@ -53,13 +51,13 @@ class TaskUpdateHashes extends arch\node\Task
                 continue;
             }
 
-            Cli::success(bin2hex($hash).' ('.$timer.')');
+            Cli::success(bin2hex($hash) . ' (' . $timer . ')');
             $version->save();
             $count++;
         }
 
         if ($count) {
-            Cli::success('Finished hashing '.$count.' files');
+            Cli::success('Finished hashing ' . $count . ' files');
         }
     }
 }

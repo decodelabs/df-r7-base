@@ -5,11 +5,8 @@
  */
 namespace df\core\lang;
 
-use df;
-use df\core;
-
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
 
 class Callback implements ICallback, Dumpable
 {
@@ -29,9 +26,9 @@ class Callback implements ICallback, Dumpable
                 $target = get_class($target);
             }
 
-            $output = $target.'::'.$name;
+            $output = $target . '::' . $name;
         } elseif ($callable instanceof \Closure) {
-            $output = 'closure-'.spl_object_hash($callable);
+            $output = 'closure-' . spl_object_hash($callable);
         } elseif (is_object($callable)) {
             $output = get_class($callable);
         }
@@ -40,7 +37,7 @@ class Callback implements ICallback, Dumpable
     }
 
 
-    public static function factory($callback, array $extraArgs=[])
+    public static function factory($callback, array $extraArgs = [])
     {
         if ($callback instanceof ICallback) {
             if (!empty($extraArgs)) {
@@ -175,7 +172,7 @@ class Callback implements ICallback, Dumpable
     public function glitchDump(): iterable
     {
         if (is_array($this->_callback) && is_object($this->_callback[0])) {
-            yield 'definition' => get_class($this->_callback[0]).'->'.$this->_callback[1].'()';
+            yield 'definition' => get_class($this->_callback[0]) . '->' . $this->_callback[1] . '()';
             return;
         }
 

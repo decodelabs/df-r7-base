@@ -5,12 +5,10 @@
  */
 namespace df\spur\vcs\github;
 
-use df;
 use df\core;
-use df\spur;
 
-class Release implements IRelease {
-
+class Release implements IRelease
+{
     use TApiObject;
 
     protected $_name;
@@ -21,7 +19,8 @@ class Release implements IRelease {
     protected $_isDraft;
     protected $_isPrerelease;
 
-    protected function _importData(core\collection\ITree $data) {
+    protected function _importData(core\collection\ITree $data)
+    {
         $this->_name = $data['name'];
         $this->_tagName = $data['tag_name'];
         $this->_author = new User($this->_mediator, $data->author);
@@ -32,27 +31,33 @@ class Release implements IRelease {
         $this->_isPrerelease = (bool)$data['prerelease'];
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->_name;
     }
 
-    public function getTagName() {
+    public function getTagName()
+    {
         return $this->_tagName;
     }
 
-    public function getCreationDate() {
+    public function getCreationDate()
+    {
         return $this->_creationDate;
     }
 
-    public function getPublishDate() {
+    public function getPublishDate()
+    {
         return $this->_publishDate;
     }
 
-    public function isDraft() {
+    public function isDraft()
+    {
         return $this->_isDraft;
     }
 
-    public function isPrerelease() {
+    public function isPrerelease()
+    {
         return $this->_isPrerelease;
     }
 }

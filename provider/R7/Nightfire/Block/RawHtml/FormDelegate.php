@@ -7,11 +7,11 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Nightfire\Block\RawHtml;
 
-use df\aura\html\widget\Field as FieldWidget;
-
 use DecodeLabs\R7\Nightfire\Block;
-use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
+
 use DecodeLabs\R7\Nightfire\Block\RawHtml;
+use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
+use df\aura\html\widget\Field as FieldWidget;
 
 /**
  * @extends BlockDelegateAbstract<RawHtml>

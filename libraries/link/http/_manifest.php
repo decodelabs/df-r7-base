@@ -6,17 +6,16 @@
 
 namespace df\link\http;
 
-use df;
-use df\core;
-use df\link;
-use df\arch;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Compass\Ip;
-use DecodeLabs\Deliverance\DataReceiver;
+
 use DecodeLabs\Deliverance\Channel;
+use DecodeLabs\Deliverance\DataReceiver;
 use DecodeLabs\Exceptional;
+use df\arch;
+use df\core;
+use df\link;
 
 interface IUrl extends
     core\uri\IGenericUrl,
@@ -27,7 +26,7 @@ interface IUrl extends
     public function getLocalString();
     public function getOrigin(): string;
 
-    public function setDirectoryRequest(arch\IRequest $request=null);
+    public function setDirectoryRequest(arch\IRequest $request = null);
     public function getDirectoryRequest();
 }
 
@@ -83,7 +82,7 @@ interface IRequest extends
     public function getCookies();
     public function hasCookieData();
     public function setCookie($key, $value);
-    public function getCookie($key, $default=null);
+    public function getCookie($key, $default = null);
     public function hasCookie($key);
     public function removeCookie($key);
 
@@ -112,17 +111,17 @@ interface IRequestOptions
     public function getDownloadFileName();
     public function setDownloadFilePath($path);
     public function getDownloadFilePath();
-    public function setDownloadStream(Channel $stream=null);
+    public function setDownloadStream(Channel $stream = null);
     public function getDownloadStream();
 
     // Redirects
     public function setMaxRedirects($max);
     public function getMaxRedirects();
-    public function shouldEnforceStrictRedirects(bool $flag=null);
-    public function shouldHideRedirectReferrer(bool $flag=null);
+    public function shouldEnforceStrictRedirects(bool $flag = null);
+    public function shouldHideRedirectReferrer(bool $flag = null);
 
     // Auth
-    public function setCredentials($username, $password, $type=null);
+    public function setCredentials($username, $password, $type = null);
     public function setUsername($username);
     public function getUsername();
     public function setPassword($password);
@@ -138,7 +137,7 @@ interface IRequestOptions
     public function getCertPassword();
 
     // Cookies
-    public function setCookieJar(ICookieJar $cookieJar=null);
+    public function setCookieJar(ICookieJar $cookieJar = null);
     public function getCookieJar();
 
     // SSL Key
@@ -146,8 +145,8 @@ interface IRequestOptions
     public function getSslKeyPath();
     public function setSslKeyPassword($password);
     public function getSslKeyPassword();
-    public function shouldVerifySsl(bool $flag=null);
-    public function shouldAllowSelfSigned(bool $flag=null);
+    public function shouldVerifySsl(bool $flag = null);
+    public function shouldAllowSelfSigned(bool $flag = null);
     public function setCaBundlePath($path);
     public function getCaBundlePath();
 
@@ -167,7 +166,7 @@ trait THeaderCollection
     {
         if (!preg_match('|^\d\.\d$|', $version)) {
             throw Exceptional::UnexpectedValue(
-                $version.' is not a valid http version'
+                $version . ' is not a valid http version'
             );
         }
 
@@ -221,9 +220,9 @@ interface IResponse extends
     public function getLastModified();
 
     // Disposition
-    public function setFileName($fileName, $isAttachment=null);
+    public function setFileName($fileName, $isAttachment = null);
     public function getFileName();
-    public function isAttachment(bool $flag=null);
+    public function isAttachment(bool $flag = null);
     public function setAttachmentFileName($fileName);
     public function getAttachmentFileName();
 }
@@ -242,7 +241,7 @@ interface IAdaptiveStreamResponse extends IStreamResponse
 
 interface IFileResponse extends IResponse
 {
-    public function setFile($file, $checkPath=true);
+    public function setFile($file, $checkPath = true);
     public function isStaticFile();
     public function getStaticFilePath();
 }
@@ -251,9 +250,9 @@ interface IRedirectResponse extends IResponse
 {
     public function setUrl($url);
     public function getUrl();
-    public function isPermanent(bool $flag=null);
-    public function isTemporary(bool $flag=null);
-    public function isAlternativeContent(bool $flag=null);
+    public function isPermanent(bool $flag = null);
+    public function isTemporary(bool $flag = null);
+    public function isAlternativeContent(bool $flag = null);
 }
 
 interface IGeneratorResponse extends IResponse, DataReceiver
@@ -374,13 +373,13 @@ trait TStringResponse
         return new core\time\Date();
     }
 
-    public function getHeaderString(array $skipKeys=null)
+    public function getHeaderString(array $skipKeys = null)
     {
         $this->prepareHeaders();
         return link\http\response\Base::buildHeaderString($this->_headers);
     }
 
-    public function setFileName($fileName, $isAttachment=null)
+    public function setFileName($fileName, $isAttachment = null)
     {
         $this->getHeaders()->setFileName($fileName, $isAttachment);
         return $this;
@@ -391,7 +390,7 @@ trait TStringResponse
         return $this->getHeaders()->getFileName();
     }
 
-    public function isAttachment(bool $flag=null)
+    public function isAttachment(bool $flag = null)
     {
         $output = $this->getHeaders()->isAttachment($flag);
 
@@ -435,7 +434,7 @@ interface IResponseAugmentor
     public function removeHeaderAnyRequest($name);
 
     // Cookies
-    public function newCookie($name, $value, $expiry=null, $httpOnly=null, $secure=null);
+    public function newCookie($name, $value, $expiry = null, $httpOnly = null, $secure = null);
 
     public function setCookieForCurrentRequest(ICookie $cookie);
     public function removeCookieForCurrentRequest($cookie);
@@ -468,21 +467,21 @@ interface IResponseHeaderCollection extends core\collection\IHeaderMap
 
     // Cache
     public function getCacheControl();
-    public function setCacheAccess($access='private');
+    public function setCacheAccess($access = 'private');
     public function getCacheAccess();
-    public function canStoreCache(bool $flag=null);
-    public function canTransformCache(bool $flag=null);
-    public function shouldRevalidateCache(bool $flag=null);
-    public function shouldRevalidateProxyCache(bool $flag=null);
-    public function setCacheExpiration($duration=null);
+    public function canStoreCache(bool $flag = null);
+    public function canTransformCache(bool $flag = null);
+    public function shouldRevalidateCache(bool $flag = null);
+    public function shouldRevalidateProxyCache(bool $flag = null);
+    public function setCacheExpiration($duration = null);
     public function getCacheExpiration();
     public function getCacheStartDate(link\http\IRequest $request);
     public function isCached(link\http\IRequest $request);
 
     // Disposition
-    public function setFileName($fileName, $isAttachment=false);
+    public function setFileName($fileName, $isAttachment = false);
     public function getFileName();
-    public function isAttachment(bool $flag=null);
+    public function isAttachment(bool $flag = null);
     public function setAttachmentFileName($fileName);
     public function getAttachmentFileName();
 
@@ -495,13 +494,13 @@ interface ICacheControl extends core\IStringProvider
 {
     public function setAccess($access);
     public function getAccess();
-    public function canStore(bool $flag=null);
-    public function canTransform(bool $flag=null);
-    public function shouldRevalidate(bool $flag=null);
-    public function shouldRevalidateProxy(bool $flag=null);
-    public function setExpiration($duration=null);
+    public function canStore(bool $flag = null);
+    public function canTransform(bool $flag = null);
+    public function shouldRevalidate(bool $flag = null);
+    public function shouldRevalidateProxy(bool $flag = null);
+    public function setExpiration($duration = null);
     public function getExpiration();
-    public function setSharedExpiration($duration=null);
+    public function setSharedExpiration($duration = null);
     public function getSharedExpiration();
     public function clear();
 }
@@ -516,9 +515,9 @@ interface ICookie extends core\IStringProvider
     public function matchesName($name);
     public function setValue($value);
     public function getValue();
-    public function setMaxAge($age=null);
+    public function setMaxAge($age = null);
     public function getMaxAge();
-    public function setExpiryDate($date=null);
+    public function setExpiryDate($date = null);
     public function getExpiryDate();
     public function isExpired();
     public function setDomain($domain);
@@ -527,8 +526,8 @@ interface ICookie extends core\IStringProvider
     public function setPath($path);
     public function getPath();
     public function matchesPath($path);
-    public function isSecure(bool $flag=null);
-    public function isHttpOnly(bool $flag=null);
+    public function isSecure(bool $flag = null);
+    public function isHttpOnly(bool $flag = null);
     public function toInvalidateString();
 }
 
@@ -544,7 +543,7 @@ interface ICookieJar
     public function applyTo(IRequest $request);
     public function import(IResponse $response);
     public function set(ICookie $cookie);
-    public function clear($domain=null, $path=null);
+    public function clear($domain = null, $path = null);
     public function clearSession();
 }
 
@@ -562,7 +561,7 @@ interface IUploadHandler extends core\lang\IAcceptTypeProcessor, \Countable, \It
     public function setMaxFileSize($size);
     public function getMaxFileSize();
 
-    public function uploadAll($destination, core\collection\IInputTree $inputCollection, $conflictAction=IUploadFile::RENAME);
+    public function uploadAll($destination, core\collection\IInputTree $inputCollection, $conflictAction = IUploadFile::RENAME);
     public function tempUploadAll(core\collection\IInputTree $inputCollection);
 }
 
@@ -591,6 +590,6 @@ interface IUploadFile
     public function getErrorCode();
     public function getErrorString();
 
-    public function upload($destination, core\collection\IInputTree $inputNode, $conflictAction=IUploadFile::RENAME);
+    public function upload($destination, core\collection\IInputTree $inputNode, $conflictAction = IUploadFile::RENAME);
     public function tempUpload(core\collection\IInputTree $inputNode);
 }

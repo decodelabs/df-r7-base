@@ -6,14 +6,11 @@
 
 namespace df\apex\directory\front\tasks\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-
 use DecodeLabs\Dictum;
-use DecodeLabs\Terminus as Cli;
+
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\Terminus as Cli;
+use df\arch;
 
 class TaskScan extends arch\node\Task
 {
@@ -28,13 +25,13 @@ class TaskScan extends arch\node\Task
 
         $total = $scheduled = 0;
         $schedules = $this->getFilteredTaskList($fileList, $total, $scheduled);
-        Cli::operative('found '.$total.', '.$scheduled.' schedulable');
+        Cli::operative('found ' . $total . ', ' . $scheduled . ' schedulable');
 
         $schedules = $this->updateSchedules($schedules);
         $this->writeSchedules($schedules);
     }
 
-    protected function getFilteredTaskList(iterable $fileList, &$total=0, &$scheduled=0): array
+    protected function getFilteredTaskList(iterable $fileList, &$total = 0, &$scheduled = 0): array
     {
         $schedules = [];
 
@@ -47,7 +44,7 @@ class TaskScan extends arch\node\Task
 
             $total++;
             $keyParts = explode('/', dirname($key));
-            $class = 'df\\apex\\directory\\'.implode('\\', $keyParts).'\\'.$basename;
+            $class = 'df\\apex\\directory\\' . implode('\\', $keyParts) . '\\' . $basename;
             $ref = new \ReflectionClass($class);
 
             if (!$ref->implementsInterface('df\\arch\\node\\ITaskNode')) {
@@ -66,10 +63,10 @@ class TaskScan extends arch\node\Task
             if ($keyParts[0] == 'front') {
                 array_shift($keyParts);
             } else {
-                $keyParts[0] = '~'.$keyParts[0];
+                $keyParts[0] = '~' . $keyParts[0];
             }
 
-            $request = (string)arch\Request::factory(implode('/', $keyParts).'/'.Dictum::actionSlug(substr($basename, 4)))->getPath();
+            $request = (string)arch\Request::factory(implode('/', $keyParts) . '/' . Dictum::actionSlug(substr($basename, 4)))->getPath();
 
             $schedules[$request] = [
                 'schedule' => $schedule,
@@ -95,7 +92,7 @@ class TaskScan extends arch\node\Task
                 ->orWhere('isAuto', '=', true)
                 ->execute();
 
-            Cli::deleteSuccess($deleted.' found');
+            Cli::deleteSuccess($deleted . ' found');
         } else {
             // Filter skippable
             $skip = 0;
@@ -109,7 +106,7 @@ class TaskScan extends arch\node\Task
             }
 
             if ($skip) {
-                Cli::operative('Skipping '.$skip.' as they are manually scheduled');
+                Cli::operative('Skipping ' . $skip . ' as they are manually scheduled');
             }
 
 
@@ -133,7 +130,7 @@ class TaskScan extends arch\node\Task
                     ->where('request', '=', $schedule['request'])
                     ->execute();
 
-                Cli::deleteSuccess('Deleted '.$schedule['request']);
+                Cli::deleteSuccess('Deleted ' . $schedule['request']);
             }
         }
 
@@ -185,8 +182,8 @@ class TaskScan extends arch\node\Task
 
             Cli::{'brightMagenta'}($request);
             Cli::write(' : ');
-            Cli::{'brightYellow'}($set['schedule'].' ');
-            Cli::{'yellow'}($set['priority'].' priority ');
+            Cli::{'brightYellow'}($set['schedule'] . ' ');
+            Cli::{'yellow'}($set['priority'] . ' priority ');
 
             $schedule->save();
             Cli::success('done');

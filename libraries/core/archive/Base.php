@@ -5,15 +5,12 @@
  */
 namespace df\core\archive;
 
-use df;
-use df\core;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Exceptional;
 
 abstract class Base implements IArchive
 {
-    public static function extract($file, $destination=null, $flattenRoot=false)
+    public static function extract($file, $destination = null, $flattenRoot = false)
     {
         if (preg_match('/\.zip$/i', $file)) {
             $type = 'Zip';
@@ -27,7 +24,7 @@ abstract class Base implements IArchive
             $type = 'Bz2';
         } else {
             throw Exceptional::Runtime(
-                'Unable to detect type of archive: '.$file
+                'Unable to detect type of archive: ' . $file
             );
         }
 
@@ -36,11 +33,11 @@ abstract class Base implements IArchive
 
     public static function factory(string $type): IArchive
     {
-        $class = 'df\\core\\archive\\'.ucfirst($type);
+        $class = 'df\\core\\archive\\' . ucfirst($type);
 
         if (!class_exists($class)) {
             throw Exceptional::Unsupported(
-                'Archive type '.$type.' is not supported'
+                'Archive type ' . $type . ' is not supported'
             );
         }
 
@@ -52,31 +49,31 @@ abstract class Base implements IArchive
         return (new \ReflectionObject($this))->getShortName();
     }
 
-    public function extractFile(string $file, string $destDir=null, bool $flattenRoot=false): string
+    public function extractFile(string $file, string $destDir = null, bool $flattenRoot = false): string
     {
         throw Exceptional::Unsupported(
-            $this->getType().' type archives cannot handle file and folder compression'
+            $this->getType() . ' type archives cannot handle file and folder compression'
         );
     }
 
-    public function decompressFile(string $file, string $destFile=null): string
+    public function decompressFile(string $file, string $destFile = null): string
     {
         throw Exceptional::Unsupported(
-            $this->getType().' type archives cannot handle file and folder compression'
+            $this->getType() . ' type archives cannot handle file and folder compression'
         );
     }
 
     public function compressString(string $string): string
     {
         throw Exceptional::Unsupported(
-            $this->getType().' type archives cannot handle string compression'
+            $this->getType() . ' type archives cannot handle string compression'
         );
     }
 
     public function decompressString(string $string): string
     {
         throw Exceptional::Unsupported(
-            $this->getType().' type archives cannot handle string compression'
+            $this->getType() . ' type archives cannot handle string compression'
         );
     }
 
@@ -86,7 +83,7 @@ abstract class Base implements IArchive
 
         if (!is_file($file)) {
             throw Exceptional::NotFound(
-                'Source archive could not be found: '.$file
+                'Source archive could not be found: ' . $file
             );
         }
 
@@ -106,18 +103,18 @@ abstract class Base implements IArchive
             $destFile = str_replace('\\', '/', $destFile);
 
             if (false === strpos($destFile, '/')) {
-                $destFile = dirname($file).'/'.$destFile;
+                $destFile = dirname($file) . '/' . $destFile;
             }
         }
 
         if (!is_file($file)) {
             throw Exceptional::NotFound(
-                'Source archive could not be found: '.$file
+                'Source archive could not be found: ' . $file
             );
         }
 
         if ($destFile === null) {
-            $destFile = dirname($file).'/'.$this->_getDecompressFileName($file, $extension);
+            $destFile = dirname($file) . '/' . $this->_getDecompressFileName($file, $extension);
         }
 
         Atlas::createDir(dirname($destFile));
@@ -129,7 +126,7 @@ abstract class Base implements IArchive
         $fileName = basename($file);
         $extLength = 1 + strlen($extension);
 
-        if (strtolower(substr($fileName, -$extLength)) == '.'.$extension) {
+        if (strtolower(substr($fileName, -$extLength)) == '.' . $extension) {
             $fileName = substr($fileName, 0, -$extLength);
         } else {
             $fileName .= '-extract';
@@ -156,7 +153,7 @@ abstract class Base implements IArchive
         }
 
         $name = $dir->getName();
-        $dir->renameTo($name.'-'.time());
+        $dir->renameTo($name . '-' . time());
         $dir->getDir($dirName)->moveTo($dir->getParent(), $name);
         $dir->delete();
     }

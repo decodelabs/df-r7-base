@@ -165,7 +165,7 @@ class Heading extends BlockAbstract
     // Render
     public function render(): ?Markup
     {
-        return Html::{'h'.$this->level}($this->heading)
+        return Html::{'h' . $this->level}($this->heading)
             ->addClass($this->class)
             ->setDataAttribute('type', $this->getName());
     }

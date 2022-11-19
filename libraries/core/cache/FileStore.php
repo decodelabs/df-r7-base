@@ -6,14 +6,9 @@
 
 namespace df\core\cache;
 
-use df;
-use df\core;
-use df\flex;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Dictum;
-use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 
 abstract class FileStore implements IFileStore
@@ -25,12 +20,12 @@ abstract class FileStore implements IFileStore
 
     protected $_dir;
 
-    public static function prune($lifeTime='1 month'): int
+    public static function prune($lifeTime = '1 month'): int
     {
         $total = 0;
         $dirs = [
-            Genesis::$hub->getLocalDataPath().'/filestore/',
-            Genesis::$hub->getSharedDataPath().'/filestore/',
+            Genesis::$hub->getLocalDataPath() . '/filestore/',
+            Genesis::$hub->getSharedDataPath() . '/filestore/',
         ];
 
         foreach ($dirs as $path) {
@@ -56,8 +51,8 @@ abstract class FileStore implements IFileStore
     public static function purgeAll(): void
     {
         $dirs = [
-            Genesis::$hub->getLocalDataPath().'/filestore/',
-            Genesis::$hub->getSharedDataPath().'/filestore/',
+            Genesis::$hub->getLocalDataPath() . '/filestore/',
+            Genesis::$hub->getSharedDataPath() . '/filestore/',
         ];
 
         foreach ($dirs as $path) {
@@ -73,7 +68,7 @@ abstract class FileStore implements IFileStore
             $path = Genesis::$hub->getLocalDataPath();
         }
 
-        $path .= '/filestore/'.Dictum::fileName($this->getCacheId());
+        $path .= '/filestore/' . Dictum::fileName($this->getCacheId());
         $this->_dir = Atlas::createDir($path);
     }
 
@@ -102,15 +97,15 @@ abstract class FileStore implements IFileStore
         }
 
         $key = $this->_normalizeKey($key);
-        $this->_dir->createFile('c-'.$key, $value);
+        $this->_dir->createFile('c-' . $key, $value);
 
         return $this;
     }
 
-    public function get($key, $lifeTime=null): ?File
+    public function get($key, $lifeTime = null): ?File
     {
         $key = $this->_normalizeKey($key);
-        $file = $this->_dir->getFile('c-'.$key);
+        $file = $this->_dir->getFile('c-' . $key);
         clearstatcache(false, $file->getPath());
 
         if (!$file->exists()) {
@@ -129,7 +124,7 @@ abstract class FileStore implements IFileStore
     {
         foreach ($keys as $key) {
             $key = $this->_normalizeKey($key);
-            $file = $this->_dir->getFile('c-'.$key);
+            $file = $this->_dir->getFile('c-' . $key);
             clearstatcache(false, $file->getPath());
 
             if (!$file->exists()) {
@@ -146,7 +141,7 @@ abstract class FileStore implements IFileStore
     {
         foreach ($keys as $key) {
             $key = $this->_normalizeKey($key);
-            $this->_dir->getFile('c-'.$key)->delete();
+            $this->_dir->getFile('c-' . $key)->delete();
         }
 
         return $this;
@@ -226,7 +221,7 @@ abstract class FileStore implements IFileStore
     public function getCreationTime(string $key): ?int
     {
         $key = $this->_normalizeKey($key);
-        $file = $this->_dir->getFile('c-'.$key);
+        $file = $this->_dir->getFile('c-' . $key);
         clearstatcache(false, $file->getPath());
 
         if (!$file->exists()) {

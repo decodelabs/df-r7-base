@@ -5,13 +5,10 @@
  */
 namespace df\apex\models\mint;
 
-use df;
-use df\core;
-use df\apex;
-use df\axis;
-use df\mint;
-
 use DecodeLabs\Exceptional;
+use df\axis;
+
+use df\mint;
 
 class Model extends axis\Model
 {
@@ -151,7 +148,7 @@ class Model extends axis\Model
 
         if (!$gateway = $this->_gateways[$key]) {
             throw Exceptional::{'df/mint/gateway/Setup'}([
-                'message' => 'Gateway '.$account.' is not available'
+                'message' => 'Gateway ' . $account . ' is not available'
             ]);
         }
 

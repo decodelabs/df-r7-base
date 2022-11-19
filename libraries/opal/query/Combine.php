@@ -5,10 +5,6 @@
  */
 namespace df\opal\query;
 
-use df;
-use df\core;
-use df\opal;
-
 class Combine implements ICombineQuery
 {
     use TQuery;
@@ -22,7 +18,7 @@ class Combine implements ICombineQuery
 
         $this->_source = $this->_sourceManager->newSource(
             $parent->getSource()->getAdapter(),
-            $parent->getSourceAlias().'_combine'.count($parent->getCombines())
+            $parent->getSourceAlias() . '_combine' . count($parent->getCombines())
         );
 
         $this->addFields(...array_values($fields));

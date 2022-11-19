@@ -5,12 +5,10 @@
  */
 namespace df\opal\rdbms\variant\sqlite;
 
-use df;
-use df\core;
-use df\opal;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Exceptional;
+use df\opal;
 
 class Server implements opal\rdbms\IServer
 {
@@ -36,7 +34,7 @@ class Server implements opal\rdbms\IServer
         return is_file($name);
     }
 
-    public function createDatabase($name, $checkExists=false)
+    public function createDatabase($name, $checkExists = false)
     {
         // stub
     }
@@ -61,7 +59,7 @@ class Server implements opal\rdbms\IServer
         ]);
     }
 
-    public static function getQueryException(opal\rdbms\IAdapter $adapter, $number, $message, $sql=null)
+    public static function getQueryException(opal\rdbms\IAdapter $adapter, $number, $message, $sql = null)
     {
         if ($e = self::_getExceptionForError($adapter, $number, $message, $sql)) {
             return $e;
@@ -75,10 +73,10 @@ class Server implements opal\rdbms\IServer
         ]);
     }
 
-    private static function _getExceptionForError(opal\rdbms\IAdapter $adapter, $number, $message, $sql=null)
+    private static function _getExceptionForError(opal\rdbms\IAdapter $adapter, $number, $message, $sql = null)
     {
         switch ($number) {
-        // Query error
+            // Query error
             case 1:
                 if (preg_match('/no such table\: ([a-zA-Z0-9_]+)/i', $message, $matches)) {
                     return Exceptional::{'df/opal/rdbms/TableNotFound,NotFound'}($message, [
@@ -103,7 +101,7 @@ class Server implements opal\rdbms\IServer
                     ]
                 ]);
 
-        // Server error
+                // Server error
             case 2:
             case 4:
             case 7:
@@ -117,7 +115,7 @@ class Server implements opal\rdbms\IServer
             case 24:
             case 26:
 
-        // Server unavailable
+                // Server unavailable
             case 5:
             case 6:
                 return Exceptional::{'df/opal/rdbms/Connection'}($message, [
@@ -127,7 +125,7 @@ class Server implements opal\rdbms\IServer
                     ]
                 ]);
 
-        // Permissions
+                // Permissions
             case 3:
             case 8:
             case 23:
@@ -138,7 +136,7 @@ class Server implements opal\rdbms\IServer
                     ]
                 ]);
 
-        // DB not found
+                // DB not found
             case 14:
             case 16:
                 return Exceptional::{'df/opal/rdbms/DatabaseNotFound,NotFound'}($message, [
@@ -148,7 +146,7 @@ class Server implements opal\rdbms\IServer
                     ]
                 ]);
 
-        // Constraint conflict
+                // Constraint conflict
             case 19:
                 return Exceptional::{'df/opal/rdbms/Constraint'}($message, [
                     'code' => $number,
@@ -157,7 +155,7 @@ class Server implements opal\rdbms\IServer
                     ]
                 ]);
 
-        // Feature support
+                // Feature support
             case 22:
                 return Exceptional::{'df/opal/rdbms/FeatureSupport'}($message, [
                     'code' => $number,

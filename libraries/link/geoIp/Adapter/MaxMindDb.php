@@ -6,15 +6,15 @@
 
 namespace df\link\geoIp\Adapter;
 
-use df\opal\mmdb\Reader;
-use df\opal\mmdb\IReader;
-use df\link\geoIp\Adapter;
-use df\link\geoIp\Result;
-use df\link\geoIp\Config;
-
 use DecodeLabs\Compass\Ip;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use df\link\geoIp\Adapter;
+use df\link\geoIp\Config;
+
+use df\link\geoIp\Result;
+use df\opal\mmdb\IReader;
+use df\opal\mmdb\Reader;
 
 class MaxMindDb implements Adapter
 {
@@ -52,7 +52,7 @@ class MaxMindDb implements Adapter
         $file = $settings['file'];
 
         if (dirname($file) == '.') {
-            $file = Genesis::$hub->getLocalDataPath().'/geoIp/'.$file;
+            $file = Genesis::$hub->getLocalDataPath() . '/geoIp/' . $file;
         }
 
         return $file;

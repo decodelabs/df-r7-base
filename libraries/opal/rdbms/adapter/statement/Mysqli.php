@@ -6,8 +6,6 @@
 
 namespace df\opal\rdbms\adapter\statement;
 
-use df;
-use df\core;
 use df\opal;
 
 class Mysqli extends Base
@@ -17,7 +15,7 @@ class Mysqli extends Base
 
 
     // Execute
-    protected function _execute($forWrite=false)
+    protected function _execute($forWrite = false)
     {
         $this->_affectedRows = 0;
         $connection = $this->_adapter->getConnection();
@@ -56,7 +54,7 @@ class Mysqli extends Base
                             $sql .= '?';
                             $bindings[] = $this->_bindings[$var];
                         } else {
-                            $sql .= ':'.$var;
+                            $sql .= ':' . $var;
                         }
 
                         $sql .= $char;

@@ -6,12 +6,10 @@
 
 namespace df\apex\directory\front\cache\_nodes;
 
-use df;
-use df\core;
-use df\apex;
+use DecodeLabs\Terminus as Cli;
 use df\arch;
 
-use DecodeLabs\Terminus as Cli;
+use df\core;
 
 class TaskPurgeFileStores extends arch\node\Task
 {

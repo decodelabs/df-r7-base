@@ -5,10 +5,6 @@
  */
 namespace df\neon\raster;
 
-use df;
-use df\core;
-use df\neon;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Exceptional;
@@ -17,7 +13,7 @@ class Ico implements IIcoGenerator
 {
     protected $_images = [];
 
-    public function __construct($file=null, int ...$sizes)
+    public function __construct($file = null, int ...$sizes)
     {
         if ($file !== null) {
             $this->addImage($file, ...$sizes);
@@ -30,13 +26,13 @@ class Ico implements IIcoGenerator
 
         if (!$file->exists()) {
             throw Exceptional::NotFound(
-                'Source file '.$file->getPath().' does not exist'
+                'Source file ' . $file->getPath() . ' does not exist'
             );
         }
 
         if (!getImageSize($file->getPath())) {
             throw Exceptional::{'UnexpectedValue,Unreadable'}(
-                'Unable to read image data from '.$file->getPath()
+                'Unable to read image data from ' . $file->getPath()
             );
         }
 
@@ -98,7 +94,7 @@ class Ico implements IIcoGenerator
             $offset += $image->size;
         }
 
-        return $data.$pixels;
+        return $data . $pixels;
     }
 }
 

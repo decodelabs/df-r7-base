@@ -7,31 +7,30 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Genesis;
 
+use DecodeLabs\Archetype;
+use DecodeLabs\Archetype\Resolver\Extension as ArchetypeExtension;
+use DecodeLabs\Disciple;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis\Build;
+use DecodeLabs\Genesis\Context;
+
+use DecodeLabs\Genesis\Environment\Config as EnvConfig;
+use DecodeLabs\Genesis\Hub as HubInterface;
+use DecodeLabs\Genesis\Kernel;
+use DecodeLabs\Genesis\Loader\Stack as StackLoader;
+use DecodeLabs\Glitch;
+use DecodeLabs\Metamorph;
+use DecodeLabs\R7\Disciple\Adapter as DiscipleAdapter;
+use DecodeLabs\R7\Genesis\Kernel as R7Kernel;
+use DecodeLabs\R7\Legacy;
+use DecodeLabs\Terminus as Cli;
+use DecodeLabs\Veneer;
 use df;
 use df\core;
 use df\core\app\Base as AppBase;
 use df\core\Config as ConfigBase;
 use df\core\environment\Config as CoreEnvConfig;
 use df\core\loader\Base as LoaderBase;
-
-use DecodeLabs\Archetype;
-use DecodeLabs\Archetype\Resolver\Extension as ArchetypeExtension;
-use DecodeLabs\Disciple;
-use DecodeLabs\Exceptional;
-use DecodeLabs\Glitch;
-use DecodeLabs\Genesis\Build;
-use DecodeLabs\Genesis\Context;
-use DecodeLabs\Genesis\Environment\Config as EnvConfig;
-use DecodeLabs\Genesis\Kernel;
-use DecodeLabs\Genesis\Hub as HubInterface;
-use DecodeLabs\Genesis\Loader\Stack as StackLoader;
-use DecodeLabs\Metamorph;
-use DecodeLabs\R7\Disciple\Adapter as DiscipleAdapter;
-use DecodeLabs\R7\Genesis\BuildManifest;
-use DecodeLabs\R7\Genesis\Kernel as R7Kernel;
-use DecodeLabs\R7\Legacy;
-use DecodeLabs\Terminus as Cli;
-use DecodeLabs\Veneer;
 
 use Throwable;
 
@@ -67,10 +66,10 @@ class Hub implements HubInterface
             throw Exceptional::Runtime('Unable to get current working directory');
         }
 
-        $hasAppFile = file_exists($appDir.'/App.php');
+        $hasAppFile = file_exists($appDir . '/App.php');
 
         if (!$hasAppFile) {
-            $appDir = dirname(dirname(dirname(__DIR__))).'/tests';
+            $appDir = dirname(dirname(dirname(__DIR__))) . '/tests';
         }
 
         $this->appPath = $appDir;
@@ -116,7 +115,7 @@ class Hub implements HubInterface
      */
     public function getLocalDataPath(): string
     {
-        return $this->appPath.'/data/local';
+        return $this->appPath . '/data/local';
     }
 
     /**
@@ -124,7 +123,7 @@ class Hub implements HubInterface
      */
     public function getSharedDataPath(): string
     {
-        return $this->appPath.'/data/shared';
+        return $this->appPath . '/data/shared';
     }
 
 
@@ -166,7 +165,7 @@ class Hub implements HubInterface
         } elseif ($this->analysis) {
             $buildPath = dirname(dirname(dirname(__DIR__)));
         } else {
-            $buildPath = $this->appPath.'/vendor/df-r7/base';
+            $buildPath = $this->appPath . '/vendor/df-r7/base';
         }
 
 
@@ -253,9 +252,9 @@ class Hub implements HubInterface
     protected function loadBaseClass(string $path): void
     {
         if ($this->context->build->isCompiled()) {
-            $path = $this->context->build->path.'/'.$path.'.php';
+            $path = $this->context->build->path . '/' . $path . '.php';
         } else {
-            $path = $this->context->build->path.'/libraries/'.$path.'.php';
+            $path = $this->context->build->path . '/libraries/' . $path . '.php';
         }
 
         require_once $path;
@@ -278,7 +277,7 @@ class Hub implements HubInterface
         $name = ucfirst(df\COMPILE_ENV_MODE ?? $conf->getMode());
 
         /** @phpstan-var class-string<EnvConfig\Development|EnvConfig\Testing|EnvConfig\Production> */
-        $class = EnvConfig::class.'\\'.$name;
+        $class = EnvConfig::class . '\\' . $name;
         $output = new $class($this->envId);
 
         $output->setUmask(0);
@@ -296,7 +295,7 @@ class Hub implements HubInterface
             ->setRunMode($this->context->environment->getMode())
             ->registerPathAliases([
                 'app' => $this->appPath,
-                'vendor' => $this->appPath.'/vendor',
+                'vendor' => $this->appPath . '/vendor',
                 'root' => $this->context->build->isCompiled() ?
                     $this->context->build->path :
                     dirname($this->context->build->path)
@@ -379,7 +378,7 @@ class Hub implements HubInterface
         }
 
         throw Exceptional::UnexpectedValue(
-            'Unable to detect run mode ('.\PHP_SAPI.')'
+            'Unable to detect run mode (' . \PHP_SAPI . ')'
         );
     }
 

@@ -6,15 +6,13 @@
 
 namespace df\aura\view\content;
 
-use df;
-use df\core;
-use df\aura;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
 use df\arch;
 
-use DecodeLabs\Tagged as Html;
 
-use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\aura;
+use df\core;
 
 class Template implements aura\view\ITemplate, Dumpable
 {
@@ -35,7 +33,7 @@ class Template implements aura\view\ITemplate, Dumpable
     {
         $request = $context->location;
         $contextPath = $request->getDirectoryLocation();
-        $lookupPath = 'apex/directory/'.$contextPath.'/_templates/'.ltrim($path, '/').'.php';
+        $lookupPath = 'apex/directory/' . $contextPath . '/_templates/' . ltrim($path, '/') . '.php';
 
         if (!$absolutePath = $context->findFile($lookupPath)) {
             if (!$request->isArea('shared')) {
@@ -43,25 +41,25 @@ class Template implements aura\view\ITemplate, Dumpable
                 array_shift($parts);
                 array_unshift($parts, 'shared');
                 $contextPath = implode('/', $parts);
-                $lookupPath = 'apex/directory/'.$contextPath.'/_templates/'.ltrim($path, '/').'.php';
+                $lookupPath = 'apex/directory/' . $contextPath . '/_templates/' . ltrim($path, '/') . '.php';
                 $absolutePath = $context->findFile($lookupPath);
             }
         }
 
         if (!$absolutePath) {
             if (false !== strpos($path, '/')) {
-                $path = '#/'.$path;
+                $path = '#/' . $path;
             }
 
             throw Exceptional::{'df/aura/view/NotFound'}(
-                'Template ~'.rtrim($request->getDirectoryLocation(), '/').'/'.$path.' could not be found'
+                'Template ~' . rtrim($request->getDirectoryLocation(), '/') . '/' . $path . ' could not be found'
             );
         }
 
         return new self($context, $absolutePath);
     }
 
-    public static function loadThemeTemplate(arch\IContext $context, $path, $themeId=null)
+    public static function loadThemeTemplate(arch\IContext $context, $path, $themeId = null)
     {
         if ($themeId === null) {
             $themeId = $context->apex->getTheme()->getId();
@@ -74,12 +72,12 @@ class Template implements aura\view\ITemplate, Dumpable
         $pathName = implode('.', $parts);
 
 
-        $lookupPaths[] = 'apex/themes/'.$themeId.'/templates/'.$pathName.'#'.$area.'.'.$type.'.php';
-        $lookupPaths[] = 'apex/themes/'.$themeId.'/templates/'.$pathName.'.'.$type.'.php';
+        $lookupPaths[] = 'apex/themes/' . $themeId . '/templates/' . $pathName . '#' . $area . '.' . $type . '.php';
+        $lookupPaths[] = 'apex/themes/' . $themeId . '/templates/' . $pathName . '.' . $type . '.php';
 
         if ($themeId !== 'shared') {
-            $lookupPaths[] = 'apex/themes/shared/templates/'.$pathName.'#'.$area.'.'.$type.'.php';
-            $lookupPaths[] = 'apex/themes/shared/templates/'.$pathName.'.'.$type.'.php';
+            $lookupPaths[] = 'apex/themes/shared/templates/' . $pathName . '#' . $area . '.' . $type . '.php';
+            $lookupPaths[] = 'apex/themes/shared/templates/' . $pathName . '.' . $type . '.php';
         }
 
         foreach ($lookupPaths as $testPath) {
@@ -90,14 +88,14 @@ class Template implements aura\view\ITemplate, Dumpable
 
         if (!$templatePath) {
             throw Exceptional::{'df/aura/view/NotFound'}(
-                'Theme template '.$path.' could not be found'
+                'Theme template ' . $path . ' could not be found'
             );
         }
 
         return new self($context, $templatePath);
     }
 
-    public static function loadLayout(aura\view\ILayoutView $view, $innerContent=null, $pathName=null, $type=null)
+    public static function loadLayout(aura\view\ILayoutView $view, $innerContent = null, $pathName = null, $type = null)
     {
         if ($pathName === null) {
             $pathName = $view->getLayout();
@@ -114,12 +112,12 @@ class Template implements aura\view\ITemplate, Dumpable
         $area = $context->location->getArea();
         $themeId = $theme->getId();
 
-        $lookupPaths[] = 'apex/themes/'.$themeId.'/layouts/'.$pathName.'#'.$area.'.'.$type.'.php';
-        $lookupPaths[] = 'apex/themes/'.$themeId.'/layouts/'.$pathName.'.'.$type.'.php';
+        $lookupPaths[] = 'apex/themes/' . $themeId . '/layouts/' . $pathName . '#' . $area . '.' . $type . '.php';
+        $lookupPaths[] = 'apex/themes/' . $themeId . '/layouts/' . $pathName . '.' . $type . '.php';
 
         if ($themeId !== 'shared') {
-            $lookupPaths[] = 'apex/themes/shared/layouts/'.$pathName.'#'.$area.'.'.$type.'.php';
-            $lookupPaths[] = 'apex/themes/shared/layouts/'.$pathName.'.'.$type.'.php';
+            $lookupPaths[] = 'apex/themes/shared/layouts/' . $pathName . '#' . $area . '.' . $type . '.php';
+            $lookupPaths[] = 'apex/themes/shared/layouts/' . $pathName . '.' . $type . '.php';
         }
 
         foreach ($lookupPaths as $testPath) {
@@ -130,7 +128,7 @@ class Template implements aura\view\ITemplate, Dumpable
 
         if (!$layoutPath) {
             throw Exceptional::{'df/aura/view/NotFound'}(
-                'Layout '.$pathName.'.'.$type.' could not be found'
+                'Layout ' . $pathName . '.' . $type . ' could not be found'
             );
         }
 
@@ -140,11 +138,11 @@ class Template implements aura\view\ITemplate, Dumpable
         return $output;
     }
 
-    public function __construct(arch\IContext $context, $absolutePath, $isLayout=false)
+    public function __construct(arch\IContext $context, $absolutePath, $isLayout = false)
     {
         if (!is_file($absolutePath)) {
             throw Exceptional::{'df/aura/view/NotFound'}(
-                'Template '.$absolutePath.' could not be found'
+                'Template ' . $absolutePath . ' could not be found'
             );
         }
 
@@ -312,7 +310,7 @@ class Template implements aura\view\ITemplate, Dumpable
         return false;
     }
 
-    public function getSlot(string $key, $default=null)
+    public function getSlot(string $key, $default = null)
     {
         if (isset($this->slots[$key])) {
             return $this->slots[$key];

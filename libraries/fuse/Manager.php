@@ -6,17 +6,16 @@
 
 namespace df\fuse;
 
-use df;
-use df\core;
+use DecodeLabs\Atlas;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
+
+use DecodeLabs\Terminus\Session;
 use df\aura;
+use df\core;
 use df\fuse;
 use df\spur;
-
-use DecodeLabs\Atlas;
-use DecodeLabs\Genesis;
-use DecodeLabs\Exceptional;
-use DecodeLabs\R7\Legacy;
-use DecodeLabs\Terminus\Session;
 
 class Manager implements IManager
 {
@@ -29,12 +28,12 @@ class Manager implements IManager
 
     public static function getManifestCachePath(): string
     {
-        return Genesis::$hub->getLocalDataPath().'/theme/dependencies';
+        return Genesis::$hub->getLocalDataPath() . '/theme/dependencies';
     }
 
     public static function getAssetPath(): string
     {
-        return Genesis::$hub->getApplicationPath().'/assets/vendor';
+        return Genesis::$hub->getApplicationPath() . '/assets/vendor';
     }
 
 
@@ -44,7 +43,7 @@ class Manager implements IManager
 
         if (!isset($deps[$name])) {
             throw Exceptional::Runtime(
-                'Dependency '.$name.' is not in the dependency list'
+                'Dependency ' . $name . ' is not in the dependency list'
             );
         }
 
@@ -57,7 +56,7 @@ class Manager implements IManager
 
         if (!isset(self::$_depCache[$id])) {
             $this->ensureDependenciesFor($theme);
-            $path = self::getManifestCachePath().'/'.$id;
+            $path = self::getManifestCachePath() . '/' . $id;
             self::$_depCache[$id] = unserialize(Atlas::getContents($path));
         }
 
@@ -77,13 +76,13 @@ class Manager implements IManager
 
         self::$_depCache[$id] = $output;
 
-        $path = self::getManifestCachePath().'/'.$id;
+        $path = self::getManifestCachePath() . '/' . $id;
         Atlas::createFile($path, serialize($output));
     }
 
 
 
-    public function ensureDependenciesFor(aura\theme\ITheme $theme, Session $session=null)
+    public function ensureDependenciesFor(aura\theme\ITheme $theme, Session $session = null)
     {
         $id = $theme->getId();
 
@@ -91,7 +90,7 @@ class Manager implements IManager
             return $this;
         }
 
-        $path = self::getManifestCachePath().'/'.$id;
+        $path = self::getManifestCachePath() . '/' . $id;
         $vendorPath = self::getAssetPath();
         $swallow = true;
         $depContent = null;
@@ -138,7 +137,7 @@ class Manager implements IManager
         return $this;
     }
 
-    public function installDependenciesFor(aura\theme\ITheme $theme, Session $session=null)
+    public function installDependenciesFor(aura\theme\ITheme $theme, Session $session = null)
     {
         $deps = $this->prepareDependenciesFor($theme);
         $this->installDependencies($deps, $session);
@@ -146,7 +145,7 @@ class Manager implements IManager
         return $this;
     }
 
-    public function installAllDependencies(Session $session=null)
+    public function installAllDependencies(Session $session = null)
     {
         $themes = array_unique(Legacy::getThemeMap());
         $dependencies = [];
@@ -180,7 +179,7 @@ class Manager implements IManager
         return $this;
     }
 
-    public function installDependencies(array $dependencies, Session $session=null)
+    public function installDependencies(array $dependencies, Session $session = null)
     {
         $packages = [];
 
@@ -203,7 +202,7 @@ class Manager implements IManager
         foreach ($dependencies as $dependency) {
             $key = $dependency->getKey();
             $package = $packages[$key];
-            $installPath = $installer->getInstallPath().'/'.$package->installName;
+            $installPath = $installer->getInstallPath() . '/' . $package->installName;
 
             $dependency->installName = $package->installName;
 
@@ -222,8 +221,8 @@ class Manager implements IManager
 
                     if (isset($data['main'])) {
                         $main = $data['main'];
-                    } elseif (is_file($installPath.'/'.$dependency->id.'.js')) {
-                        $main = $dependency->id.'.js';
+                    } elseif (is_file($installPath . '/' . $dependency->id . '.js')) {
+                        $main = $dependency->id . '.js';
                     }
                 }
 
@@ -239,10 +238,10 @@ class Manager implements IManager
                     if (substr($mainEntry, -6) != 'min.js') {
                         $fileName = substr($mainEntry, 0, -3);
 
-                        if (is_file($installPath.'/'.$fileName.'.min.js')) {
-                            $mainEntry = $fileName.'.min.js';
-                        } elseif (is_file($installPath.'/'.$fileName.'-min.js')) {
-                            $mainEntry = $fileName.'-min.js';
+                        if (is_file($installPath . '/' . $fileName . '.min.js')) {
+                            $mainEntry = $fileName . '.min.js';
+                        } elseif (is_file($installPath . '/' . $fileName . '-min.js')) {
+                            $mainEntry = $fileName . '-min.js';
                         }
                     }
 

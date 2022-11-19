@@ -5,13 +5,11 @@
  */
 namespace df\aura\html\widget\util;
 
-use df;
-use df\core;
-use df\aura;
-use df\flex;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Glitch\Dumpable;
+
+use df\aura;
+use df\core;
 
 class Field implements aura\html\widget\IField, Dumpable
 {
@@ -20,7 +18,7 @@ class Field implements aura\html\widget\IField, Dumpable
     public $labels = [];
     public $renderer;
 
-    public function __construct(string $key, string $name, callable $renderer=null)
+    public function __construct(string $key, string $name, callable $renderer = null)
     {
         $this->key = $key;
         $this->setName($name);
@@ -48,7 +46,7 @@ class Field implements aura\html\widget\IField, Dumpable
 
 
     // Labels
-    public function addLabel(string $key, string $label=null)
+    public function addLabel(string $key, string $label = null)
     {
         if (empty($label)) {
             $label = Dictum::label($key);
@@ -75,7 +73,7 @@ class Field implements aura\html\widget\IField, Dumpable
     }
 
     // Renderer
-    public function setRenderer(callable $renderer=null)
+    public function setRenderer(callable $renderer = null)
     {
         if ($renderer !== null) {
             $renderer = core\lang\Callback::factory($renderer);

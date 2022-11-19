@@ -5,19 +5,18 @@
  */
 namespace df\core\lang;
 
-use df;
-use df\core;
-
-abstract class Struct implements IStruct {
-    
-    public function __construct(array $data=null) {
-        if($data) {
+abstract class Struct implements IStruct
+{
+    public function __construct(array $data = null)
+    {
+        if ($data) {
             $this->import($data);
         }
     }
 
-    public function import(array $data) {
-        foreach($data as $key => $value) {
+    public function import(array $data)
+    {
+        foreach ($data as $key => $value) {
             $this->{$key} = $value;
         }
 

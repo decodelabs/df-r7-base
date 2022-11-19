@@ -5,12 +5,11 @@
  */
 namespace df\core\environment;
 
-use df;
 use df\core;
 
-class Mode extends core\lang\Enum {
-
-    const DEVELOPMENT = 'Development';
-    const TESTING = 'Testing';
-    const PRODUCTION = 'Production';
+class Mode extends core\lang\Enum
+{
+    public const DEVELOPMENT = 'Development';
+    public const TESTING = 'Testing';
+    public const PRODUCTION = 'Production';
 }

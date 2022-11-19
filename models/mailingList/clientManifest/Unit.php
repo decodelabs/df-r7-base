@@ -5,9 +5,6 @@
  */
 namespace df\apex\models\mailingList\clientManifest;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
 
 class Unit extends axis\unit\Table
@@ -36,7 +33,7 @@ class Unit extends axis\unit\Table
             ->execute();
     }
 
-    public function get(string $source, string $userId, ?callable $generator=null): ?array
+    public function get(string $source, string $userId, ?callable $generator = null): ?array
     {
         $row = $this->select('data')
             ->where('user', '=', $userId)

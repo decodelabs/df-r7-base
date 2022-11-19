@@ -5,26 +5,24 @@
  */
 namespace df\user;
 
-use df;
-use df\core;
-use df\user;
-use df\axis;
-use df\arch;
-use df\flex;
-use df\mesh;
-
-use DecodeLabs\Systemic;
-use DecodeLabs\Glitch;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch;
+use DecodeLabs\Systemic;
+use df\arch;
+use df\axis;
+
+use df\core;
+use df\mesh;
+use df\user;
 
 class Manager implements IManager, core\IShutdownAware
 {
     use core\TManager;
     use mesh\event\TEmitter;
 
-    const REGISTRY_PREFIX = 'manager://user';
-    const USER_SESSION_BUCKET = 'user';
-    const CLIENT_SESSION_KEY = 'Client';
+    public const REGISTRY_PREFIX = 'manager://user';
+    public const USER_SESSION_BUCKET = 'user';
+    public const CLIENT_SESSION_KEY = 'Client';
 
     private $_accessLockCache = [];
 
@@ -52,7 +50,7 @@ class Manager implements IManager, core\IShutdownAware
         } else {
             $cache = user\session\Cache::getInstance();
             $regenKeyring = $cache->shouldRegenerateKeyring($this->client->getKeyringTimestamp());
-            core\i18n\Manager::getInstance()->setLocale($this->client->getLanguage().'_'.$this->client->getCountry());
+            core\i18n\Manager::getInstance()->setLocale($this->client->getLanguage() . '_' . $this->client->getCountry());
         }
 
         if (!$this->client->isLoggedIn() && $this->auth->recallIdentity($isNew)) {
@@ -62,7 +60,7 @@ class Manager implements IManager, core\IShutdownAware
 
         try {
             Systemic::$timezone->set($this->client->getTimezone());
-            Systemic::$locale->set($this->client->getLanguage().'_'.$this->client->getCountry());
+            Systemic::$locale->set($this->client->getLanguage() . '_' . $this->client->getCountry());
         } catch (\Throwable $e) {
             Glitch::logException($e);
         }
@@ -181,7 +179,7 @@ class Manager implements IManager, core\IShutdownAware
         return $this->client->isA(...$signifiers);
     }
 
-    public function canAccess($lock, $action=null, $linkTo=false)
+    public function canAccess($lock, $action = null, $linkTo = false)
     {
         if (!$lock instanceof IAccessLock) {
             $lock = $this->getAccessLock($lock);

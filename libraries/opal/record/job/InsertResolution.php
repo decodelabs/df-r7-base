@@ -5,10 +5,8 @@
  */
 namespace df\opal\record\job;
 
-use df;
-use df\core;
-use df\opal;
 use df\mesh;
+use df\opal;
 
 class InsertResolution implements mesh\job\IResolution
 {
@@ -16,7 +14,7 @@ class InsertResolution implements mesh\job\IResolution
     protected $_isForeign = false;
     protected $_isUntangled = false;
 
-    public function __construct(string $targetField, bool $isForeign=false)
+    public function __construct(string $targetField, bool $isForeign = false)
     {
         $this->_targetField = $targetField;
         $this->_isForeign = $isForeign;
@@ -24,7 +22,7 @@ class InsertResolution implements mesh\job\IResolution
 
     public function untangle(mesh\job\IQueue $queue, mesh\job\IJob $subordinate, mesh\job\IJob $dependency): bool
     {
-        if ($this->_isUntangled || !$subordinate instanceof  opal\record\IJob) {
+        if ($this->_isUntangled || !$subordinate instanceof opal\record\IJob) {
             return false;
         }
 
@@ -33,11 +31,11 @@ class InsertResolution implements mesh\job\IResolution
          * id when this record is inserted, then save it to queue
          */
         $queue->after(
-                $dependency,
-                (new Update($subordinate->getRecord()))
-                    ->shouldReportEvents(false),
-                $this
-            )
+            $dependency,
+            (new Update($subordinate->getRecord()))
+                ->shouldReportEvents(false),
+            $this
+        )
             ->addDependency($subordinate);
 
         return $this->_isUntangled = true;
@@ -47,7 +45,7 @@ class InsertResolution implements mesh\job\IResolution
     {
         if (
             !$subordinate instanceof opal\record\IJob ||
-            !$dependency instanceof  opal\record\IJob
+            !$dependency instanceof opal\record\IJob
         ) {
             return $this;
         }

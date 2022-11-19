@@ -6,20 +6,18 @@
 
 namespace df\apex\directory\shared\nightfire\_formDelegates;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\fire;
-use df\aura;
-
-use DecodeLabs\R7\Nightfire\Block;
-use DecodeLabs\R7\Nightfire\BlockDelegate;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\R7\Nightfire\Block;
 use DecodeLabs\R7\Nightfire\BlockAbstract;
+
+use DecodeLabs\R7\Nightfire\BlockDelegate;
 use DecodeLabs\Tagged as Html;
+
+use df\arch;
+use df\aura;
+use df\core;
+use df\fire;
 
 class ContentBlock extends arch\node\form\Delegate implements
     arch\node\IInlineFieldRenderableDelegate,
@@ -115,7 +113,7 @@ class ContentBlock extends arch\node\form\Delegate implements
 
 
 
-    public function setBlock(Block $block=null)
+    public function setBlock(Block $block = null)
     {
         if ($block !== null) {
             $this->setBlockType($block);
@@ -131,7 +129,7 @@ class ContentBlock extends arch\node\form\Delegate implements
         return $this->_block;
     }
 
-    public function setDefaultType(string $type=null)
+    public function setDefaultType(string $type = null)
     {
         $this->_defaultType = $type;
         return $this;
@@ -149,7 +147,7 @@ class ContentBlock extends arch\node\form\Delegate implements
         } else {
             if (!$block = BlockAbstract::normalize($type)) {
                 throw Exceptional::InvalidArgument(
-                    'Cannot build block of type '.$type
+                    'Cannot build block of type ' . $type
                 );
             }
 
@@ -206,16 +204,16 @@ class ContentBlock extends arch\node\form\Delegate implements
         if ($availableCount > 1) {
             $fa->add('nav.buttons > div.type', [
                 $this->html->groupedSelect(
-                        $this->fieldName('blockType'),
-                        $this->values->blockType,
-                        $available
-                    )
+                    $this->fieldName('blockType'),
+                    $this->values->blockType,
+                    $available
+                )
                     ->setNoSelectionLabel($this->_('-- select format --')),
 
                 $this->html->eventButton(
-                        $this->eventName('selectBlockType'),
-                        $this->_block ? $this->_('Change format') : $this->_('Set format')
-                    )
+                    $this->eventName('selectBlockType'),
+                    $this->_block ? $this->_('Change format') : $this->_('Set format')
+                )
                     ->setIcon($this->_block ? 'refresh' : 'tick')
                     ->setDisposition($this->_block ? 'operative' : 'positive')
                     ->shouldValidate(false)
@@ -269,7 +267,7 @@ class ContentBlock extends arch\node\form\Delegate implements
                 ->initialize();
         }
 
-        return Legacy::$http->redirect('#'.$this->elementId('block'));
+        return Legacy::$http->redirect('#' . $this->elementId('block'));
     }
 
     public function apply(): ?Block

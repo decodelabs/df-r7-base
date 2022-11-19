@@ -6,7 +6,6 @@
 
 namespace df\core\collection;
 
-use df;
 use df\core;
 
 interface ICollection extends \Countable, core\IArrayProvider
@@ -62,10 +61,10 @@ trait TValueMapArrayAccess
 // Sortable
 interface ISortable
 {
-    public function sortByValue($flags=\SORT_REGULAR);
-    public function reverseSortByValue($flags=\SORT_REGULAR);
-    public function sortByKey($flags=\SORT_REGULAR);
-    public function reverseSortByKey($flags=\SORT_REGULAR);
+    public function sortByValue($flags = \SORT_REGULAR);
+    public function reverseSortByValue($flags = \SORT_REGULAR);
+    public function sortByKey($flags = \SORT_REGULAR);
+    public function reverseSortByKey($flags = \SORT_REGULAR);
     public function reverse();
     public function move($key, $index);
 }
@@ -109,10 +108,10 @@ interface ISeekable
 // Sliceable
 interface ISliceable
 {
-    public function slice(int $offset, int $length=null): array;
-    public function getSlice(int $offset, int $length=null): array;
-    public function removeSlice(int $offset, int $length=null);
-    public function keepSlice(int $offset, int $length=null);
+    public function slice(int $offset, int $length = null): array;
+    public function getSlice(int $offset, int $length = null): array;
+    public function removeSlice(int $offset, int $length = null);
+    public function keepSlice(int $offset, int $length = null);
 }
 
 
@@ -353,23 +352,23 @@ interface ITree extends
 {
     public function importTree(ITree $child);
     public function merge(ITree $child);
-    public function getNestedChild($parts, string $separator='.');
-    public function contains($value, $includeChildren=false);
-    public function toArrayDelimitedString($setDelimiter='&', $valueDelimiter='=');
-    public function toArrayDelimitedSet($prefix=null);
-    public function toUrlEncodedArrayDelimitedSet($prefix=null);
+    public function getNestedChild($parts, string $separator = '.');
+    public function contains($value, $includeChildren = false);
+    public function toArrayDelimitedString($setDelimiter = '&', $valueDelimiter = '=');
+    public function toArrayDelimitedSet($prefix = null);
+    public function toUrlEncodedArrayDelimitedSet($prefix = null);
     public function hasKey(...$keys);
     public function getKeys();
     public function clearKeys();
     public function removeEmpty();
     public function getChildren();
-    public function hasAnyValue(array $checkKeys=null);
+    public function hasAnyValue(array $checkKeys = null);
     public function replace($key, ITree $node);
 }
 
 interface IInputTree extends ITree, IErrorContainer
 {
-    public function toArrayDelimitedErrorSet($prefix=null);
+    public function toArrayDelimitedErrorSet($prefix = null);
 }
 
 
@@ -380,16 +379,16 @@ interface IHeaderMap extends IMappedCollection, core\IStringProvider, \Iterator
     public function hasValue($key, $value): bool;
 
     public function setBase($key, $value);
-    public function getBase($key, $default=null);
+    public function getBase($key, $default = null);
     public function setDelimited($key, $base, array $values);
     public function getDelimited($key): ITree;
     public function setDelimitedValues($key, array $values);
     public function getDelimitedValues($key): array;
     public function setDelimitedValue($key, $name, $keyValue);
-    public function getDelimitedValue($key, $name, $default=null);
+    public function getDelimitedValue($key, $name, $default = null);
     public function hasDelimitedValue($key, $name);
     public static function normalizeKey($key);
-    public function getLines(array $skipKeys=null);
+    public function getLines(array $skipKeys = null);
 }
 
 interface IHeaderMapProvider
@@ -398,7 +397,7 @@ interface IHeaderMapProvider
     public function setHeaders(IHeaderMap $headers);
     public function hasHeaders();
     public function prepareHeaders();
-    public function getHeaderString(array $skipKeys=null);
+    public function getHeaderString(array $skipKeys = null);
 }
 
 
@@ -431,7 +430,7 @@ trait THeaderMapProvider
         return $this->_headers && !$this->_headers->isEmpty();
     }
 
-    public function getHeaderString(array $skipKeys=null)
+    public function getHeaderString(array $skipKeys = null)
     {
         $this->prepareHeaders();
 
@@ -540,7 +539,7 @@ interface IAttributeContainer
     public function addAttributes(array $attributes);
     public function getAttributes();
     public function setAttribute($key, $value);
-    public function getAttribute($key, $default=null);
+    public function getAttribute($key, $default = null);
     public function removeAttribute($key);
     public function hasAttribute($key);
     public function countAttributes();
@@ -576,7 +575,7 @@ trait TAttributeContainer
         return $this;
     }
 
-    public function getAttribute($key, $default=null)
+    public function getAttribute($key, $default = null)
     {
         if (isset($this->_attributes[$key])) {
             return $this->_attributes[$key];
@@ -638,11 +637,11 @@ trait TArrayAccessedAttributeContainer
 // Util
 interface IUtil
 {
-    public static function flatten($array, bool $unique=true, bool $removeNull=false);
-    public static function leaves($data, bool $removeNull=false);
+    public static function flatten($array, bool $unique = true, bool $removeNull = false);
+    public static function leaves($data, bool $removeNull = false);
     public static function isIterable($collection);
     public static function ensureIterable($collection);
 
-    public static function normalizeEnumValue($value, array $map, $defaultValue=null);
-    public static function exportArray(array $values, $level=1);
+    public static function normalizeEnumValue($value, array $map, $defaultValue = null);
+    public static function exportArray(array $values, $level = 1);
 }

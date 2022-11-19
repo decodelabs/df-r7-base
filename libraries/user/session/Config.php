@@ -6,11 +6,9 @@
 
 namespace df\user\session;
 
-use df;
-use df\core;
-use df\user;
-
 use DecodeLabs\Coercion;
+
+use df\core;
 
 class Config extends core\Config
 {
@@ -38,7 +36,8 @@ class Config extends core\Config
     {
         return (int)Coercion::clampInt(
             $this->values->gc->get('probability', 3),
-            1, 10
+            1,
+            10
         );
     }
 
@@ -52,7 +51,8 @@ class Config extends core\Config
     {
         return (int)Coercion::clampInt(
             $this->values->transitions->get('probability', 10),
-            2, 15
+            2,
+            15
         );
     }
 
@@ -60,7 +60,8 @@ class Config extends core\Config
     {
         return (int)Coercion::clampInt(
             $this->values->transitions->get('lifeTime', 30),
-            10, 60
+            10,
+            60
         );
     }
 
@@ -68,7 +69,8 @@ class Config extends core\Config
     {
         return (int)Coercion::clampInt(
             $this->values->transitions->get('cooloff', 20),
-            10, 60
+            10,
+            60
         );
     }
 }

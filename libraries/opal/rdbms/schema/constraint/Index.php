@@ -5,10 +5,9 @@
  */
 namespace df\opal\rdbms\schema\constraint;
 
-use df\core;
-use df\opal;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\opal;
 
 class Index implements opal\rdbms\schema\IIndex, Dumpable
 {
@@ -20,7 +19,7 @@ class Index implements opal\rdbms\schema\IIndex, Dumpable
     protected $_keyBlockSize;
     protected $_fulltextParser;
 
-    public function __construct(opal\rdbms\schema\ISchema $schema, $name, $fields=null)
+    public function __construct(opal\rdbms\schema\ISchema $schema, $name, $fields = null)
     {
         $this->_setName($name);
         $this->setFields($fields);
@@ -177,7 +176,7 @@ class Index implements opal\rdbms\schema\IIndex, Dumpable
             $fieldDef = $reference->getField()->getName();
 
             if (null !== ($size = $reference->getSize())) {
-                $fieldDef .= '('.$size.')';
+                $fieldDef .= '(' . $size . ')';
             }
 
             if ($reference->isDescending()) {
@@ -190,16 +189,16 @@ class Index implements opal\rdbms\schema\IIndex, Dumpable
         }
 
         if ($this->_indexType !== null) {
-            $output .= ' USING '.$this->_indexType;
+            $output .= ' USING ' . $this->_indexType;
         }
 
-        $output .= ' ('.implode(', ', $fields).')';
+        $output .= ' (' . implode(', ', $fields) . ')';
 
         if ($this->_conflictClause !== null) {
-            $output .= ' ON CONFLICT '.$this->getConflictClauseName();
+            $output .= ' ON CONFLICT ' . $this->getConflictClauseName();
         }
 
-        $output .= ' ['.$this->_sqlVariant.']';
+        $output .= ' [' . $this->_sqlVariant . ']';
 
         if ($this->isVoid()) {
             $output .= ' **VOID**';

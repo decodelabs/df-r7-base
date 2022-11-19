@@ -5,12 +5,10 @@
  */
 namespace df\opal\query;
 
-use df;
-use df\core;
-use df\opal;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\opal;
 
 class Join implements IJoinQuery, Dumpable
 {
@@ -39,7 +37,7 @@ class Join implements IJoinQuery, Dumpable
         }
     }
 
-    public function __construct(IQuery $parent, ISource $source, $type=self::INNER, $isConstraint=false)
+    public function __construct(IQuery $parent, ISource $source, $type = self::INNER, $isConstraint = false)
     {
         $this->_parent = $parent;
         $this->_source = $source;
@@ -54,7 +52,7 @@ class Join implements IJoinQuery, Dumpable
 
             default:
                 throw Exceptional::InvalidArgument(
-                    $type.' is not a valid join type'
+                    $type . ' is not a valid join type'
                 );
         }
 
@@ -77,7 +75,7 @@ class Join implements IJoinQuery, Dumpable
         return $this->_type;
     }
 
-    public function isConstraint(bool $flag=null)
+    public function isConstraint(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isConstraint = $flag;
@@ -129,7 +127,7 @@ class Join implements IJoinQuery, Dumpable
 
 
     // Combine
-    public function combineAll($nullField=null, string $alias=null)
+    public function combineAll($nullField = null, string $alias = null)
     {
         if (!$this->_parent instanceof ICombinableQuery) {
             throw Exceptional::Definition(
@@ -144,8 +142,8 @@ class Join implements IJoinQuery, Dumpable
         $combines = [];
 
         foreach ($this->_source->getOutputFields() as $fieldAlias => $field) {
-            $this->_source->realiasField($fieldAlias, $alias.'|'.$fieldAlias);
-            $combines[] = $alias.'|'.$fieldAlias.' as '.$fieldAlias;
+            $this->_source->realiasField($fieldAlias, $alias . '|' . $fieldAlias);
+            $combines[] = $alias . '|' . $fieldAlias . ' as ' . $fieldAlias;
         }
 
         $combine = $this->_parent->combine(...$combines);
@@ -170,7 +168,7 @@ class Join implements IJoinQuery, Dumpable
     public function glitchDump(): iterable
     {
         yield 'properties' => [
-            '*type' => self::typeIdToName($this->_type).($this->_isConstraint ? ' constraint' : null),
+            '*type' => self::typeIdToName($this->_type) . ($this->_isConstraint ? ' constraint' : null),
             '*fields' => $this->_source,
             '*on' => $this->_joinClauseList
         ];

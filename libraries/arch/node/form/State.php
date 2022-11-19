@@ -6,9 +6,8 @@
 
 namespace df\arch\node\form;
 
-use df;
-use df\core;
 use df\arch;
+use df\core;
 
 class State implements arch\node\IFormState, \Serializable
 {
@@ -39,7 +38,7 @@ class State implements arch\node\IFormState, \Serializable
     }
 
 
-    protected function _getSerializeValues(bool $withId=true): array
+    protected function _getSerializeValues(bool $withId = true): array
     {
         $output = [];
 
@@ -152,7 +151,7 @@ class State implements arch\node\IFormState, \Serializable
     }
 
 
-    public function isNew(bool $flag=null)
+    public function isNew(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isNew = $flag;
@@ -225,7 +224,7 @@ class State implements arch\node\IFormState, \Serializable
 
     public function getStore(
         string $key,
-        mixed $default=null
+        mixed $default = null
     ): mixed {
         if (isset($this->_store[$key])) {
             return $this->_store[$key];

@@ -6,11 +6,11 @@
 
 namespace df\apex\models\mail\journal;
 
-use df\core;
-use df\axis;
-use df\flow;
-
 use DecodeLabs\Genesis;
+use df\axis;
+use df\core;
+
+use df\flow;
 
 class Unit extends axis\unit\Table
 {

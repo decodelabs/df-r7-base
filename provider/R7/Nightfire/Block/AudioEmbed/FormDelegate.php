@@ -7,12 +7,12 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Nightfire\Block\AudioEmbed;
 
-use df\aura\html\widget\Field as FieldWidget;
-
 use DecodeLabs\Coercion;
+
 use DecodeLabs\R7\Nightfire\Block;
-use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
 use DecodeLabs\R7\Nightfire\Block\AudioEmbed;
+use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
+use df\aura\html\widget\Field as FieldWidget;
 
 /**
  * @extends BlockDelegateAbstract<AudioEmbed>
@@ -33,9 +33,9 @@ class FormDelegate extends BlockDelegateAbstract
     {
         $field->push(
             $this->html->textarea(
-                    $this->fieldName('embed'),
-                    $this->values->embed
-                )
+                $this->fieldName('embed'),
+                $this->values->embed
+            )
                 ->isRequired($this->_isRequired)
         );
     }

@@ -6,10 +6,9 @@
 
 namespace df\flow\mail\transport;
 
-use df;
-use df\flow;
-
 use DecodeLabs\Genesis;
+
+use df\flow;
 
 class Capture extends Base
 {
@@ -28,7 +27,7 @@ class Capture extends Base
         if (!Genesis::$environment->isProduction()) {
             $manager->flashNow('mail.capture', 'A new email has been received at the testing mail inbox', 'debug')
                 ->setDescription('Mail is stored locally when in development mode so you don\'t spam your test users')
-                ->setLink('~mail/capture/details?mail='.$record['id']);
+                ->setLink('~mail/capture/details?mail=' . $record['id']);
         }
 
         return $this;

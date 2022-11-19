@@ -5,12 +5,10 @@
  */
 namespace df\opal\query;
 
-use df;
-use df\core;
-use df\opal;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\opal;
 
 class Populate implements IPopulateQuery, Dumpable
 {
@@ -36,7 +34,7 @@ class Populate implements IPopulateQuery, Dumpable
         }
     }
 
-    public function __construct(IPopulatableQuery $parent, $fieldName, $type, array $selectFields=null)
+    public function __construct(IPopulatableQuery $parent, $fieldName, $type, array $selectFields = null)
     {
         $this->_parent = $parent;
         $this->_type = $type;
@@ -50,7 +48,7 @@ class Populate implements IPopulateQuery, Dumpable
 
         if (!$adapter instanceof opal\query\IIntegralAdapter) {
             throw Exceptional::Logic(
-                'Cannot populate field '.$fieldName.' - adapter is not integral'
+                'Cannot populate field ' . $fieldName . ' - adapter is not integral'
             );
         }
 
@@ -62,12 +60,12 @@ class Populate implements IPopulateQuery, Dumpable
 
         if (!$field instanceof opal\schema\IRelationField) {
             throw Exceptional::Runtime(
-                'Cannot populate '.$intrinsicFieldName.' - field is not a relation'
+                'Cannot populate ' . $intrinsicFieldName . ' - field is not a relation'
             );
         }
 
         $adapter = $field->getTargetQueryAdapter();
-        $alias = uniqid('ppl_'.$intrinsicFieldName);
+        $alias = uniqid('ppl_' . $intrinsicFieldName);
 
         if (empty($selectFields)) {
             $selectFields = ['*'];

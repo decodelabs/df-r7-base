@@ -5,17 +5,15 @@
  */
 namespace df\opal\query\clause;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Exceptional;
+
+use df\opal;
 
 class WhereList extends ListBase implements opal\query\IWhereClauseList
 {
     protected $_isPrerequisite = false;
 
-    public function __construct(opal\query\IClauseFactory $parent, $isOr=false, $isPrerequisite=false)
+    public function __construct(opal\query\IClauseFactory $parent, $isOr = false, $isPrerequisite = false)
     {
         if ($isPrerequisite) {
             $isOr = false;
@@ -135,7 +133,7 @@ class WhereList extends ListBase implements opal\query\IWhereClauseList
     }
 
 
-    public function addWhereClause(opal\query\IWhereClauseProvider $clause=null)
+    public function addWhereClause(opal\query\IWhereClauseProvider $clause = null)
     {
         $this->_addClause($clause);
         return $this;

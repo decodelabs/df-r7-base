@@ -5,11 +5,9 @@
  */
 namespace df\spur\mail\mailchimp3\filter;
 
-use df;
-use df\core;
 use df\spur;
 
-class Interest extends Base implements spur\mail\mailchimp3\IInterestFilter {
-
-    const KEY_NAME = 'interests';
+class Interest extends Base implements spur\mail\mailchimp3\IInterestFilter
+{
+    public const KEY_NAME = 'interests';
 }

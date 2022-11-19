@@ -6,15 +6,14 @@
 
 namespace df\aura\html\widget\util;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-
 use DecodeLabs\Genesis;
-use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Tagged as Html;
 use DecodeLabs\Tagged\Element;
+
+use DecodeLabs\Tagged\Markup;
+use df\arch;
+use df\aura;
+use df\core;
 
 class RendererContext implements aura\html\widget\IRendererContext
 {
@@ -122,7 +121,7 @@ class RendererContext implements aura\html\widget\IRendererContext
         return $row;
     }
 
-    public function shouldConvertNullToNa(bool $flag=null)
+    public function shouldConvertNullToNa(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_nullToNa = $flag;
@@ -143,7 +142,7 @@ class RendererContext implements aura\html\widget\IRendererContext
         return $this;
     }
 
-    public function iterate($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null, aura\html\ITag $fieldTag=null)
+    public function iterate($key, aura\html\ITag $cellTag = null, aura\html\ITag $rowTag = null, aura\html\ITag $fieldTag = null)
     {
         $this->counter++;
         $this->clear();
@@ -160,7 +159,7 @@ class RendererContext implements aura\html\widget\IRendererContext
         return $this;
     }
 
-    public function iterateRow($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null, aura\html\ITag $fieldTag=null)
+    public function iterateRow($key, aura\html\ITag $cellTag = null, aura\html\ITag $rowTag = null, aura\html\ITag $fieldTag = null)
     {
         $this->counter++;
 
@@ -175,7 +174,7 @@ class RendererContext implements aura\html\widget\IRendererContext
         return $this;
     }
 
-    public function iterateField($field, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null, aura\html\ITag $fieldTag=null)
+    public function iterateField($field, aura\html\ITag $cellTag = null, aura\html\ITag $rowTag = null, aura\html\ITag $fieldTag = null)
     {
         $this->field = $field;
         $this->cellTag = $cellTag;
@@ -189,14 +188,14 @@ class RendererContext implements aura\html\widget\IRendererContext
         return $this;
     }
 
-    public function renderCell($value, $renderer=null)
+    public function renderCell($value, $renderer = null)
     {
         if ($renderer) {
             try {
                 $value = core\lang\Callback($renderer, $value, $this);
             } catch (\Throwable $e) {
                 if (!Genesis::$environment->isTesting()) {
-                    $value = new aura\html\ElementString('<span class="error">ERROR: '.$e->getMessage().'</span>');
+                    $value = new aura\html\ElementString('<span class="error">ERROR: ' . $e->getMessage() . '</span>');
                 } else {
                     throw $e;
                 }
@@ -258,7 +257,7 @@ class RendererContext implements aura\html\widget\IRendererContext
         return $this;
     }
 
-    public function skipCells(int $count=1)
+    public function skipCells(int $count = 1)
     {
         $this->_skipCells = $count;
         return $this;
@@ -301,7 +300,7 @@ class RendererContext implements aura\html\widget\IRendererContext
 
     public function getStore(
         string $key,
-        mixed $default=null
+        mixed $default = null
     ): mixed {
         if (isset($this->_store[$key])) {
             return $this->_store[$key];

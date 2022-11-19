@@ -6,11 +6,10 @@
 
 namespace df\core\loader;
 
-use df;
-use df\core;
-
 use DecodeLabs\Genesis;
+
 use DecodeLabs\Genesis\Loader;
+use df\core;
 
 class Base implements
     core\ILoader,
@@ -77,20 +76,20 @@ class Base implements
         }
 
         $fileName = (string)array_pop($parts);
-        $basePath = Genesis::$build->path.'/'.$library;
+        $basePath = Genesis::$build->path . '/' . $library;
 
         if (!empty($parts)) {
-            $basePath .= '/'.implode('/', $parts);
+            $basePath .= '/' . implode('/', $parts);
         }
 
-        $output = [$basePath.'/'.$fileName.'.php'];
+        $output = [$basePath . '/' . $fileName . '.php'];
 
         if (false !== ($pos = strpos($fileName, '_'))) {
             $fileName = substr($fileName, 0, $pos);
-            $output[] = $basePath.'/'.$fileName.'.php';
+            $output[] = $basePath . '/' . $fileName . '.php';
         }
 
-        $output[] = $basePath.'/_manifest.php';
+        $output[] = $basePath . '/_manifest.php';
 
         return $output;
     }
@@ -98,7 +97,7 @@ class Base implements
     public function lookupClass(string $path): ?string
     {
         $parts = explode('/', trim($path, '/'));
-        $class = 'df\\'.implode('\\', $parts);
+        $class = 'df\\' . implode('\\', $parts);
 
         if (!class_exists($class)) {
             return null;
@@ -129,12 +128,12 @@ class Base implements
     public function getFileSearchPaths(string $path): array
     {
         $path = core\uri\Path::normalizeLocal($path);
-        return [Genesis::$build->path.'/'.$path];
+        return [Genesis::$build->path . '/' . $path];
     }
 
-    public function lookupFileList(string $path, array $extensions=null): \Generator
+    public function lookupFileList(string $path, array $extensions = null): \Generator
     {
-        $paths = $this->getFileSearchPaths(rtrim($path, '/').'/');
+        $paths = $this->getFileSearchPaths(rtrim($path, '/') . '/');
         $index = [];
 
         foreach ($paths as $path) {
@@ -171,7 +170,7 @@ class Base implements
         }
     }
 
-    public function lookupFileListRecursive(string $path, array $extensions=null, callable $folderCheck=null): \Generator
+    public function lookupFileListRecursive(string $path, array $extensions = null, callable $folderCheck = null): \Generator
     {
         $path = core\uri\Path::normalizeLocal($path);
 
@@ -184,18 +183,18 @@ class Base implements
         $index = [];
 
         foreach ($this->lookupFolderList($path) as $dirName => $dirPath) {
-            foreach ($this->lookupFileListRecursive($path.'/'.$dirName, $extensions, $folderCheck) as $name => $filePath) {
-                if (isset($index[$dirName.'/'.$name])) {
+            foreach ($this->lookupFileListRecursive($path . '/' . $dirName, $extensions, $folderCheck) as $name => $filePath) {
+                if (isset($index[$dirName . '/' . $name])) {
                     continue;
                 }
 
-                $index[$dirName.'/'.$name] = true;
-                yield $dirName.'/'.$name => $filePath;
+                $index[$dirName . '/' . $name] = true;
+                yield $dirName . '/' . $name => $filePath;
             }
         }
     }
 
-    public function lookupClassList(string $path, bool $test=true): \Generator
+    public function lookupClassList(string $path, bool $test = true): \Generator
     {
         $path = trim($path, '/');
 
@@ -206,7 +205,7 @@ class Base implements
                 continue;
             }
 
-            $class = 'df\\'.str_replace('/', '\\', $path).'\\'.$name;
+            $class = 'df\\' . str_replace('/', '\\', $path) . '\\' . $name;
 
             if ($test) {
                 if (!class_exists($class)) {
@@ -226,7 +225,7 @@ class Base implements
 
     public function lookupFolderList(string $path): \Generator
     {
-        $paths = $this->getFileSearchPaths(rtrim($path, '/').'/');
+        $paths = $this->getFileSearchPaths(rtrim($path, '/') . '/');
 
         if (!$paths) {
             return;

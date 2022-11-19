@@ -5,15 +5,13 @@
  */
 namespace df\core\i18n;
 
-use df\core;
-
 use DecodeLabs\Exceptional;
 
 class Translator implements ITranslator
 {
     protected $_domainId;
 
-    public static function factory($domainId, $locale=null)
+    public static function factory($domainId, $locale = null)
     {
         return new self($domainId);
     }
@@ -28,7 +26,7 @@ class Translator implements ITranslator
         return $this->_domainId;
     }
 
-    public function _($phrase='', $b=null, $c=null): string
+    public function _($phrase = '', $b = null, $c = null): string
     {
         return $this->translate(func_get_args());
     }
@@ -82,7 +80,7 @@ class Translator implements ITranslator
             $matchPhrase = [];
 
             foreach ($phrase as $key => $value) {
-                $matchPhrase[] = '['.$key.']'.$value;
+                $matchPhrase[] = '[' . $key . ']' . $value;
             }
 
             $matchPhrase = implode('|', $matchPhrase);
@@ -122,7 +120,7 @@ class Translator implements ITranslator
                 foreach ($clauses as $clause) {
                     if (!preg_match('/n(([\/\*\+\-\%])([-0-9])+)?([<>=]+)([-0-9]+)/', $clause, $matches)) {
                         throw Exceptional::InvalidArgument(
-                            $clause.' is not a valid plural clause'
+                            $clause . ' is not a valid plural clause'
                         );
                     }
 

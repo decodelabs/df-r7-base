@@ -6,12 +6,11 @@
 
 namespace df\arch\navigation\menu\source;
 
-use df;
-use df\core;
-use df\arch;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\R7\Legacy;
+
+use df\arch;
+use df\core;
 
 abstract class Base implements arch\navigation\menu\ISource, core\IContextAware
 {
@@ -37,11 +36,11 @@ abstract class Base implements arch\navigation\menu\ISource, core\IContextAware
 
     public static function factory(arch\IContext $context, $type): arch\navigation\menu\ISource
     {
-        $class = 'df\\arch\\navigation\\menu\\source\\'.ucfirst($type);
+        $class = 'df\\arch\\navigation\\menu\\source\\' . ucfirst($type);
 
         if (!class_exists($class)) {
             throw Exceptional::NotFound(
-                'Source type '.$type.' could not be found'
+                'Source type ' . $type . ' could not be found'
             );
         }
 

@@ -6,13 +6,9 @@
 
 namespace df\apex\directory\front\users\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\user;
-
 use DecodeLabs\Terminus as Cli;
+
+use df\arch;
 
 class TaskPurgeLogins extends arch\node\Task
 {
@@ -45,6 +41,6 @@ class TaskPurgeLogins extends arch\node\Task
             usleep(10000);
         }
 
-        Cli::deleteSuccess($total.' removed');
+        Cli::deleteSuccess($total . ' removed');
     }
 }

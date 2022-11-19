@@ -5,12 +5,11 @@
  */
 namespace df\spur\analytics\adapter;
 
-use df;
-use df\core;
-use df\spur;
-use df\aura;
-
 use DecodeLabs\Exceptional;
+use df\aura;
+use df\core;
+
+use df\spur;
 
 class GoogleClassic extends Base implements spur\analytics\ILegacyAdapter
 {
@@ -28,14 +27,14 @@ class GoogleClassic extends Base implements spur\analytics\ILegacyAdapter
 
         $attributes = $handler->getDefinedUserAttributes($this->getDefaultUserAttributes(), false);
         $events = $handler->getEvents();
-        $script = 'var _gaq = _gaq || [];'."\n".
-            $this->_createCallString('_setAccount', [$this->getTrackingId()])."\n";
+        $script = 'var _gaq = _gaq || [];' . "\n" .
+            $this->_createCallString('_setAccount', [$this->getTrackingId()]) . "\n";
 
         ksort($attributes);
         $i = 1;
 
         foreach ($attributes as $key => $value) {
-            $script .= $this->_createCallString('_setCustomVar', [$i, $key, $value, 1])."\n";
+            $script .= $this->_createCallString('_setCustomVar', [$i, $key, $value, 1]) . "\n";
 
             if ($i++ >= 5) {
                 break;
@@ -48,36 +47,38 @@ class GoogleClassic extends Base implements spur\analytics\ILegacyAdapter
             $trackVars[] = $url;
         }
 
-        $script .= $this->_createCallString('_trackPageview', $trackVars)."\n";
+        $script .= $this->_createCallString('_trackPageview', $trackVars) . "\n";
 
         foreach ($events as $event) {
             $eventArr = [$event->getCategory(), $event->getName(), $event->getLabel()];
-            $script .= $this->_createCallString('_trackEvent', $eventArr)."\n";
+            $script .= $this->_createCallString('_trackEvent', $eventArr) . "\n";
         }
 
         $script .= "\n";
         $script .=
-            '(function() {'."\n".
-            '    var ga = document.createElement(\'script\'); ga.type = \'text/javascript\'; ga.async = true;'."\n".
-            '    ga.src = (\'https:\' == document.location.protocol ? \'https://ssl\' : \'http://www\') + \'.google-analytics.com/ga.js\';'."\n".
-            '    var s = document.getElementsByTagName(\'script\')[0]; s.parentNode.insertBefore(ga, s);'."\n".
-            '})();'."\n"
-            ;
+            '(function() {' . "\n" .
+            '    var ga = document.createElement(\'script\'); ga.type = \'text/javascript\'; ga.async = true;' . "\n" .
+            '    ga.src = (\'https:\' == document.location.protocol ? \'https://ssl\' : \'http://www\') + \'.google-analytics.com/ga.js\';' . "\n" .
+            '    var s = document.getElementsByTagName(\'script\')[0]; s.parentNode.insertBefore(ga, s);' . "\n" .
+            '})();' . "\n"
+        ;
 
         $view->addHeadScript('google-analytics', $script);
     }
 
-    protected function _createCallString($method, array $args=[])
+    protected function _createCallString($method, array $args = [])
     {
         array_unshift($args, $method);
 
         if (false === ($json = json_encode($args))) {
             throw Exceptional::Runtime(
-                'Unable to encode json', null, $args
+                'Unable to encode json',
+                null,
+                $args
             );
         }
 
-        return '_gaq.push('.str_replace('"', '\'', $json).');';
+        return '_gaq.push(' . str_replace('"', '\'', $json) . ');';
     }
 
     public function setTrackingId($id)

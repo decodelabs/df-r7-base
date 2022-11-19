@@ -6,14 +6,12 @@
 
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
+use DecodeLabs\Glitch\Dumpable;
 use df\arch;
 use df\aura;
-use df\link as linkLib;
-use df\user;
+use df\core;
 
-use DecodeLabs\Glitch\Dumpable;
+use df\link as linkLib;
 
 class Link extends Base implements
     ILinkWidget,
@@ -40,7 +38,7 @@ class Link extends Base implements
     protected $_contentType;
     protected $_activeClass;
 
-    public function __construct(arch\IContext $context, $uri, $body=null, $matchRequest=null)
+    public function __construct(arch\IContext $context, $uri, $body = null, $matchRequest = null)
     {
         parent::__construct($context);
 
@@ -249,7 +247,7 @@ class Link extends Base implements
 
 
     // Match
-    public function shouldMatchExact(bool $flag=null)
+    public function shouldMatchExact(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_matchExact = (bool)$flag;
@@ -320,7 +318,7 @@ class Link extends Base implements
 
 
     // Active
-    public function isActive(bool $flag=null)
+    public function isActive(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isActive = $flag;
@@ -398,7 +396,7 @@ class Link extends Base implements
 
 
     // Hiding
-    public function shouldHideIfInaccessible(bool $flag=null)
+    public function shouldHideIfInaccessible(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_hideIfInaccessible = $flag;
@@ -452,7 +450,7 @@ class Link extends Base implements
      */
     public function glitchDump(): iterable
     {
-        $lockCount = count($this->_accessLocks).' (';
+        $lockCount = count($this->_accessLocks) . ' (';
 
         if (!$this->_checkAccess) {
             $lockCount .= 'not ';

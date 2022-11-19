@@ -5,21 +5,18 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-
 use DecodeLabs\Dictum;
+
+use df\arch;
 
 class StarRating extends Base
 {
-    const PRIMARY_TAG = 'div.starRating';
+    public const PRIMARY_TAG = 'div.starRating';
 
     protected $_value;
     protected $_max = 5;
 
-    public function __construct(arch\IContext $context, $value, $max=5)
+    public function __construct(arch\IContext $context, $value, $max = 5)
     {
         parent::__construct($context);
 

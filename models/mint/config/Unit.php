@@ -5,16 +5,14 @@
  */
 namespace df\apex\models\mint\config;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
+use df\core;
 use df\mint;
 
 class Unit extends axis\unit\Config implements mint\IModelConfig
 {
-    const ID = 'Mint';
-    const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
+    public const ID = 'Mint';
+    public const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
 
     public function getDefaultValues(): array
     {
@@ -45,7 +43,7 @@ class Unit extends axis\unit\Config implements mint\IModelConfig
 
 
     // Enabled
-    public function isEnabled(bool $flag=null)
+    public function isEnabled(bool $flag = null)
     {
         if ($flag !== null) {
             $this->values->enabled = $flag;

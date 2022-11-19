@@ -5,12 +5,10 @@
  */
 namespace df\axis\schema\field;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
-
 use DecodeLabs\Exceptional;
+use df\axis;
+
+use df\opal;
 
 /*
  * This type requires an inverse field and must lookup and match target table.
@@ -22,7 +20,7 @@ class OneToMany extends Base implements axis\schema\IOneToManyField
     use axis\schema\TInverseRelationField;
     use axis\schema\TTargetPrimaryFieldAwareRelationField;
 
-    protected function _init($targetUnit, $targetField=null)
+    protected function _init($targetUnit, $targetField = null)
     {
         $this->setTargetUnitId($targetUnit);
         $this->setTargetField($targetField);
@@ -30,7 +28,7 @@ class OneToMany extends Base implements axis\schema\IOneToManyField
 
 
     // Values
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord = null)
     {
         $value = null;
 
@@ -56,7 +54,7 @@ class OneToMany extends Base implements axis\schema\IOneToManyField
         return null;
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    public function sanitizeValue($value, opal\record\IRecord $forRecord = null)
     {
         if ($forRecord) {
             $output = new axis\unit\table\record\InlineManyRelationValueContainer($this);
@@ -81,20 +79,22 @@ class OneToMany extends Base implements axis\schema\IOneToManyField
 
 
     // Clause
-    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false)
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr = false)
     {
         $localRelationManifest = $this->getLocalRelationManifest();
 
         if (!$localRelationManifest->isSingleField()) {
             throw Exceptional::Runtime(
-                'Query clause on field '.$this->_name.' cannot be executed as it relies on a multi-field primary key. '.
+                'Query clause on field ' . $this->_name . ' cannot be executed as it relies on a multi-field primary key. ' .
                 'You should probably use a fieldless join constraint instead'
             );
         }
 
         if (!$parent instanceof opal\query\ISourceProvider) {
             throw Exceptional::Logic(
-                'Clause factory is not a source provider', null, $parent
+                'Clause factory is not a source provider',
+                null,
+                $parent
             );
         }
 
@@ -102,7 +102,7 @@ class OneToMany extends Base implements axis\schema\IOneToManyField
         $source = $field->getSource();
 
         $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId);
-        $targetField = $sourceManager->extrapolateIntrinsicField($source, $source->getAlias().'.'.$localRelationManifest->getSingleFieldName());
+        $targetField = $sourceManager->extrapolateIntrinsicField($source, $source->getAlias() . '.' . $localRelationManifest->getSingleFieldName());
 
         $mainOperator = 'in';
 
@@ -152,7 +152,7 @@ class OneToMany extends Base implements axis\schema\IOneToManyField
         $parentSourceAlias = $populate->getParentSourceAlias();
         $targetSourceAlias = $populate->getSourceAlias();
 
-        $output->on($targetSourceAlias.'.'.$this->_targetField, '=', $parentSourceAlias.'.@primary');
+        $output->on($targetSourceAlias . '.' . $this->_targetField, '=', $parentSourceAlias . '.@primary');
         $output->asMany($this->_name);
 
         return $output;
@@ -211,10 +211,10 @@ class OneToMany extends Base implements axis\schema\IOneToManyField
         $arg = $this->_targetUnitId;
 
         if ($this->_targetField) {
-            $arg .= ' -> '.$this->_targetField;
+            $arg .= ' -> ' . $this->_targetField;
         }
 
-        $def .= '('.$arg.')';
+        $def .= '(' . $arg . ')';
 
         yield 'definition' => $def;
     }

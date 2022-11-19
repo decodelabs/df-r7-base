@@ -6,13 +6,11 @@
 
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Tagged as Html;
+use df\arch;
+use df\aura;
+
+use df\core;
 use Traversable;
 
 class Container extends Base implements
@@ -40,11 +38,12 @@ class Container extends Base implements
         }
 
         return $this->getTag()->renderWith(
-            $this->_prepareChildren(), true
+            $this->_prepareChildren(),
+            true
         );
     }
 
-    protected function _prepareChildren($callback=null)
+    protected function _prepareChildren($callback = null)
     {
         if ($callback !== null) {
             $callback = core\lang\Callback::factory($callback);
@@ -110,7 +109,7 @@ class Container extends Base implements
         return $this;
     }
 
-    public function get($index, $default=null)
+    public function get($index, $default = null)
     {
         return $this->_children->get($index, $default);
     }
@@ -224,23 +223,23 @@ class Container extends Base implements
         return $this;
     }
 
-    public function slice(int $offset, int $length=null): array
+    public function slice(int $offset, int $length = null): array
     {
-        return $this->_children->slice($offset, $length=null);
+        return $this->_children->slice($offset, $length = null);
     }
 
-    public function getSlice(int $offset, int $length=null): array
+    public function getSlice(int $offset, int $length = null): array
     {
         return $this->_children->getSlice($offset, $length);
     }
 
-    public function removeSlice(int $offset, int $length=null)
+    public function removeSlice(int $offset, int $length = null)
     {
         $this->_children->removeSlice($offset, $length);
         return $this;
     }
 
-    public function keepSlice(int $offset, int $length=null)
+    public function keepSlice(int $offset, int $length = null)
     {
         $this->_children->keepSlice($offset, $length);
         return $this;

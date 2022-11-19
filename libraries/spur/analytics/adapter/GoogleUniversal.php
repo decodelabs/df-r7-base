@@ -6,10 +6,9 @@
 
 namespace df\spur\analytics\adapter;
 
-use df;
+use df\aura;
 use df\core;
 use df\spur;
-use df\aura;
 
 class GoogleUniversal extends Base
 {
@@ -43,10 +42,10 @@ class GoogleUniversal extends Base
         $scriptName = $this->getOption('scriptName', 'ga');
 
         $script =
-            '(function(i,s,o,g,r,a,m){i[\'GoogleAnalyticsObject\']=r;i[r]=i[r]||function(){'."\n".
-            '(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),'."\n".
-            'm=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)'."\n".
-            '})(window,document,\'script\',\'//www.google-analytics.com/analytics.js\',\''.$scriptName.'\');'."\n";
+            '(function(i,s,o,g,r,a,m){i[\'GoogleAnalyticsObject\']=r;i[r]=i[r]||function(){' . "\n" .
+            '(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),' . "\n" .
+            'm=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)' . "\n" .
+            '})(window,document,\'script\',\'//www.google-analytics.com/analytics.js\',\'' . $scriptName . '\');' . "\n";
 
         $script .= $this->_buildCreateCall($scriptName, $userId);
         $pageviewOptions = null;
@@ -59,20 +58,20 @@ class GoogleUniversal extends Base
             $pageviewOptions[$attribute] = (string)$value;
         }
 
-        $script .= $scriptName.'(\'set\', \'anonymizeIp\', true);'."\n";
+        $script .= $scriptName . '(\'set\', \'anonymizeIp\', true);' . "\n";
 
         // Page view
-        $script .= $scriptName.'(\'send\', \'pageview\'';
+        $script .= $scriptName . '(\'send\', \'pageview\'';
 
         if (!empty($pageviewOptions)) {
-            $script .= ', '.json_encode($pageviewOptions);
+            $script .= ', ' . json_encode($pageviewOptions);
         }
 
-        $script .= ');'."\n";
+        $script .= ');' . "\n";
 
         // Events
         foreach ($handler->getEvents() as $event) {
-            $script .= $scriptName.'(\'send\', \'event\', \''.$event->getCategory().'\', \''.$event->getName().'\', \''.$event->getLabel().'\');'."\n";
+            $script .= $scriptName . '(\'send\', \'event\', \'' . $event->getCategory() . '\', \'' . $event->getName() . '\', \'' . $event->getLabel() . '\');' . "\n";
         }
 
 
@@ -80,7 +79,7 @@ class GoogleUniversal extends Base
         $transactions = $handler->getECommerceTransactions();
 
         if (!empty($transactions)) {
-            $script .= $scriptName.'(\'require\', \'ecommerce\');'."\n";
+            $script .= $scriptName . '(\'require\', \'ecommerce\');' . "\n";
 
             foreach ($transactions as $transaction) {
                 $transactionData = [
@@ -101,10 +100,10 @@ class GoogleUniversal extends Base
                     $transactionData['tax'] = $tax->getAmount();
                 }
 
-                $script .= $scriptName.'(\'ecommerce:addTransaction\', '.json_encode($transactionData).');'."\n";
+                $script .= $scriptName . '(\'ecommerce:addTransaction\', ' . json_encode($transactionData) . ');' . "\n";
             }
 
-            $script .= $scriptName.'(\'ecommerce:send\');'."\n";
+            $script .= $scriptName . '(\'ecommerce:send\');' . "\n";
         }
 
         $view->addHeadScript('google-analytics', rtrim($script));
@@ -153,6 +152,6 @@ class GoogleUniversal extends Base
             $createOptions = json_encode($createOptions);
         }
 
-        return $scriptName.'(\'create\', \''.$this->getTrackingId().'\', '.$createOptions.');'."\n";
+        return $scriptName . '(\'create\', \'' . $this->getTrackingId() . '\', ' . $createOptions . ');' . "\n";
     }
 }

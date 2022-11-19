@@ -6,10 +6,9 @@
 
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
 use df\arch;
+use df\aura;
+use df\core;
 
 class Field extends Container implements IFormOrientedWidget
 {
@@ -21,7 +20,7 @@ class Field extends Container implements IFormOrientedWidget
     protected $_description;
     protected $_errorContainer;
 
-    public function __construct(arch\IContext $context, $labelBody=null, $input=null)
+    public function __construct(arch\IContext $context, $labelBody = null, $input = null)
     {
         parent::__construct($context, $input);
         $this->_label = new Label($context, $labelBody);
@@ -64,7 +63,7 @@ class Field extends Container implements IFormOrientedWidget
             $inputId = $primaryWidget->getId();
 
             if ($inputId === null) {
-                $inputId = 'formInput-'.md5(uniqid('formInput-', true));
+                $inputId = 'formInput-' . md5(uniqid('formInput-', true));
                 $primaryWidget->setId($inputId);
             }
 
@@ -179,7 +178,7 @@ class Field extends Container implements IFormOrientedWidget
     }
 
     // Error
-    public function setErrorContainer(core\collection\IErrorContainer $errorContainer=null)
+    public function setErrorContainer(core\collection\IErrorContainer $errorContainer = null)
     {
         $this->_errorContainer = $errorContainer;
         return $this;

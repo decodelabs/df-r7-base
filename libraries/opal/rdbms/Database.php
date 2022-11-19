@@ -5,31 +5,29 @@
  */
 namespace df\opal\rdbms;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Exceptional;
+
+use df\opal;
 
 abstract class Database implements IDatabase
 {
     protected $_adapter;
 
-    public static function factory(opal\rdbms\IAdapter $adapter, $name=null)
+    public static function factory(opal\rdbms\IAdapter $adapter, $name = null)
     {
         $type = $adapter->getServerType();
-        $class = 'df\\opal\\rdbms\\variant\\'.$type.'\\Database';
+        $class = 'df\\opal\\rdbms\\variant\\' . $type . '\\Database';
 
         if (!class_exists($class)) {
             throw Exceptional::Runtime(
-                'There is no database handler available for '.$type
+                'There is no database handler available for ' . $type
             );
         }
 
         return new $class($adapter, $name);
     }
 
-    protected function __construct(opal\rdbms\IAdapter $adapter, $name=null)
+    protected function __construct(opal\rdbms\IAdapter $adapter, $name = null)
     {
         if ($name !== null) {
             $dsn = $adapter->getDsn();
@@ -58,7 +56,7 @@ abstract class Database implements IDatabase
 
     public function drop()
     {
-        $stmt = $this->_adapter->prepare('DROP DATABASE IF EXISTS '.$this->_adapter->quoteIdentifier($this->getName()));
+        $stmt = $this->_adapter->prepare('DROP DATABASE IF EXISTS ' . $this->_adapter->quoteIdentifier($this->getName()));
         $stmt->executeRaw();
 
         return $this;

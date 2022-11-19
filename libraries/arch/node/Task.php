@@ -6,15 +6,13 @@
 
 namespace df\arch\node;
 
-use df;
-use df\core;
-use df\arch;
-use df\halo;
-
-use DecodeLabs\Genesis;
-use DecodeLabs\Terminus as Cli;
-use DecodeLabs\Systemic;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
+
+use DecodeLabs\Systemic;
+use DecodeLabs\Terminus as Cli;
+use df\arch;
+use df\core;
 
 abstract class Task extends Base implements ITaskNode
 {
@@ -63,7 +61,7 @@ abstract class Task extends Base implements ITaskNode
         return [];
     }
 
-    public function runChild($request, bool $announce=true)
+    public function runChild($request, bool $announce = true)
     {
         $request = $this->context->uri->directoryRequest($request);
         $context = $this->context->spawnInstance($request, true);
@@ -71,7 +69,7 @@ abstract class Task extends Base implements ITaskNode
 
         if (!$node instanceof self) {
             throw Exceptional::Definition(
-                'Child node '.$request.' does not extend arch\\node\\Task'
+                'Child node ' . $request . ' does not extend arch\\node\\Task'
             );
         }
 
@@ -120,7 +118,7 @@ abstract class Task extends Base implements ITaskNode
 
 
     // Interaction
-    protected function _askFor(string $label, callable $validator, ?string $default=null, bool $confirm=false)
+    protected function _askFor(string $label, callable $validator, ?string $default = null, bool $confirm = false)
     {
         $output = null;
 

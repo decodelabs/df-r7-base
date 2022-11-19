@@ -5,18 +5,14 @@
  */
 namespace df\user\authentication;
 
-use df;
-use df\core;
-use df\user;
-
 class Result
 {
-    const SUCCESS = 1;
-    const FAILURE = 0;
-    const IDENTITY_NOT_FOUND = -1;
-    const INVALID_CREDENTIAL = -2;
-    const ERROR = -3;
-    const NO_STATUS = -4;
+    public const SUCCESS = 1;
+    public const FAILURE = 0;
+    public const IDENTITY_NOT_FOUND = -1;
+    public const INVALID_CREDENTIAL = -2;
+    public const ERROR = -3;
+    public const NO_STATUS = -4;
 
     protected $_adapterName;
     protected $_identity;
@@ -24,7 +20,7 @@ class Result
     protected $_domainInfo;
 
 
-    public function __construct($adapterName=null)
+    public function __construct($adapterName = null)
     {
         $this->setAdapterName($adapterName);
     }

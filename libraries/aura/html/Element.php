@@ -5,18 +5,13 @@
  */
 namespace df\aura\html;
 
-use df;
-use df\core;
-use df\aura;
-use df\flex;
-
 use DecodeLabs\Glitch\Dumpable;
 
 class Element extends Tag implements IElement, Dumpable
 {
     use TElementContent;
 
-    public function __construct($name, $content=null, array $attributes=null)
+    public function __construct($name, $content = null, array $attributes = null)
     {
         parent::__construct($name, $attributes);
 

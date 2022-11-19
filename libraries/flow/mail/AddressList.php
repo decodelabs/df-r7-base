@@ -6,12 +6,10 @@
 
 namespace df\flow\mail;
 
-use df;
-use df\core;
-use df\flow;
+use ArrayIterator;
 
 use DecodeLabs\Glitch\Dumpable;
-use ArrayIterator;
+use df\core;
 use Traversable;
 
 class AddressList implements IAddressList, Dumpable
@@ -60,7 +58,7 @@ class AddressList implements IAddressList, Dumpable
                     }
 
                     if ($prefix) {
-                        $part = $prefix.','.$part;
+                        $part = $prefix . ',' . $part;
                     }
 
                     $this->add($part);
@@ -111,12 +109,12 @@ class AddressList implements IAddressList, Dumpable
         return $output;
     }
 
-    public function add($address, $name=null)
+    public function add($address, $name = null)
     {
         return $this->set($address, $name);
     }
 
-    public function set($address, $name=null)
+    public function set($address, $name = null)
     {
         if (!$address = Address::factory($address, $name)) {
             return $this;
@@ -130,7 +128,7 @@ class AddressList implements IAddressList, Dumpable
         return $this;
     }
 
-    public function get($address, $default=null)
+    public function get($address, $default = null)
     {
         if ($address instanceof IAddress) {
             $address = $address->getAddress();

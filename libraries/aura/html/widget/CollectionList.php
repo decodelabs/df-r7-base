@@ -5,14 +5,13 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-use df\opal;
-
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
+use df\arch;
+use df\aura;
+
+use df\core;
+use df\opal;
 
 class CollectionList extends Base implements IDataDrivenListWidget, IMappedListWidget, Dumpable
 {
@@ -20,7 +19,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
     use TWidget_MappedList;
     use TWidget_RendererContextProvider;
 
-    const PRIMARY_TAG = 'div.list.collection';
+    public const PRIMARY_TAG = 'div.list.collection';
 
     public $paginator;
 
@@ -30,7 +29,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
     protected $_mode = 'get';
     protected $_postEvent = 'paginate';
 
-    public function __construct(arch\IContext $context, $data, core\collection\IPaginator $paginator=null)
+    public function __construct(arch\IContext $context, $data, core\collection\IPaginator $paginator = null)
     {
         parent::__construct($context);
 
@@ -45,7 +44,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
         }
     }
 
-    public function shouldRenderIfEmpty(bool $flag=null)
+    public function shouldRenderIfEmpty(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_renderIfEmpty = $flag;
@@ -55,7 +54,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
         return $this->_renderIfEmpty;
     }
 
-    public function shouldShowHeader(bool $flag=null)
+    public function shouldShowHeader(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_showHeader = $flag;
@@ -79,7 +78,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
 
             default:
                 throw Exceptional::InvalidArgument(
-                    'Invalid paginator mode: '.$mode
+                    'Invalid paginator mode: ' . $mode
                 );
         }
 
@@ -168,7 +167,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
             $colClasses[$fieldKey] = [];
 
             foreach ($field->getHeaderList() as $key => $label) {
-                $colClasses[$fieldKey][] = 'field-'.$key;
+                $colClasses[$fieldKey][] = 'field-' . $key;
 
                 if ($this->_showHeader && $orderData !== null && isset($orderFields[$key])) {
                     $nullOrder = 'ascending';
@@ -189,9 +188,9 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                         $isActive = false;
                     }
 
-                    $query->__set($keyMap['order'], $key.' '.$direction);
+                    $query->__set($keyMap['order'], $key . ' ' . $direction);
 
-                    $class = 'order '.strtolower(trim($direction, '!^*')).' null-'.$nullOrder;
+                    $class = 'order ' . strtolower(trim($direction, '!^*')) . ' null-' . $nullOrder;
 
                     if ($isActive) {
                         $class .= ' active';
@@ -213,7 +212,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                                 'type' => 'submit',
                                 'class' => $class,
                                 'name' => 'formEvent',
-                                'value' => $this->_postEvent.'('.$query->toArrayDelimitedString().')',
+                                'value' => $this->_postEvent . '(' . $query->toArrayDelimitedString() . ')',
                                 'formnovalidate' => true
                             ]))
                             ->render();
@@ -234,22 +233,22 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                                 break;
                         }
 
-                        $query->__set($keyMap['order'], $key.' '.$direction);
+                        $query->__set($keyMap['order'], $key . ' ' . $direction);
                         $nullLabel = $newOrder == 'ascending' ? '○' : '●';
 
                         if ($this->_mode == 'get') {
                             $tagContent[] = (new aura\html\Element('a', $nullLabel, [
                                     'href' => $this->_context->uri->__invoke($request),
-                                    'class' => 'null-order null-'.$newOrder,
+                                    'class' => 'null-order null-' . $newOrder,
                                     'rel' => 'nofollow'
                                 ]))
                                 ->render();
                         } else {
                             $tagContent[] = (new aura\html\Element('button', $nullLabel, [
                                     'type' => 'submit',
-                                    'class' => 'null-order null-'.$newOrder,
+                                    'class' => 'null-order null-' . $newOrder,
                                     'name' => 'formEvent',
-                                    'value' => $this->_postEvent.'('.$query->toArrayDelimitedString().')',
+                                    'value' => $this->_postEvent . '(' . $query->toArrayDelimitedString() . ')',
                                     'formnovalidate' => true
                                 ]))
                                 ->render();
@@ -310,7 +309,8 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                     if (!$first) {
                         $content->append((new aura\html\Element('tr.spacer', [
                             new aura\html\Element(
-                                'td', null,
+                                'td',
+                                null,
                                 ['colspan' => count($this->_fields)]
                             )
                         ]))->render());
@@ -359,7 +359,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
 
             $errorTag = new aura\html\Element('td.errorMessage', $errorMessage, ['colspan' => count($this->_fields)]);
             $errorTag->addClass('error');
-            $content->append('<tr>'.$errorTag->render().'</tr>');
+            $content->append('<tr>' . $errorTag->render() . '</tr>');
         }
 
         $content->append("\n</tbody>\n</table>");
@@ -376,7 +376,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
 
 
     // Error message
-    public function setErrorMessage(string $message=null)
+    public function setErrorMessage(string $message = null)
     {
         $this->_errorMessage = $message;
         return $this;
@@ -393,7 +393,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
     public function glitchDump(): iterable
     {
         yield 'properties' => [
-            '%data' => count($this->_data).' rows',
+            '%data' => count($this->_data) . ' rows',
             '*errorMessage' => $this->_errorMessage,
             '%tag' => $this->getTag()
         ];

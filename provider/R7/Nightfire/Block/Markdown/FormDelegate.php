@@ -7,11 +7,11 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Nightfire\Block\Markdown;
 
-use df\aura\html\widget\Field as FieldWidget;
-
 use DecodeLabs\R7\Nightfire\Block;
-use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
+
 use DecodeLabs\R7\Nightfire\Block\Markdown;
+use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
+use df\aura\html\widget\Field as FieldWidget;
 
 /**
  * @extends BlockDelegateAbstract<Markdown>
@@ -34,7 +34,7 @@ class FormDelegate extends BlockDelegateAbstract
             ->linkCss('asset://lib/simplemde/simplemde.min.css', 100)
             //->linkJs('asset://lib/simplemde/simplemde.min.js', 100)
             ->dfKit->load('df-kit/markdown')
-            ;
+        ;
 
         $field->push(
             $ta = $this->html->textarea($this->fieldName('body'), $this->values->body)

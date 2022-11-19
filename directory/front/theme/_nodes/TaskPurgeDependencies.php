@@ -6,15 +6,11 @@
 
 namespace df\apex\directory\front\theme\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\aura;
-use df\fuse;
-
-use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Atlas;
+use DecodeLabs\Terminus as Cli;
+
+use df\arch;
+use df\fuse;
 
 class TaskPurgeDependencies extends arch\node\Task
 {

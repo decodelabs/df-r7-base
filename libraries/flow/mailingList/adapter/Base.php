@@ -5,15 +5,14 @@
  */
 namespace df\flow\mailingList\adapter;
 
-use df;
-use df\core;
-use df\flow;
-
 use DecodeLabs\Exceptional;
+use df\core;
+
+use df\flow;
 
 abstract class Base implements flow\mailingList\IAdapter
 {
-    const SETTINGS_FIELDS = [];
+    public const SETTINGS_FIELDS = [];
 
     public static function factory(core\collection\ITree $options): flow\mailingList\IAdapter
     {
@@ -23,11 +22,11 @@ abstract class Base implements flow\mailingList\IAdapter
             );
         }
 
-        $class = 'df\\flow\\mailingList\\adapter\\'.ucfirst($name);
+        $class = 'df\\flow\\mailingList\\adapter\\' . ucfirst($name);
 
         if (!class_exists($class)) {
             throw Exceptional::{'df/flow/mailingList/Setup,NotFound'}(
-                'Mailing list adapter '.$name.' could not be found'
+                'Mailing list adapter ' . $name . ' could not be found'
             );
         }
 
@@ -36,11 +35,11 @@ abstract class Base implements flow\mailingList\IAdapter
 
     public static function getSettingsFieldsFor(string $name): array
     {
-        $class = 'df\\flow\\mailingList\\adapter\\'.ucfirst($name);
+        $class = 'df\\flow\\mailingList\\adapter\\' . ucfirst($name);
 
         if (!class_exists($class)) {
             throw Exceptional::{'df/flow/mailingList/Setup,NotFound'}(
-                'Mailing list adapter '.$name.' could not be found'
+                'Mailing list adapter ' . $name . ' could not be found'
             );
         }
 

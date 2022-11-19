@@ -5,15 +5,10 @@
  */
 namespace df\arch\component;
 
-use df;
-use df\core;
-use df\arch;
-use df\aura;
-
-use df\aura\html\widget\Menu as MenuWidget;
+use DecodeLabs\Glitch\Dumpable;
 
 use DecodeLabs\Tagged as Html;
-use DecodeLabs\Glitch\Dumpable;
+use df\aura\html\widget\Menu as MenuWidget;
 
 abstract class HeaderBar extends Base implements Dumpable
 {
@@ -23,7 +18,7 @@ abstract class HeaderBar extends Base implements Dumpable
     protected $backLinkRequest;
     protected $icon;
 
-    protected function init($record=null, $title=null, $subTitle=null)
+    protected function init($record = null, $title = null, $subTitle = null)
     {
         $this->setRecord($record);
         $this->setTitle($title);
@@ -62,7 +57,7 @@ abstract class HeaderBar extends Base implements Dumpable
 
 
     // Sub title
-    public function setSubTitle(string $subTitle=null)
+    public function setSubTitle(string $subTitle = null)
     {
         if (empty($subTitle)) {
             $subTitle = null;
@@ -92,7 +87,7 @@ abstract class HeaderBar extends Base implements Dumpable
 
 
     // Icon
-    public function setIcon(string $icon=null)
+    public function setIcon(string $icon = null)
     {
         $this->icon = $icon;
         return $this;

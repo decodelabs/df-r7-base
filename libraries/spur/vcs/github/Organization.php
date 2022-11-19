@@ -5,33 +5,35 @@
  */
 namespace df\spur\vcs\github;
 
-use df;
 use df\core;
-use df\spur;
 
-class Organization implements IOrganization {
-
+class Organization implements IOrganization
+{
     use TApiObject;
 
     protected $_name;
     protected $_description;
 
-    protected function _importData(core\collection\ITree $data) {
+    protected function _importData(core\collection\ITree $data)
+    {
         $this->_name = $data['login'];
         $this->_description = $data['description'];
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->_name;
     }
 
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->_description;
     }
 
 
 // Ext
-    public function getRepositories() {
+    public function getRepositories()
+    {
         return $this->_mediator->getOrganizationRepositories($this->_name);
     }
 }

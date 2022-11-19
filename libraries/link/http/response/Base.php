@@ -5,13 +5,12 @@
  */
 namespace df\link\http\response;
 
-use df;
-use df\core;
-use df\link;
-use df\flex;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Exceptional;
+use df\core;
+
+use df\flex;
+use df\link;
 
 abstract class Base implements link\http\IResponse
 {
@@ -20,7 +19,7 @@ abstract class Base implements link\http\IResponse
     public $headers;
     public $cookies;
 
-    public function __construct(link\http\IResponseHeaderCollection $headers=null)
+    public function __construct(link\http\IResponseHeaderCollection $headers = null)
     {
         if (!$headers) {
             $headers = new HeaderCollection();
@@ -107,7 +106,7 @@ abstract class Base implements link\http\IResponse
 
         if ($data === false || $data === null) {
             throw Exceptional::Runtime(
-                'Invalid json response: '.$content
+                'Invalid json response: ' . $content
             );
         }
 
@@ -154,7 +153,7 @@ abstract class Base implements link\http\IResponse
     }
 
     // Disposition
-    public function setFileName($fileName, $isAttachment=null)
+    public function setFileName($fileName, $isAttachment = null)
     {
         $this->headers->setFileName($fileName, $isAttachment);
         return $this;
@@ -165,7 +164,7 @@ abstract class Base implements link\http\IResponse
         return $this->headers->getFileName();
     }
 
-    public function isAttachment(bool $flag=null)
+    public function isAttachment(bool $flag = null)
     {
         $output = $this->headers->isAttachment($flag);
 
@@ -188,7 +187,7 @@ abstract class Base implements link\http\IResponse
     }
 
     // Strings
-    public function getHeaderString(array $skipKeys=null)
+    public function getHeaderString(array $skipKeys = null)
     {
         $this->prepareHeaders();
 
@@ -204,7 +203,7 @@ abstract class Base implements link\http\IResponse
         return $this;
     }
 
-    public static function buildHeaderString(link\http\IResponseHeaderCollection $headers=null)
+    public static function buildHeaderString(link\http\IResponseHeaderCollection $headers = null)
     {
         $headerString = '';
 
@@ -214,7 +213,7 @@ abstract class Base implements link\http\IResponse
             $message = $headers->getStatusMessage();
 
             if (!$headers->isEmpty()) {
-                $headerString = "\r\n".$headers->toString();
+                $headerString = "\r\n" . $headers->toString();
             }
         } else {
             $version = '1.1';
@@ -222,6 +221,6 @@ abstract class Base implements link\http\IResponse
             $message = 'OK';
         }
 
-        return 'HTTP/'.$version.' '.$code.' '.$message.$headerString;
+        return 'HTTP/' . $version . ' ' . $code . ' ' . $message . $headerString;
     }
 }

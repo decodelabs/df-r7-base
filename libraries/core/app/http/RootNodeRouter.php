@@ -6,8 +6,6 @@
 
 namespace df\core\app\http;
 
-use df;
-use df\core;
 use df\arch;
 
 abstract class RootNodeRouter extends arch\router\Base

@@ -7,12 +7,11 @@
 
 namespace df\apex\directory\front\_nodes;
 
-use df\arch;
-
 use DecodeLabs\Atlas;
+
 use DecodeLabs\Terminus as Cli;
-use DecodeLabs\Veneer;
 use DecodeLabs\Veneer\Stub\Generator;
+use df\arch;
 
 class TaskVeneerStub extends arch\node\Task
 {
@@ -33,7 +32,7 @@ class TaskVeneerStub extends arch\node\Task
         Cli::newLine();
 
         foreach ($bindings as $binding) {
-            Cli::{'brightMagenta'}($binding->getProviderClass().' ');
+            Cli::{'brightMagenta'}($binding->getProviderClass() . ' ');
             $generator->generate($binding);
             Cli::success('done');
         }

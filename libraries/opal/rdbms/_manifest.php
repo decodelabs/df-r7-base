@@ -6,10 +6,9 @@
 
 namespace df\opal\rdbms;
 
-use df;
 use df\core;
-use df\opal;
 use df\mesh;
+use df\opal;
 
 // Interfaces
 interface IDsn extends core\IStringProvider
@@ -23,7 +22,7 @@ interface IDsn extends core\IStringProvider
     public function setProtocol($protocol);
     public function getProtocol();
     public function setHostname($hostname);
-    public function getHostname($default='localhost');
+    public function getHostname($default = 'localhost');
     public function setPort($port);
     public function getPort();
     public function setSocket($socket);
@@ -35,18 +34,18 @@ interface IDsn extends core\IStringProvider
     public function setDatabaseSuffix($suffix);
     public function getDatabaseSuffix();
     public function setOption($key, $value);
-    public function getOption($key, $default=null);
+    public function getOption($key, $default = null);
     public function getHash();
     public function getServerHash();
     public function getConnectionString();
     public function getServerString();
-    public function getDisplayString($credentials=false);
+    public function getDisplayString($credentials = false);
 }
 
 
 interface IAdapter extends mesh\entity\IParentEntity
 {
-    public static function factory($dsn, $autoCreate=false);
+    public static function factory($dsn, $autoCreate = false);
     public function getAdapterName();
 
     // Connection
@@ -75,7 +74,7 @@ interface IAdapter extends mesh\entity\IParentEntity
 
     // Query
     public function prepare($sql);
-    public function executeSql($sql, $forWrite=false);
+    public function executeSql($sql, $forWrite = false);
     public function getLastInsertId();
     public function countAffectedRows();
 
@@ -86,7 +85,7 @@ interface IAdapter extends mesh\entity\IParentEntity
     public function quoteTableAliasReference($alias);
     public function quoteFieldAliasDefinition($alias);
     public function quoteFieldAliasReference($alias);
-    public function prepareValue($value, opal\rdbms\schema\IField $field=null);
+    public function prepareValue($value, opal\rdbms\schema\IField $field = null);
     public function normalizeValue($value);
 
 
@@ -99,7 +98,7 @@ interface IAdapter extends mesh\entity\IParentEntity
     public function tableExists($name);
 
     public function getTable($name);
-    public function createTable(opal\rdbms\schema\ISchema $schema, $dropIfExists=false);
+    public function createTable(opal\rdbms\schema\ISchema $schema, $dropIfExists = false);
     public function getSchema($name);
     public function newSchema($name);
 }
@@ -118,7 +117,7 @@ interface IStatement extends core\collection\IQueue, core\collection\IStreamColl
      */
     public function reset(): static;
 
-    public function isUnbuffered(bool $flag=null);
+    public function isUnbuffered(bool $flag = null);
 
     public function generateUniqueKey();
     public function setKeyIndex($index);
@@ -140,12 +139,12 @@ interface IStatement extends core\collection\IQueue, core\collection\IStreamColl
 interface IServer
 {
     public static function getConnectionException(IAdapter $adapter, $number, $message);
-    public static function getQueryException(IAdapter $adapter, $number, $message, $sql=null);
+    public static function getQueryException(IAdapter $adapter, $number, $message, $sql = null);
 
     public function getDatabase($name);
     public function getDatabaseList();
     public function databaseExists($name);
-    public function createDatabase($name, $checkExists=false);
+    public function createDatabase($name, $checkExists = false);
     public function renameDatabase($oldName, $newName);
 }
 
@@ -159,9 +158,9 @@ interface IDatabase
 
     public function drop();
     public function truncate();
-    public function rename($newName, $overwrite=false);
+    public function rename($newName, $overwrite = false);
 
-    public function setCharacterSet($set, $collation=null);
+    public function setCharacterSet($set, $collation = null);
     public function getCharacterSet();
     public function setCollation($collation);
     public function getCollation();
@@ -176,7 +175,7 @@ interface ITable extends mesh\entity\IEntity, opal\query\IAdapter, opal\query\IE
     public function getDatabaseName();
 
     public function exists();
-    public function create(opal\rdbms\schema\ISchema $schema, $dropIfExists=false);
+    public function create(opal\rdbms\schema\ISchema $schema, $dropIfExists = false);
     public function alter(opal\rdbms\schema\ISchema $schema);
     public function rename($newName);
     public function copy($newName);
@@ -185,9 +184,9 @@ interface ITable extends mesh\entity\IEntity, opal\query\IAdapter, opal\query\IE
     public function lock();
     public function unlock();
 
-    public function setCharacterSet($set, $collation=null, $convert=false);
+    public function setCharacterSet($set, $collation = null, $convert = false);
     public function getCharacterSet();
-    public function setCollation($collation, $convert=false);
+    public function setCollation($collation, $convert = false);
     public function getCollation();
 }
 
@@ -219,9 +218,9 @@ interface ISchemaExecutor
     public function rename($oldName, $newName);
     public function drop($name);
 
-    public function setCharacterSet($name, $set, $collation=null, $convert=false);
+    public function setCharacterSet($name, $set, $collation = null, $convert = false);
     public function getCharacterSet($name);
-    public function setCollation($name, $collation, $convert=false);
+    public function setCollation($name, $collation, $convert = false);
     public function getCollation($name);
 }
 
@@ -236,12 +235,12 @@ interface IQueryExecutor
     public function countTable($tableName);
 
     // Query passthrough
-    public function executeReadQuery($tableName, $forCount=false);
-    public function executeUnionQuery($tableName, $forCount=false);
-    public function buildUnionQuery($tableName, $forCount=false);
-    public function executeLocalReadQuery($tableName, $forCount=false);
-    public function buildLocalReadQuery($tableName, $forCount=false);
-    public function executeRemoteJoinedReadQuery($tableName, $forCount=false);
+    public function executeReadQuery($tableName, $forCount = false);
+    public function executeUnionQuery($tableName, $forCount = false);
+    public function buildUnionQuery($tableName, $forCount = false);
+    public function executeLocalReadQuery($tableName, $forCount = false);
+    public function buildLocalReadQuery($tableName, $forCount = false);
+    public function executeRemoteJoinedReadQuery($tableName, $forCount = false);
     public function executeInsertQuery($tableName);
     public function executeBatchInsertQuery($tableName);
     public function executeUpdateQuery($tableName);
@@ -256,33 +255,33 @@ interface IQueryExecutor
     public function buildJoin(IStatement $stmt);
 
     // Fields
-    public function defineField(opal\query\IField $field, $alias=null);
-    public function defineFieldReference(opal\query\IField $field, $allowAlias=false, $forUpdateOrDelete=false);
+    public function defineField(opal\query\IField $field, $alias = null);
+    public function defineFieldReference(opal\query\IField $field, $allowAlias = false, $forUpdateOrDelete = false);
 
     // Clauses
     public function writeJoinClauseSection();
     public function writeJoinClauseList(opal\query\IClauseList $list);
-    public function writeWhereClauseSection(array $remoteJoinData=null, $forUpdateOrDelete=false);
-    public function writeWhereClauseList(opal\query\IClauseList $list, array $remoteJoinData=null, $forUpdateOrDelete=false);
+    public function writeWhereClauseSection(array $remoteJoinData = null, $forUpdateOrDelete = false);
+    public function writeWhereClauseList(opal\query\IClauseList $list, array $remoteJoinData = null, $forUpdateOrDelete = false);
     public function writeHavingClauseSection();
     public function writeHavingClauseList(opal\query\IClauseList $list);
 
-    public function defineClauseList(opal\query\IClauseList $list, array $remoteJoinData=null, $allowAlias=false, $forUpdateOrDelete=false);
-    public function defineClause(opal\query\IClause $clause, array $remoteJoinData=null, $allowAlias=false, $forUpdateOrDelete=false);
-    public function defineClauseCorrelation(opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $query, $allowAlias=false);
+    public function defineClauseList(opal\query\IClauseList $list, array $remoteJoinData = null, $allowAlias = false, $forUpdateOrDelete = false);
+    public function defineClause(opal\query\IClause $clause, array $remoteJoinData = null, $allowAlias = false, $forUpdateOrDelete = false);
+    public function defineClauseCorrelation(opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $query, $allowAlias = false);
     public function defineClauseLocalCorrelation(opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $query);
-    public function defineClauseExpression(opal\query\IField $field, $fieldString, $operator, $value, $allowAlias=false);
-    public function normalizeArrayClauseValue($value, $allowAlias=false);
-    public function normalizeScalarClauseValue($value, $allowAlias=false);
+    public function defineClauseExpression(opal\query\IField $field, $fieldString, $operator, $value, $allowAlias = false);
+    public function normalizeArrayClauseValue($value, $allowAlias = false);
+    public function normalizeScalarClauseValue($value, $allowAlias = false);
 
     // Expression
     public function defineExpression(opal\query\IExpression $expression);
 
     // Group, order, limit
     public function writeGroupSection();
-    public function writeOrderSection($forUpdateOrDelete=false);
-    public function writeLimitSection($forUpdateOrDelete=false);
-    public function defineLimit($limit, $offset=null);
+    public function writeOrderSection($forUpdateOrDelete = false);
+    public function writeLimitSection($forUpdateOrDelete = false);
+    public function defineLimit($limit, $offset = null);
 }
 
 interface IAlias

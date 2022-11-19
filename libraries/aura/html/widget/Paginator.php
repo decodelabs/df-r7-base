@@ -5,18 +5,16 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\opal;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
 use df\arch;
 
-use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\aura;
+use df\core;
 
 class Paginator extends Base implements Dumpable
 {
-    const PRIMARY_TAG = 'div.paginator';
+    public const PRIMARY_TAG = 'div.paginator';
 
     protected $_prevText = null;
     protected $_nextText = null;
@@ -50,7 +48,7 @@ class Paginator extends Base implements Dumpable
 
             default:
                 throw Exceptional::InvalidArgument(
-                    'Invalid paginator mode: '.$mode
+                    'Invalid paginator mode: ' . $mode
                 );
         }
 
@@ -110,7 +108,7 @@ class Paginator extends Base implements Dumpable
             $order = [];
 
             foreach ($this->_pageData->getOrderDirectives() as $dirName => $directive) {
-                $order[] = $dirName.' '.$directive->getDirection();
+                $order[] = $dirName . ' ' . $directive->getDirection();
             }
 
             $order = implode(',', $order);
@@ -145,7 +143,7 @@ class Paginator extends Base implements Dumpable
                     'type' => 'submit',
                     'class' => 'prev',
                     'name' => 'formEvent',
-                    'value' => $this->_postEvent.'('.$query->toArrayDelimitedString().')',
+                    'value' => $this->_postEvent . '(' . $query->toArrayDelimitedString() . ')',
                     'formnovalidate' => true
                 ]);
             }
@@ -175,7 +173,7 @@ class Paginator extends Base implements Dumpable
                         'type' => 'submit',
                         'class' => 'page',
                         'name' => 'formEvent',
-                        'value' => $this->_postEvent.'('.$query->toArrayDelimitedString().')',
+                        'value' => $this->_postEvent . '(' . $query->toArrayDelimitedString() . ')',
                         'formnovalidate' => true
                     ]);
                 }
@@ -220,7 +218,7 @@ class Paginator extends Base implements Dumpable
                     'type' => 'submit',
                     'class' => 'next',
                     'name' => 'formEvent',
-                    'value' => $this->_postEvent.'('.$query->toArrayDelimitedString().')',
+                    'value' => $this->_postEvent . '(' . $query->toArrayDelimitedString() . ')',
                     'formnovalidate' => true
                 ]);
             }
@@ -301,7 +299,7 @@ class Paginator extends Base implements Dumpable
         return $this->_nextText;
     }
 
-    public function shouldRenderDetails(bool $flag=null)
+    public function shouldRenderDetails(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_renderDetails = $flag;

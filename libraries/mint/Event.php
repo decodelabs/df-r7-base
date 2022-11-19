@@ -5,9 +5,7 @@
  */
 namespace df\mint;
 
-use df;
 use df\core;
-use df\mint;
 use df\mesh;
 
 class Event extends core\collection\Tree implements IEvent
@@ -39,6 +37,6 @@ class Event extends core\collection\Tree implements IEvent
 
     public function getEntityLocator()
     {
-        return new mesh\entity\Locator('mint://'.$this->_source.'/Event');
+        return new mesh\entity\Locator('mint://' . $this->_source . '/Event');
     }
 }

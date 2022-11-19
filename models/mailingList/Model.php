@@ -5,11 +5,7 @@
  */
 namespace df\apex\models\mailingList;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
-use df\flow;
 
 class Model extends axis\Model
 {

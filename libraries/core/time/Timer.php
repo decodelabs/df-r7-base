@@ -5,10 +5,9 @@
  */
 namespace df\core\time;
 
-use df;
-use df\core;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\core;
 
 class Timer implements core\IStringProvider, Dumpable
 {
@@ -17,7 +16,7 @@ class Timer implements core\IStringProvider, Dumpable
     protected $_startTime = null;
     protected $_time = 0;
 
-    public function __construct($startTime=true)
+    public function __construct($startTime = true)
     {
         if ($startTime === false || $startTime === null) {
             return;
@@ -26,7 +25,7 @@ class Timer implements core\IStringProvider, Dumpable
         $this->start($startTime);
     }
 
-    public function start($startTime=null)
+    public function start($startTime = null)
     {
         if ($startTime === null || $startTime === true) {
             $startTime = microtime(true);
@@ -76,13 +75,13 @@ class Timer implements core\IStringProvider, Dumpable
         $seconds = $this->getTime();
 
         if ($seconds > 60) {
-            return number_format($seconds / 60, 0).':'.number_format($seconds % 60);
+            return number_format($seconds / 60, 0) . ':' . number_format($seconds % 60);
         } elseif ($seconds > 1) {
-            return number_format($seconds, 3).' s';
+            return number_format($seconds, 3) . ' s';
         } elseif ($seconds > 0.0005) {
-            return number_format($seconds * 1000, 2).' ms';
+            return number_format($seconds * 1000, 2) . ' ms';
         } else {
-            return number_format($seconds * 1000, 5).' ms';
+            return number_format($seconds * 1000, 5) . ' ms';
         }
     }
 

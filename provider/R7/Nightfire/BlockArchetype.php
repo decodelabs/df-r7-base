@@ -9,10 +9,8 @@ namespace DecodeLabs\R7\Nightfire;
 
 use DecodeLabs\Archetype\Scanner;
 use DecodeLabs\Archetype\ScannerTrait;
-use DecodeLabs\R7\Legacy;
 
 use Generator;
-use ReflectionClass;
 
 class BlockArchetype implements Scanner
 {
@@ -41,11 +39,11 @@ class BlockArchetype implements Scanner
     public function resolve(string $name): ?string
     {
         $classes = [
-            Block::class.'\\'.$name
+            Block::class . '\\' . $name
         ];
 
         foreach (static::$namespaces as $namespace) {
-            $classes[] = $namespace.'\\'.$name;
+            $classes[] = $namespace . '\\' . $name;
         }
 
         foreach (array_reverse($classes) as $class) {

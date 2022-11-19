@@ -6,13 +6,10 @@
 
 namespace df\apex\directory\front\daemons\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\halo;
-
 use DecodeLabs\Terminus as Cli;
+use df\arch;
+
+use df\halo;
 
 class TaskRestartAll extends arch\node\Task
 {
@@ -46,7 +43,7 @@ class TaskRestartAll extends arch\node\Task
             if ($remote->isRunning()) {
                 $remote->restart();
             } else {
-                Cli::warning('Daemon '.$name.' is not running');
+                Cli::warning('Daemon ' . $name . ' is not running');
                 $remote->start();
             }
         }

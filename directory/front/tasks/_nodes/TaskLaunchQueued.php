@@ -6,14 +6,12 @@
 
 namespace df\apex\directory\front\tasks\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Genesis;
+
 use DecodeLabs\Terminus as Cli;
+use df\arch;
+use df\core;
 
 class TaskLaunchQueued extends arch\node\Task
 {

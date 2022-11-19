@@ -5,11 +5,9 @@
  */
 namespace df\opal\schema;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Exceptional;
+
+use df\opal;
 
 class ForeignKeyFieldReference implements IForeignKeyFieldReference
 {
@@ -55,7 +53,9 @@ class ForeignKeyFieldReference implements IForeignKeyFieldReference
     {
         if (!$schema instanceof opal\schema\IFieldProvider) {
             throw Exceptional::Runtime(
-                'Schem does not provider fields', null, $schema
+                'Schem does not provider fields',
+                null,
+                $schema
             );
         }
 

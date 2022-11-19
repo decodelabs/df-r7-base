@@ -5,13 +5,8 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-
-class TelephoneTextbox extends Textbox {
-
-    const PRIMARY_TAG = 'input.textbox.telephone';
-    const INPUT_TYPE = 'tel';
+class TelephoneTextbox extends Textbox
+{
+    public const PRIMARY_TAG = 'input.textbox.telephone';
+    public const INPUT_TYPE = 'tel';
 }

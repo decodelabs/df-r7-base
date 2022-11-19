@@ -6,10 +6,6 @@
 
 namespace df\spur\vcs\git;
 
-use df;
-use df\core;
-use df\spur;
-
 use DecodeLabs\Glitch\Dumpable;
 
 class Status implements IStatus, Dumpable
@@ -109,33 +105,33 @@ class Status implements IStatus, Dumpable
     }
 
 
-    public function countUnpushedCommits($remoteBranch=null)
+    public function countUnpushedCommits($remoteBranch = null)
     {
         return $this->_repository->countUnpushedCommits($remoteBranch);
     }
 
-    public function getUnpushedCommitIds($remoteBranch=null)
+    public function getUnpushedCommitIds($remoteBranch = null)
     {
         return $this->_repository->getUnpushedCommitIds($remoteBranch);
     }
 
-    public function getUnpushedCommits($remoteBranch=null)
+    public function getUnpushedCommits($remoteBranch = null)
     {
         return $this->_repository->getUnpushedCommits($remoteBranch);
     }
 
 
-    public function countUnpulledCommits($remoteBranch=null)
+    public function countUnpulledCommits($remoteBranch = null)
     {
         return $this->_repository->countUnpulledCommits($remoteBranch);
     }
 
-    public function getUnpulledCommitIds($remoteBranch=null)
+    public function getUnpulledCommitIds($remoteBranch = null)
     {
         return $this->_repository->getUnpulledCommitIds($remoteBranch);
     }
 
-    public function getUnpulledCommits($remoteBranch=null)
+    public function getUnpulledCommits($remoteBranch = null)
     {
         return $this->_repository->getUnpulledCommits($remoteBranch);
     }

@@ -6,12 +6,10 @@
 
 namespace df\flex\code\probe;
 
-use df;
-use df\core;
-use df\flex;
-use df\halo;
-
 use DecodeLabs\Exceptional;
+use df\core;
+
+use df\flex;
 
 class Counter implements flex\code\IProbe, core\lang\IAcceptTypeProcessor, \ArrayAccess
 {
@@ -29,7 +27,7 @@ class Counter implements flex\code\IProbe, core\lang\IAcceptTypeProcessor, \Arra
     protected $_types = [];
     protected $_totals;
 
-    public function __construct(array $acceptTypes=null)
+    public function __construct(array $acceptTypes = null)
     {
         if ($acceptTypes !== null) {
             $this->setAcceptTypes(...$acceptTypes);
@@ -49,7 +47,7 @@ class Counter implements flex\code\IProbe, core\lang\IAcceptTypeProcessor, \Arra
             return;
         }
 
-        $path = core\uri\Path::factory($location->path.'/'.$localPath);
+        $path = core\uri\Path::factory($location->path . '/' . $localPath);
         $basename = $path->getBasename();
         $ext = $path->getExtension();
 
@@ -64,7 +62,9 @@ class Counter implements flex\code\IProbe, core\lang\IAcceptTypeProcessor, \Arra
         if (in_array($ext, self::TEXT_TYPES)) {
             if (false === ($fp = fopen($path, 'r'))) {
                 throw Exceptional::Runtime(
-                    'Unable to open probe target', null, $path
+                    'Unable to open probe target',
+                    null,
+                    $path
                 );
             }
 

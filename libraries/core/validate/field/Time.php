@@ -5,19 +5,17 @@
  */
 namespace df\core\validate\field;
 
-use df;
 use df\core;
-use df\opal;
 
-class Time extends Base implements core\validate\ITimeField {
-
-
-// Validate
-    public function validate() {
+class Time extends Base implements core\validate\ITimeField
+{
+    // Validate
+    public function validate()
+    {
         // Sanitize
         $value = $this->_sanitizeValue($this->data->getValue());
 
-        if(!$length = $this->_checkRequired($value)) {
+        if (!$length = $this->_checkRequired($value)) {
             return null;
         }
 
@@ -25,7 +23,7 @@ class Time extends Base implements core\validate\ITimeField {
         // Validate
         try {
             $value = core\time\TimeOfDay::factory($value);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $this->addError('invalid', $this->validator->_(
                 'This is not a valid time of day'
             ));

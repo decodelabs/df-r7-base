@@ -5,11 +5,9 @@
  */
 namespace df\apex\models\user;
 
-use df;
-use df\core;
+use df\apex;
 use df\axis;
 use df\user;
-use df\apex;
 
 class Model extends axis\Model implements user\IUserModel
 {
@@ -18,7 +16,7 @@ class Model extends axis\Model implements user\IUserModel
         return $this->client->fetchByPrimary($id);
     }
 
-    public function getClientDataList(array $ids, array $emails=null)
+    public function getClientDataList(array $ids, array $emails = null)
     {
         if (empty($ids) && empty($emails)) {
             return [];

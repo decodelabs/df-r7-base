@@ -6,15 +6,12 @@
 
 namespace df\aura\view;
 
-use df;
-use df\core;
-use df\aura;
-use df\flow;
-use df\arch;
-
-use DecodeLabs\Metamorph;
-use DecodeLabs\Tagged\Mail\Generator;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Metamorph;
+
+use DecodeLabs\Tagged\Mail\Generator;
+use df\arch;
+use df\flow;
 
 class Mail extends flow\mail\Message implements ILayoutView
 {
@@ -37,7 +34,7 @@ class Mail extends flow\mail\Message implements ILayoutView
         $this->generator = new Generator();
     }
 
-    public function isPlainText(bool $flag=null)
+    public function isPlainText(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_textMode = $flag;
@@ -65,7 +62,7 @@ class Mail extends flow\mail\Message implements ILayoutView
         return parent::getBodyHtml();
     }
 
-    public function shouldUseLayout(bool $flag=null)
+    public function shouldUseLayout(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_useLayout = $flag;

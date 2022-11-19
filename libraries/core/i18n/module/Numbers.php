@@ -9,7 +9,7 @@ use df\core;
 
 class Numbers extends Base implements core\i18n\module\INumbersModule
 {
-    public function format($number, $format=null)
+    public function format($number, $format = null)
     {
         if ($format !== null) {
             $nf = new \NumberFormatter(
@@ -28,7 +28,7 @@ class Numbers extends Base implements core\i18n\module\INumbersModule
         return $nf->format($number);
     }
 
-    public function parse($number, $type=self::DOUBLE, &$pos=0, $format=null)
+    public function parse($number, $type = self::DOUBLE, &$pos = 0, $format = null)
     {
         if ($format !== null) {
             $nf = new \NumberFormatter(
@@ -47,7 +47,7 @@ class Numbers extends Base implements core\i18n\module\INumbersModule
     }
 
     // Percent
-    public function formatPercent($number, int $maxDigits=3)
+    public function formatPercent($number, int $maxDigits = 3)
     {
         $nf = \NumberFormatter::create(
             (string)$this->_locale,
@@ -58,7 +58,7 @@ class Numbers extends Base implements core\i18n\module\INumbersModule
         return $nf->format($number / 100);
     }
 
-    public function formatRatioPercent($number, int $maxDigits=3)
+    public function formatRatioPercent($number, int $maxDigits = 3)
     {
         $nf = \NumberFormatter::create(
             (string)$this->_locale,
@@ -126,7 +126,7 @@ class Numbers extends Base implements core\i18n\module\INumbersModule
         return $code;
     }
 
-    public function getCurrencySymbol($code, $amount=1)
+    public function getCurrencySymbol($code, $amount = 1)
     {
         $this->_loadData();
         $code = strtoupper($code);
@@ -138,7 +138,7 @@ class Numbers extends Base implements core\i18n\module\INumbersModule
                 foreach ($symbol as $part) {
                     if (false !== ($pos = strpos($part, '<'))) {
                         $a = substr($part, 0, $pos);
-                        $s = substr($part, $pos+1);
+                        $s = substr($part, $pos + 1);
 
                         if ($amount > $a) {
                             return $s;
@@ -147,7 +147,7 @@ class Numbers extends Base implements core\i18n\module\INumbersModule
                         continue;
                     } else {
                         $pos = strpos($part, '≤');
-                        $t = strlen('≤')-1;
+                        $t = strlen('≤') - 1;
                         $a = substr($part, 0, (int)$pos);
                         $s = substr($part, $pos + $t + 1);
 

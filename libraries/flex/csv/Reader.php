@@ -6,13 +6,9 @@
 
 namespace df\flex\csv;
 
-use df;
-use df\core;
-use df\flex;
-
 use DecodeLabs\Atlas;
-use DecodeLabs\Atlas\Mode;
 use DecodeLabs\Atlas\File;
+use DecodeLabs\Atlas\Mode;
 
 use DecodeLabs\Exceptional;
 
@@ -103,7 +99,9 @@ class Reader implements IReader
 
         if (!$row = $this->getRow()) {
             throw Exceptional::UnexpectedValue(
-                'Unable to extract fields row from CSV', null, $this
+                'Unable to extract fields row from CSV',
+                null,
+                $this
             );
         }
 
@@ -230,12 +228,12 @@ class Reader implements IReader
         return $this->_currentRow;
     }
 
-    protected function _peek(int $length=1): ?string
+    protected function _peek(int $length = 1): ?string
     {
         return substr($this->_buffer, 0, $length);
     }
 
-    protected function _extract(int $length=1): ?string
+    protected function _extract(int $length = 1): ?string
     {
         $output = substr($this->_buffer, 0, $length);
         $this->_buffer = substr($this->_buffer, $length);

@@ -5,11 +5,9 @@
  */
 namespace df\opal\query\field;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\opal;
 
 class Raw implements opal\query\IRawField, Dumpable
 {
@@ -19,7 +17,7 @@ class Raw implements opal\query\IRawField, Dumpable
     protected $_alias;
     protected $_source;
 
-    public function __construct(opal\query\ISource $source, string $expression, $alias=null)
+    public function __construct(opal\query\ISource $source, string $expression, $alias = null)
     {
         if ($alias === null) {
             $alias = uniqid('expr');
@@ -68,7 +66,7 @@ class Raw implements opal\query\IRawField, Dumpable
 
     public function getQualifiedName()
     {
-        return $this->getSourceAlias().'.'.$this->_alias;
+        return $this->getSourceAlias() . '.' . $this->_alias;
     }
 
     public function dereference()
@@ -88,6 +86,6 @@ class Raw implements opal\query\IRawField, Dumpable
 
     public function toString(): string
     {
-        return '@raw '.$this->_expression;
+        return '@raw ' . $this->_expression;
     }
 }

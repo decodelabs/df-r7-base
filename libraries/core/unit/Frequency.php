@@ -5,23 +5,20 @@
  */
 namespace df\core\unit;
 
-use df;
-use df\core;
-
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
 
 class Frequency implements IFrequency, Dumpable
 {
     use TSingleValueUnit;
 
-    const DEFAULT_UNIT = 'khz';
-    const UNITS = ['hz', 'khz', 'mhz', 'ghz', 'bpm'];
+    public const DEFAULT_UNIT = 'khz';
+    public const UNITS = ['hz', 'khz', 'mhz', 'ghz', 'bpm'];
 
     protected $_value;
     protected $_unit;
 
-    public static function factory($value, $unit=null, $allowPlainNumbers=false)
+    public static function factory($value, $unit = null, $allowPlainNumbers = false)
     {
         if ($value instanceof IFrequency) {
             return $value;
@@ -32,7 +29,7 @@ class Frequency implements IFrequency, Dumpable
 
     public function toCssString(): string
     {
-        return $this->getKhz().'kHz';
+        return $this->getKhz() . 'kHz';
     }
 
     public function setHz($hz)
@@ -124,7 +121,7 @@ class Frequency implements IFrequency, Dumpable
 
             default:
                 throw Exceptional::InvalidArgument(
-                    'Unsupported frequency unit: '.$inUnit
+                    'Unsupported frequency unit: ' . $inUnit
                 );
         }
 

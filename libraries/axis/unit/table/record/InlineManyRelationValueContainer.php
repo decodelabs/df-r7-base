@@ -8,12 +8,12 @@ namespace df\axis\unit\table\record;
 
 use ArrayIterator;
 
-use df\core;
+use DecodeLabs\Exceptional;
 use df\axis;
-use df\opal;
+use df\core;
 use df\mesh;
 
-use DecodeLabs\Exceptional;
+use df\opal;
 
 class InlineManyRelationValueContainer implements
     opal\record\IJobAwareValueContainer,
@@ -76,7 +76,7 @@ class InlineManyRelationValueContainer implements
         return $this;
     }
 
-    public function getValue($default=null)
+    public function getValue($default = null)
     {
         return $this;
     }
@@ -86,7 +86,7 @@ class InlineManyRelationValueContainer implements
         return !empty($this->_current) || !empty($this->_new);
     }
 
-    public function getStringValue($default=''): string
+    public function getStringValue($default = ''): string
     {
         return $this->__toString();
     }
@@ -106,7 +106,7 @@ class InlineManyRelationValueContainer implements
         return $this;
     }
 
-    public function populateInverse(opal\record\IRecord $record=null)
+    public function populateInverse(opal\record\IRecord $record = null)
     {
         if ($record) {
             $id = opal\record\Base::extractRecordId($record);
@@ -131,7 +131,7 @@ class InlineManyRelationValueContainer implements
         return axis\Model::loadUnitFromId($this->_field->getTargetUnitId());
     }
 
-    public function newRecord(array $values=null)
+    public function newRecord(array $values = null)
     {
         return $this->getTargetUnit()->newRecord($values);
     }
@@ -336,7 +336,7 @@ class InlineManyRelationValueContainer implements
 
 
         $primaryKeySet = $this->_record->getPrimaryKeySet();
-        $query->wherePrerequisite($targetSourceAlias.'.'.$this->_field->getTargetField(), '=', $primaryKeySet);
+        $query->wherePrerequisite($targetSourceAlias . '.' . $this->_field->getTargetField(), '=', $primaryKeySet);
 
         return $query;
     }
@@ -393,7 +393,7 @@ class InlineManyRelationValueContainer implements
             ->from($targetUnit, $targetSourceAlias);
 
         $primaryKeySet = $this->_record->getPrimaryKeySet();
-        $query->wherePrerequisite($targetSourceAlias.'.'.$this->_field->getTargetField(), '=', $primaryKeySet);
+        $query->wherePrerequisite($targetSourceAlias . '.' . $this->_field->getTargetField(), '=', $primaryKeySet);
 
         return $query;
     }
@@ -447,7 +447,7 @@ class InlineManyRelationValueContainer implements
 
 
     // Tasks
-    public function deploySaveJobs(mesh\job\IQueue $queue, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordJob=null)
+    public function deploySaveJobs(mesh\job\IQueue $queue, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordJob = null)
     {
         $localUnit = $parentRecord->getAdapter();
         $targetUnit = $this->getTargetUnit();
@@ -470,7 +470,7 @@ class InlineManyRelationValueContainer implements
 
         if ($this->_removeAll && !$parentRecord->isNew()) {
             $removeAllJob = $queue->asap(
-                'rmRel:'.opal\record\Base::extractRecordId($parentRecord).'/'.$this->_field->getName(),
+                'rmRel:' . opal\record\Base::extractRecordId($parentRecord) . '/' . $this->_field->getName(),
                 $query = $targetUnit->update([$targetField => null])
                     ->where($targetField, '=', $parentKeySet)
                     ->chainIf(!empty($this->_new), function ($query) {
@@ -506,11 +506,13 @@ class InlineManyRelationValueContainer implements
                 $values = [];
 
                 foreach ($parentKeySet->toArray() as $key => $value) {
-                    $values[$targetField.'_'.$key] = $value;
+                    $values[$targetField . '_' . $key] = $value;
                 }
 
                 $targetRecordJob = $queue->asap(new opal\query\job\Update(
-                    $targetUnit, $record, $values
+                    $targetUnit,
+                    $record,
+                    $values
                 ));
 
                 if ($recordJob) {
@@ -528,7 +530,7 @@ class InlineManyRelationValueContainer implements
             $fields = [];
 
             foreach ($parentKeySet->toArray() as $key => $value) {
-                $fields[] = $targetField.'_'.$key;
+                $fields[] = $targetField . '_' . $key;
             }
 
             $nullKeySet = new opal\record\PrimaryKeySet($fields, null);
@@ -545,7 +547,9 @@ class InlineManyRelationValueContainer implements
                     $record->deploySaveJobs($queue);
                 } else {
                     $targetRecordJob = new opal\query\job\Update(
-                        $targetUnit, $record, $nullKeySet->toArray()
+                        $targetUnit,
+                        $record,
+                        $nullKeySet->toArray()
                     );
 
                     $queue->addJob($targetRecordJob);
@@ -566,7 +570,7 @@ class InlineManyRelationValueContainer implements
         return $this;
     }
 
-    public function deployDeleteJobs(mesh\job\IQueue $queue, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordJob=null)
+    public function deployDeleteJobs(mesh\job\IQueue $queue, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordJob = null)
     {
         $localUnit = $parentRecord->getAdapter();
         $targetUnit = $this->getTargetUnit();
@@ -576,7 +580,7 @@ class InlineManyRelationValueContainer implements
         $values = [];
 
         foreach ($parentKeySet->toArray() as $key => $value) {
-            $values[$targetField.'_'.$key] = $value;
+            $values[$targetField . '_' . $key] = $value;
         }
 
         $inverseKeySet = new opal\record\PrimaryKeySet(array_keys($values), $values);
@@ -584,11 +588,14 @@ class InlineManyRelationValueContainer implements
 
         if ($primaryIndex->hasField($targetSchema->getField($targetField))) {
             $targetRecordJob = new opal\query\job\DeleteKey(
-                $targetUnit, $values
+                $targetUnit,
+                $values
             );
         } else {
             $targetRecordJob = new opal\query\job\Update(
-                $targetUnit, $inverseKeySet, $inverseKeySet->duplicateWith(null)->toArray()
+                $targetUnit,
+                $inverseKeySet,
+                $inverseKeySet->duplicateWith(null)->toArray()
             );
         }
 
@@ -624,17 +631,17 @@ class InlineManyRelationValueContainer implements
     public function getDumpValue()
     {
         if (empty($this->_current) && empty($this->_new) && empty($this->_remove)) {
-            return '['.$this->_field->getTargetField().']';
+            return '[' . $this->_field->getTargetField() . ']';
         }
 
         $output = $this->_current;
 
         foreach ($this->_new as $id => $record) {
-            $output['+ '.$id] = $record;
+            $output['+ ' . $id] = $record;
         }
 
         foreach ($this->_remove as $id => $record) {
-            $output['- '.$id] = $record;
+            $output['- ' . $id] = $record;
         }
 
         return $output;

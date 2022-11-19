@@ -6,12 +6,10 @@
 
 namespace df\opal\query\field;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Glitch;
+
 use DecodeLabs\Glitch\Dumpable;
+use df\opal;
 
 class Correlation implements opal\query\ICorrelationField, Dumpable
 {
@@ -91,7 +89,7 @@ class Correlation implements opal\query\ICorrelationField, Dumpable
 
     public function toString(): string
     {
-        return $this->getAlias().'()';
+        return $this->getAlias() . '()';
     }
 
     /**
@@ -99,6 +97,6 @@ class Correlation implements opal\query\ICorrelationField, Dumpable
      */
     public function glitchDump(): iterable
     {
-        yield 'property:'.$this->getAlias() => $this->_query;
+        yield 'property:' . $this->getAlias() => $this->_query;
     }
 }

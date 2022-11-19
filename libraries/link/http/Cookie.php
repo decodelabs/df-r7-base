@@ -5,11 +5,9 @@
  */
 namespace df\link\http;
 
-use df;
-use df\core;
-use df\link;
-
 use DecodeLabs\Exceptional;
+
+use df\core;
 
 class Cookie implements ICookie
 {
@@ -68,7 +66,7 @@ class Cookie implements ICookie
         return $output;
     }
 
-    public function __construct($name, $value, $expiry=null, $httpOnly=null, $secure=null)
+    public function __construct($name, $value, $expiry = null, $httpOnly = null, $secure = null)
     {
         $this->setName($name);
         $this->setValue($value);
@@ -133,7 +131,7 @@ class Cookie implements ICookie
     }
 
 
-    public function setMaxAge($age=null)
+    public function setMaxAge($age = null)
     {
         if (!empty($age)) {
             $this->setExpiryDate(core\time\Date::factory('now')->add($age));
@@ -154,7 +152,7 @@ class Cookie implements ICookie
     }
 
 
-    public function setExpiryDate($date=null)
+    public function setExpiryDate($date = null)
     {
         $this->_expiryDate = core\time\Date::normalize($date);
         return $this;
@@ -203,7 +201,7 @@ class Cookie implements ICookie
         }
 
         return (bool)preg_match(
-            '/\.'.preg_quote($current).'$/i',
+            '/\.' . preg_quote($current) . '$/i',
             $domain
         );
     }
@@ -229,14 +227,14 @@ class Cookie implements ICookie
             return true;
         }
 
-        $path = '/'.ltrim($path, '/');
-        $test = '/'.ltrim($this->_path, '/');
+        $path = '/' . ltrim($path, '/');
+        $test = '/' . ltrim($this->_path, '/');
 
         return 0 === stripos($path, $test);
     }
 
 
-    public function isSecure(bool $flag=null)
+    public function isSecure(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isSecure = $flag;
@@ -246,7 +244,7 @@ class Cookie implements ICookie
         return $this->_isSecure;
     }
 
-    public function isHttpOnly(bool $flag=null)
+    public function isHttpOnly(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isHttpOnly = $flag;
@@ -259,18 +257,18 @@ class Cookie implements ICookie
     // String
     public function toString(): string
     {
-        $output = $this->_name.'='.urlencode($this->_value);
+        $output = $this->_name . '=' . urlencode($this->_value);
 
         if ($this->_expiryDate) {
-            $output .= '; Expires='.$this->_expiryDate->toTimezone('GMT')->format(core\time\Date::COOKIE);
+            $output .= '; Expires=' . $this->_expiryDate->toTimezone('GMT')->format(core\time\Date::COOKIE);
         }
 
         if ($this->_domain !== null) {
-            $output .= '; Domain='.$this->_domain;
+            $output .= '; Domain=' . $this->_domain;
         }
 
         if ($this->_path !== null) {
-            $output .= '; Path='.$this->_path;
+            $output .= '; Path=' . $this->_path;
         }
 
         if ($this->_isSecure) {
@@ -286,15 +284,15 @@ class Cookie implements ICookie
 
     public function toInvalidateString()
     {
-        $output = $this->_name.'=deleted';
-        $output .= '; Expires='.core\time\Date::factory('-10 years', 'GMT')->format(core\time\Date::COOKIE);
+        $output = $this->_name . '=deleted';
+        $output .= '; Expires=' . core\time\Date::factory('-10 years', 'GMT')->format(core\time\Date::COOKIE);
 
         if ($this->_domain !== null) {
-            $output .= '; Domain='.$this->_domain;
+            $output .= '; Domain=' . $this->_domain;
         }
 
         if ($this->_path !== null) {
-            $output .= '; Path='.$this->_path;
+            $output .= '; Path=' . $this->_path;
         }
 
         if ($this->_isSecure) {

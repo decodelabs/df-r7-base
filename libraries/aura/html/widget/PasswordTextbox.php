@@ -5,13 +5,8 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-
-class PasswordTextbox extends Textbox {
-
-    const PRIMARY_TAG = 'input.textbox.password';
-    const INPUT_TYPE = 'password';
+class PasswordTextbox extends Textbox
+{
+    public const PRIMARY_TAG = 'input.textbox.password';
+    public const INPUT_TYPE = 'password';
 }

@@ -5,12 +5,10 @@
  */
 namespace df\opal\rdbms;
 
-use df;
-use df\core;
-use df\opal;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
 
 class Dsn implements IDsn, Dumpable
 {
@@ -39,7 +37,7 @@ class Dsn implements IDsn, Dumpable
         return new self($dsn);
     }
 
-    public function __construct($dsn=null)
+    public function __construct($dsn = null)
     {
         if ($dsn !== null) {
             $this->_parse($dsn);
@@ -63,7 +61,7 @@ class Dsn implements IDsn, Dumpable
 
         if (!preg_match($regex, $dsn, $matches)) {
             throw Exceptional::InvalidArgument(
-                'Invalid dsn string: '.$dsn
+                'Invalid dsn string: ' . $dsn
             );
         }
 
@@ -71,7 +69,6 @@ class Dsn implements IDsn, Dumpable
 
 
         if (isset($matches[5])) {
-
             // Username
             if (!empty($matches[10])) {
                 $this->_username = $matches[10];
@@ -115,7 +112,7 @@ class Dsn implements IDsn, Dumpable
                     list($key, $value) = explode('=', $option);
                     $key = strtolower($key);
 
-                    if (!isset($this->{'_'.$key})) {
+                    if (!isset($this->{'_' . $key})) {
                         $this->_options[$key] = urldecode($value);
                     }
                 }
@@ -208,7 +205,7 @@ class Dsn implements IDsn, Dumpable
         return $this;
     }
 
-    public function getHostname($default='localhost')
+    public function getHostname($default = 'localhost')
     {
         if (!$this->_hostname) {
             return $default;
@@ -267,7 +264,7 @@ class Dsn implements IDsn, Dumpable
 
     public function getDatabase()
     {
-        return $this->_database.$this->_databaseSuffix;
+        return $this->_database . $this->_databaseSuffix;
     }
 
     public function setDatabaseKeyName($name)
@@ -308,7 +305,7 @@ class Dsn implements IDsn, Dumpable
         return $this;
     }
 
-    public function getOption($key, $default=null)
+    public function getOption($key, $default = null)
     {
         if (isset($this->_options[$key])) {
             return $this->_options[$key];
@@ -349,7 +346,7 @@ class Dsn implements IDsn, Dumpable
             );
         }
 
-        return $this->_adapter.'://'.$this->getConnectionString();
+        return $this->_adapter . '://' . $this->getConnectionString();
     }
 
     public function getConnectionString()
@@ -369,7 +366,7 @@ class Dsn implements IDsn, Dumpable
             );
         }
 
-        $output = $this->_adapter.'://';
+        $output = $this->_adapter . '://';
         $base = $this->_getBaseServerString();
 
         if (empty($base)) {
@@ -387,11 +384,11 @@ class Dsn implements IDsn, Dumpable
         $output = '';
 
         if ($this->_username !== null || $this->_password !== null) {
-            $output .= $this->_username.':'.$this->_password.'@';
+            $output .= $this->_username . ':' . $this->_password . '@';
         }
 
         if ($this->_protocol !== null) {
-            $output .= $this->_protocol.'(';
+            $output .= $this->_protocol . '(';
 
             if (strlen($this->_socket)) {
                 $output .= $this->_socket;
@@ -404,7 +401,7 @@ class Dsn implements IDsn, Dumpable
             $output .= $this->_hostname;
 
             if ($this->_port !== null) {
-                $output .= ':'.$this->_port;
+                $output .= ':' . $this->_port;
             }
 
             $output .= '/';
@@ -435,22 +432,22 @@ class Dsn implements IDsn, Dumpable
         $output = '';
 
         if (!empty($this->_options)) {
-            $output .= '?'.http_build_query($this->_options);
+            $output .= '?' . http_build_query($this->_options);
         }
 
         return $output;
     }
 
-    public function getDisplayString($credentials=false)
+    public function getDisplayString($credentials = false)
     {
-        $output = lcfirst($this->_adapter).'://';
+        $output = lcfirst($this->_adapter) . '://';
 
         if ($credentials && ($this->_username !== null || $this->_password !== null)) {
-            $output .= $this->_username.':****@';
+            $output .= $this->_username . ':****@';
         }
 
         if ($this->_protocol !== null) {
-            $output .= $this->_protocol.'(';
+            $output .= $this->_protocol . '(';
 
             if (strlen($this->_socket)) {
                 $output .= $this->_socket;
@@ -463,7 +460,7 @@ class Dsn implements IDsn, Dumpable
             $output .= $this->_hostname;
 
             if ($this->_port !== null) {
-                $output .= ':'.$this->_port;
+                $output .= ':' . $this->_port;
             }
 
             $output .= '/';

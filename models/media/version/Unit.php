@@ -5,23 +5,20 @@
  */
 namespace df\apex\models\media\version;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
-use df\opal;
 
-class Unit extends axis\unit\Table {
+class Unit extends axis\unit\Table
+{
+    public const NAME_FIELD = 'fileName';
 
-    const NAME_FIELD = 'fileName';
-
-    const ORDERABLE_FIELDS = [
+    public const ORDERABLE_FIELDS = [
         'number', 'fileName', 'fileSize', 'contentType', 'hash', 'creationDate', 'purgeDate'
     ];
 
-    const DEFAULT_ORDER = 'creationDate DESC';
+    public const DEFAULT_ORDER = 'creationDate DESC';
 
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('id', 'Guid');
 
         $schema->addField('number', 'Number', 4)

@@ -5,12 +5,10 @@
  */
 namespace df\spur\vcs\github;
 
-use df;
 use df\core;
-use df\spur;
 
-class Gist implements IGist {
-
+class Gist implements IGist
+{
     use TApiObject;
 
     protected $_name;
@@ -21,7 +19,8 @@ class Gist implements IGist {
     protected $_comments = 0;
     protected $_files = [];
 
-    protected function _importData(core\collection\ITree $data) {
+    protected function _importData(core\collection\ITree $data)
+    {
         $this->_name = $data['description'];
         $this->_owner = new User($this->_mediator, $data->owner);
         $this->_isPublic = (bool)$data['public'];
@@ -31,36 +30,43 @@ class Gist implements IGist {
 
         $this->_comments = $data['comments'];
 
-        foreach($data->files as $file) {
+        foreach ($data->files as $file) {
             $this->_files = new File($file);
         }
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->_name;
     }
 
-    public function getOwner() {
+    public function getOwner()
+    {
         return $this->_owner;
     }
 
-    public function isPublic(): bool {
+    public function isPublic(): bool
+    {
         return $this->_isPublic;
     }
 
-    public function getCreationDate() {
+    public function getCreationDate()
+    {
         return $this->_creationDate;
     }
 
-    public function getUpdateDate() {
+    public function getUpdateDate()
+    {
         return $this->_updateDate;
     }
 
-    public function countComments() {
+    public function countComments()
+    {
         return $this->_comments;
     }
 
-    public function getFiles() {
+    public function getFiles()
+    {
         return $this->_files;
     }
 }

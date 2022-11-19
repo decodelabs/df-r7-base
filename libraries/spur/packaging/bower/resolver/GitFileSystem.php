@@ -5,10 +5,7 @@
  */
 namespace df\spur\packaging\bower\resolver;
 
-use df;
-use df\core;
 use df\spur;
-use df\link;
 
 class GitFileSystem implements spur\packaging\bower\IResolver
 {
@@ -24,7 +21,7 @@ class GitFileSystem implements spur\packaging\bower\IResolver
         // TODO: extract name from origin
     }
 
-    public function fetchPackage(spur\packaging\bower\Package $package, $cachePath, $currentVersion=null)
+    public function fetchPackage(spur\packaging\bower\Package $package, $cachePath, $currentVersion = null)
     {
         $this->_getRepo($package);
 
@@ -46,10 +43,10 @@ class GitFileSystem implements spur\packaging\bower\IResolver
             return false;
         }
 
-        $package->cacheFileName = $package->name.'#'.$version;
+        $package->cacheFileName = $package->name . '#' . $version;
 
-        if (!is_dir($cachePath.'/packages/'.$package->cacheFileName)) {
-            $repo = $this->_repo->cloneTo($cachePath.'/packages/'.$package->cacheFileName);
+        if (!is_dir($cachePath . '/packages/' . $package->cacheFileName)) {
+            $repo = $this->_repo->cloneTo($cachePath . '/packages/' . $package->cacheFileName);
             $repo->checkoutCommit($commitId);
         }
 

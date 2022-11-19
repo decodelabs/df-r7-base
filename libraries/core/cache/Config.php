@@ -5,15 +5,15 @@
  */
 namespace df\core\cache;
 
-use df;
 use df\core;
 
-class Config extends core\Config {
+class Config extends core\Config
+{
+    public const ID = 'Cache';
+    public const STORE_IN_MEMORY = true;
 
-    const ID = 'Cache';
-    const STORE_IN_MEMORY = true;
-
-    public function getDefaultValues(): array {
+    public function getDefaultValues(): array
+    {
         return [
             'caches' => [],
             'backends' => [
@@ -26,10 +26,11 @@ class Config extends core\Config {
         ];
     }
 
-    public function getOptionsFor(ICache $cache, $mergeDefaults=true) {
+    public function getOptionsFor(ICache $cache, $mergeDefaults = true)
+    {
         $id = $cache->getCacheId();
 
-        if(isset($this->values->caches->{$id})) {
+        if (isset($this->values->caches->{$id})) {
             $output = clone $this->values->caches->{$id};
             $default = false;
         } else {
@@ -37,30 +38,30 @@ class Config extends core\Config {
             $default = true;
         }
 
-        if(is_string($output->getValue())) {
+        if (is_string($output->getValue())) {
             $output = new core\collection\Tree(['backend' => $output->getValue()]);
         }
 
         $list = [];
 
-        if(!$default && isset($output->backend)) {
+        if (!$default && isset($output->backend)) {
             $list[] = $output['backend'];
-        } else if($mergeDefaults) {
-            if($cache->isCacheDistributed()) {
+        } elseif ($mergeDefaults) {
+            if ($cache->isCacheDistributed()) {
                 $list = ['Memcached', 'Memcache', 'LocalFile'];
             } else {
                 $list = ['Apcu', 'Memcached', 'Memcache', 'LocalFile'];
             }
         }
 
-        if($default && in_array($output['backend'], $list)) {
+        if ($default && in_array($output['backend'], $list)) {
             $list = array_merge([$output['backend']], $list);
         }
 
-        foreach($list as $name) {
-            $class = 'df\\core\\cache\\backend\\'.$name;
+        foreach ($list as $name) {
+            $class = 'df\\core\\cache\\backend\\' . $name;
 
-            if(!class_exists($class) || !$class::isLoadable()) {
+            if (!class_exists($class) || !$class::isLoadable()) {
                 continue;
             }
 
@@ -73,7 +74,8 @@ class Config extends core\Config {
         return $output;
     }
 
-    public function getBackendOptions($backend) {
+    public function getBackendOptions($backend)
+    {
         return $this->values->backends->{$backend};
     }
 }

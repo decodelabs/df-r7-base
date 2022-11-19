@@ -5,11 +5,10 @@
  */
 namespace df\core\unit;
 
-use df;
-use df\core;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
 
 class DisplayPosition implements IDisplayPosition, Dumpable
 {
@@ -21,7 +20,7 @@ class DisplayPosition implements IDisplayPosition, Dumpable
     protected $_yOffset;
     protected $_allowPlainNumbers = false;
 
-    public static function factory($position, $position2=null, $allowPlainNumbers=false)
+    public static function factory($position, $position2 = null, $allowPlainNumbers = false)
     {
         if ($position instanceof IDisplayPosition) {
             return $position;
@@ -30,7 +29,7 @@ class DisplayPosition implements IDisplayPosition, Dumpable
         return new self($position, $position2, $allowPlainNumbers);
     }
 
-    public function __construct($position, $position2=null, $allowPlainNumbers=false)
+    public function __construct($position, $position2 = null, $allowPlainNumbers = false)
     {
         $this->_allowPlainNumbers = (bool)$allowPlainNumbers;
         $this->parse($position, $position2);
@@ -41,7 +40,7 @@ class DisplayPosition implements IDisplayPosition, Dumpable
         return false;
     }
 
-    public function parse($position, $position2=null)
+    public function parse($position, $position2 = null)
     {
         if ($position2 !== null) {
             $this->setX($position);
@@ -139,7 +138,7 @@ class DisplayPosition implements IDisplayPosition, Dumpable
             $output = $this->_xOffset;
 
             if ($this->_xAnchor !== 'left') {
-                $output = $this->_xAnchor.' '.$output;
+                $output = $this->_xAnchor . ' ' . $output;
             }
         } else {
             $output = $this->_xAnchor;
@@ -213,7 +212,7 @@ class DisplayPosition implements IDisplayPosition, Dumpable
             $output = $this->_yOffset;
 
             if ($this->_yAnchor !== 'top') {
-                $output = $this->_yAnchor.' '.$output;
+                $output = $this->_yAnchor . ' ' . $output;
             }
         } else {
             $output = $this->_yAnchor;
@@ -266,7 +265,7 @@ class DisplayPosition implements IDisplayPosition, Dumpable
 
     public function toString(): string
     {
-        $output = $this->getX().' '.$this->getY();
+        $output = $this->getX() . ' ' . $this->getY();
 
         if ($output == 'center center') {
             $output = 'center';
@@ -291,7 +290,7 @@ class DisplayPosition implements IDisplayPosition, Dumpable
             $this->hasRelativeAnchor()
         || ($this->_xOffset && !$this->_xOffset->isAbsolute())
         || ($this->_yOffset && !$this->_yOffset->isAbsolute())
-         ;
+        ;
     }
 
     public function hasRelativeAnchor()
@@ -309,7 +308,7 @@ class DisplayPosition implements IDisplayPosition, Dumpable
         return $this->_yAnchor != 'top';
     }
 
-    public function convertRelativeAnchors($width=null, $height=null)
+    public function convertRelativeAnchors($width = null, $height = null)
     {
         switch ($this->_xAnchor) {
             case 'center':
@@ -348,7 +347,7 @@ class DisplayPosition implements IDisplayPosition, Dumpable
         return $this;
     }
 
-    protected function _convertOppositeAnchorOffset($offset, $parentDimension=null)
+    protected function _convertOppositeAnchorOffset($offset, $parentDimension = null)
     {
         if ($offset->getUnit() == '%') {
             $offset->setValue(100 + $offset->getValue());
@@ -364,7 +363,7 @@ class DisplayPosition implements IDisplayPosition, Dumpable
         return $offset;
     }
 
-    public function extractAbsolute($width, $height, $compositeWidth=null, $compositeHeight=null)
+    public function extractAbsolute($width, $height, $compositeWidth = null, $compositeHeight = null)
     {
         $output = clone $this;
 

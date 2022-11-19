@@ -5,12 +5,10 @@
  */
 namespace df\mint;
 
-use df;
-use df\core;
 use df\mint;
 
-class Customer implements mint\ICustomer {
-
+class Customer implements mint\ICustomer
+{
     protected $_id;
     protected $_localId;
     protected $_email;
@@ -20,73 +18,87 @@ class Customer implements mint\ICustomer {
     protected $_delinquent = false;
     protected $_cachedSubscriptions;
 
-    public function __construct(string $id=null, string $email=null, string $description=null, mint\ICreditCard $card=null) {
+    public function __construct(string $id = null, string $email = null, string $description = null, mint\ICreditCard $card = null)
+    {
         $this->setId($id);
         $this->setEmailAddress($email);
         $this->setDescription($description);
         $this->setCard($card);
     }
 
-    public function setId(?string $id) {
+    public function setId(?string $id)
+    {
         $this->_id = $id;
         return $this;
     }
 
-    public function getId(): ?string {
+    public function getId(): ?string
+    {
         return $this->_id;
     }
 
-    public function setLocalId(?string $id) {
+    public function setLocalId(?string $id)
+    {
         $this->_localId = $id;
         return $this;
     }
 
-    public function getLocalId(): ?string {
+    public function getLocalId(): ?string
+    {
         return $this->_localId;
     }
 
 
-    public function setEmailAddress(?string $email) {
+    public function setEmailAddress(?string $email)
+    {
         $this->_email = $email;
         return $this;
     }
 
-    public function getEmailAddress(): ?string {
+    public function getEmailAddress(): ?string
+    {
         return $this->_email;
     }
 
-    public function setDescription(?string $description) {
+    public function setDescription(?string $description)
+    {
         $this->_description = $description;
         return $this;
     }
 
-    public function getDescription(): ?string {
+    public function getDescription(): ?string
+    {
         return $this->_description;
     }
 
 
     // shipping
 
-    public function setCard(?mint\ICreditCard $card) {
+    public function setCard(?mint\ICreditCard $card)
+    {
         $this->_card = $card;
         return $this;
     }
 
-    public function getCard(): ?mint\ICreditCard {
+    public function getCard(): ?mint\ICreditCard
+    {
         return $this->_card;
     }
 
-    public function setUserId(?string $userId) {
+    public function setUserId(?string $userId)
+    {
         $this->_userId = $userId;
         return $this;
     }
 
-    public function getUserId(): ?string {
+    public function getUserId(): ?string
+    {
         return $this->_userId;
     }
 
-    public function isDelinquent(bool $flag=null) {
-        if($flag !== null) {
+    public function isDelinquent(bool $flag = null)
+    {
+        if ($flag !== null) {
             $this->_delinquent = $flag;
             return $this;
         }
@@ -95,16 +107,19 @@ class Customer implements mint\ICustomer {
     }
 
 
-    public function setCachedSubscriptions(?array $subscriptions) {
+    public function setCachedSubscriptions(?array $subscriptions)
+    {
         $this->_cachedSubscriptions = $subscriptions;
         return $this;
     }
 
-    public function getCachedSubscriptions(): ?array {
+    public function getCachedSubscriptions(): ?array
+    {
         return $this->_cachedSubscriptions;
     }
 
-    public function hasSubscriptionCache(): bool {
+    public function hasSubscriptionCache(): bool
+    {
         return $this->_cachedSubscriptions !== null;
     }
 }

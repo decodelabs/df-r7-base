@@ -6,11 +6,10 @@
 
 namespace df\link\http\response;
 
-use df;
-use df\core;
-use df\link;
-
 use DecodeLabs\Exceptional;
+use df\core;
+
+use df\link;
 
 class HeaderCollection extends core\collection\HeaderMap implements link\http\IResponseHeaderCollection
 {
@@ -82,7 +81,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
     public static function statusCodeToString($code)
     {
         if (self::isValidStatusCode($code)) {
-            return $code.' '.self::MESSAGES[$code];
+            return $code . ' ' . self::MESSAGES[$code];
         } else {
             return $code;
         }
@@ -155,10 +154,14 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         $output->setStatusMessage($matches[4] ?? self::statusCodeToMessage($matches[2]));
 
         foreach ($lines as $line) {
-            $output->add(trim(
-                (string)strtok(trim($line), ':')),
-                trim((string)strtok('')
-                ));
+            $output->add(
+                trim(
+                    (string)strtok(trim($line), ':')
+                ),
+                trim(
+                    (string)strtok('')
+                )
+            );
         }
 
         return $output;
@@ -171,7 +174,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
     {
         if (!self::isValidStatusCode($code)) {
             throw Exceptional::InvalidArgument(
-                $code.' is not a valid http response code'
+                $code . ' is not a valid http response code'
             );
         }
 
@@ -237,7 +240,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         return $output;
     }
 
-    public function setCacheAccess($access='private')
+    public function setCacheAccess($access = 'private')
     {
         if (is_string($access)) {
             $access = strtolower($access);
@@ -273,7 +276,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         return $this->getCacheControl()->getAccess();
     }
 
-    public function canStoreCache(bool $flag=null)
+    public function canStoreCache(bool $flag = null)
     {
         $cacheControl = $this->getCacheControl();
 
@@ -285,7 +288,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         return $cacheControl->canStore();
     }
 
-    public function canTransformCache(bool $flag=null)
+    public function canTransformCache(bool $flag = null)
     {
         $cacheControl = $this->getCacheControl();
 
@@ -297,7 +300,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         return $cacheControl->canTransform();
     }
 
-    public function shouldRevalidateCache(bool $flag=null)
+    public function shouldRevalidateCache(bool $flag = null)
     {
         $cacheControl = $this->getCacheControl();
 
@@ -309,7 +312,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         return $cacheControl->shouldRevalidate();
     }
 
-    public function shouldRevalidateProxyCache(bool $flag=null)
+    public function shouldRevalidateProxyCache(bool $flag = null)
     {
         $cacheControl = $this->getCacheControl();
 
@@ -321,12 +324,12 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         return $cacheControl->shouldRevalidateProxy();
     }
 
-    public function setCacheExpiration($duration=null)
+    public function setCacheExpiration($duration = null)
     {
         $now = new core\time\Date();
 
         if (is_int($duration)) {
-            $then = $now->modify('+'.$duration.' seconds');
+            $then = $now->modify('+' . $duration . ' seconds');
         } elseif ($duration !== null) {
             $then = core\time\Date::factory($duration);
             $duration = $then->toTimestamp() - $now->toTimestamp();
@@ -354,7 +357,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         return $this->getCacheControl()->getExpiration();
     }
 
-    public function setSharedCacheExpiration($duration=null)
+    public function setSharedCacheExpiration($duration = null)
     {
         if (!is_int($duration) && $duration !== null) {
             $now = new core\time\Date();
@@ -403,7 +406,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
 
 
     // Disposition
-    public function setFileName($fileName, $isAttachment=null)
+    public function setFileName($fileName, $isAttachment = null)
     {
         if ($fileName === null) {
             $this->remove('content-disposition');
@@ -412,7 +415,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
                 $isAttachment = $this->isAttachment();
             }
 
-            $this->set('content-disposition', ($isAttachment ? 'attachment' : 'inline').'; filename="'.$fileName.'"');
+            $this->set('content-disposition', ($isAttachment ? 'attachment' : 'inline') . '; filename="' . $fileName . '"');
         }
 
         return $this;
@@ -427,7 +430,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         return $this->getDelimitedValue('content-disposition', 'filename');
     }
 
-    public function isAttachment(bool $flag=null)
+    public function isAttachment(bool $flag = null)
     {
         if ($flag !== null) {
             if (!$flag) {
@@ -462,7 +465,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
     // Send
     public function send()
     {
-        header('HTTP/'.$this->getHttpVersion().' '.$this->getStatusCode().' '.$this->getStatusMessage());
+        header('HTTP/' . $this->getHttpVersion() . ' ' . $this->getStatusCode() . ' ' . $this->getStatusMessage());
 
         foreach ($this->getLines() as $line) {
             header($line, false);

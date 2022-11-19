@@ -5,20 +5,18 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
+use DecodeLabs\Glitch\Dumpable;
 use df\arch;
 
-use DecodeLabs\Glitch\Dumpable;
+use df\aura;
 
 class BreadcrumbList extends Base implements IListWidget, Dumpable
 {
     use TWidget_NavigationEntryController;
 
-    const PRIMARY_TAG = 'nav.breadcrumbs';
-    const DEFAULT_LINK_WIDGET = 'Link';
-    const ENFORCE_DEFAULT_LINK_WIDGET = false;
+    public const PRIMARY_TAG = 'nav.breadcrumbs';
+    public const DEFAULT_LINK_WIDGET = 'Link';
+    public const ENFORCE_DEFAULT_LINK_WIDGET = false;
 
     protected $_separator = '>';
 
@@ -60,8 +58,9 @@ class BreadcrumbList extends Base implements IListWidget, Dumpable
                 if ($i < $count - 1) {
                     $oldContainerTag = $containerTag;
                     $oldContainerTag->push(
-                        ' ', $this->_separator, ' ',
-
+                        ' ',
+                        $this->_separator,
+                        ' ',
                         $containerTag = new aura\html\Element('span', null, [
                             'itemscope' => null,
                             'itemprop' => 'child',
@@ -90,7 +89,7 @@ class BreadcrumbList extends Base implements IListWidget, Dumpable
     }
 
 
-    public function generateFromRequest(arch\IRequest $request=null)
+    public function generateFromRequest(arch\IRequest $request = null)
     {
         if ($request === null) {
             $request = $this->_context->request;

@@ -6,12 +6,9 @@
 
 namespace df\axis\introspector;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
-
 use DecodeLabs\R7\Legacy;
+
+use df\axis;
 
 class Probe implements IProbe
 {
@@ -20,7 +17,7 @@ class Probe implements IProbe
         $output = [];
 
         foreach (Legacy::getLoader()->lookupFolderList('apex/models') as $name => $dir) {
-            if (class_exists('df\\apex\\models\\'.$name.'\\Model')) {
+            if (class_exists('df\\apex\\models\\' . $name . '\\Model')) {
                 $output[] = $name;
             }
         }
@@ -34,7 +31,7 @@ class Probe implements IProbe
 
         foreach ($this->getModelList() as $modelName) {
             foreach ($this->getDefinedUnitListForModel($modelName) as $unitId) {
-                $output[] = $modelName.'/'.$unitId;
+                $output[] = $modelName . '/' . $unitId;
             }
         }
 
@@ -45,7 +42,7 @@ class Probe implements IProbe
     {
         $output = [];
 
-        foreach (Legacy::getLoader()->lookupFolderList('apex/models/'.$modelName) as $name => $dir) {
+        foreach (Legacy::getLoader()->lookupFolderList('apex/models/' . $modelName) as $name => $dir) {
             $output[] = $name;
         }
 

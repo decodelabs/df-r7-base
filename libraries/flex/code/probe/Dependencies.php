@@ -5,10 +5,7 @@
  */
 namespace df\flex\code\probe;
 
-use df;
-use df\core;
 use df\flex;
-use df\halo;
 
 class Dependencies implements flex\code\IProbe
 {
@@ -38,7 +35,7 @@ class Dependencies implements flex\code\IProbe
         }
 
         self::$_paths[$localPath] = true;
-        require_once $location->path.'/'.$localPath;
+        require_once $location->path . '/' . $localPath;
     }
 
     public function setErrors(array $errors)

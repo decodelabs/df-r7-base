@@ -5,11 +5,9 @@
  */
 namespace df\spur\vcs\github;
 
-use df;
-use df\core;
-use df\spur;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\core;
 
 class CommitReference implements ICommitReference, Dumpable
 {

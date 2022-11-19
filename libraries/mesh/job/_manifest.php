@@ -6,8 +6,6 @@
 
 namespace df\mesh\job;
 
-use df;
-use df\core;
 use df\mesh;
 
 interface ITransactionInitiator
@@ -35,7 +33,7 @@ interface ITransactionAdapter extends ITransactionExecutor
 
 interface ITransactionAware
 {
-    public function setTransaction(ITransaction $transaction=null);
+    public function setTransaction(ITransaction $transaction = null);
     public function getTransaction(): ?ITransaction;
 }
 
@@ -50,14 +48,14 @@ interface IQueue
     public function registerAdapter(ITransactionAdapter $adapter);
 
     public function asap(...$args): IJob;
-    public function after(IJob $job=null, ...$args): IJob;
+    public function after(IJob $job = null, ...$args): IJob;
 
-    public function emitEvent($entity, $action, array $data=null);
-    public function emitEventAfter(IJob $job=null, $entity, $action, array $data=null): ?IJob;
+    public function emitEvent($entity, $action, array $data = null);
+    public function emitEventAfter(IJob $job = null, $entity, $action, array $data = null): ?IJob;
 
     public function __call($method, $args);
     public function prepareAsap(IJobProvider $provider, string $name, ...$args);
-    public function prepareAfter(IJob $job=null, IJobProvider $provider, string $name, ...$args);
+    public function prepareAfter(IJob $job = null, IJobProvider $provider, string $name, ...$args);
 
     public function addJob(IJob $job);
     public function hasJob($id): bool;
@@ -112,7 +110,7 @@ interface IJob
     public function getObjectId(): string;
     public function getAdapter(): ?ITransactionAdapter;
 
-    public function addDependency($dependency, IResolution $resolution=null);
+    public function addDependency($dependency, IResolution $resolution = null);
     public function countDependencies(): int;
     public function hasDependencies(): bool;
     public function getDependencyScore(): float;
@@ -156,7 +154,7 @@ interface IDependency
     public function getRequiredJob(): IJob;
     public function getRequiredJobId(): string;
 
-    public function setResolution(IResolution $resolution=null);
+    public function setResolution(IResolution $resolution = null);
     public function getResolution(): ?IResolution;
 
     public function untangle(IQueue $queue, IJob $subordinate): bool;

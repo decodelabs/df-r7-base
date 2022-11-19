@@ -5,7 +5,6 @@
  */
 namespace df\core\validate\field;
 
-use df;
 use df\core;
 
 class TextList extends Base implements core\validate\ITextListField
@@ -15,7 +14,7 @@ class TextList extends Base implements core\validate\ITextListField
 
 
     // Options
-    public function shouldAllowEmptyEntries(bool $flag=null)
+    public function shouldAllowEmptyEntries(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_allowEmptyEntries = $flag;
@@ -25,7 +24,7 @@ class TextList extends Base implements core\validate\ITextListField
         return $this->_allowEmptyEntries;
     }
 
-    public function shouldFilterEmptyEntries(bool $flag=null)
+    public function shouldFilterEmptyEntries(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_filterEmptyEntries = $flag;

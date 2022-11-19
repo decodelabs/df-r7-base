@@ -6,13 +6,13 @@
 
 namespace df\core;
 
-use df;
-use df\core;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Genesis;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Genesis;
-use DecodeLabs\Exceptional;
 use DecodeLabs\R7\Legacy;
+use df;
+use df\core;
 
 // String provider
 interface IStringProvider
@@ -23,7 +23,7 @@ interface IStringProvider
 
 interface IStringValueProvider
 {
-    public function getStringValue($default=''): string;
+    public function getStringValue($default = ''): string;
 }
 
 trait TStringProvider
@@ -41,7 +41,7 @@ trait TStringProvider
 
 trait TStringValueProvider
 {
-    protected function _getStringValue($value, $default=''): string
+    protected function _getStringValue($value, $default = ''): string
     {
         if ($value instanceof IStringValueProvider) {
             $value = $value->getStringValue($default);
@@ -76,7 +76,7 @@ interface IArrayInterchange extends IArrayProvider
 interface IValueMap
 {
     public function set($key, $value);
-    public function get($key, $default=null);
+    public function get($key, $default = null);
     public function has(...$keys);
     public function remove(...$keys);
     public function importFrom($source, array $fields);
@@ -84,7 +84,7 @@ interface IValueMap
 
 interface IExporterValueMap extends IValueMap
 {
-    public function export($key, $default=null);
+    public function export($key, $default = null);
 }
 
 trait TValueMap
@@ -106,7 +106,9 @@ trait TValueMap
                 $value = $source[$fromField] ?? null;
             } else {
                 throw Exceptional::UnexpectedValue(
-                    'Unsupported data source', null, $source
+                    'Unsupported data source',
+                    null,
+                    $source
                 );
             }
 
@@ -129,7 +131,7 @@ trait TValueMap
 interface IValueContainer
 {
     public function setValue($value);
-    public function getValue($default=null);
+    public function getValue($default = null);
 }
 
 interface IUserValueContainer extends IValueContainer, IStringValueProvider
@@ -139,7 +141,7 @@ interface IUserValueContainer extends IValueContainer, IStringValueProvider
 
 trait TUserValueContainer
 {
-    public function getStringValue($default=''): string
+    public function getStringValue($default = ''): string
     {
         $value = $this->getValue();
 
@@ -170,18 +172,18 @@ interface ILoader
     /**
      * @return \Generator<string, string>
      */
-    public function lookupFileList(string $path, array $extensions=null): \Generator;
+    public function lookupFileList(string $path, array $extensions = null): \Generator;
 
     /**
      * @return \Generator<string, string>
      */
-    public function lookupFileListRecursive(string $path, array $extensions=null, callable $folderCheck=null): \Generator;
+    public function lookupFileListRecursive(string $path, array $extensions = null, callable $folderCheck = null): \Generator;
 
     /**
      * @return \Generator<string, string>
      * @phpstan-return \Generator<string, class-string>
      */
-    public function lookupClassList(string $path, bool $test=true): \Generator;
+    public function lookupClassList(string $path, bool $test = true): \Generator;
 
     /**
      * @return \Generator<string, string>
@@ -207,11 +209,11 @@ class Package
 
     public static function factory($name): Package
     {
-        $class = 'df\\apex\\packages\\'.$name.'\\Package';
+        $class = 'df\\apex\\packages\\' . $name . '\\Package';
 
         if (!class_exists($class)) {
             throw Exceptional::Runtime(
-                'Package '.$name.' could not be found'
+                'Package ' . $name . ' could not be found'
             );
         }
 
@@ -220,8 +222,8 @@ class Package
 
     public function __construct(
         string $name,
-        ?int $priority=null,
-        ?string $path=null
+        ?int $priority = null,
+        ?string $path = null
     ) {
         if ($path === null) {
             $ref = new \ReflectionObject($this);
@@ -229,7 +231,7 @@ class Package
         }
 
         if (Genesis::$build->isCompiled()) {
-            $this->path = Genesis::$build->path.'/apex/packages/'.$name;
+            $this->path = Genesis::$build->path . '/apex/packages/' . $name;
         } else {
             $this->path = $path;
         }
@@ -329,7 +331,7 @@ trait TManager
 
         if ($ref->isAbstract()) {
             throw Exceptional::Logic(
-                'Unable to instantiate abstract Manager: '.__CLASS__
+                'Unable to instantiate abstract Manager: ' . __CLASS__
             );
         }
 
@@ -356,7 +358,7 @@ trait TManager
 // Helpers
 interface IHelperProvider
 {
-    public function getHelper(string $name, bool $returnNull=false);
+    public function getHelper(string $name, bool $returnNull = false);
     public function __get($member);
 }
 
@@ -373,14 +375,14 @@ trait THelperProvider
 
         if (!is_callable($helper)) {
             throw Exceptional::BadMethodCall(
-                'Helper '.$method.' is not callable'
+                'Helper ' . $method . ' is not callable'
             );
         }
 
         return $helper(...$args);
     }
 
-    public function getHelper(string $name, bool $returnNull=false)
+    public function getHelper(string $name, bool $returnNull = false)
     {
         $name = lcfirst($name);
 
@@ -392,7 +394,7 @@ trait THelperProvider
 
         if (!$output && !$returnNull) {
             throw Exceptional::{'HelperNotFound,NotFound'}(
-                'Helper '.$name.' could not be found'
+                'Helper ' . $name . ' could not be found'
             );
         }
 
@@ -406,12 +408,12 @@ trait THelperProvider
         return $this->_loadSharedHelper($name);
     }
 
-    protected function _loadSharedHelper(string $name, $target=null): ?IHelper
+    protected function _loadSharedHelper(string $name, $target = null): ?IHelper
     {
-        $class = 'df\\apex\\helpers\\'.ucfirst($name);
+        $class = 'df\\apex\\helpers\\' . ucfirst($name);
 
         if (!class_exists($class)) {
-            $class = 'df\\plug\\'.ucfirst($name);
+            $class = 'df\\plug\\' . ucfirst($name);
 
             if (!class_exists($class)) {
                 return null;
@@ -437,13 +439,13 @@ interface IHelper
 // Translator
 interface ITranslator
 {
-    public function _($phrase='', $b=null, $c=null): string;
+    public function _($phrase = '', $b = null, $c = null): string;
     public function translate(array $args): string;
 }
 
 trait TTranslator
 {
-    public function _($phrase='', $b=null, $c=null): string
+    public function _($phrase = '', $b = null, $c = null): string
     {
         return $this->translate(func_get_args());
     }
@@ -535,7 +537,7 @@ trait TContext
         return df\arch\node\task\Manager::getInstance();
     }
 
-    public function loadRootHelper($name, $target=null)
+    public function loadRootHelper($name, $target = null)
     {
         switch ($name) {
             case 'context':
@@ -671,7 +673,7 @@ interface IConfig extends IRegistryObject, IValueMap, \ArrayAccess
 
 
 // Debug
-function logException(\Throwable $exception, $request=null)
+function logException(\Throwable $exception, $request = null)
 {
     // Swallow?
     return core\log\Manager::getInstance()->logException($exception, $request);

@@ -5,22 +5,20 @@
  */
 namespace df\apex\models\task\schedule;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
 
-class Unit extends axis\unit\Table {
+class Unit extends axis\unit\Table
+{
+    public const BROADCAST_HOOK_EVENTS = false;
 
-    const BROADCAST_HOOK_EVENTS = false;
-
-    const ORDERABLE_FIELDS = [
+    public const ORDERABLE_FIELDS = [
         'request', 'priority', 'creationDate', 'lastRun', 'isLive', 'isAuto'
     ];
 
-    const DEFAULT_ORDER = ['lastRun DESC', 'request ASC'];
+    public const DEFAULT_ORDER = ['lastRun DESC', 'request ASC'];
 
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addField('request', 'Text', 1024);
         $schema->addField('priority', 'Enum', 'core/unit/Priority');

@@ -6,14 +6,9 @@
 
 namespace df\flex\csv;
 
-use df;
-use df\core;
-use df\flex;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Mode;
 use DecodeLabs\Deliverance\DataReceiver;
-use DecodeLabs\Deliverance\DataSender;
 use DecodeLabs\Exceptional;
 
 class Builder implements IBuilder
@@ -26,7 +21,7 @@ class Builder implements IBuilder
     protected $_receiver;
     protected $_generator;
 
-    public static function openFile($path, ?callable $generator=null)
+    public static function openFile($path, ?callable $generator = null)
     {
         return (new self($generator))
             ->setDataReceiver(
@@ -34,7 +29,7 @@ class Builder implements IBuilder
             );
     }
 
-    public static function openString(?callable $generator=null)
+    public static function openString(?callable $generator = null)
     {
         return (new self($generator))
             ->setDataReceiver(
@@ -42,7 +37,7 @@ class Builder implements IBuilder
             );
     }
 
-    public function __construct(?callable $generator=null)
+    public function __construct(?callable $generator = null)
     {
         $this->setGenerator($generator);
     }
@@ -120,7 +115,7 @@ class Builder implements IBuilder
         return $this->_fields;
     }
 
-    public function shouldWriteFields(bool $flag=null)
+    public function shouldWriteFields(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_writeFields = $flag;
@@ -191,7 +186,7 @@ class Builder implements IBuilder
         $this->_receiver->write($this->_writeCsv($row));
     }
 
-    protected function _writeCsv(array $data=[], string $delimiter=',', string $enclosure='"'): string
+    protected function _writeCsv(array $data = [], string $delimiter = ',', string $enclosure = '"'): string
     {
         $str = '';
         $escape_char = '\\';
@@ -226,13 +221,13 @@ class Builder implements IBuilder
                 }
 
                 $str2 .= $enclosure;
-                $str .= $str2.$delimiter;
+                $str .= $str2 . $delimiter;
             } else {
-                $str .= $value.$delimiter;
+                $str .= $value . $delimiter;
             }
         }
 
-        $str = substr($str,0,-1);
+        $str = substr($str, 0, -1);
         $str .= "\n";
 
         return $str;

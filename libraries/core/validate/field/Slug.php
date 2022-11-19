@@ -6,12 +6,11 @@
 
 namespace df\core\validate\field;
 
-use df;
+use DecodeLabs\Dictum;
 use df\core;
-use df\opal;
 use df\flex;
 
-use DecodeLabs\Dictum;
+use df\opal;
 
 class Slug extends Base implements core\validate\ISlugField
 {
@@ -33,7 +32,7 @@ class Slug extends Base implements core\validate\ISlugField
 
 
     // Options
-    public function allowPathFormat(bool $flag=null)
+    public function allowPathFormat(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_allowPathFormat = $flag;
@@ -43,7 +42,7 @@ class Slug extends Base implements core\validate\ISlugField
         return $this->_allowPathFormat;
     }
 
-    public function allowAreaMarker(bool $flag=null)
+    public function allowAreaMarker(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_allowAreaMarker = $flag;
@@ -53,7 +52,7 @@ class Slug extends Base implements core\validate\ISlugField
         return $this->_allowAreaMarker;
     }
 
-    public function allowRoot(bool $flag=null)
+    public function allowRoot(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_allowRoot = $flag;
@@ -63,7 +62,7 @@ class Slug extends Base implements core\validate\ISlugField
         return $this->_allowRoot;
     }
 
-    public function setDefaultValueField($field, $sanitizer=false)
+    public function setDefaultValueField($field, $sanitizer = false)
     {
         $this->_defaultValueField = $field;
 
@@ -83,7 +82,7 @@ class Slug extends Base implements core\validate\ISlugField
         return $this->_defaultValueField;
     }
 
-    public function shouldGenerateIfEmpty(bool $flag=null)
+    public function shouldGenerateIfEmpty(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_generateIfEmpty = $flag;
@@ -93,7 +92,7 @@ class Slug extends Base implements core\validate\ISlugField
         return $this->_generateIfEmpty;
     }
 
-    public function shouldRenameOnConflict(bool $flag=null)
+    public function shouldRenameOnConflict(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_renameOnConflict = $flag;

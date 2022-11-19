@@ -5,21 +5,20 @@
  */
 namespace df\arch\mail;
 
-use df;
-use df\core;
-use df\arch;
-use df\aura;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+use df\arch;
+
+use df\aura;
+use df\core;
 
 abstract class Base extends aura\view\Mail implements arch\IMail
 {
-    const TEMPLATE = true;
-    const SUBJECT = null;
-    const DESCRIPTION = null;
+    public const TEMPLATE = true;
+    public const SUBJECT = null;
+    public const DESCRIPTION = null;
 
-    const JOURNAL_WEEKS = 10; // weeks
+    public const JOURNAL_WEEKS = 10; // weeks
 
     public static function factory(arch\IContext $context, $path): arch\IMail
     {
@@ -29,11 +28,11 @@ abstract class Base extends aura\view\Mail implements arch\IMail
         $parts[] = '_mail';
         $parts[] = str_replace('/', '\\', $path);
 
-        $class = 'df\\apex\\directory\\'.$location->getArea().'\\'.implode('\\', $parts);
+        $class = 'df\\apex\\directory\\' . $location->getArea() . '\\' . implode('\\', $parts);
 
         if (!class_exists($class)) {
             throw Exceptional::NotFound(
-                'Mail '.$origPath.' could not be found'
+                'Mail ' . $origPath . ' could not be found'
             );
         }
 
@@ -90,7 +89,7 @@ abstract class Base extends aura\view\Mail implements arch\IMail
                 if (is_string(static::TEMPLATE)) {
                     $template = static::TEMPLATE;
                 } else {
-                    $template = '#'.$this->getName().'.mail';
+                    $template = '#' . $this->getName() . '.mail';
                 }
 
                 $this->content = $this->context->apex->template($template);
@@ -115,14 +114,14 @@ abstract class Base extends aura\view\Mail implements arch\IMail
 
     protected function _getDefaultJournalName()
     {
-        $output = '~'.$this->context->location->getDirectoryLocation();
+        $output = '~' . $this->context->location->getDirectoryLocation();
         $name = $this->getName();
 
         if (false !== strpos($name, '/')) {
-            $output = rtrim($output, '/').'/#';
+            $output = rtrim($output, '/') . '/#';
         }
 
-        $output .= '/'.$name;
+        $output .= '/' . $name;
 
         if (0 === strpos($output, '~front/')) {
             $output = substr($output, 7);
@@ -146,7 +145,7 @@ abstract class Base extends aura\view\Mail implements arch\IMail
         return parent::getJournalDuration();
     }
 
-    public function shouldJournal(bool $flag=null)
+    public function shouldJournal(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_shouldJournal = $flag;

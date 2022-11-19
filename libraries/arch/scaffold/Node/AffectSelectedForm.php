@@ -34,7 +34,7 @@ abstract class AffectSelectedForm extends Form
         if ($output === null) {
             $output = $hash;
         } else {
-            $output .= '|'.$hash;
+            $output .= '|' . $hash;
         }
 
         return $output;
@@ -52,7 +52,7 @@ abstract class AffectSelectedForm extends Form
                 ->limit(100)
                 ->paginateWith($this->request->query);
 
-            return $this->apex->component(ucfirst($keyName).'List', ['actions' => false])
+            return $this->apex->component(ucfirst($keyName) . 'List', ['actions' => false])
                 ->setCollection($query)
                 ->setSlot('scaffold', $this->scaffold)
                 ->render();

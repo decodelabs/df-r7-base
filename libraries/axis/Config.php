@@ -6,11 +6,9 @@
 
 namespace df\axis;
 
-use df;
-use df\core;
-use df\axis;
-
 use DecodeLabs\Exceptional;
+
+use df\core;
 
 class Config extends core\Config
 {
@@ -71,7 +69,7 @@ class Config extends core\Config
 
         if (!isset($this->values->connections->{$connectionId})) {
             throw Exceptional::Runtime(
-                'There are no connections for '.$unit->getUnitId().', with connection id '.$connectionId
+                'There are no connections for ' . $unit->getUnitId() . ', with connection id ' . $connectionId
             );
         }
 
@@ -97,7 +95,7 @@ class Config extends core\Config
 
             if (!isset($this->values->units[$unitId])) {
                 try {
-                    $unitId = '@'.$unit->getUnitType();
+                    $unitId = '@' . $unit->getUnitType();
                 } catch (\Throwable $e) {
                     $unitId = null;
                 }
@@ -107,7 +105,7 @@ class Config extends core\Config
 
                     if (!isset($this->values->units[$unitId])) {
                         throw Exceptional::Runtime(
-                            'There are no connections matching '.$originalId
+                            'There are no connections matching ' . $originalId
                         );
                     }
                 }

@@ -6,20 +6,18 @@
 
 namespace df\plug;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-use df\flex;
-use df\spur;
-use df\flow;
-
-use DecodeLabs\Tagged;
-use DecodeLabs\Tagged\Buffer;
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\Metamorph;
+use DecodeLabs\Tagged;
+
+use DecodeLabs\Tagged\Buffer;
+use df\arch;
+use df\aura;
+use df\core;
+use df\flex;
+use df\flow;
 
 class Html implements arch\IDirectoryHelper
 {
@@ -31,12 +29,12 @@ class Html implements arch\IDirectoryHelper
         return aura\html\widget\Base::factory($this->context, $member, $args);
     }
 
-    public function __invoke($name, $content=null, array $attributes=null)
+    public function __invoke($name, $content = null, array $attributes = null)
     {
         return Tagged::el((string)$name, $content, $attributes);
     }
 
-    public function convert($body, $format='SimpleTags')
+    public function convert($body, $format = 'SimpleTags')
     {
         switch (strtolower($format)) {
             case 'simpletags':
@@ -59,7 +57,7 @@ class Html implements arch\IDirectoryHelper
         }
     }
 
-    public function shorten($string, $length=20)
+    public function shorten($string, $length = 20)
     {
         if (strlen($string) <= $length) {
             return $string;
@@ -69,7 +67,7 @@ class Html implements arch\IDirectoryHelper
         return Tagged::{'abbr'}($newString)->setTitle($string);
     }
 
-    public function _($phrase='', $b=null, $c=null): aura\html\IElementRepresentation
+    public function _($phrase = '', $b = null, $c = null): aura\html\IElementRepresentation
     {
         return $this->translate(func_get_args());
     }
@@ -79,12 +77,12 @@ class Html implements arch\IDirectoryHelper
         return new aura\html\ElementString($this->context->i18n->translate($args));
     }
 
-    public function elementContentContainer($content=null): aura\html\IElementContent
+    public function elementContentContainer($content = null): aura\html\IElementContent
     {
         return new aura\html\ElementContent($content);
     }
 
-    public function autoField($key, $name, core\collection\ITree $values=null)
+    public function autoField($key, $name, core\collection\ITree $values = null)
     {
         $isRequired = $isBoolean = false;
 
@@ -117,7 +115,7 @@ class Html implements arch\IDirectoryHelper
 
 
     // Compound widget shortcuts
-    public function icon($name, $body=null)
+    public function icon($name, $body = null)
     {
         if ($this->view) {
             $theme = $this->view->getTheme();
@@ -139,13 +137,13 @@ class Html implements arch\IDirectoryHelper
         return new aura\html\Element('span', $body, $attrs);
     }
 
-    public function booleanIcon($value, $body=null)
+    public function booleanIcon($value, $body = null)
     {
         return $this->icon((bool)$value ? 'tick' : 'cross', $body)
             ->addClass((bool)$value ? 'positive' : 'negative');
     }
 
-    public function yesNoIcon($value, $allowNull=true)
+    public function yesNoIcon($value, $allowNull = true)
     {
         if ($value === null && $allowNull) {
             return null;
@@ -155,14 +153,14 @@ class Html implements arch\IDirectoryHelper
             ->addClass((bool)$value ? 'positive' : 'negative');
     }
 
-    public function lockIcon($value, $body=null)
+    public function lockIcon($value, $body = null)
     {
         return $this->icon((bool)$value ? 'lock' : 'unlock', $body)
             ->addClass((bool)$value ? 'locked' : 'unlocked');
     }
 
 
-    public function basicLink($url, $body=null)
+    public function basicLink($url, $body = null)
     {
         $url = $this->context->uri->__invoke($url);
 
@@ -173,7 +171,7 @@ class Html implements arch\IDirectoryHelper
         return Tagged::{'a'}($body, ['href' => $url]);
     }
 
-    public function plainMailLink($address, $body=null)
+    public function plainMailLink($address, $body = null)
     {
         if (empty($address)) {
             return $body;
@@ -196,7 +194,7 @@ class Html implements arch\IDirectoryHelper
         return $this->link($this->context->uri->mailto($address), $body);
     }
 
-    public function mailLink($address, $body=null)
+    public function mailLink($address, $body = null)
     {
         if (empty($address)) {
             return $body;
@@ -207,19 +205,19 @@ class Html implements arch\IDirectoryHelper
             ->setDisposition('external');
     }
 
-    public function phoneLink($number, $icon='phone')
+    public function phoneLink($number, $icon = 'phone')
     {
         if (empty($number)) {
             return null;
         }
 
         /** @var aura\html\widget\Link $output */
-        $output = $this->link('tel:'.$number, $number);
+        $output = $this->link('tel:' . $number, $number);
         $output->setIcon($icon);
         return $output;
     }
 
-    public function backLink($default=null, $success=true, $body=null)
+    public function backLink($default = null, $success = true, $body = null)
     {
         /** @var aura\html\widget\Link $output */
         $output = $this->link(
@@ -230,7 +228,7 @@ class Html implements arch\IDirectoryHelper
         return $output;
     }
 
-    public function queryToggleLink($request, $queryVar, $onString, $offString, $onIcon=null, $offIcon=null)
+    public function queryToggleLink($request, $queryVar, $onString, $offString, $onIcon = null, $offIcon = null)
     {
         $result = false;
         $uriHelper = $this->context->uri;
@@ -258,7 +256,7 @@ class Html implements arch\IDirectoryHelper
 
         $isProduction = Genesis::$environment->isProduction();
 
-        $output = '<div class="w list flash">'."\n";
+        $output = '<div class="w list flash">' . "\n";
         $change = false;
 
         foreach ($manager->getConstantFlashes() as $message) {
@@ -298,11 +296,10 @@ class Html implements arch\IDirectoryHelper
         return $output;
     }
 
-    public function defaultButtonGroup($mainEvent=null, $mainEventText=null, $mainEventIcon=null)
+    public function defaultButtonGroup($mainEvent = null, $mainEventText = null, $mainEventIcon = null)
     {
         return $this->buttonArea(
             $this->saveEventButton($mainEvent, $mainEventText, $mainEventIcon),
-
             $this->buttonGroup(
                 $this->resetEventButton(),
                 $this->cancelEventButton()
@@ -310,7 +307,7 @@ class Html implements arch\IDirectoryHelper
         );
     }
 
-    public function yesNoButtonGroup($mainEvent=null)
+    public function yesNoButtonGroup($mainEvent = null)
     {
         if (!$mainEvent) {
             $mainEvent = 'submit';
@@ -328,7 +325,7 @@ class Html implements arch\IDirectoryHelper
         return $this->buttonArea($yes, $no);
     }
 
-    public function saveEventButton($event=null, $text=null, $icon=null, $disposition=null)
+    public function saveEventButton($event = null, $text = null, $icon = null, $disposition = null)
     {
         if ($event === false) {
             return null;
@@ -359,7 +356,7 @@ class Html implements arch\IDirectoryHelper
         return $output;
     }
 
-    public function resetEventButton($event=null, $label=null, $icon=null, $disposition=null)
+    public function resetEventButton($event = null, $label = null, $icon = null, $disposition = null)
     {
         if ($event === false) {
             return null;
@@ -385,7 +382,7 @@ class Html implements arch\IDirectoryHelper
         return $output;
     }
 
-    public function cancelEventButton($event=null, $label=null, $icon=null, $disposition=null)
+    public function cancelEventButton($event = null, $label = null, $icon = null, $disposition = null)
     {
         if ($event === false) {
             return null;
@@ -417,7 +414,7 @@ class Html implements arch\IDirectoryHelper
         return $output;
     }
 
-    public function jsonLd(string $type, $data, string $context=null): Buffer
+    public function jsonLd(string $type, $data, string $context = null): Buffer
     {
         if ($context === null) {
             $context = 'http://schema.org';
@@ -432,9 +429,10 @@ class Html implements arch\IDirectoryHelper
         $tree->removeEmpty();
 
         return Tagged::raw(
-            Tagged::tag('script', ['type' => 'application/ld+json']).
-            flex\Json::toString($tree, \JSON_UNESCAPED_SLASHES).
-            '</script>')
+            Tagged::tag('script', ['type' => 'application/ld+json']) .
+            flex\Json::toString($tree, \JSON_UNESCAPED_SLASHES) .
+            '</script>'
+        )
         ;
     }
 
@@ -457,7 +455,7 @@ class Html implements arch\IDirectoryHelper
 
 
     // Image
-    public function image($url, $alt=null, $width=null, $height=null)
+    public function image($url, $alt = null, $width = null, $height = null)
     {
         $output = Tagged::{'img'}(null, [
             'src' => $this->context->uri->__invoke($url),
@@ -475,7 +473,7 @@ class Html implements arch\IDirectoryHelper
         return $output;
     }
 
-    public function themeImage($path, $alt=null, $width=null, $height=null)
+    public function themeImage($path, $alt = null, $width = null, $height = null)
     {
         return $this->image($this->context->uri->themeAsset($path), $alt, $width, $height);
     }

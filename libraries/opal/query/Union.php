@@ -6,10 +6,6 @@
 
 namespace df\opal\query;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Exceptional;
 
 class Union implements IUnionQuery

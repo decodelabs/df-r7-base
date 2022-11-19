@@ -5,8 +5,6 @@
  */
 namespace df\core\i18n\module;
 
-use df\core;
-
 use DecodeLabs\Exceptional;
 
 class Timezones extends Base implements ITimezonesModule
@@ -16,7 +14,7 @@ class Timezones extends Base implements ITimezonesModule
         return $id;
     }
 
-    public function forCountry($country=null)
+    public function forCountry($country = null)
     {
         if ($country === null) {
             $country = $this->_manager->getLocale()->getCountry();
@@ -31,7 +29,7 @@ class Timezones extends Base implements ITimezonesModule
         }
     }
 
-    public function suggestForCountry($country=null)
+    public function suggestForCountry($country = null)
     {
         $list = $this->forCountry($country);
 
@@ -71,7 +69,7 @@ class Timezones extends Base implements ITimezonesModule
         }
     }
 
-    public function getList(array $ids=null)
+    public function getList(array $ids = null)
     {
         $output = [];
 
@@ -128,7 +126,7 @@ class Timezones extends Base implements ITimezonesModule
     }
 
     protected static $_continents = [];
-    const COUNTRIES = [
+    public const COUNTRIES = [
         'AD' => ['Europe/Andorra'],
         'AE' => ['Asia/Dubai'],
         'AF' => ['Asia/Kabul'],

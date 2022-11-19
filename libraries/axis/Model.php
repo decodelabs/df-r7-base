@@ -6,16 +6,13 @@
 
 namespace df\axis;
 
-use df;
-use df\core;
-use df\axis;
-use df\flex;
-use df\mesh;
-use df\opal;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\R7\Legacy;
+
+use df\axis;
+use df\flex;
+use df\mesh;
 
 abstract class Model implements IModel, Dumpable
 {
@@ -27,17 +24,17 @@ abstract class Model implements IModel, Dumpable
     public static function factory(string $name)
     {
         $name = lcfirst($name);
-        $key = self::REGISTRY_PREFIX.$name;
+        $key = self::REGISTRY_PREFIX . $name;
 
         if ($model = Legacy::getRegistryObject($key)) {
             return $model;
         }
 
-        $class = 'df\\apex\\models\\'.$name.'\\Model';
+        $class = 'df\\apex\\models\\' . $name . '\\Model';
 
         if (!class_exists($class)) {
             throw Exceptional::NotFound(
-                'Model '.$name.' could not be found'
+                'Model ' . $name . ' could not be found'
             );
         }
 
@@ -64,7 +61,7 @@ abstract class Model implements IModel, Dumpable
 
     final public function getRegistryObjectKey(): string
     {
-        return self::REGISTRY_PREFIX.$this->getModelName();
+        return self::REGISTRY_PREFIX . $this->getModelName();
     }
 
 
@@ -82,7 +79,7 @@ abstract class Model implements IModel, Dumpable
         }
 
 
-        $class = 'df\\apex\\models\\'.$this->getModelName().'\\'.$lookupName.'\\Unit';
+        $class = 'df\\apex\\models\\' . $this->getModelName() . '\\' . $lookupName . '\\Unit';
 
         if (!class_exists($class)) {
             if (preg_match('/^([a-z0-9_.]+)\(([a-zA-Z0-9_.\, \/]*)\)$/i', $name, $matches)) {
@@ -95,11 +92,11 @@ abstract class Model implements IModel, Dumpable
                     $className = ucfirst($className);
                 }
 
-                $class = 'df\\axis\\unit\\'.$className;
+                $class = 'df\\axis\\unit\\' . $className;
 
                 if (!class_exists($class)) {
                     throw Exceptional::NotFound(
-                        'Virtual model unit type '.$this->getModelName().'/'.$className.' could not be found'
+                        'Virtual model unit type ' . $this->getModelName() . '/' . $className . ' could not be found'
                     );
                 }
 
@@ -107,7 +104,7 @@ abstract class Model implements IModel, Dumpable
 
                 if (!$ref->implementsInterface('df\\axis\\IVirtualUnit')) {
                     throw Exceptional::Runtime(
-                        'Unit type '.$this->getModelName().'/'.$className.' cannot load virtual units'
+                        'Unit type ' . $this->getModelName() . '/' . $className . ' cannot load virtual units'
                     );
                 }
 
@@ -120,7 +117,7 @@ abstract class Model implements IModel, Dumpable
 
 
             throw Exceptional::NotFound(
-                'Model unit '.$this->getModelName().'/'.$name.' could not be found'
+                'Model unit ' . $this->getModelName() . '/' . $name . ' could not be found'
             );
         }
 
@@ -208,7 +205,7 @@ abstract class Model implements IModel, Dumpable
     // Mesh
     public function getEntityLocator()
     {
-        return new mesh\entity\Locator('axis://'.$this->getModelName());
+        return new mesh\entity\Locator('axis://' . $this->getModelName());
     }
 
     public function fetchSubEntity(mesh\IManager $manager, array $node)
@@ -222,7 +219,7 @@ abstract class Model implements IModel, Dumpable
 
                 if (!$unit instanceof ISchemaBasedStorageUnit) {
                     throw Exceptional::Logic(
-                        'Model unit '.$unit->getUnitName().' does not provide a schema'
+                        'Model unit ' . $unit->getUnitName() . ' does not provide a schema'
                     );
                 }
 

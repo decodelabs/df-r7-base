@@ -6,22 +6,18 @@
 
 namespace df\apex\directory\front\composer\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-use df\halo;
-
 use DecodeLabs\Atlas;
+
 use DecodeLabs\Genesis;
 use DecodeLabs\Systemic;
 use DecodeLabs\Terminus as Cli;
+use df\arch;
 
 class TaskInstall extends arch\node\Task
 {
     public function execute(): void
     {
-        $file = Atlas::file(Genesis::$hub->getApplicationPath().'/composer.json');
+        $file = Atlas::file(Genesis::$hub->getApplicationPath() . '/composer.json');
 
         if (!$file->exists()) {
             $this->runChild('composer/init?no-update');

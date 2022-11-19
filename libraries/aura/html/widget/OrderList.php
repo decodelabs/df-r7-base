@@ -5,16 +5,15 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
 use df\arch;
+use df\aura;
+use df\core;
 
 class OrderList extends Base implements IMappedListWidget
 {
     use TWidget_MappedList;
 
-    const PRIMARY_TAG = 'ul.order';
+    public const PRIMARY_TAG = 'ul.order';
 
     protected $_data;
 
@@ -85,9 +84,9 @@ class OrderList extends Base implements IMappedListWidget
                     $isActive = false;
                 }
 
-                $query->__set($keyMap['order'], $key.' '.$direction);
+                $query->__set($keyMap['order'], $key . ' ' . $direction);
 
-                $class = 'order '.strtolower(trim($direction, '!^*')).' null-'.$nullOrder;
+                $class = 'order ' . strtolower(trim($direction, '!^*')) . ' null-' . $nullOrder;
 
                 if ($isActive) {
                     $class .= ' active';
@@ -115,17 +114,17 @@ class OrderList extends Base implements IMappedListWidget
                             break;
                     }
 
-                    $query->__set($keyMap['order'], $key.' '.$direction);
+                    $query->__set($keyMap['order'], $key . ' ' . $direction);
 
                     $tagContent[] = (new aura\html\Element('a', $newOrder == 'ascending' ? '○' : '●', [
                             'href' => $this->_context->uri->__invoke($request),
-                            'class' => 'null-order null-'.$newOrder,
+                            'class' => 'null-order null-' . $newOrder,
                             'rel' => 'nofollow'
                         ]))
                         ->render();
                 }
 
-                $content[] = (new aura\html\Element('li.field-'.$key, $tagContent))->render();
+                $content[] = (new aura\html\Element('li.field-' . $key, $tagContent))->render();
             }
         }
 

@@ -7,15 +7,15 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Nightfire\Block\LibraryImage;
 
-use df\arch\node\form\SelectorDelegate;
-use df\aura\html\widget\Field as FieldWidget;
-
 use DecodeLabs\Coercion;
 use DecodeLabs\Dictum;
+
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\R7\Nightfire\Block;
-use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
 use DecodeLabs\R7\Nightfire\Block\LibraryImage;
+use DecodeLabs\R7\Nightfire\BlockDelegateAbstract;
+use df\arch\node\form\SelectorDelegate;
+use df\aura\html\widget\Field as FieldWidget;
 
 /**
  * @extends BlockDelegateAbstract<LibraryImage>
@@ -56,12 +56,12 @@ class FormDelegate extends BlockDelegateAbstract
             $fa->add(
                 'div.link',
                 $this->html->link(
-                        $this->context->uri(
-                            '~admin/media/files/edit?file='.$fileId,
-                            '~admin/media/files/details?file='.$fileId
-                        ),
-                        $this->_('Edit file details')
-                    )
+                    $this->context->uri(
+                        '~admin/media/files/edit?file=' . $fileId,
+                        '~admin/media/files/details?file=' . $fileId
+                    ),
+                    $this->_('Edit file details')
+                )
                     ->setIcon('edit')
                     ->setTarget('_blank')
             );
@@ -72,7 +72,6 @@ class FormDelegate extends BlockDelegateAbstract
             $this->html->textbox($this->fieldName('alt'), $this->values->alt)
                 ->isRequired(true)
                 ->setId($this->elementId('alt')),
-
             $this->html->eventButton($this->eventName('useFileName'), 'Import file name')
                 ->setIcon('edit')
                 ->setDisposition('operative')
@@ -107,7 +106,7 @@ class FormDelegate extends BlockDelegateAbstract
             $this->values->alt = $alt;
         }
 
-        return Legacy::$http->redirect('#'.$this->elementId('alt'));
+        return Legacy::$http->redirect('#' . $this->elementId('alt'));
     }
 
     public function apply(): Block

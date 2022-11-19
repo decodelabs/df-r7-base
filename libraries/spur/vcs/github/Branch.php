@@ -5,11 +5,9 @@
  */
 namespace df\spur\vcs\github;
 
-use df;
-use df\core;
-use df\spur;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\core;
 
 class Branch implements IBranch, Dumpable
 {
@@ -25,8 +23,8 @@ class Branch implements IBranch, Dumpable
 
         if ($self = $this->getUrl('self')) {
             $self = dirname(dirname($self));
-            $this->_urls['zipball'] = $self.'/zipball/'.$this->_id;
-            $this->_urls['tarball'] = $self.'/tarball/'.$this->_id;
+            $this->_urls['zipball'] = $self . '/zipball/' . $this->_id;
+            $this->_urls['tarball'] = $self . '/tarball/' . $this->_id;
         }
     }
 

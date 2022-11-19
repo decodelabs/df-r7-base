@@ -5,19 +5,19 @@
  */
 namespace df\core\validate\field;
 
-use df;
 use df\core;
 
-class Set extends Base implements core\validate\IEnumField {
-
+class Set extends Base implements core\validate\IEnumField
+{
     use core\validate\TOptionProviderField;
 
     protected $_stringDelimiter = null;
 
 
-// Options
-    public function applyAsString($delimiter) {
-        if($delimiter === false) {
+    // Options
+    public function applyAsString($delimiter)
+    {
+        if ($delimiter === false) {
             $delimiter = null;
         } else {
             $delimiter = (string)$delimiter;
@@ -27,27 +27,29 @@ class Set extends Base implements core\validate\IEnumField {
         return $this;
     }
 
-    public function shouldApplyAsString() {
+    public function shouldApplyAsString()
+    {
         return $this->_stringDelimiter !== null;
     }
 
 
 
 // Validate
-    public function validate() {
+    public function validate()
+    {
         // Sanitize
         $value = (array)$this->_sanitizeValue($this->data->toArray());
         $required = $this->_isRequired;
 
-        if($this->_toggleField) {
-            if($field = $this->validator->getField($this->_toggleField)) {
+        if ($this->_toggleField) {
+            if ($field = $this->validator->getField($this->_toggleField)) {
                 $toggle = (bool)$this->validator[$this->_toggleField];
 
-                if(!$toggle) {
+                if (!$toggle) {
                     $this->data->setValue($value = []);
                 }
 
-                if($required) {
+                if ($required) {
                     $required = $toggle;
                 }
             }
@@ -56,17 +58,17 @@ class Set extends Base implements core\validate\IEnumField {
 
 
         // Validate
-        if((!$count = count($this->data)) && $required) {
+        if ((!$count = count($this->data)) && $required) {
             $this->addError('required', $this->validator->_(
                 'This field requires at least one selection'
             ));
         }
 
-        if($count && $this->_requireGroup !== null) {
+        if ($count && $this->_requireGroup !== null) {
             $this->validator->setRequireGroupFulfilled($this->_requireGroup);
         }
 
-        if($this->_type) {
+        if ($this->_type) {
             $options = $this->_type->getOptions();
         } else {
             $options = $this->_options;
@@ -74,8 +76,8 @@ class Set extends Base implements core\validate\IEnumField {
 
         $hasOptions = !empty($options);
 
-        foreach($value as $key => $keyValue) {
-            if(trim($keyValue) === '') {
+        foreach ($value as $key => $keyValue) {
+            if (trim($keyValue) === '') {
                 $this->data->{$key}->addError('required', $this->validator->_(
                     'This field cannot be empty'
                 ));
@@ -84,7 +86,7 @@ class Set extends Base implements core\validate\IEnumField {
             }
 
 
-            if($hasOptions && !in_array($keyValue, $options)) {
+            if ($hasOptions && !in_array($keyValue, $options)) {
                 $this->data->{$key}->addError('invalid', $this->validator->_(
                     'This is not a valid option'
                 ));
@@ -99,12 +101,13 @@ class Set extends Base implements core\validate\IEnumField {
         return $value;
     }
 
-    public function applyValueTo(&$record, $value) {
-        if(!is_array($value)) {
+    public function applyValueTo(&$record, $value)
+    {
+        if (!is_array($value)) {
             $value = [$value];
         }
 
-        if($this->_stringDelimiter !== null) {
+        if ($this->_stringDelimiter !== null) {
             $value = implode($this->_stringDelimiter, $value);
         }
 

@@ -5,13 +5,10 @@
  */
 namespace df\apex\models\user\client\procedures;
 
-use df;
-use df\core;
-use df\apex;
-use df\axis;
-
 use DecodeLabs\Disciple;
+
 use DecodeLabs\Exceptional;
+use df\axis;
 
 class Update extends axis\procedure\Record
 {

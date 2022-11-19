@@ -5,11 +5,8 @@
  */
 namespace df\plug;
 
-use df;
 use df\core;
-use df\plug;
 use df\mint as mintLib;
-use df\spur;
 
 class Mint implements core\ISharedHelper
 {
@@ -20,7 +17,7 @@ class Mint implements core\ISharedHelper
         return mintLib\CreditCard::isValidNumber($number);
     }
 
-    public function validateCard(core\collection\IInputTree $values, array $map=[])/*: mintLib\ICreditCard*/
+    public function validateCard(core\collection\IInputTree $values, array $map = [])/*: mintLib\ICreditCard*/
     {
         $map = array_merge([
             'name' => 'name',
@@ -93,7 +90,7 @@ class Mint implements core\ISharedHelper
         return $creditCard;
     }
 
-    public function currency($amount, $code=null): mintLib\ICurrency
+    public function currency($amount, $code = null): mintLib\ICurrency
     {
         return mintLib\Currency::factory($amount, $code);
     }
@@ -103,7 +100,7 @@ class Mint implements core\ISharedHelper
         return mintLib\CreditCard::fromArray($values);
     }
 
-    public function newGateway(string $name, $settings=null): mintLib\IGateway
+    public function newGateway(string $name, $settings = null): mintLib\IGateway
     {
         return mintLib\gateway\Base::factory($name, $settings);
     }

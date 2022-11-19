@@ -6,10 +6,9 @@
 
 namespace df\core\uri;
 
-use df;
-use df\core;
-
 use DecodeLabs\Compass\Ip;
+
+use df\core;
 
 interface IPath extends core\IStringProvider, core\collection\IIndexedQueue
 {
@@ -20,9 +19,9 @@ interface IPath extends core\IStringProvider, core\collection\IIndexedQueue
 
     public function setSeparator($separator);
     public function getSeparator();
-    public function isAbsolute(bool $flag=null);
-    public function shouldAddTrailingSlash(bool $flag=null);
-    public function canAutoCanonicalize(bool $flag=null);
+    public function isAbsolute(bool $flag = null);
+    public function shouldAddTrailingSlash(bool $flag = null);
+    public function canAutoCanonicalize(bool $flag = null);
     public function canonicalize();
     public function extractRelative($path);
     public function getRawCollection();
@@ -45,7 +44,7 @@ interface IPath extends core\IStringProvider, core\collection\IIndexedQueue
 
 interface ISecureSchemeContainer
 {
-    public function isSecure(bool $flag=null);
+    public function isSecure(bool $flag = null);
 }
 
 interface IUsernameContainer
@@ -104,10 +103,10 @@ interface IFragmentContainer
 interface IQueryContainer
 {
     public function setQuery($query);
-    public function importQuery($query, array $filter=null);
+    public function importQuery($query, array $filter = null);
     public function getQuery(): core\collection\ITree;
     public function getQueryString(): string;
-    public function getQueryTerm($key, $default=null);
+    public function getQueryTerm($key, $default = null);
     public function hasQuery(): bool;
 }
 
@@ -116,7 +115,7 @@ interface IQueryContainer
  */
 interface IUrl extends core\IStringProvider
 {
-    public function import($url='');
+    public function import($url = '');
 
     /**
      * @return $this

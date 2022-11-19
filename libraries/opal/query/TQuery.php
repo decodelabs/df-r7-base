@@ -8,13 +8,13 @@ namespace df\opal\query;
 
 use ArrayIterator;
 
+use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch;
 use df\core;
-use df\opal;
-use df\user;
 use df\mesh;
 
-use DecodeLabs\Glitch;
-use DecodeLabs\Exceptional;
+use df\opal;
+use df\user;
 use Traversable;
 
 trait TQuery_AdapterAware
@@ -52,7 +52,7 @@ trait TQuery_TransactionAware
 {
     protected $_transaction;
 
-    public function setTransaction(mesh\job\ITransaction $transaction=null)
+    public function setTransaction(mesh\job\ITransaction $transaction = null)
     {
         $this->_transaction = $transaction;
         return $this;
@@ -96,13 +96,13 @@ trait TQuery_ParentAware
         }
 
         $gp = $this->_parent;
-        $sourceId = $source->getId().' as '.$source->getAlias();
+        $sourceId = $source->getId() . ' as ' . $source->getAlias();
 
         do {
             $gp = $gp->getParentQuery();
             $gpSource = $gp->getSource();
 
-            if ($gpSource->getId().' as '.$gpSource->getAlias() == $sourceId) {
+            if ($gpSource->getId() . ' as ' . $gpSource->getAlias() == $sourceId) {
                 return true;
             }
         } while ($gp instanceof IParentQueryAware);
@@ -151,12 +151,12 @@ trait TQuery
         return $this->getSource()->getAdapter()->getAccessLockDomain();
     }
 
-    public function lookupAccessKey(array $keys, $action=null)
+    public function lookupAccessKey(array $keys, $action = null)
     {
         return $this->getSource()->getAdapter()->lookupAccessKey($keys, $action);
     }
 
-    public function getDefaultAccess($action=null)
+    public function getDefaultAccess($action = null)
     {
         return $this->getSource()->getAdapter()->getDefaultAccess($action);
     }
@@ -187,7 +187,7 @@ trait TQuery
 
             if (!$source) {
                 throw Exceptional::InvalidArgument(
-                    'Cannot import query block - adapter source '.$matches[1].' could not be found'
+                    'Cannot import query block - adapter source ' . $matches[1] . ' could not be found'
                 );
             }
 
@@ -217,7 +217,7 @@ trait TQuery
 
             if (!$source) {
                 throw Exceptional::InvalidArgument(
-                    'Cannot import query block - adapter source '.$matches[1].' could not be found'
+                    'Cannot import query block - adapter source ' . $matches[1] . ' could not be found'
                 );
             }
 
@@ -238,7 +238,7 @@ trait TQuery
     }
 
 
-    public function setTransaction(mesh\job\ITransaction $transaction=null)
+    public function setTransaction(mesh\job\ITransaction $transaction = null)
     {
         $this->getSourceManager()->setTransaction($transaction);
         return $this;
@@ -254,7 +254,7 @@ trait TQuery
         return $this->getSource()->getAdapter();
     }
 
-    protected function _lookupRelationField(&$fieldName, &$queryField=null)
+    protected function _lookupRelationField(&$fieldName, &$queryField = null)
     {
         if ($fieldName instanceof IField) {
             $fieldName = $fieldName->getQualifiedName();
@@ -303,7 +303,7 @@ trait TQuery
 
             if (!$field instanceof opal\schema\IRelationField) {
                 throw Exceptional::InvalidArgument(
-                    $fieldName.' is not a relation field'
+                    $fieldName . ' is not a relation field'
                 );
             }
         }
@@ -363,7 +363,7 @@ trait TQuery_Derivable
         return $this->getSource()->getAdapter();
     }
 
-    public function endSource(string $alias=null): IQuery
+    public function endSource(string $alias = null): IQuery
     {
         if (!$this->_derivationParentInitiator) {
             throw Exceptional::Logic(
@@ -375,7 +375,7 @@ trait TQuery_Derivable
 
         if (!$adapter->supportsQueryType(IQueryTypes::DERIVATION)) {
             throw Exceptional::Logic(
-                'Query adapter '.$adapter->getQuerySourceDisplayName().' does not support derived tables'
+                'Query adapter ' . $adapter->getQuerySourceDisplayName() . ' does not support derived tables'
             );
         }
 
@@ -400,13 +400,13 @@ trait TQuery_Locational
     protected $_location;
     protected $_searchChildLocations = false;
 
-    public function inside($location, $searchChildLocations=false)
+    public function inside($location, $searchChildLocations = false)
     {
         $source = $this->getSource();
 
         if (!$source->getAdapter()->supportsQueryFeature(IQueryFeatures::LOCATION)) {
             throw Exceptional::Logic(
-                'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().
+                'Query adapter ' . $source->getAdapter()->getQuerySourceDisplayName() .
                 ' does not support location base queries'
             );
         }
@@ -421,7 +421,7 @@ trait TQuery_Locational
         return $this->_location;
     }
 
-    public function shouldSearchChildLocations(bool $flag=null)
+    public function shouldSearchChildLocations(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_searchChildLocations = $flag;
@@ -441,7 +441,7 @@ trait TQuery_Distinct
 {
     protected $_isDistinct = false;
 
-    public function isDistinct(bool $flag=null)
+    public function isDistinct(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isDistinct = $flag;
@@ -460,37 +460,37 @@ trait TQuery_Distinct
 
 trait TQuery_Correlatable
 {
-    public function correlate($field, $alias=null)
+    public function correlate($field, $alias = null)
     {
         return $this->_newQuery()->beginCorrelation($this, $field, $alias);
     }
 
-    public function correlateRelation($relationField, $targetField, $alias=null)
+    public function correlateRelation($relationField, $targetField, $alias = null)
     {
         return $this->_beginRelationCorrelation($relationField, $alias, $targetField)->endCorrelation();
     }
 
-    public function beginCorrelateRelation($relationField, $targetField, $alias=null)
+    public function beginCorrelateRelation($relationField, $targetField, $alias = null)
     {
         return $this->_beginRelationCorrelation($relationField, $alias, $targetField);
     }
 
-    public function countRelation($field, $alias=null)
+    public function countRelation($field, $alias = null)
     {
         return $this->_beginRelationCorrelation($field, $alias, 'COUNT')->endCorrelation();
     }
 
-    public function beginCountRelation($field, $alias=null)
+    public function beginCountRelation($field, $alias = null)
     {
         return $this->_beginRelationCorrelation($field, $alias, 'COUNT');
     }
 
-    public function hasRelation($field, $alias=null)
+    public function hasRelation($field, $alias = null)
     {
         return $this->_beginRelationCorrelation($field, $alias, 'HAS')->endCorrelation();
     }
 
-    public function beginHasRelation($field, $alias=null)
+    public function beginHasRelation($field, $alias = null)
     {
         return $this->_beginRelationCorrelation($field, $alias, 'HAS');
     }
@@ -513,7 +513,7 @@ trait TQuery_Correlatable
 
         if (!$field instanceof opal\schema\IManyRelationField) {
             throw Exceptional::InvalidArgument(
-                'Cannot begin relation correlation - '.$fieldName.' is not a many relation field'
+                'Cannot begin relation correlation - ' . $fieldName . ' is not a many relation field'
             );
         }
 
@@ -523,20 +523,20 @@ trait TQuery_Correlatable
         if ($field instanceof opal\schema\IBridgedRelationField) {
             // Field is bridged
             $bridgeAdapter = $field->getBridgeQueryAdapter();
-            $bridgeAlias = $fieldAlias.'Bridge';
+            $bridgeAlias = $fieldAlias . 'Bridge';
             $localAlias = $source->getAlias();
             $localName = $field->getBridgeLocalFieldName();
             $targetName = $field->getBridgeTargetFieldName();
 
             if (false === strpos($aggregate, '(')) {
-                $aggregate .= '('.$bridgeAlias.'.'.$targetName.')';
+                $aggregate .= '(' . $bridgeAlias . '.' . $targetName . ')';
             }
 
             // TODO: check if field is on target table!!!
 
             $correlation = $this->correlate($aggregate, $alias)
                 ->from($bridgeAdapter, $bridgeAlias)
-                ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
+                ->on($bridgeAlias . '.' . $localName, '=', $localAlias . '.@primary');
         } elseif ($field instanceof opal\schema\IInverseRelationField) {
             // Field is OneToMany (hopefully!)
             $targetAdapter = $field->getTargetQueryAdapter();
@@ -545,15 +545,17 @@ trait TQuery_Correlatable
             $localAlias = $source->getAlias();
 
             if (false === strpos($aggregate, '(')) {
-                $aggregate .= '('.$targetAlias.'.@primary)';
+                $aggregate .= '(' . $targetAlias . '.@primary)';
             }
 
             $correlation = $this->correlate($aggregate, $alias)
                 ->from($targetAdapter, $targetAlias)
-                ->on($targetAlias.'.'.$targetFieldName, '=', $localAlias.'.@primary');
+                ->on($targetAlias . '.' . $targetFieldName, '=', $localAlias . '.@primary');
         } else {
             throw Exceptional::Runtime(
-                'Unsupport ManyRelation field type', null, $field
+                'Unsupport ManyRelation field type',
+                null,
+                $field
             );
         }
 
@@ -568,7 +570,7 @@ trait TQuery_Correlatable
 
         if (!$adapter->supportsQueryType($correlation->getQueryType())) {
             throw Exceptional::Logic(
-                'Query adapter '.$adapter->getQuerySourceDisplayName().' does not support correlations'
+                'Query adapter ' . $adapter->getQuerySourceDisplayName() . ' does not support correlations'
             );
         }
 
@@ -624,7 +626,7 @@ trait TQuery_JoinProvider
         return $this;
     }
 
-    protected function _beginJoinRelation($fieldName, array $targetFields=null, $joinType=IJoinQuery::INNER)
+    protected function _beginJoinRelation($fieldName, array $targetFields = null, $joinType = IJoinQuery::INNER)
     {
         $targetAlias = null;
 
@@ -681,13 +683,13 @@ trait TQuery_JoinProvider
             $targetFieldName = $field->getTargetField();
 
             $join = $join->from($targetAdapter, $targetAlias)
-                ->on($targetAlias.'.'.$targetFieldName, '=', '@primary');
+                ->on($targetAlias . '.' . $targetFieldName, '=', '@primary');
         } else {
             // Field is One
             $targetAdapter = $field->getTargetQueryAdapter();
 
             $join = $join->from($targetAdapter, $targetAlias)
-                ->on($targetAlias.'.@primary', '=', $fieldName);
+                ->on($targetAlias . '.@primary', '=', $fieldName);
         }
 
         return $join;
@@ -758,7 +760,7 @@ trait TQuery_Joinable
 
         if (!$source->getAdapter()->supportsQueryType($join->getQueryType())) {
             throw Exceptional::Logic(
-                'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' does not support joins'
+                'Query adapter ' . $source->getAdapter()->getQuerySourceDisplayName() . ' does not support joins'
             );
         }
 
@@ -825,7 +827,7 @@ trait TQuery_JoinConstrainable
 
         if (!$source->getAdapter()->supportsQueryType($join->getQueryType())) {
             throw Exceptional::Logic(
-                'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' does not support joins'
+                'Query adapter ' . $source->getAdapter()->getQuerySourceDisplayName() . ' does not support joins'
             );
         }
 
@@ -851,7 +853,7 @@ trait TQuery_JoinClauseFactoryBase
     }
 
 
-    public function addJoinClause(IJoinClauseProvider $clause=null)
+    public function addJoinClause(IJoinClauseProvider $clause = null)
     {
         $this->getJoinClauseList()->addJoinClause($clause);
         return $this;
@@ -1053,7 +1055,7 @@ trait TQuery_Populate
         return $this->_type;
     }
 
-    public function isSelect(bool $flag=null)
+    public function isSelect(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isSelect = $flag;
@@ -1174,7 +1176,7 @@ trait TQuery_Combine
         foreach (core\collection\Util::leaves($fields) as $field) {
             if (!isset($this->_fields[$field])) {
                 throw Exceptional::InvalidArgument(
-                    'Combine field '.$field.' has not been defined'
+                    'Combine field ' . $field . ' has not been defined'
                 );
             }
 
@@ -1216,7 +1218,7 @@ trait TQuery_Combine
         return $this->_parent;
     }
 
-    public function isCopy(bool $flag=null)
+    public function isCopy(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isCopy = $flag;
@@ -1248,7 +1250,7 @@ trait TQuery_AttachBase
 
         if (!$source->getAdapter()->supportsQueryType($attachment->getQueryType())) {
             throw Exceptional::Logic(
-                'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().
+                'Query adapter ' . $source->getAdapter()->getQuerySourceDisplayName() .
                 ' does not support attachments'
             );
         }
@@ -1257,7 +1259,7 @@ trait TQuery_AttachBase
         && $this->_attachments[$name] !== $attachment
         && !($this->_attachments[$name]->isPopulate() && $attachment->isPopulate())) {
             throw Exceptional::Runtime(
-                'An attachment has already been created with the name "'.$name.'"'
+                'An attachment has already been created with the name "' . $name . '"'
             );
         }
 
@@ -1306,7 +1308,7 @@ trait TQuery_RelationAttachable
 
         if (!$attachment instanceof IAttachQuery) {
             throw Exceptional::InvalidArgument(
-                'Cannot populate '.$populate->getFieldName().' - integral schema field cannot convert to attachment'
+                'Cannot populate ' . $populate->getFieldName() . ' - integral schema field cannot convert to attachment'
             );
         }
 
@@ -1405,7 +1407,7 @@ trait TQuery_Attachment
 
         if (!$this->_joinClauseList || $this->_joinClauseList->isEmpty()) {
             throw Exceptional::Logic(
-                'No join clauses have been defined for attachment '.$name
+                'No join clauses have been defined for attachment ' . $name
             );
         }
 
@@ -1418,7 +1420,7 @@ trait TQuery_Attachment
         return $this->getNestedParent();
     }
 
-    public function asMany($name, $keyField=null)
+    public function asMany($name, $keyField = null)
     {
         if ($name instanceof IField) {
             $name = $name->getName();
@@ -1426,7 +1428,7 @@ trait TQuery_Attachment
 
         if (!$this->_joinClauseList || $this->_joinClauseList->isEmpty()) {
             throw Exceptional::Logic(
-                'No join clauses have been defined for attachment '.$name
+                'No join clauses have been defined for attachment ' . $name
             );
         }
 
@@ -1457,11 +1459,11 @@ trait TQuery_Attachment
 
 trait TQuery_AttachmentListExtension
 {
-    public function asList($name, $field1, $field2=null)
+    public function asList($name, $field1, $field2 = null)
     {
         if ($this->_joinClauseList->isEmpty()) {
             throw Exceptional::Logic(
-                'No join clauses have been defined for attachment '.$name
+                'No join clauses have been defined for attachment ' . $name
             );
         }
 
@@ -1488,7 +1490,7 @@ trait TQuery_AttachmentListExtension
 
 trait TQuery_AttachmentValueExtension
 {
-    public function asValue($name, $field=null)
+    public function asValue($name, $field = null)
     {
         if ($field === null) {
             $field = $name;
@@ -1496,7 +1498,7 @@ trait TQuery_AttachmentValueExtension
 
         if ($this->_joinClauseList->isEmpty()) {
             throw Exceptional::Logic(
-                'No join clauses have been defined for attachment '.$name
+                'No join clauses have been defined for attachment ' . $name
             );
         }
 
@@ -1545,7 +1547,7 @@ trait TQuery_PrerequisiteClauseFactory
         return new opal\query\clause\WhereList($this, false, true);
     }
 
-    public function addPrerequisite(IClauseProvider $clause=null)
+    public function addPrerequisite(IClauseProvider $clause = null)
     {
         if ($clause !== null) {
             $clause->isOr(false);
@@ -1684,7 +1686,7 @@ trait TQuery_WhereClauseFactory
     }
 
 
-    public function addWhereClause(IWhereClauseProvider $clause=null)
+    public function addWhereClause(IWhereClauseProvider $clause = null)
     {
         $this->_getWhereClauseList()->addWhereClause($clause);
         return $this;
@@ -1774,7 +1776,7 @@ trait TQuery_Searchable
 {
     protected $_searchController;
 
-    public function searchFor(?string $phrase, array $fields=null)
+    public function searchFor(?string $phrase, array $fields = null)
     {
         if ($phrase === null) {
             return $this;
@@ -1925,7 +1927,7 @@ trait TQuery_HavingClauseFactory
     }
 
 
-    public function addHavingClause(IHavingClauseProvider $clause=null)
+    public function addHavingClause(IHavingClauseProvider $clause = null)
     {
         $this->getHavingClauseList()->addHavingClause($clause);
         return $this;
@@ -2011,7 +2013,7 @@ trait TQuery_Orderable
         return $this;
     }
 
-    public function isPrimaryOrderSource($sourceAlias=null)
+    public function isPrimaryOrderSource($sourceAlias = null)
     {
         if (!isset($this->_order[0])) {
             return true;
@@ -2213,7 +2215,7 @@ trait TQuery_Read
 {
     protected $_isUnbuffered = false;
 
-    public function isUnbuffered(bool $flag=null)
+    public function isUnbuffered(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isUnbuffered = $flag;
@@ -2276,7 +2278,7 @@ trait TQuery_Read
         return $this->_fetchSourceData();
     }
 
-    abstract protected function _fetchSourceData($keyField=null, $valField=null);
+    abstract protected function _fetchSourceData($keyField = null, $valField = null);
 
     public function getOutputManifest()
     {
@@ -2310,7 +2312,7 @@ trait TQuery_Read
         return $output;
     }
 
-    protected function _createBatchIterator($res, IField $keyField=null, IField $valField=null, $forFetch=false, callable $formatter=null)
+    protected function _createBatchIterator($res, IField $keyField = null, IField $valField = null, $forFetch = false, callable $formatter = null)
     {
         $output = new BatchIterator($this->getSource(), $res, $this->getOutputManifest());
 
@@ -2342,7 +2344,7 @@ trait TQuery_Read
 
 trait TQuery_SelectSourceDataFetcher
 {
-    protected function _fetchSourceData($keyField=null, $valField=null)
+    protected function _fetchSourceData($keyField = null, $valField = null)
     {
         $source = $this->getSource();
 
@@ -2368,7 +2370,7 @@ trait TQuery_SelectSourceDataFetcher
         $source->setKeyField($keyField);
 
         $parts = explode('\\', get_class($this));
-        $func = 'execute'.array_pop($parts).'Query';
+        $func = 'execute' . array_pop($parts) . 'Query';
 
         $output = $this->_sourceManager->executeQuery($this, function ($adapter) use ($func) {
             return $adapter->{$func}($this);
@@ -2415,7 +2417,7 @@ trait TQuery_DataInsert
     protected $_shouldReplace = false;
     protected $_ifNotExists = false;
 
-    public function shouldReplace(bool $flag=null)
+    public function shouldReplace(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_shouldReplace = $flag;
@@ -2425,7 +2427,7 @@ trait TQuery_DataInsert
         return $this->_shouldReplace;
     }
 
-    public function ifNotExists(bool $flag=null)
+    public function ifNotExists(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_ifNotExists = $flag;
@@ -2528,7 +2530,7 @@ trait TQuery_EntryPoint
         return $output;
     }
 
-    public function batchInsert($rows=[])
+    public function batchInsert($rows = [])
     {
         $output = Initiator::factory()
             ->beginBatchInsert($rows);
@@ -2552,7 +2554,7 @@ trait TQuery_EntryPoint
         return $output;
     }
 
-    public function batchReplace($rows=[])
+    public function batchReplace($rows = [])
     {
         $output = Initiator::factory()
             ->beginBatchReplace($rows);
@@ -2564,7 +2566,7 @@ trait TQuery_EntryPoint
         return $output;
     }
 
-    public function update(array $valueMap=null)
+    public function update(array $valueMap = null)
     {
         $output = Initiator::factory()
             ->beginUpdate($valueMap);

@@ -5,13 +5,10 @@
  */
 namespace df\flex\csv;
 
-use df;
-use df\core;
-use df\flex;
-
 use DecodeLabs\Atlas\File;
-use DecodeLabs\Deliverance\DataReceiver;
+
 use DecodeLabs\Deliverance\DataSender;
+use df\core;
 
 interface IReader extends core\IArrayProvider, \Iterator
 {
@@ -37,7 +34,7 @@ interface IBuilder extends DataSender
 
     public function setFields(array $fields): IBuilder;
     public function getFields(): ?array;
-    public function shouldWriteFields(bool $flag=null);
+    public function shouldWriteFields(bool $flag = null);
 
     public function addRow(array $row): void;
     public function getRows(): array;

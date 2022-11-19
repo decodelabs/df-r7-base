@@ -6,10 +6,9 @@
 
 namespace df\core\validate\field;
 
-use df;
-use df\core;
-
 use DecodeLabs\Exceptional;
+
+use df\core;
 
 abstract class Base implements core\validate\IField
 {
@@ -36,11 +35,11 @@ abstract class Base implements core\validate\IField
             $type = $name;
         }
 
-        $class = 'df\\core\\validate\\field\\'.ucfirst($type);
+        $class = 'df\\core\\validate\\field\\' . ucfirst($type);
 
         if (!class_exists($class)) {
             throw Exceptional::NotFound(
-                'Validator type '.ucfirst($type).' could not be found for field '.$name
+                'Validator type ' . ucfirst($type) . ' could not be found for field ' . $name
             );
         }
 
@@ -183,7 +182,7 @@ abstract class Base implements core\validate\IField
         return $this->_defaultValue;
     }
 
-    protected function _sanitizeValue($value, bool $runSanitizer=true)
+    protected function _sanitizeValue($value, bool $runSanitizer = true)
     {
         if ($value === '') {
             $value = null;

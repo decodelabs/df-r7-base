@@ -8,8 +8,8 @@ namespace df\arch\scaffold\Component;
 use df\arch\component\HeaderBar as HeaderBarBase;
 use df\arch\Scaffold;
 use df\arch\scaffold\Record\FilterProvider;
-use df\core\lang\Callback;
 use df\aura\html\widget\Menu as MenuWidget;
+use df\core\lang\Callback;
 
 class HeaderBar extends HeaderBarBase
 {
@@ -18,7 +18,7 @@ class HeaderBar extends HeaderBarBase
 
     protected $subOperativeLinkBuilder;
 
-    public function __construct(Scaffold $scaffold, string $name, array $args=null)
+    public function __construct(Scaffold $scaffold, string $name, array $args = null)
     {
         $this->scaffold = $scaffold;
         $this->name = ucfirst($name);
@@ -28,7 +28,7 @@ class HeaderBar extends HeaderBarBase
 
     protected function addOperativeLinks(MenuWidget $menu): void
     {
-        $method = 'generate'.$this->name.'OperativeLinks';
+        $method = 'generate' . $this->name . 'OperativeLinks';
 
         if (method_exists($this->scaffold, $method)) {
             $menu->addLinks($this->scaffold->{$method}());
@@ -37,7 +37,7 @@ class HeaderBar extends HeaderBarBase
 
     protected function addSubOperativeLinks(MenuWidget $menu): void
     {
-        $method = 'generate'.$this->name.'SubOperativeLinks';
+        $method = 'generate' . $this->name . 'SubOperativeLinks';
 
         if (method_exists($this->scaffold, $method)) {
             $menu->addLinks($this->scaffold->{$method}());
@@ -50,7 +50,7 @@ class HeaderBar extends HeaderBarBase
 
     protected function addTransitiveLinks(MenuWidget $menu): void
     {
-        $method = 'generate'.$this->name.'TransitiveLinks';
+        $method = 'generate' . $this->name . 'TransitiveLinks';
 
         if (method_exists($this->scaffold, $method)) {
             $menu->addLinks($this->scaffold->{$method}());
@@ -59,7 +59,7 @@ class HeaderBar extends HeaderBarBase
 
     protected function addSectionLinks(MenuWidget $menu): void
     {
-        $method = 'generate'.$this->name.'SectionLinks';
+        $method = 'generate' . $this->name . 'SectionLinks';
 
         if (method_exists($this->scaffold, $method)) {
             $menu->addLinks($this->scaffold->{$method}());
@@ -83,7 +83,7 @@ class HeaderBar extends HeaderBarBase
         }
     }
 
-    public function setSubOperativeLinkBuilder($builder=null)
+    public function setSubOperativeLinkBuilder($builder = null)
     {
         if ($builder !== null) {
             $builder = Callback::factory($builder);

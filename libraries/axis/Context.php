@@ -6,11 +6,8 @@
 
 namespace df\axis;
 
-use df;
-use df\core;
 use df\axis;
-
-use DecodeLabs\R7\Legacy;
+use df\core;
 
 final class Context implements IContext
 {

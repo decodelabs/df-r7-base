@@ -5,10 +5,9 @@
  */
 namespace df\spur\analytics\adapter;
 
-use df;
+use df\aura;
 use df\core;
 use df\spur;
-use df\aura;
 
 class GoogleGtag extends Base
 {
@@ -50,11 +49,11 @@ class GoogleGtag extends Base
 
         // Initialization
         if (null === ($gtag = $view->getHeadScript('gtag'))) {
-            $view->linkJs('https://www.googletagmanager.com/gtag/js?id='.$mainId, 9999, ['async' => true]);
+            $view->linkJs('https://www.googletagmanager.com/gtag/js?id=' . $mainId, 9999, ['async' => true]);
             $gtag =
-                'window.dataLayer = window.dataLayer || [];'."\n".
-                'function gtag(){dataLayer.push(arguments);}'."\n".
-                'gtag(\'js\', new Date());'."\n";
+                'window.dataLayer = window.dataLayer || [];' . "\n" .
+                'function gtag(){dataLayer.push(arguments);}' . "\n" .
+                'gtag(\'js\', new Date());' . "\n";
         }
 
         // Accounts
@@ -63,16 +62,16 @@ class GoogleGtag extends Base
                 $account['user_id'] = $userId;
             }
 
-            $gtag .= 'gtag(\'config\', \''.$id.'\', '.json_encode($account).');'."\n";
+            $gtag .= 'gtag(\'config\', \'' . $id . '\', ' . json_encode($account) . ');' . "\n";
         }
 
 
         // Events
         foreach ($handler->getEvents() as $event) {
-            $gtag .= 'gtag(\'event\', \''.$event->getName().'\', '.json_encode([
+            $gtag .= 'gtag(\'event\', \'' . $event->getName() . '\', ' . json_encode([
                 'event_category' => $event->getCategory(),
                 'event_label' => $event->getLabel()
-            ]).');'."\n";
+            ]) . ');' . "\n";
         }
 
 
@@ -98,7 +97,7 @@ class GoogleGtag extends Base
                 $transactionData['tax'] = $tax->getAmount();
             }
 
-            $gtag .= 'gtag(\'event\', \'purchase\', '.json_encode($transactionData).');'."\n";
+            $gtag .= 'gtag(\'event\', \'purchase\', ' . json_encode($transactionData) . ');' . "\n";
         }
 
         $view->addHeadScript('gtag', rtrim($gtag));

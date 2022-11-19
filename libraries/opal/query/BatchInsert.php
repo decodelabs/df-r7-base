@@ -5,12 +5,11 @@
  */
 namespace df\opal\query;
 
-use df;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
+
 use df\core;
 use df\opal;
-
-use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
 
 class BatchInsert implements IBatchInsertQuery, Dumpable
 {
@@ -27,7 +26,7 @@ class BatchInsert implements IBatchInsertQuery, Dumpable
     protected $_flushThreshold = 50;
     protected $_inserted = 0;
 
-    public function __construct(ISourceManager $sourceManager, ISource $source, $rows, $shouldReplace=false)
+    public function __construct(ISourceManager $sourceManager, ISource $source, $rows, $shouldReplace = false)
     {
         $this->_sourceManager = $sourceManager;
         $this->_source = $source;

@@ -5,19 +5,17 @@
  */
 namespace df\axis\schema\field;
 
-use df;
-use df\core;
 use df\axis;
-use df\opal;
 use df\flex;
+use df\opal;
 
 class Guid extends Base implements opal\schema\IAutoGeneratorField
 {
     use opal\schema\TAutoGeneratorField;
 
-    const UUID1 = 1;
-    const UUID4 = 2;
-    const COMB = 3;
+    public const UUID1 = 1;
+    public const UUID4 = 2;
+    public const COMB = 3;
 
     protected $_generator = self::COMB;
 
@@ -81,7 +79,7 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField
 
 
     // Values
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord = null)
     {
         if (isset($row[$key]) && !empty($row[$key])) {
             return flex\Guid::factory($row[$key]);
@@ -103,7 +101,7 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField
         return $value->getBytes();
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    public function sanitizeValue($value, opal\record\IRecord $forRecord = null)
     {
         if (!$value instanceof flex\IGuid) {
             $value = (string)$value;
@@ -191,6 +189,6 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField
     // Dump
     public function getFieldTypeDisplayName()
     {
-        return 'Guid ['.$this->getGeneratorName().']';
+        return 'Guid [' . $this->getGeneratorName() . ']';
     }
 }

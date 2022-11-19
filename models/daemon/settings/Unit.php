@@ -5,16 +5,14 @@
  */
 namespace df\apex\models\daemon\settings;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
 
-class Unit extends axis\unit\Table {
+class Unit extends axis\unit\Table
+{
+    public const BROADCAST_HOOK_EVENTS = false;
 
-    const BROADCAST_HOOK_EVENTS = false;
-
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('name', 'Text', 64);
         $schema->addField('isEnabled', 'Boolean')
             ->setDefaultValue(true);

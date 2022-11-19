@@ -5,9 +5,6 @@
  */
 namespace df\core\lang;
 
-use df;
-use df\core;
-
 use DecodeLabs\Glitch;
 
 class Util
@@ -31,9 +28,9 @@ class Util
             $part = trim(array_shift($parts));
 
             if (preg_match('/^class@anonymous(.+)(\(([0-9]+)\))/', $part, $matches)) {
-                $name[] = Glitch::normalizePath($matches[1]).' : '.($matches[3] ?? null);
+                $name[] = Glitch::normalizePath($matches[1]) . ' : ' . ($matches[3] ?? null);
             } elseif (preg_match('/^eval\(\)\'d/', $part)) {
-                $name = ['eval[ '.implode(' : ', $name).' ]'];
+                $name = ['eval[ ' . implode(' : ', $name) . ' ]'];
             } else {
                 $name[] = $part;
             }
@@ -50,7 +47,7 @@ class Util
             return false;
         }
 
-        return (($flags & $flag) == $flag);
+        return ($flags & $flag) == $flag;
     }
 
     public function setFlag(?int $flags, ?int $flag): int

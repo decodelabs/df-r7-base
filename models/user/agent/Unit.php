@@ -6,13 +6,9 @@
 
 namespace df\apex\models\user\agent;
 
-use df;
-use df\core;
-use df\apex;
-use df\axis;
-
 use DecodeLabs\Disciple;
-use DecodeLabs\R7\Legacy;
+
+use df\axis;
 
 class Unit extends axis\unit\Table
 {
@@ -25,7 +21,7 @@ class Unit extends axis\unit\Table
         $schema->addField('isBot', 'Boolean');
     }
 
-    public function logAgent(?string $agent, bool $logBots=true): array
+    public function logAgent(?string $agent, bool $logBots = true): array
     {
         $isBot = $this->isBot($agent);
         $shouldLog = !$isBot || $logBots;
@@ -58,7 +54,7 @@ class Unit extends axis\unit\Table
         return $output;
     }
 
-    public function logCurrent(bool $logBots=true): array
+    public function logCurrent(bool $logBots = true): array
     {
         return $this->logAgent($this->getCurrentString(), $logBots);
     }

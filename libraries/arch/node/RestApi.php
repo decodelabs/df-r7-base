@@ -6,13 +6,12 @@
 
 namespace df\arch\node;
 
-use df;
-use df\core;
-use df\arch;
-use df\link;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\R7\Legacy;
+use df\arch;
+
+use df\core;
+use df\link;
 
 abstract class RestApi extends Base implements IRestApiNode
 {
@@ -32,14 +31,14 @@ abstract class RestApi extends Base implements IRestApiNode
         $this->authorizeRequest();
 
         $httpMethod = Legacy::$http->getMethod();
-        $func = 'execute'.ucfirst(strtolower($httpMethod)).'As'.$this->request->getType();
+        $func = 'execute' . ucfirst(strtolower($httpMethod)) . 'As' . $this->request->getType();
 
         if (!method_exists($this, $func)) {
-            $func = 'execute'.ucfirst(strtolower($httpMethod));
+            $func = 'execute' . ucfirst(strtolower($httpMethod));
 
             if (!method_exists($this, $func)) {
                 throw Exceptional::Api([
-                    'message' => 'Node does not support '.$httpMethod.' method',
+                    'message' => 'Node does not support ' . $httpMethod . ' method',
                     'http' => 400
                 ]);
             }
@@ -91,7 +90,7 @@ abstract class RestApi extends Base implements IRestApiNode
         return $this->_handleResponse($result);
     }
 
-    public function newResult($value=null, core\validate\IHandler $validator=null)
+    public function newResult($value = null, core\validate\IHandler $validator = null)
     {
         return new arch\node\restApi\Result($value, $validator);
     }

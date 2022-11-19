@@ -6,7 +6,6 @@
 
 namespace df\core\collection;
 
-use df;
 use df\core;
 
 class AttributeTree extends Tree implements IAttributeContainer
@@ -71,9 +70,9 @@ class AttributeTree extends Tree implements IAttributeContainer
 
         foreach ($this->_collection as $key => $child) {
             if ($child instanceof self && empty($child->_collection) && empty($child->_attributes)) {
-                yield 'value:'.$key => $child->_value;
+                yield 'value:' . $key => $child->_value;
             } else {
-                yield 'value:'.$key => $child;
+                yield 'value:' . $key => $child;
             }
         }
     }

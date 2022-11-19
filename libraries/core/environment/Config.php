@@ -6,13 +6,10 @@
 
 namespace df\core\environment;
 
-use df;
-use df\core;
-use df\arch;
-use df\halo;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Systemic;
-use DecodeLabs\Exceptional;
+use df\core;
 
 class Config extends core\Config
 {
@@ -61,7 +58,7 @@ class Config extends core\Config
 
 
     // Daemons
-    public function canUseDaemons(bool $flag=null)
+    public function canUseDaemons(bool $flag = null)
     {
         if ($flag !== null) {
             $this->values->daemonsEnabled = $flag;

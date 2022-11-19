@@ -6,12 +6,9 @@
 
 namespace df\apex\directory\front\media\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-
 use DecodeLabs\Terminus as Cli;
+
+use df\arch;
 
 class TaskFixActiveVersions extends arch\node\Task
 {
@@ -35,7 +32,7 @@ class TaskFixActiveVersions extends arch\node\Task
         }
 
         foreach ($query as $file) {
-            Cli::{'brightMagenta'}($file['id'].' - '.$file['fileName']);
+            Cli::{'brightMagenta'}($file['id'] . ' - ' . $file['fileName']);
 
             if (!isset($file['versions'][0])) {
                 Cli::{'.brightYellow'}(' : SKIPPED');

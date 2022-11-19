@@ -6,12 +6,10 @@
 
 namespace df\core\uri;
 
-use df;
-use df\core;
-use df\link;
-
 use DecodeLabs\Compass\Ip;
+
 use DecodeLabs\Exceptional;
+use df\core;
 
 trait TUrl_TransientScheme
 {
@@ -46,7 +44,7 @@ trait TUrl_TransientScheme
     protected function _getSchemeString()
     {
         if ($this->_scheme !== null) {
-            return $this->_scheme.'://';
+            return $this->_scheme . '://';
         }
     }
 }
@@ -155,10 +153,10 @@ trait TUrl_CredentialContainer
         $output = $this->_username;
 
         if ($this->_password !== null) {
-            $output .= ':'.$this->_password;
+            $output .= ':' . $this->_password;
         }
 
-        return $output.'@';
+        return $output . '@';
     }
 }
 
@@ -200,7 +198,7 @@ trait TUrl_DomainContainer
             $ip = '127.0.0.1';
         } elseif (($ip = gethostbyname($this->_domain)) == $this->_domain) {
             throw Exceptional::Runtime(
-                'Could not lookup IP for '.$this->_domain
+                'Could not lookup IP for ' . $this->_domain
             );
         }
 
@@ -245,10 +243,10 @@ trait TUrl_PortContainer
         $this->_port = null;
     }
 
-    protected function _getPortString($skip=null): string
+    protected function _getPortString($skip = null): string
     {
         if ($this->_port !== null && $this->_port !== $skip) {
-            return ':'.$this->_port;
+            return ':' . $this->_port;
         }
 
         return '';
@@ -263,7 +261,7 @@ trait TUrl_DomainPortContainer
 
     public function getHost(): string
     {
-        return (string)$this->getDomain().$this->_getPortString();
+        return (string)$this->getDomain() . $this->_getPortString();
     }
 }
 
@@ -319,13 +317,13 @@ trait TUrl_PathContainer
         $this->_path = null;
     }
 
-    protected function _getPathString($absolute=false)
+    protected function _getPathString($absolute = false)
     {
         if ($this->_path !== null) {
             $output = $this->_path->toUrlEncodedString();
 
             if ($absolute) {
-                $output = '/'.ltrim($output, '/.');
+                $output = '/' . ltrim($output, '/.');
             }
 
             return $output;
@@ -358,7 +356,7 @@ trait TUrl_QueryContainer
         return $this;
     }
 
-    public function importQuery($query, array $filter=null)
+    public function importQuery($query, array $filter = null)
     {
         if (empty($query)) {
             return $this;
@@ -401,7 +399,7 @@ trait TUrl_QueryContainer
         }
     }
 
-    public function getQueryTerm($key, $default=null)
+    public function getQueryTerm($key, $default = null)
     {
         if (!$this->_query) {
             return $default;
@@ -443,7 +441,7 @@ trait TUrl_QueryContainer
             $queryString = $this->getQueryString();
 
             if (!empty($queryString)) {
-                return '?'.$queryString;
+                return '?' . $queryString;
             }
         }
     }
@@ -495,7 +493,7 @@ trait TUrl_FragmentContainer
     protected function _getFragmentString()
     {
         if ($this->_fragment !== null) {
-            return '#'.$this->_fragment;
+            return '#' . $this->_fragment;
         }
     }
 }

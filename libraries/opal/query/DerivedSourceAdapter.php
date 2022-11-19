@@ -5,172 +5,206 @@
  */
 namespace df\opal\query;
 
-use df;
-use df\core;
-use df\opal;
 use df\user;
 
-class DerivedSourceAdapter implements IDerivedSourceAdapter {
-
+class DerivedSourceAdapter implements IDerivedSourceAdapter
+{
     use user\TAccessLock;
 
     protected $_query;
     protected $_adapter;
 
-    public function __construct(IDerivableQuery $query) {
+    public function __construct(IDerivableQuery $query)
+    {
         $this->_query = $query;
         $this->_adapter = $query->getDerivationSourceAdapter();
     }
 
-    public function getDerivationQuery() {
+    public function getDerivationQuery()
+    {
         return $this->_query;
     }
 
-    public function getDerivationSource() {
+    public function getDerivationSource()
+    {
         return $this->_query->getSource();
     }
 
-    public function getQuerySourceId() {
+    public function getQuerySourceId()
+    {
         return $this->_adapter->getQuerySourceId();
     }
 
-    public function getQuerySourceAdapterHash() {
+    public function getQuerySourceAdapterHash()
+    {
         return $this->_adapter->getQuerySourceAdapterHash();
     }
 
-    public function getQuerySourceAdapterServerHash() {
+    public function getQuerySourceAdapterServerHash()
+    {
         return $this->_adapter->getQuerySourceAdapterServerHash();
     }
 
-    public function getQuerySourceDisplayName() {
+    public function getQuerySourceDisplayName()
+    {
         return $this->_adapter->getQuerySourceDisplayName();
     }
 
-    public function getDelegateQueryAdapter() {
+    public function getDelegateQueryAdapter()
+    {
         return $this->_adapter->getDelegateQueryAdapter();
     }
 
 
-    public function supportsQueryType($type) {
+    public function supportsQueryType($type)
+    {
         return $this->_adapter->supportsQueryType($type);
     }
 
-    public function supportsQueryFeature($feature) {
+    public function supportsQueryFeature($feature)
+    {
         return $this->_adapter->supportsQueryFeature($feature);
     }
 
 
-    public function handleQueryException(IQuery $query, \Throwable $e) {
+    public function handleQueryException(IQuery $query, \Throwable $e)
+    {
         return $this->_adapter->handleQueryException($query, $e);
     }
 
-    public function ensureStorageConsistency() {
+    public function ensureStorageConsistency()
+    {
         return $this->_adapter->ensureStorageConsistency();
     }
 
 
-    public function executeSelectQuery(ISelectQuery $query) {
+    public function executeSelectQuery(ISelectQuery $query)
+    {
         return $this->_adapter->executeSelectQuery($query);
     }
 
-    public function countSelectQuery(ISelectQuery $query) {
+    public function countSelectQuery(ISelectQuery $query)
+    {
         return $this->_adapter->countSelectQuery($query);
     }
 
-    public function executeUnionQuery(IUnionQuery $query) {
+    public function executeUnionQuery(IUnionQuery $query)
+    {
         return $this->_adapter->executeUnionQuery($query);
     }
 
-    public function countUnionQuery(IUnionQuery $query) {
+    public function countUnionQuery(IUnionQuery $query)
+    {
         return $this->_adapter->countUnionQuery($query);
     }
 
-    public function executeFetchQuery(IFetchQuery $query) {
+    public function executeFetchQuery(IFetchQuery $query)
+    {
         return $this->_adapter->executeFetchQuery($query);
     }
 
-    public function countFetchQuery(IFetchQuery $query) {
+    public function countFetchQuery(IFetchQuery $query)
+    {
         return $this->_adapter->countFetchQuery($query);
     }
 
-    public function executeInsertQuery(IInsertQuery $query) {
+    public function executeInsertQuery(IInsertQuery $query)
+    {
         return $this->_adapter->executeInsertQuery($query);
     }
 
-    public function executeBatchInsertQuery(IBatchInsertQuery $query) {
+    public function executeBatchInsertQuery(IBatchInsertQuery $query)
+    {
         return $this->_adapter->executeBatchInsertQuery($query);
     }
 
-    public function executeUpdateQuery(IUpdateQuery $query) {
+    public function executeUpdateQuery(IUpdateQuery $query)
+    {
         return $this->_adapter->executeUpdateQuery($query);
     }
 
-    public function executeDeleteQuery(IDeleteQuery $query) {
+    public function executeDeleteQuery(IDeleteQuery $query)
+    {
         return $this->_adapter->executeDeleteQuery($query);
     }
 
 
-    public function fetchRemoteJoinData(IJoinQuery $join, array $rows) {
+    public function fetchRemoteJoinData(IJoinQuery $join, array $rows)
+    {
         return $this->_adapter->fetchRemoteJoinData($join, $rows);
     }
 
-    public function fetchAttachmentData(IAttachQuery $attachment, array $rows) {
+    public function fetchAttachmentData(IAttachQuery $attachment, array $rows)
+    {
         return $this->_adapter->fetchAttachmentData($attachment, $rows);
     }
 
 
-    public function getTransactionId() {
+    public function getTransactionId()
+    {
         return $this->getQuerySourceAdapterHash();
     }
 
-    public function getJobAdapterId() {
+    public function getJobAdapterId()
+    {
         return $this->getQuerySourceId();
     }
 
-    public function begin() {
+    public function begin()
+    {
         return $this->_adapter->begin();
     }
 
-    public function commit() {
+    public function commit()
+    {
         return $this->_adapter->commit();
     }
 
-    public function rollback() {
+    public function rollback()
+    {
         return $this->_adapter->rollback();
     }
 
 
-    public function newRecord(array $values=null) {
+    public function newRecord(array $values = null)
+    {
         return $this->_adapter->newRecord($values);
     }
 
-    public function newPartial(array $values=null) {
+    public function newPartial(array $values = null)
+    {
         return $this->_adapter->newPartial($values);
     }
 
-    public function shouldRecordsBroadcastHookEvents() {
+    public function shouldRecordsBroadcastHookEvents()
+    {
         return $this->_adapter->shouldRecordsBroadcastHookEvents();
     }
 
 
 // Access
-    public function getAccessLockDomain() {
+    public function getAccessLockDomain()
+    {
         return $this->_adapter->getAccessLockDomain();
     }
 
-    public function lookupAccessKey(array $keys, $action=null) {
+    public function lookupAccessKey(array $keys, $action = null)
+    {
         return $this->_adapter->lookupAccessKey($keys, $action);
     }
 
-    public function getDefaultAccess($action=null) {
+    public function getDefaultAccess($action = null)
+    {
         return $this->_adapter->getDefaultAccess($action);
     }
 
-    public function getAccessSignifiers(): array {
+    public function getAccessSignifiers(): array
+    {
         return $this->_adapter->getAccessSignifiers();
     }
 
-    public function getAccessLockId() {
+    public function getAccessLockId()
+    {
         return $this->_adapter->getAccessLockId();
     }
 }

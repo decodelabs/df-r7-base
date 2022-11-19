@@ -6,19 +6,16 @@
 
 namespace df\plug;
 
-use df;
-use df\core;
-use df\plug;
-use df\arch;
-use df\aura;
-use df\flex;
-
-use df\arch\scaffold\Loader as ScaffoldLoader;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+
 use DecodeLabs\R7\Legacy;
+
+use df\arch;
+use df\arch\scaffold\Loader as ScaffoldLoader;
+use df\aura;
+use df\core;
 
 class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
 {
@@ -33,7 +30,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
     }
 
     // Aura
-    public function view(string $path, $slots=null)
+    public function view(string $path, $slots = null)
     {
         $parts = explode('.', $path);
         $location = $this->context->extractDirectoryLocation($path);
@@ -63,12 +60,12 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
         return $view;
     }
 
-    public function newView($type, $request=null)
+    public function newView($type, $request = null)
     {
         return aura\view\Base::factory($type, $this->context->spawnInstance($request));
     }
 
-    public function newWidgetView($callback=null, $type='Html')
+    public function newWidgetView($callback = null, $type = 'Html')
     {
         $view = $this->newView($type);
         $view->setContentProvider($content = new aura\view\content\WidgetContentProvider($view->getContext()));
@@ -80,7 +77,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
         return $view;
     }
 
-    public function template(string $path, $slots=null)
+    public function template(string $path, $slots = null)
     {
         $location = $this->context->extractDirectoryLocation($path);
         $template = aura\view\content\Template::loadDirectoryTemplate(
@@ -105,7 +102,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
         return $template;
     }
 
-    public function themeTemplate(string $path, $slots=null)
+    public function themeTemplate(string $path, $slots = null)
     {
         $themeId = $this->context->extractThemeId($path);
 
@@ -136,7 +133,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
         return $template;
     }
 
-    public function getTheme($id=null)
+    public function getTheme($id = null)
     {
         if ($id === null) {
             if ($this->view) {
@@ -155,7 +152,8 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
         $request = $this->context->uri->directoryRequest($request);
 
         if (null !== arch\node\Base::getClassFor(
-            $request, Genesis::$kernel->getMode()
+            $request,
+            Genesis::$kernel->getMode()
         )) {
             return true;
         }
@@ -179,10 +177,10 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
         return arch\node\Base::factory($context);
     }
 
-    public function findNodesIn($request, $type=null)
+    public function findNodesIn($request, $type = null)
     {
         $request = $this->context->uri->directoryRequest($request);
-        $path = $request->getLibraryPath().'/_nodes';
+        $path = $request->getLibraryPath() . '/_nodes';
 
         foreach (Legacy::getLoader()->lookupClassList($path) as $name => $class) {
             if ($type !== null && 0 !== stripos($name, $type)) {
@@ -196,7 +194,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
                 $value = Dictum::actionSlug($value);
             });
 
-            yield arch\Request::factory('~'.implode('/', $requestParts));
+            yield arch\Request::factory('~' . implode('/', $requestParts));
         }
     }
 
@@ -239,7 +237,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
         return $output;
     }
 
-    public function scaffold($context=true)
+    public function scaffold($context = true)
     {
         if (!$context instanceof arch\IContext) {
             if ($context === true) {
@@ -268,7 +266,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
 
         if (!$node instanceof arch\node\IFormNode) {
             throw Exceptional::{'df/arch/NotFound,InvalidArgument'}(
-                'Node '.$request.' is not a form!'
+                'Node ' . $request . ' is not a form!'
             );
         }
 
@@ -281,7 +279,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
         return arch\navigation\menu\Base::factory($this->context, $id);
     }
 
-    public function breadcrumbs($empty=false)
+    public function breadcrumbs($empty = false)
     {
         if (!$output = Legacy::getRegistryObject('breadcrumbs')) {
             if ($empty) {
@@ -309,7 +307,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
         return Genesis::$hub->getApplicationName();
     }
 
-    public function clearMenuCache($id=null)
+    public function clearMenuCache($id = null)
     {
         if ($id !== null) {
             arch\navigation\menu\Base::clearCacheFor($this->context, $id);

@@ -5,7 +5,6 @@
  */
 namespace df\user\authentication;
 
-use df;
 use df\core;
 use df\user;
 
@@ -59,5 +58,5 @@ interface IDomainInfo
     public function getBindDate();
 
     public function getClientData();
-    public function onAuthentication(bool $asAdmin=false);
+    public function onAuthentication(bool $asAdmin = false);
 }

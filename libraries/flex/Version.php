@@ -5,19 +5,17 @@
  */
 namespace df\flex;
 
-use df;
-use df\core;
-use df\flex;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
 
 class Version implements core\IStringProvider, Dumpable
 {
     use core\TStringProvider;
 
-    const REGEX = '/^(?<version>[0-9.x]+)(?<prerelease>-?[0-9a-zA-Z.]+)?(?<build>\+[0-9a-zA-Z.]+)?$/';
-    const GREEK = ['pre-alpha', 'alpha', 'pre-beta', 'beta', 'pre-rc', 'rc'];
+    public const REGEX = '/^(?<version>[0-9.x]+)(?<prerelease>-?[0-9a-zA-Z.]+)?(?<build>\+[0-9a-zA-Z.]+)?$/';
+    public const GREEK = ['pre-alpha', 'alpha', 'pre-beta', 'beta', 'pre-rc', 'rc'];
 
     public $major = 0;
     public $minor = 0;
@@ -37,7 +35,7 @@ class Version implements core\IStringProvider, Dumpable
     public static function matchString($version)
     {
         if (!preg_match(self::REGEX, $version, $matches)) {
-            throw Exceptional::Runtime('Invalid version: '.$version);
+            throw Exceptional::Runtime('Invalid version: ' . $version);
         }
 
         return $matches;
@@ -432,11 +430,11 @@ class Version implements core\IStringProvider, Dumpable
         );
 
         if ($this->preRelease) {
-            $output .= '-'.$this->getPreReleaseString();
+            $output .= '-' . $this->getPreReleaseString();
         }
 
         if ($this->build) {
-            $output .= '+'.$this->getBuildString();
+            $output .= '+' . $this->getBuildString();
         }
 
         return $output;
@@ -454,7 +452,7 @@ class Version implements core\IStringProvider, Dumpable
 
 class Version_Comparator extends Version
 {
-    const OPERATORS = ['<', '>', '<=', '>=', '<>', '='];
+    public const OPERATORS = ['<', '>', '<=', '>=', '<>', '='];
 
     public $operator;
 
@@ -485,12 +483,11 @@ class Version_Comparator extends Version
             case '=':
             default:
                 return $version->eq($this);
-
         }
     }
 
     public function toString(): string
     {
-        return $this->operator.' '.parent::toString();
+        return $this->operator . ' ' . parent::toString();
     }
 }

@@ -5,43 +5,42 @@
  */
 namespace df\opal\schema;
 
-use df;
 use df\core;
-use df\opal;
 use df\flex;
+use df\opal;
 
 interface IFieldSize
 {
-    const TINY = 'tiny';
-    const SMALL = 'small';
-    const MEDIUM = 'medium';
-    const LARGE = 'large';
-    const HUGE = 'huge';
+    public const TINY = 'tiny';
+    public const SMALL = 'small';
+    public const MEDIUM = 'medium';
+    public const LARGE = 'large';
+    public const HUGE = 'huge';
 }
 
 
 interface IConflictClause
 {
-    const ROLLBACK = 1;
-    const ABORT = 2;
-    const FAIL = 3;
-    const IGNORE = 4;
-    const REPLACE = 5;
+    public const ROLLBACK = 1;
+    public const ABORT = 2;
+    public const FAIL = 3;
+    public const IGNORE = 4;
+    public const REPLACE = 5;
 }
 
 
 interface ITriggerEvent
 {
-    const INSERT = 1;
-    const UPDATE = 2;
-    const DELETE = 3;
+    public const INSERT = 1;
+    public const UPDATE = 2;
+    public const DELETE = 3;
 }
 
 interface ITriggerTiming
 {
-    const BEFORE = 0;
-    const AFTER = 1;
-    const INSTEAD_OF = 2;
+    public const BEFORE = 0;
+    public const AFTER = 1;
+    public const INSTEAD_OF = 2;
 }
 
 
@@ -61,7 +60,7 @@ interface ISchema extends IChangeTracker
     public function getName(): string;
     public function setComment($comment);
     public function getComment();
-    public function isAudited(bool $flag=null);
+    public function isAudited(bool $flag = null);
 
     public function setOptions(array $options);
     public function setOption($key, $value);
@@ -105,13 +104,13 @@ interface IFieldProvider extends ISchema
 interface IIndexProvider extends ISchema
 {
     public function getIndex($name);
-    public function createIndex($name, $fields=null);
-    public function createUniqueIndex($name, $fields=null);
-    public function addIndex($name, $fields=null);
-    public function addUniqueIndex($name, $fields=null);
-    public function addPrimaryIndex($name, $fields=null);
+    public function createIndex($name, $fields = null);
+    public function createUniqueIndex($name, $fields = null);
+    public function addIndex($name, $fields = null);
+    public function addUniqueIndex($name, $fields = null);
+    public function addPrimaryIndex($name, $fields = null);
     public function addPreparedIndex(IIndex $index);
-    public function replaceIndex($name, $fields=null);
+    public function replaceIndex($name, $fields = null);
     public function replacePreparedIndex(IIndex $index);
     public function removeIndex($name);
     public function renameIndex($oldName, $newName);
@@ -203,7 +202,7 @@ interface ICharacterSetAwareField extends IField, flex\ICharacterSetAware
 
 interface IBinaryCollationField extends IField
 {
-    public function hasBinaryCollation(bool $flag=null);
+    public function hasBinaryCollation(bool $flag = null);
 }
 
 interface ILengthRestrictedField extends IField
@@ -232,13 +231,13 @@ interface ILargeByteSizeRestrictedField extends IField
 
 interface ISignedField extends IField
 {
-    public function isSigned(bool $flag=null);
-    public function isUnsigned(bool $flag=null);
+    public function isSigned(bool $flag = null);
+    public function isUnsigned(bool $flag = null);
 }
 
 interface IZerofillField extends IField
 {
-    public function shouldZerofill(bool $flag=null);
+    public function shouldZerofill(bool $flag = null);
 }
 
 interface INumericField extends ISignedField, IZerofillField
@@ -256,13 +255,13 @@ interface IFloatingPointNumericField extends INumericField
 
 interface IAutoIncrementableField extends INumericField
 {
-    public function shouldAutoIncrement(bool $flag=null);
+    public function shouldAutoIncrement(bool $flag = null);
 }
 
 interface IAutoTimestampField extends IField
 {
-    public function shouldTimestampOnUpdate(bool $flag=null);
-    public function shouldTimestampAsDefault(bool $flag=null);
+    public function shouldTimestampOnUpdate(bool $flag = null);
+    public function shouldTimestampAsDefault(bool $flag = null);
 }
 
 interface IOptionProviderField extends IField
@@ -277,7 +276,7 @@ interface IOptionProviderField extends IField
 
 interface IAutoGeneratorField extends IField
 {
-    public function shouldAutoGenerate(bool $flag=null);
+    public function shouldAutoGenerate(bool $flag = null);
 }
 
 
@@ -293,7 +292,7 @@ interface INullPrimitiveField extends IField
 
 interface IQueryClauseRewriterField extends IField
 {
-    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false);
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr = false);
 }
 
 
@@ -324,7 +323,7 @@ interface IManyRelationField extends IRelationField, INullPrimitiveField
 
 interface IBridgedRelationField extends IRelationField, ITargetPrimaryFieldAwareRelationField
 {
-    const SELF_REFERENCE_SUFFIX = 'Ref';
+    public const SELF_REFERENCE_SUFFIX = 'Ref';
 
     public function getBridgeLocalFieldName();
     public function getBridgeTargetFieldName();
@@ -356,14 +355,14 @@ interface IIndex extends IChangeTracker
 {
     public function _setName($name);
     public function getName(): string;
-    public function isUnique(bool $flag=null);
+    public function isUnique(bool $flag = null);
     public function setComment($comment);
     public function getComment();
 
     public function setFields($fields);
-    public function addField(IField $field, $size=null, $isDescending=false);
+    public function addField(IField $field, $size = null, $isDescending = false);
     public function addFieldReference(IIndexFieldReference $reference);
-    public function replaceField(IField $oldField, IField $newField, $size=null, $isDescending=false);
+    public function replaceField(IField $oldField, IField $newField, $size = null, $isDescending = false);
     public function removeField(IField $field);
     public function _updateFieldReference(IField $oldField, IField $newField);
     public function firstFieldIs(IField $field);
@@ -381,7 +380,7 @@ interface IIndexFieldReference
     public function isMultiField();
     public function setSize($size);
     public function getSize();
-    public function isDescending(bool $flag=null);
+    public function isDescending(bool $flag = null);
     public function toStorageArray();
 }
 
@@ -395,7 +394,7 @@ interface IForeignKey extends IChangeTracker
 
     public function addReference(IField $field, $targetFieldName);
     public function removeReference(IField $field, $targetFieldName);
-    public function replaceField(IField $oldField, IField $newField, $markChange=true);
+    public function replaceField(IField $oldField, IField $newField, $markChange = true);
     public function hasField(IField $field);
     public function getReferences();
     public function isVoid();
@@ -438,11 +437,11 @@ interface ITrigger extends IChangeTracker
 
 interface IRelationManifest extends \IteratorAggregate, core\IArrayProvider
 {
-    public function getPrimitiveFieldNames($prefix=null);
-    public function getPrimitives($prefix=null);
+    public function getPrimitiveFieldNames($prefix = null);
+    public function getPrimitives($prefix = null);
     public function isSingleField();
     public function getSingleFieldName();
     public function validateValue($value);
     public function extractFromRow($key, array $row);
-    public function toPrimaryKeySet($value=null);
+    public function toPrimaryKeySet($value = null);
 }

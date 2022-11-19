@@ -6,14 +6,11 @@
 
 namespace df\apex\directory\front\cache\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-
 use DecodeLabs\Exceptional;
-use DecodeLabs\Terminus as Cli;
+
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\Terminus as Cli;
+use df\core;
 
 trait TApcuClear
 {
@@ -45,7 +42,7 @@ trait TApcuClear
                 );
             }
 
-            $prefix = Legacy::getUniquePrefix().'-'.$cacheId.':';
+            $prefix = Legacy::getUniquePrefix() . '-' . $cacheId . ':';
         }
 
         if (!extension_loaded('apcu')) {
@@ -63,7 +60,7 @@ trait TApcuClear
             $list = core\cache\backend\Apcu::getCacheList();
 
             if ($purgeType == 'app') {
-                $prefix = Legacy::getUniquePrefix().'-';
+                $prefix = Legacy::getUniquePrefix() . '-';
 
                 foreach ($list as $set) {
                     if (0 === strpos($set['info'], $prefix)) {
@@ -77,13 +74,13 @@ trait TApcuClear
             }
         } elseif (isset($this->request['remove'])) {
             $key = $this->request['remove'];
-            apcu_delete($prefix.$key);
+            apcu_delete($prefix . $key);
             $count++;
         } elseif (isset($this->request['clearBegins'])) {
             $key = $this->request['clearBegins'];
 
             foreach (core\cache\backend\Apcu::getCacheList() as $set) {
-                if (0 === strpos($set['info'], $prefix.$key)) {
+                if (0 === strpos($set['info'], $prefix . $key)) {
                     apcu_delete($set['info']);
                     $count++;
                 }

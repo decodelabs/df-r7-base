@@ -6,15 +6,11 @@
 
 namespace df\apex\directory\front\composer\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\halo;
-use df\arch;
-
 use DecodeLabs\Atlas;
+
 use DecodeLabs\Genesis;
 use DecodeLabs\Terminus as Cli;
+use df\arch;
 
 class TaskInit extends arch\node\Task
 {
@@ -22,7 +18,7 @@ class TaskInit extends arch\node\Task
     {
         $this->ensureDfSource();
 
-        $file = Atlas::file(Genesis::$hub->getApplicationPath().'/composer.json');
+        $file = Atlas::file(Genesis::$hub->getApplicationPath() . '/composer.json');
 
         if ($file->exists()) {
             if (!isset($this->request['no-update'])) {
@@ -41,7 +37,7 @@ class TaskInit extends arch\node\Task
         $name = $this->_askFor('Enter package name', function ($answer) {
             return $this->data->newValidator()
                 ->addRequiredField('packageName', 'text');
-        }, $container.'/'.$appName);
+        }, $container . '/' . $appName);
 
 
         // Description

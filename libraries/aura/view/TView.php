@@ -6,23 +6,20 @@
 
 namespace df\aura\view;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-use df\flex;
-use df\link;
-use df\flow;
-
 use DecodeLabs\Dictum;
-use DecodeLabs\Typify;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Typify;
+use df\arch;
+
+use df\aura;
+use df\core;
+use df\link;
 
 trait TView_RenderTargetProvider
 {
     protected $_renderTarget;
 
-    public function setRenderTarget(IRenderTarget $target=null)
+    public function setRenderTarget(IRenderTarget $target = null)
     {
         $this->_renderTarget = $target;
         return $this;
@@ -57,7 +54,9 @@ trait TView_DeferredRenderable
 
         if (!$this instanceof IDeferredRenderable) {
             throw Exceptional::Logic(
-                'Item is not renderable', null, $this
+                'Item is not renderable',
+                null,
+                $this
             );
         }
 
@@ -88,7 +87,7 @@ trait TView_SlotContainer
         foreach ($keys as $key) {
             if (!$this->hasSlot($key)) {
                 throw Exceptional::{'df/aura/view/NoSlot,Domain'}(
-                    'Slot '.$key.' has not been defined'
+                    'Slot ' . $key . ' has not been defined'
                 );
             }
         }
@@ -96,7 +95,7 @@ trait TView_SlotContainer
         return $this;
     }
 
-    public function renderSlot(string $key, $default=null)
+    public function renderSlot(string $key, $default = null)
     {
         $value = $this->getSlot($key, $default);
         $target = $this instanceof IDeferredRenderable ?
@@ -190,7 +189,7 @@ trait TView
         return array_key_exists($key, $this->slots);
     }
 
-    public function getSlot(string $key, $default=null)
+    public function getSlot(string $key, $default = null)
     {
         if (isset($this->slots[$key])) {
             return $this->slots[$key];
@@ -332,7 +331,7 @@ trait TView
     {
         if (!$this->content) {
             throw Exceptional::{'Context,Logic'}([
-                'message' => 'No content provider has been set for '.$this->_type.' type view',
+                'message' => 'No content provider has been set for ' . $this->_type . ' type view',
                 'http' => 404
             ]);
         }
@@ -432,7 +431,7 @@ trait TView_Themed
     }
 
 
-    public function loadFacet($name, $config=null)
+    public function loadFacet($name, $config = null)
     {
         $this->getTheme()->loadFacet($name, $config);
         return $this;
@@ -469,7 +468,7 @@ trait TView_Layout
     protected $_layout;
     protected $_useLayout = true;
 
-    public function shouldUseLayout(bool $flag=null)
+    public function shouldUseLayout(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_useLayout = $flag;
@@ -561,7 +560,7 @@ trait TView_CascadingHelperProvider
 
         if (!is_callable($output)) {
             throw Exceptional::{'df/aura/view/BadMethodCall,aura/view/Definition'}(
-                'Helper '.$method.' is not callable'
+                'Helper ' . $method . ' is not callable'
             );
         }
 
@@ -573,7 +572,7 @@ trait TView_CascadingHelperProvider
         return $this->_getHelper($key);
     }
 
-    private function _getHelper($key, $callable=false)
+    private function _getHelper($key, $callable = false)
     {
         if (!$this->view && method_exists($this, 'getView')) {
             $this->view = $this->getView();

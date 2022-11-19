@@ -5,19 +5,17 @@
  */
 namespace df\axis\schema\field;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
-
 use DecodeLabs\Exceptional;
+use df\axis;
+
+use df\opal;
 
 class OneChild extends Base implements axis\schema\IOneChildField
 {
     use axis\schema\TRelationField;
     use axis\schema\TInverseRelationField;
 
-    protected function _init($targetUnit, $targetField=null)
+    protected function _init($targetUnit, $targetField = null)
     {
         $this->setTargetUnitId($targetUnit);
         $this->setTargetField($targetField);
@@ -25,7 +23,7 @@ class OneChild extends Base implements axis\schema\IOneChildField
 
 
     // Values
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord = null)
     {
         return $this->sanitizeValue(null, $forRecord);
     }
@@ -35,7 +33,7 @@ class OneChild extends Base implements axis\schema\IOneChildField
         return null;
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    public function sanitizeValue($value, opal\record\IRecord $forRecord = null)
     {
         if ($forRecord) {
             $output = new axis\unit\table\record\OneChildRelationValueContainer($this);
@@ -57,20 +55,22 @@ class OneChild extends Base implements axis\schema\IOneChildField
 
 
     // Clause
-    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false)
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr = false)
     {
         $localRelationManifest = $this->getLocalRelationManifest();
 
         if (!$localRelationManifest->isSingleField()) {
             throw Exceptional::Runtime(
-                'Query clause on field '.$this->_name.' cannot be executed as it relies on a multi-field primary key. '.
+                'Query clause on field ' . $this->_name . ' cannot be executed as it relies on a multi-field primary key. ' .
                 'You should probably use a fieldless join constraint instead'
             );
         }
 
         if (!$parent instanceof opal\query\ISourceProvider) {
             throw Exceptional::Logic(
-                'Clause factory is not a source provider', null, $parent
+                'Clause factory is not a source provider',
+                null,
+                $parent
             );
         }
 
@@ -78,7 +78,7 @@ class OneChild extends Base implements axis\schema\IOneChildField
         $source = $field->getSource();
 
         $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId);
-        $targetField = $sourceManager->extrapolateIntrinsicField($source, $source->getAlias().'.'.$localRelationManifest->getSingleFieldName());
+        $targetField = $sourceManager->extrapolateIntrinsicField($source, $source->getAlias() . '.' . $localRelationManifest->getSingleFieldName());
 
         $mainOperator = 'in';
 

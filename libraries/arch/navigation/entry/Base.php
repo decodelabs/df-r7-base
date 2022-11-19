@@ -6,11 +6,9 @@
 
 namespace df\arch\navigation\entry;
 
-use df;
-use df\core;
-use df\arch;
-
 use DecodeLabs\Exceptional;
+
+use df\arch;
 
 abstract class Base implements arch\navigation\IEntry
 {
@@ -27,7 +25,7 @@ abstract class Base implements arch\navigation\IEntry
 
         if (!$class = self::_getEntryClass($type)) {
             throw Exceptional::NotFound(
-                'Entry type '.$type.' could not be found'
+                'Entry type ' . $type . ' could not be found'
             );
         }
 
@@ -52,7 +50,7 @@ abstract class Base implements arch\navigation\IEntry
     {
         if (!$class = self::_getEntryClass($type)) {
             throw Exceptional::NotFound(
-                'Entry type '.$type.' could not be found'
+                'Entry type ' . $type . ' could not be found'
             );
         }
 
@@ -60,7 +58,9 @@ abstract class Base implements arch\navigation\IEntry
 
         if (!$output instanceof arch\navigation\IEntry) {
             throw Exceptional::Logic(
-                'Entry class does not implement IEntry', null, $output
+                'Entry class does not implement IEntry',
+                null,
+                $output
             );
         }
 
@@ -70,7 +70,7 @@ abstract class Base implements arch\navigation\IEntry
 
     protected static function _getEntryClass($type)
     {
-        $class = 'df\\arch\\navigation\\entry\\'.ucfirst($type);
+        $class = 'df\\arch\\navigation\\entry\\' . ucfirst($type);
 
         if (!class_exists($class)) {
             return null;

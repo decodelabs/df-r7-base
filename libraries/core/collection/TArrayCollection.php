@@ -8,9 +8,9 @@ namespace df\core\collection;
 
 use ArrayIterator;
 
-use df\core;
-
 use DecodeLabs\Exceptional;
+
+use df\core;
 
 trait TArrayCollection
 {
@@ -49,7 +49,7 @@ trait TArrayCollection
         return new ArrayIterator($this->_collection);
     }
 
-    protected function _normalizeValue($value, $key=null)
+    protected function _normalizeValue($value, $key = null)
     {
         return $value;
     }
@@ -78,13 +78,13 @@ trait TArrayCollection_Constructor
 // Sortable
 trait TArrayCollection_Sortable
 {
-    public function sortByKey($flags=\SORT_REGULAR)
+    public function sortByKey($flags = \SORT_REGULAR)
     {
         ksort($this->_collection, $flags);
         return $this;
     }
 
-    public function reverseSortByKey($flags=\SORT_REGULAR)
+    public function reverseSortByKey($flags = \SORT_REGULAR)
     {
         krsort($this->_collection, $flags);
         return $this;
@@ -101,13 +101,13 @@ trait TArrayCollection_ScalarSortable
 {
     use TArrayCollection_Sortable;
 
-    public function sortByValue($flags=\SORT_REGULAR)
+    public function sortByValue($flags = \SORT_REGULAR)
     {
         asort($this->_collection, $flags);
         return $this;
     }
 
-    public function reverseSortByValue($flags=\SORT_REGULAR)
+    public function reverseSortByValue($flags = \SORT_REGULAR)
     {
         arsort($this->_collection, $flags);
         return $this;
@@ -118,7 +118,7 @@ trait TArrayCollection_ValueContainerSortable
 {
     use TArrayCollection_Sortable;
 
-    public function sortByValue($flags=\SORT_REGULAR)
+    public function sortByValue($flags = \SORT_REGULAR)
     {
         uasort($this->_collection, function (core\IValueContainer $a, core\IValueContainer $b) {
             $a = $a->getValue();
@@ -127,7 +127,7 @@ trait TArrayCollection_ValueContainerSortable
         });
     }
 
-    public function reverseSortByValue($flags=\SORT_REGULAR)
+    public function reverseSortByValue($flags = \SORT_REGULAR)
     {
         uasort($this->_collection, function (core\IValueContainer $b, core\IValueContainer $a) {
             $a = $a->getValue();
@@ -305,7 +305,7 @@ trait TArrayCollection_AssociativeValueMap
         return $this;
     }
 
-    public function get($key, $default=null)
+    public function get($key, $default = null)
     {
         $key = (string)$key;
 
@@ -425,7 +425,7 @@ trait TArrayCollection_IndexedValueMap
         return $this;
     }
 
-    public function get($index, $default=null)
+    public function get($index, $default = null)
     {
         $index = (int)$index;
 
@@ -622,7 +622,8 @@ trait TArrayCollection_UniqueSet
         });
 
         $this->_collection = array_unique(array_merge(
-            $this->_collection, $values
+            $this->_collection,
+            $values
         ));
 
         return $this;
@@ -798,7 +799,7 @@ trait TArrayCollection_ReverseSeekable
 // Sliceable
 trait TArrayCollection_Sliceable
 {
-    public function slice(int $offset, int $length=null): array
+    public function slice(int $offset, int $length = null): array
     {
         if ($length === null) {
             return array_splice($this->_collection, $offset);
@@ -807,18 +808,18 @@ trait TArrayCollection_Sliceable
         }
     }
 
-    public function getSlice(int $offset, int $length=null): array
+    public function getSlice(int $offset, int $length = null): array
     {
         return array_slice($this->_collection, $offset, $length);
     }
 
-    public function removeSlice(int $offset, int $length=null)
+    public function removeSlice(int $offset, int $length = null)
     {
         $this->slice($offset, $length);
         return $this;
     }
 
-    public function keepSlice(int $offset, int $length=null)
+    public function keepSlice(int $offset, int $length = null)
     {
         $this->_collection = $this->getSlice($offset, $length);
         return $this;

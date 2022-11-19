@@ -5,15 +5,12 @@
  */
 namespace df\opal\query;
 
-use df;
-use df\core;
-use df\opal;
-use df\mesh;
-use df\flex;
-
 use DecodeLabs\Dictum;
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+
+use DecodeLabs\Glitch\Dumpable;
+use df\mesh;
+use df\opal;
 
 class SourceManager implements ISourceManager, Dumpable
 {
@@ -25,7 +22,7 @@ class SourceManager implements ISourceManager, Dumpable
     protected $_genCounter = 0;
     protected $_transaction;
 
-    public function __construct(ITransaction $transaction=null)
+    public function __construct(ITransaction $transaction = null)
     {
         $this->_transaction = $transaction;
     }
@@ -48,7 +45,7 @@ class SourceManager implements ISourceManager, Dumpable
 
 
     // Transaction
-    public function setTransaction(mesh\job\ITransaction $transaction=null)
+    public function setTransaction(mesh\job\ITransaction $transaction = null)
     {
         $this->_transaction = $transaction;
 
@@ -72,7 +69,7 @@ class SourceManager implements ISourceManager, Dumpable
 
 
     // Sources
-    public function newSource($adapter, $alias, array $fields=null, $forWrite=false, $debug=false)
+    public function newSource($adapter, $alias, array $fields = null, $forWrite = false, $debug = false)
     {
         $adapter = $this->extrapolateSourceAdapter($adapter);
         $sourceId = $adapter->getQuerySourceId();
@@ -95,7 +92,7 @@ class SourceManager implements ISourceManager, Dumpable
             }
 
             throw Exceptional::Runtime(
-                'A source has already been defined with alias '.$alias
+                'A source has already been defined with alias ' . $alias
             );
         }
 
@@ -186,7 +183,7 @@ class SourceManager implements ISourceManager, Dumpable
 
                 if (!$entity instanceof IAdapter) {
                     throw Exceptional::InvalidArgument(
-                        'Entity url '.$adapter.' does not reference a valid data source adapter'
+                        'Entity url ' . $adapter . ' does not reference a valid data source adapter'
                     );
                 }
 
@@ -233,7 +230,7 @@ class SourceManager implements ISourceManager, Dumpable
 
         if ($sourceAlias && !isset($this->_sources[$sourceAlias])) {
             throw Exceptional::InvalidArgument(
-                'No source has been defined with alias '.$sourceAlias
+                'No source has been defined with alias ' . $sourceAlias
             );
         }
 
@@ -250,22 +247,22 @@ class SourceManager implements ISourceManager, Dumpable
         return $this->_extrapolateField($source, $name);
     }
 
-    public function extrapolateIntrinsicField(ISource $source, $name, $checkAlias=null)
+    public function extrapolateIntrinsicField(ISource $source, $name, $checkAlias = null)
     {
         return $this->_extrapolateField($source, $name, null, $checkAlias, true, false, false);
     }
 
-    public function extrapolateAggregateField(ISource $source, $name, $checkAlias=null)
+    public function extrapolateAggregateField(ISource $source, $name, $checkAlias = null)
     {
         return $this->_extrapolateField($source, $name, null, $checkAlias, false, false, true);
     }
 
-    public function extrapolateDataField(ISource $source, $name, $checkAlias=null)
+    public function extrapolateDataField(ISource $source, $name, $checkAlias = null)
     {
         return $this->_extrapolateField($source, $name, null, $checkAlias, true, false, true);
     }
 
-    protected function _extrapolateField(ISource $source, $name, $alias=null, $checkAlias=null, $allowIntrinsic=true, $allowWildcard=true, $allowAggregate=true, $isOutput=false)
+    protected function _extrapolateField(ISource $source, $name, $alias = null, $checkAlias = null, $allowIntrinsic = true, $allowWildcard = true, $allowAggregate = true, $isOutput = false)
     {
         if ($name instanceof opal\query\IQuery) {
             if (!$allowIntrinsic) {
@@ -296,12 +293,12 @@ class SourceManager implements ISourceManager, Dumpable
             // aggregate
             if (!$allowAggregate) {
                 throw Exceptional::InvalidArgument(
-                    'Aggregate field reference "'.$name.'" found when intrinsic field expected'
+                    'Aggregate field reference "' . $name . '" found when intrinsic field expected'
                 );
             } else {
                 if (!$source->getAdapter()->supportsQueryFeature(opal\query\IQueryFeatures::AGGREGATE)) {
                     throw Exceptional::Logic(
-                        'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
+                        'Query adapter ' . $source->getAdapter()->getQuerySourceDisplayName() . ' ' .
                         'does not support aggregate fields'
                     );
                 }
@@ -313,16 +310,16 @@ class SourceManager implements ISourceManager, Dumpable
 
             if ($checkAlias === true && $passedSourceAlias !== $targetField->getSourceAlias()) {
                 throw Exceptional::InvalidArgument(
-                    'Source alias "'.$passedSourceAlias.'" found when alias "'.$source->getAlias().'" is expected'
+                    'Source alias "' . $passedSourceAlias . '" found when alias "' . $source->getAlias() . '" is expected'
                 );
             } elseif (is_string($checkAlias) && $targetField->getSourceAlias() == $checkAlias) {
                 throw Exceptional::InvalidArgument(
-                    'Local source reference "'.$checkAlias.'" found where a foreign source is expected'
+                    'Local source reference "' . $checkAlias . '" found where a foreign source is expected'
                 );
             }
 
 
-            $qName = $type.'('.$targetField->getQualifiedName().')';
+            $qName = $type . '(' . $targetField->getQualifiedName() . ')';
 
             if (!$isOutput && ($field = $source->getFieldByQualifiedName($qName))) {
                 $this->_testField($field, $allowIntrinsic, $allowWildcard, $allowAggregate);
@@ -357,7 +354,7 @@ class SourceManager implements ISourceManager, Dumpable
             if (substr($name, 0, 5) == '@raw ') {
                 // raw - fudge it!
                 $sourceAlias = $source->getAlias();
-                $qName = $sourceAlias.'.'.$name;
+                $qName = $sourceAlias . '.' . $name;
             } elseif (false !== strpos($name, '.')) {
                 // qualified
                 $qName = $name;
@@ -366,7 +363,7 @@ class SourceManager implements ISourceManager, Dumpable
             } else {
                 // local
                 $sourceAlias = $source->getAlias();
-                $qName = $sourceAlias.'.'.$name;
+                $qName = $sourceAlias . '.' . $name;
             }
 
             $source = null;
@@ -379,17 +376,17 @@ class SourceManager implements ISourceManager, Dumpable
 
             if (!$source) {
                 throw Exceptional::InvalidArgument(
-                    'Source alias "'.$sourceAlias.'" has not been defined'
+                    'Source alias "' . $sourceAlias . '" has not been defined'
                 );
             }
 
             if ($checkAlias === true && $shouldCheck && $passedSourceAlias !== $source->getAlias()) {
                 throw Exceptional::InvalidArgument(
-                    'Source alias "'.$passedSourceAlias.'" found when alias "'.$source->getAlias().'" is expected'
+                    'Source alias "' . $passedSourceAlias . '" found when alias "' . $source->getAlias() . '" is expected'
                 );
             } elseif (is_string($checkAlias) && $source->getAlias() == $checkAlias) {
                 throw Exceptional::InvalidArgument(
-                    'Local source reference "'.$checkAlias.'" found where a foreign source is expected'
+                    'Local source reference "' . $checkAlias . '" found where a foreign source is expected'
                 );
             }
 
@@ -401,7 +398,7 @@ class SourceManager implements ISourceManager, Dumpable
             if (substr($name, 0, 1) == '!') {
                 if (!$allowWildcard || $name == '!*') {
                     throw Exceptional::InvalidArgument(
-                        'Unexpected wildcard field reference "'.$qName.'"'
+                        'Unexpected wildcard field reference "' . $qName . '"'
                     );
                 }
 
@@ -423,7 +420,7 @@ class SourceManager implements ISourceManager, Dumpable
             } elseif ($name == '*') {
                 if (!$allowWildcard) {
                     throw Exceptional::InvalidArgument(
-                        'Unexpected wildcard field reference "'.$qName.'"'
+                        'Unexpected wildcard field reference "' . $qName . '"'
                     );
                 }
 
@@ -431,7 +428,7 @@ class SourceManager implements ISourceManager, Dumpable
             } else {
                 if (!$allowIntrinsic) {
                     throw Exceptional::InvalidArgument(
-                        'Unexpected intrinsic field reference "'.$qName.'"'
+                        'Unexpected intrinsic field reference "' . $qName . '"'
                     );
                 }
 
@@ -460,7 +457,7 @@ class SourceManager implements ISourceManager, Dumpable
         }
     }
 
-    protected function _findFieldByAlias($alias, ISource $source, $checkAlias=null, $sourceAlias=null)
+    protected function _findFieldByAlias($alias, ISource $source, $checkAlias = null, $sourceAlias = null)
     {
         if ($sourceAlias !== null && isset($this->_sources[$sourceAlias])) {
             if ($field = $this->_sources[$sourceAlias]->getFieldByAlias($alias)) {
@@ -508,15 +505,15 @@ class SourceManager implements ISourceManager, Dumpable
     {
         if (!$allowIntrinsic && $field instanceof opal\query\IIntrinsicField) {
             throw Exceptional::InvalidArgument(
-                'Unexpected intrinsic field reference "'.$field->getQualifiedName().'"'
+                'Unexpected intrinsic field reference "' . $field->getQualifiedName() . '"'
             );
         } elseif (!$allowWildcard && $field instanceof opal\query\IWildcardField) {
             throw Exceptional::InvalidArgument(
-                'Unexpected wildcard field reference "'.$field->getQualifiedName().'"'
+                'Unexpected wildcard field reference "' . $field->getQualifiedName() . '"'
             );
         } elseif (!$allowAggregate && $field instanceof opal\query\IAggregateField) {
             throw Exceptional::InvalidArgument(
-                'Aggregate field reference to "'.$field->getQualifiedName().'" found when intrinsic field expected'
+                'Aggregate field reference to "' . $field->getQualifiedName() . '" found when intrinsic field expected'
             );
         }
     }
@@ -590,7 +587,7 @@ class SourceManager implements ISourceManager, Dumpable
         }
 
         foreach ($this->_sources as $alias => $source) {
-            yield 'value:'.$alias => $source->getAdapter();
+            yield 'value:' . $alias => $source->getAdapter();
         }
     }
 }

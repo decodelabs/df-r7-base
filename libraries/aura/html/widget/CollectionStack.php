@@ -5,14 +5,11 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-use df\opal;
-
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
+
+use df\arch;
+use df\aura;
 
 class CollectionStack extends Base implements IDataDrivenListWidget, IMappedListWidget, Dumpable
 {
@@ -20,7 +17,7 @@ class CollectionStack extends Base implements IDataDrivenListWidget, IMappedList
     use TWidget_MappedList;
     use TWidget_RendererContextProvider;
 
-    const PRIMARY_TAG = 'div.list.collection.stack';
+    public const PRIMARY_TAG = 'div.list.collection.stack';
 
     protected $_errorMessage = 'No results to display';
     protected $_renderIfEmpty = true;
@@ -34,7 +31,7 @@ class CollectionStack extends Base implements IDataDrivenListWidget, IMappedList
         $this->setData($data);
     }
 
-    public function shouldRenderIfEmpty(bool $flag=null)
+    public function shouldRenderIfEmpty(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_renderIfEmpty = $flag;
@@ -86,7 +83,7 @@ class CollectionStack extends Base implements IDataDrivenListWidget, IMappedList
             $rowClasses[$fieldKey] = [];
 
             foreach ($field->getHeaderList() as $key => $label) {
-                $rowClasses[$fieldKey][] = 'field-'.$key;
+                $rowClasses[$fieldKey][] = 'field-' . $key;
                 $tagContent[] = $label;
             }
 
@@ -191,7 +188,7 @@ class CollectionStack extends Base implements IDataDrivenListWidget, IMappedList
 
 
     // Error message
-    public function setErrorMessage(string $message=null)
+    public function setErrorMessage(string $message = null)
     {
         $this->_errorMessage = $message;
         return $this;
@@ -208,7 +205,7 @@ class CollectionStack extends Base implements IDataDrivenListWidget, IMappedList
     public function glitchDump(): iterable
     {
         yield 'properties' => [
-            '%data' => count($this->_data).' rows',
+            '%data' => count($this->_data) . ' rows',
             '*errorMessage' => $this->_errorMessage,
             '%tag' => $this->getTag()
         ];

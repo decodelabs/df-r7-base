@@ -6,11 +6,6 @@
 
 namespace df\arch\node;
 
-use df;
-use df\core;
-use df\arch;
-use df\aura;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Tagged as Html;
 
@@ -87,14 +82,12 @@ abstract class ReorderForm extends Form
                         ->setTitle($id),
 
                     $this->html->buttonArea(
-                        $this->html->textbox('weights['.$id.']', $i + 1)
+                        $this->html->textbox('weights[' . $id . ']', $i + 1)
                             ->setStyle('width', '4rem'),
-
                         $this->html->eventButton($this->eventName('up', (string)$id), $this->_('Up'))
                             ->setIcon('arrow-up')
                             ->setDisposition('transitive')
                             ->isDisabled($i == 0),
-
                         $this->html->eventButton($this->eventName('down', (string)$id), $this->_('Down'))
                             ->setIcon('arrow-down')
                             ->setDisposition('transitive')
@@ -111,7 +104,6 @@ abstract class ReorderForm extends Form
             $this->html->eventButton('update', $this->_('Update'))
                 ->setIcon('refresh')
                 ->addClass('informative'),
-
             $this->html->buttonGroup(
                 $this->html->resetEventButton(),
                 $this->html->cancelEventButton()
@@ -156,7 +148,7 @@ abstract class ReorderForm extends Form
         if ($this->values->isValid()) {
             if ($message = $this->getFlashMessage()) {
                 $this->comms->flash(
-                    Dictum::id($this->getItemName()).'.reorder',
+                    Dictum::id($this->getItemName()) . '.reorder',
                     $message,
                     'success'
                 );

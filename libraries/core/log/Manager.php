@@ -5,29 +5,28 @@
  */
 namespace df\core\log;
 
-use df;
-use df\core;
 use df\axis;
+use df\core;
 
 class Manager implements core\IManager
 {
     use core\TManager;
 
-    const REGISTRY_PREFIX = 'manager://log';
+    public const REGISTRY_PREFIX = 'manager://log';
 
-    public function logAccessError($code=403, $request=null, $message=null)
+    public function logAccessError($code = 403, $request = null, $message = null)
     {
         $this->_getModel()->logAccessError($code, $request, $message);
         return $this;
     }
 
-    public function logNotFound($request=null, $message=null)
+    public function logNotFound($request = null, $message = null)
     {
         $this->_getModel()->logNotFound($request, $message);
         return $this;
     }
 
-    public function logException(\Throwable $exception, $request=null)
+    public function logException(\Throwable $exception, $request = null)
     {
         $this->_getModel()->logException($exception, $request);
         return $this;

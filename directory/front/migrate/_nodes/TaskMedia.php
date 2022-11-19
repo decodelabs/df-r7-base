@@ -6,18 +6,15 @@
 
 namespace df\apex\directory\front\migrate\_nodes;
 
-use df;
-use df\core;
-use df\apex;
+use DecodeLabs\Atlas;
+use DecodeLabs\Dictum;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Terminus as Cli;
+
 use df\arch;
+use df\flex;
 use df\link;
 use df\spur;
-use df\flex;
-
-use DecodeLabs\Dictum;
-use DecodeLabs\Terminus as Cli;
-use DecodeLabs\Atlas;
-use DecodeLabs\Exceptional;
 
 class TaskMedia extends arch\node\Task
 {
@@ -72,7 +69,7 @@ class TaskMedia extends arch\node\Task
             $path = $handler->getFilePath($fileId, $versionId);
 
             Cli::{'brightMagenta'}($versionId);
-            Cli::{'brightYellow'}(' '.$version['fileName'].' ');
+            Cli::{'brightYellow'}(' ' . $version['fileName'] . ' ');
 
             if (is_file($path)) {
                 Cli::operative('skipped');
@@ -84,7 +81,9 @@ class TaskMedia extends arch\node\Task
                 ->setShowCompleted(false);
 
             $this->_migrator->callAsync($this->_migrator->createRequest(
-                'get', '~devtools/migrate/media', [
+                'get',
+                '~devtools/migrate/media',
+                [
                     'file' => $fileId,
                     'version' => $versionId
                 ]
@@ -95,7 +94,7 @@ class TaskMedia extends arch\node\Task
                 Cli::cursorLineUp();
                 Cli::clearLine();
                 Cli::{'brightMagenta'}($versionId);
-                Cli::{'brightYellow'}(' '.$version['fileName'].' ');
+                Cli::{'brightYellow'}(' ' . $version['fileName'] . ' ');
 
                 if ($response->getStatusCode() >= 300) {
                     if ($response->getStatusCode() === 404) {
@@ -106,7 +105,7 @@ class TaskMedia extends arch\node\Task
                             $message = null;
                         }
 
-                        Cli::error('NOT FOUND'.($message ? ': '.$message : null));
+                        Cli::error('NOT FOUND' . ($message ? ': ' . $message : null));
                     } elseif ($response->getStatusCode() === 403) {
                         throw Exceptional::{'InvalidArgument,Api'}(
                             'Migration key is invalid - check application pass keys match'

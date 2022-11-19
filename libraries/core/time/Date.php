@@ -6,14 +6,13 @@
 
 namespace df\core\time;
 
-use df;
-use df\core;
-use df\user;
-
-use DecodeLabs\Glitch\Dumpable;
+use DateTime;
 use DecodeLabs\Exceptional;
 
-use DateTime;
+use DecodeLabs\Glitch\Dumpable;
+use df\core;
+
+use df\user;
 
 class Date implements IDate, Dumpable
 {
@@ -45,27 +44,27 @@ class Date implements IDate, Dumpable
     public $_date;
     protected $_timeEnabled = true;
 
-    public static function fromCompressedString($string, $timezone=true): IDate
+    public static function fromCompressedString($string, $timezone = true): IDate
     {
         if ($string instanceof IDate) {
             return $string;
         }
 
         $date = substr($string, 0, 8);
-        $date = substr($date, 0, 4).'-'.substr($date, 4, 2).'-'.substr($date, 6, 2);
+        $date = substr($date, 0, 4) . '-' . substr($date, 4, 2) . '-' . substr($date, 6, 2);
         $timeEnabled = false;
 
         if (strlen($string) == 14) {
             $time = substr($string, 8);
-            $time = substr($time, 0, 2).':'.substr($time, 2, 2).':'.substr($time, 4, 2);
-            $date .= ' '.$time;
+            $time = substr($time, 0, 2) . ':' . substr($time, 2, 2) . ':' . substr($time, 4, 2);
+            $date .= ' ' . $time;
             $timeEnabled = true;
         }
 
         return new self($date, $timezone, $timeEnabled);
     }
 
-    public static function fromLocaleString($string, $timezone=true, $size=self::SHORT, $locale=null): IDate
+    public static function fromLocaleString($string, $timezone = true, $size = self::SHORT, $locale = null): IDate
     {
         if ($string instanceof IDate) {
             return $string;
@@ -84,7 +83,7 @@ class Date implements IDate, Dumpable
         return new self($formatter->parse($string), $timezone);
     }
 
-    public static function fromFormatString($date, $format, $timezone=true, $locale=null): IDate
+    public static function fromFormatString($date, $format, $timezone = true, $locale = null): IDate
     {
         if ($date instanceof IDate) {
             return $date;
@@ -97,7 +96,7 @@ class Date implements IDate, Dumpable
         return new self($date);
     }
 
-    public static function normalize($date, $timezone=null, ?bool $timeEnabled=null): ?IDate
+    public static function normalize($date, $timezone = null, ?bool $timeEnabled = null): ?IDate
     {
         if (empty($date)) {
             return null;
@@ -108,10 +107,10 @@ class Date implements IDate, Dumpable
         return self::factory($date, $timezone, $timeEnabled);
     }
 
-    public static function factory($date, $timezone=null, $timeEnabled=null): IDate
+    public static function factory($date, $timezone = null, $timeEnabled = null): IDate
     {
         if ($date instanceof IDuration) {
-            $date = '+'.$date->getSeconds().' seconds';
+            $date = '+' . $date->getSeconds() . ' seconds';
         }
 
         if ($date instanceof IDate) {
@@ -147,7 +146,7 @@ class Date implements IDate, Dumpable
         return $timezone;
     }
 
-    public function __construct($date=null, $timezone=null, $timeEnabled=null)
+    public function __construct($date = null, $timezone = null, $timeEnabled = null)
     {
         if ($date instanceof self) {
             if ($timeEnabled === null) {
@@ -355,7 +354,7 @@ class Date implements IDate, Dumpable
         return $this->_date->getTimestamp();
     }
 
-    public function localeFormat($size=self::LONG, $locale=null)
+    public function localeFormat($size = self::LONG, $locale = null)
     {
         if (!$this->_timeEnabled) {
             return $this->localeDateFormat($size, $locale);
@@ -373,7 +372,7 @@ class Date implements IDate, Dumpable
         }
     }
 
-    public function localeDateFormat($size='long', $locale=true)
+    public function localeDateFormat($size = 'long', $locale = true)
     {
         $locale = (string)core\i18n\Locale::factory($locale);
         $size = $this->_normalizeFormatterSize($size);
@@ -382,14 +381,16 @@ class Date implements IDate, Dumpable
 
         if (!$formatter) {
             throw Exceptional::Runtime(
-                'Unable to create IntlDateFormatter', null, $locale
+                'Unable to create IntlDateFormatter',
+                null,
+                $locale
             );
         }
 
         return $formatter->format($this->toTimestamp());
     }
 
-    public function localeTimeFormat($size='long', $locale=true)
+    public function localeTimeFormat($size = 'long', $locale = true)
     {
         $locale = (string)core\i18n\Locale::factory($locale);
         $size = $this->_normalizeFormatterSize($size);
@@ -398,7 +399,9 @@ class Date implements IDate, Dumpable
 
         if (!$formatter) {
             throw Exceptional::Runtime(
-                'Unable to create IntlDateFormatter', null, $locale
+                'Unable to create IntlDateFormatter',
+                null,
+                $locale
             );
         }
 
@@ -437,7 +440,7 @@ class Date implements IDate, Dumpable
         }
     }
 
-    public function format($format='Y-m-d H:i:s T')
+    public function format($format = 'Y-m-d H:i:s T')
     {
         return $this->_date->format($format);
     }
@@ -521,7 +524,7 @@ class Date implements IDate, Dumpable
         return $this->toTimestamp() <= time();
     }
 
-    public function isNearPast($hours=null)
+    public function isNearPast($hours = null)
     {
         if (empty($hours)) {
             $hours = 24;
@@ -538,7 +541,7 @@ class Date implements IDate, Dumpable
         return $this->toTimestamp() > time();
     }
 
-    public function isNearFuture($hours=null)
+    public function isNearFuture($hours = null)
     {
         if (empty($hours)) {
             $hours = 24;
@@ -550,7 +553,7 @@ class Date implements IDate, Dumpable
         return $ts > $time && $ts < $time + ($hours * 60);
     }
 
-    public function isToday($date=null)
+    public function isToday($date = null)
     {
         return $this->format('Y-m-d') == self::factory($date ?? 'today')->format('Y-m-d');
     }
@@ -587,7 +590,7 @@ class Date implements IDate, Dumpable
 
             if (!isset(self::MONTHS[$month])) {
                 throw Exceptional::InvalidArgument(
-                    $month.' is not a valid month string'
+                    $month . ' is not a valid month string'
                 );
             }
 
@@ -654,7 +657,7 @@ class Date implements IDate, Dumpable
 
             if (!isset(self::DAYS[$day])) {
                 throw Exceptional::InvalidArgument(
-                    $day.' is not a valid day string'
+                    $day . ' is not a valid day string'
                 );
             }
 
@@ -785,7 +788,7 @@ class Date implements IDate, Dumpable
         }
 
         if ($seconds !== null) {
-            return \DateInterval::createFromDateString((int)$seconds.' seconds');
+            return \DateInterval::createFromDateString((int)$seconds . ' seconds');
         }
 
         $interval = (string)$interval;
@@ -799,7 +802,7 @@ class Date implements IDate, Dumpable
 
 
     // Duration
-    public function timeSince($date=null)
+    public function timeSince($date = null)
     {
         if ($date !== null) {
             $time = self::factory($date)->toTimestamp();
@@ -809,7 +812,7 @@ class Date implements IDate, Dumpable
         }
     }
 
-    public function timeUntil($date=null)
+    public function timeUntil($date = null)
     {
         if ($date !== null) {
             $time = self::factory($date)->toTimestamp();

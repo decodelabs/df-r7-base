@@ -6,10 +6,10 @@
 
 namespace df\apex\directory\front\mail\_nodes;
 
-use df\arch;
-use df\flow;
-
 use DecodeLabs\Terminus as Cli;
+use df\arch;
+
+use df\flow;
 
 class TaskRefreshListSources extends arch\node\Task
 {
@@ -21,8 +21,8 @@ class TaskRefreshListSources extends arch\node\Task
         $sources = flow\Manager::getInstance()->getListSources();
 
         foreach ($sources as $source) {
-            Cli::{'brightMagenta'}($source->getId().' ');
-            Cli::{'brightYellow'}($source->getPrimaryListId().' ');
+            Cli::{'brightMagenta'}($source->getId() . ' ');
+            Cli::{'brightYellow'}($source->getPrimaryListId() . ' ');
 
             $source->refetchManifest();
 

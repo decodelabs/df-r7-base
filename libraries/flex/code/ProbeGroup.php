@@ -5,23 +5,23 @@
  */
 namespace df\flex\code;
 
-use df;
 use df\core;
-use df\flex;
 
-class ProbeGroup implements IProbeGroup {
-
+class ProbeGroup implements IProbeGroup
+{
     use core\collection\TArrayCollection_Map;
 
-    public function __construct(array $probes=[]) {
+    public function __construct(array $probes = [])
+    {
         $this->_collection = $probes;
     }
 
-    public function getAll() {
+    public function getAll()
+    {
         $output = null;
 
-        foreach($this->_collection as $location => $probe) {
-            if($output === null) {
+        foreach ($this->_collection as $location => $probe) {
+            if ($output === null) {
                 $output = clone $probe;
             } else {
                 $probe->exportTo($output);

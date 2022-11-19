@@ -6,9 +6,9 @@
 
 namespace df\apex\directory\front\app\_nodes;
 
-use df\arch;
-
 use DecodeLabs\Genesis;
+
+use df\arch;
 
 class TaskClearBuild extends arch\node\Task
 {

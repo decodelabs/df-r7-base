@@ -6,11 +6,10 @@
 
 namespace df\core\collection;
 
-use df;
-use df\core;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
 
 class HeaderMap implements IHeaderMap, Dumpable
 {
@@ -51,7 +50,7 @@ class HeaderMap implements IHeaderMap, Dumpable
 
                 foreach ($lines as $line) {
                     if (isset($line[0]) && $line[0] == ' ') {
-                        $last .= "\r\n".$line;
+                        $last .= "\r\n" . $line;
                         continue;
                     }
 
@@ -81,7 +80,7 @@ class HeaderMap implements IHeaderMap, Dumpable
 
 
     // Access
-    public function set($key, $value=null)
+    public function set($key, $value = null)
     {
         if (empty($key)) {
             throw Exceptional::InvalidArgument(
@@ -167,7 +166,7 @@ class HeaderMap implements IHeaderMap, Dumpable
         return $this;
     }
 
-    public function get($key, $default=null)
+    public function get($key, $default = null)
     {
         $key = $this->normalizeKey($key);
 
@@ -186,7 +185,7 @@ class HeaderMap implements IHeaderMap, Dumpable
         return $this->set($key, implode(';', $parts));
     }
 
-    public function getBase($key, $default=null)
+    public function getBase($key, $default = null)
     {
         if (null === ($output = $this->get($key, $default))) {
             return null;
@@ -198,14 +197,14 @@ class HeaderMap implements IHeaderMap, Dumpable
 
     public function setDelimited($key, $base, array $values)
     {
-        $value = $base.'; '.core\collection\Tree::factory($values)->toArrayDelimitedString(';');
+        $value = $base . '; ' . core\collection\Tree::factory($values)->toArrayDelimitedString(';');
         return $this->set($key, $value);
     }
 
     public function getDelimited($key): ITree
     {
         $value = $this->get($key);
-        return core\collection\Tree::fromArrayDelimitedString('@value='.$value, ';');
+        return core\collection\Tree::fromArrayDelimitedString('@value=' . $value, ';');
     }
 
     public function setDelimitedValues($key, array $values)
@@ -216,19 +215,19 @@ class HeaderMap implements IHeaderMap, Dumpable
             return $this;
         }
 
-        $parts = core\collection\Tree::fromArrayDelimitedString('@value='.$value, ';');
+        $parts = core\collection\Tree::fromArrayDelimitedString('@value=' . $value, ';');
         $value = $parts['@value'];
         $parts->remove('@value');
         $parts->import($values);
 
-        $value .= '; '.$parts->toArrayDelimitedString(';');
+        $value .= '; ' . $parts->toArrayDelimitedString(';');
         return $this->set($key, $value);
     }
 
     public function getDelimitedValues($key): array
     {
         $value = $this->get($key);
-        $parts = core\collection\Tree::fromArrayDelimitedString('@value='.$value, ';');
+        $parts = core\collection\Tree::fromArrayDelimitedString('@value=' . $value, ';');
         $parts->remove('@value');
         return $parts->toArray();
     }
@@ -241,16 +240,16 @@ class HeaderMap implements IHeaderMap, Dumpable
             return $this;
         }
 
-        $parts = core\collection\Tree::fromArrayDelimitedString('@value='.$value, ';');
+        $parts = core\collection\Tree::fromArrayDelimitedString('@value=' . $value, ';');
         $value = $parts['@value'];
         $parts->remove('@value');
         $parts->set($name, $keyValue);
 
-        $value .= '; '.$parts->toArrayDelimitedString(';');
+        $value .= '; ' . $parts->toArrayDelimitedString(';');
         return $this->set($key, $value);
     }
 
-    public function getDelimitedValue($key, $name, $default=null)
+    public function getDelimitedValue($key, $name, $default = null)
     {
         $value = $this->get($key);
 
@@ -258,7 +257,7 @@ class HeaderMap implements IHeaderMap, Dumpable
             return $default;
         }
 
-        $parts = core\collection\Tree::fromArrayDelimitedString('@value='.$value, ';');
+        $parts = core\collection\Tree::fromArrayDelimitedString('@value=' . $value, ';');
         return trim($parts->get($name, $default), '"');
     }
 
@@ -270,7 +269,7 @@ class HeaderMap implements IHeaderMap, Dumpable
             return false;
         }
 
-        return (bool)preg_match('/\;\W*'.preg_quote($name).'=/i', $value);
+        return (bool)preg_match('/\;\W*' . preg_quote($name) . '=/i', $value);
     }
 
     public function has(...$keys)
@@ -325,7 +324,8 @@ class HeaderMap implements IHeaderMap, Dumpable
     public static function normalizeKey($key)
     {
         return str_replace(
-            ' ', '-',
+            ' ',
+            '-',
             ucwords(strtolower(
                 str_replace(['-', '_'], ' ', $key)
             ))
@@ -334,12 +334,12 @@ class HeaderMap implements IHeaderMap, Dumpable
 
 
     // Strings
-    public function toString(array $skipKeys=null): string
+    public function toString(array $skipKeys = null): string
     {
         return implode("\r\n", $this->getLines($skipKeys));
     }
 
-    public function getLines(array $skipKeys=null)
+    public function getLines(array $skipKeys = null)
     {
         $output = [];
 
@@ -356,10 +356,10 @@ class HeaderMap implements IHeaderMap, Dumpable
 
             if (is_array($value)) {
                 foreach ($value as $v) {
-                    $output[] = $key.': '.$this->_formatValue($key, $v);
+                    $output[] = $key . ': ' . $this->_formatValue($key, $v);
                 }
             } else {
-                $output[] = $key.': '.$this->_formatValue($key, $value);
+                $output[] = $key . ': ' . $this->_formatValue($key, $value);
             }
         }
 

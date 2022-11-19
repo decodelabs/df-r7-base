@@ -5,11 +5,9 @@
  */
 namespace df\opal\schema;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Exceptional;
+
+use df\opal;
 
 trait TConstraint_CharacterSetAware
 {
@@ -112,7 +110,7 @@ trait TConstraint_Index
     protected $_comment;
 
 
-    public function __construct(?opal\schema\ISchema $schema, $name, $fields=null)
+    public function __construct(?opal\schema\ISchema $schema, $name, $fields = null)
     {
         $this->_setName($name);
         $this->setFields($fields);
@@ -122,7 +120,7 @@ trait TConstraint_Index
         }
     }
 
-    public function isUnique(bool $flag=null)
+    public function isUnique(bool $flag = null)
     {
         if ($flag !== null) {
             if ($flag != $this->_isUnique) {
@@ -164,7 +162,7 @@ trait TConstraint_Index
                 $this->addFieldReference($field);
             } else {
                 throw Exceptional::InvalidArgument(
-                    'Invalid field ('.(@(string)$field).') passed to index '.$this->getName()
+                    'Invalid field (' . (@(string)$field) . ') passed to index ' . $this->getName()
                 );
             }
         }
@@ -172,7 +170,7 @@ trait TConstraint_Index
         return $this;
     }
 
-    public function addField(IField $field, $size=null, $isDescending=false)
+    public function addField(IField $field, $size = null, $isDescending = false)
     {
         return $this->addFieldReference(new IndexFieldReference($field, $size, $isDescending));
     }
@@ -187,7 +185,7 @@ trait TConstraint_Index
         return $this;
     }
 
-    public function replaceField(IField $oldField, IField $newField, $size=null, $isDescending=false)
+    public function replaceField(IField $oldField, IField $newField, $size = null, $isDescending = false)
     {
         foreach ($this->_fieldReferences as $i => $reference) {
             if ($reference->getField() === $oldField) {
@@ -338,7 +336,7 @@ trait TConstraint_Index
             $fieldDef = $reference->getField()->getName();
 
             if (null !== ($size = $reference->getSize())) {
-                $fieldDef .= '('.$size.')';
+                $fieldDef .= '(' . $size . ')';
             }
 
             if ($reference->isDescending()) {
@@ -350,7 +348,7 @@ trait TConstraint_Index
             $fields[] = $fieldDef;
         }
 
-        $output .= ' ('.implode(',', $fields).')';
+        $output .= ' (' . implode(',', $fields) . ')';
 
         if ($this->isVoid()) {
             $output .= ' **VOID**';
@@ -402,8 +400,8 @@ trait TConstraint_ForeignKey
         foreach ($this->_fieldReferences as $compReference) {
             if ($compReference->eq($reference)) {
                 throw Exceptional::Runtime(
-                    'A field reference between '.$reference->getField()->getName().' and '.
-                    $this->_targetSchema.'.'.$reference->getTargetFieldName().' has already been defined'
+                    'A field reference between ' . $reference->getField()->getName() . ' and ' .
+                    $this->_targetSchema . '.' . $reference->getTargetFieldName() . ' has already been defined'
                 );
             }
         }
@@ -428,7 +426,7 @@ trait TConstraint_ForeignKey
         return $this;
     }
 
-    public function replaceField(IField $oldField, IField $newField, $markChange=true)
+    public function replaceField(IField $oldField, IField $newField, $markChange = true)
     {
         foreach ($this->_fieldReferences as $i => $reference) {
             if ($reference->getField() === $oldField) {
@@ -538,17 +536,17 @@ trait TConstraint_ForeignKey
         $refs = [];
 
         foreach ($this->_fieldReferences as $reference) {
-            $refs[] = $reference->getField()->getName().' TO '.$this->_targetSchema.'.'.$reference->getTargetFieldName();
+            $refs[] = $reference->getField()->getName() . ' TO ' . $this->_targetSchema . '.' . $reference->getTargetFieldName();
         }
 
-        $output .= ' '.implode(', ' , $refs);
+        $output .= ' ' . implode(', ', $refs);
 
         if ($this->_deleteAction !== null) {
-            $output .= ' ON DELETE '.$this->_deleteAction;
+            $output .= ' ON DELETE ' . $this->_deleteAction;
         }
 
         if ($this->_updateAction !== null) {
-            $output .= ' ON UPDATE '.$this->_updateAction;
+            $output .= ' ON UPDATE ' . $this->_updateAction;
         }
 
         if ($this->isVoid()) {
@@ -599,7 +597,7 @@ trait TConstraint_Trigger
 
                 default:
                     throw Exceptional::InvalidArgument(
-                        'Trigger event '.$event.' is not recognised'
+                        'Trigger event ' . $event . ' is not recognised'
                     );
             }
         }
@@ -612,7 +610,7 @@ trait TConstraint_Trigger
 
             default:
                 throw Exceptional::InvalidArgumentn(
-                    'Trigger event '.$event.' is not recognised'
+                    'Trigger event ' . $event . ' is not recognised'
                 );
         }
 
@@ -751,8 +749,8 @@ trait TConstraint_Trigger
     public function glitchDump(): iterable
     {
         $output = $this->_name;
-        $output .= ' '.$this->getTimingName();
-        $output .= ' '.$this->getEventName().' '.implode('; ', $this->_statements);
+        $output .= ' ' . $this->getTimingName();
+        $output .= ' ' . $this->getEventName() . ' ' . implode('; ', $this->_statements);
 
         yield 'definition' => $output;
     }

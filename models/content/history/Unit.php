@@ -5,23 +5,20 @@
  */
 namespace df\apex\models\content\history;
 
-use df;
-use df\core;
-use df\apex;
-use df\axis;
-use df\opal;
-use df\mesh;
-
 use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
+use df\axis;
+
+use df\mesh;
+use df\opal;
 
 class Unit extends axis\unit\Table
 {
-    const ORDERABLE_FIELDS = [
+    public const ORDERABLE_FIELDS = [
         'user', 'date'
     ];
 
-    const DEFAULT_ORDER = 'date DESC';
+    public const DEFAULT_ORDER = 'date DESC';
 
     protected function createSchema($schema)
     {
@@ -42,7 +39,7 @@ class Unit extends axis\unit\Table
     }
 
 
-    public function createRecordEntry(opal\record\IRecord $record, mesh\job\IQueue $queue, opal\record\IJob $recordJob, $description, $action=null, $userId=null)
+    public function createRecordEntry(opal\record\IRecord $record, mesh\job\IQueue $queue, opal\record\IJob $recordJob, $description, $action = null, $userId = null)
     {
         if ($action === null) {
             $action = lcfirst($recordJob->getRecordJobName());

@@ -5,30 +5,29 @@
  */
 namespace df\mesh\job;
 
-use df;
-use df\core;
-use df\mesh;
-
-class Transaction implements ITransaction {
-
+class Transaction implements ITransaction
+{
     protected $_adapters = [];
     protected $_isOpen = true;
 
-    public function __construct(bool $open=true) {
+    public function __construct(bool $open = true)
+    {
         $this->_isOpen = $open;
     }
 
-    public function isOpen() {
+    public function isOpen()
+    {
         return $this->_isOpen;
     }
 
-    public function registerAdapter(ITransactionAdapter $adapter) {
+    public function registerAdapter(ITransactionAdapter $adapter)
+    {
         $id = $adapter->getTransactionId();
 
-        if(!isset($this->_adapters[$id])) {
+        if (!isset($this->_adapters[$id])) {
             $this->_adapters[$id] = $adapter;
 
-            if($this->_isOpen) {
+            if ($this->_isOpen) {
                 $adapter->begin();
             }
         }
@@ -36,9 +35,10 @@ class Transaction implements ITransaction {
         return $this;
     }
 
-    public function begin() {
-        if(!$this->_isOpen) {
-            foreach($this->_adapters as $adapter) {
+    public function begin()
+    {
+        if (!$this->_isOpen) {
+            foreach ($this->_adapters as $adapter) {
                 $adapter->begin();
             }
 
@@ -48,9 +48,10 @@ class Transaction implements ITransaction {
         return $this;
     }
 
-    public function commit() {
-        if($this->_isOpen) {
-            foreach($this->_adapters as $adapter) {
+    public function commit()
+    {
+        if ($this->_isOpen) {
+            foreach ($this->_adapters as $adapter) {
                 $adapter->commit();
             }
 
@@ -60,9 +61,10 @@ class Transaction implements ITransaction {
         return $this;
     }
 
-    public function rollback() {
-        if($this->_isOpen) {
-            foreach($this->_adapters as $adapter) {
+    public function rollback()
+    {
+        if ($this->_isOpen) {
+            foreach ($this->_adapters as $adapter) {
                 $adapter->rollback();
             }
 

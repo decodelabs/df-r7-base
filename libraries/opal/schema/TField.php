@@ -5,12 +5,11 @@
  */
 namespace df\opal\schema;
 
-use df;
+use DecodeLabs\Exceptional;
 use df\core;
-use df\opal;
 use df\mesh;
 
-use DecodeLabs\Exceptional;
+use df\opal;
 
 trait TField
 {
@@ -66,7 +65,7 @@ trait TField
         return $this->_comment;
     }
 
-    public function isNullable(bool $flag=null)
+    public function isNullable(bool $flag = null)
     {
         if ($flag !== null) {
             if ($flag != $this->_isNullable) {
@@ -219,7 +218,7 @@ trait TField_BinaryCollationProvider
 {
     protected $_binaryCollation = false;
 
-    public function hasBinaryCollation(bool $flag=null)
+    public function hasBinaryCollation(bool $flag = null)
     {
         if ($flag !== null) {
             if ($flag != $this->_binaryCollation) {
@@ -312,7 +311,7 @@ trait TField_Signed
 {
     protected $_isUnsigned = false;
 
-    public function isSigned(bool $flag=null)
+    public function isSigned(bool $flag = null)
     {
         if ($flag !== null) {
             return $this->isUnsigned(!$flag);
@@ -321,7 +320,7 @@ trait TField_Signed
         return !$this->_isUnsigned;
     }
 
-    public function isUnsigned(bool $flag=null)
+    public function isUnsigned(bool $flag = null)
     {
         if ($flag !== null) {
             if ($flag != $this->_isUnsigned) {
@@ -363,7 +362,7 @@ trait TField_Zerofill
 {
     protected $_zerofill = false;
 
-    public function shouldZerofill(bool $flag=null)
+    public function shouldZerofill(bool $flag = null)
     {
         if ($flag !== null) {
             if ($flag != $this->_zerofill) {
@@ -495,7 +494,7 @@ trait TField_AutoIncrementable
 {
     protected $_autoIncrement = false;
 
-    public function shouldAutoIncrement(bool $flag=null)
+    public function shouldAutoIncrement(bool $flag = null)
     {
         if ($flag !== null) {
             if ($flag != $this->_autoIncrement) {
@@ -539,7 +538,7 @@ trait TField_AutoTimestamp
     protected $_shouldTimestampOnUpdate = false;
     protected $_shouldTimestampAsDefault = true;
 
-    public function shouldTimestampOnUpdate(bool $flag=null)
+    public function shouldTimestampOnUpdate(bool $flag = null)
     {
         if ($flag !== null) {
             if ($flag != $this->_shouldTimestampOnUpdate) {
@@ -553,7 +552,7 @@ trait TField_AutoTimestamp
         return $this->_shouldTimestampOnUpdate;
     }
 
-    public function shouldTimestampAsDefault(bool $flag=null)
+    public function shouldTimestampAsDefault(bool $flag = null)
     {
         if ($flag !== null) {
             if ($flag != $this->_shouldTimestampAsDefault) {
@@ -641,14 +640,14 @@ trait TField_OptionProvider
     {
         if ($type !== null) {
             if (is_string($type) && false === strpos($type, '://')) {
-                $type = 'type://'.$type;
+                $type = 'type://' . $type;
             }
 
             $type = mesh\Manager::getInstance()->fetchEntity($type);
 
             if ($type instanceof core\lang\ITypeRef) {
                 $type->checkType('core/lang/IEnum');
-                $typeString = 'type://'.$type->getClassPath();
+                $typeString = 'type://' . $type->getClassPath();
             } elseif ($type instanceof core\lang\IEnumFactory) {
                 if ($type instanceof mesh\entity\ILocatorProvider) {
                     $typeString = (string)$type->getEntityLocator();
@@ -1015,7 +1014,7 @@ trait TAutoGeneratorField
 {
     protected $_autoGenerate = true;
 
-    public function shouldAutoGenerate(bool $flag=null)
+    public function shouldAutoGenerate(bool $flag = null)
     {
         if ($flag !== null) {
             $flag = $flag;
@@ -1067,7 +1066,7 @@ trait TField_BridgedRelation
         $local = $this->getBridgeLocalFieldName();
         $target = $this->getBridgeTargetFieldName();
 
-        return $local == $target.IBridgedRelationField::SELF_REFERENCE_SUFFIX
-            || $target == $local.IBridgedRelationField::SELF_REFERENCE_SUFFIX;
+        return $local == $target . IBridgedRelationField::SELF_REFERENCE_SUFFIX
+            || $target == $local . IBridgedRelationField::SELF_REFERENCE_SUFFIX;
     }
 }

@@ -5,11 +5,9 @@
  */
 namespace df\core\validate\field;
 
-use df;
-use df\core;
-use df\neon;
-
 use DecodeLabs\Exceptional;
+
+use df\core;
 
 class FileSize extends Base implements core\validate\IFileSizeField
 {
@@ -43,7 +41,7 @@ class FileSize extends Base implements core\validate\IFileSizeField
         return $this;
     }
 
-    public function shouldAllowZero(bool $flag=null)
+    public function shouldAllowZero(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_allowZero = $flag;

@@ -6,15 +6,14 @@
 
 namespace df\plug;
 
-use df;
-use df\core;
-use df\arch;
-use df\flex;
-use df\flow;
-use df\link;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+use df\arch;
+use df\core;
+use df\flex;
+
+use df\flow;
+use df\link;
 
 class Filter implements arch\IDirectoryHelper, \ArrayAccess
 {
@@ -30,7 +29,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
 
         if (!$nullable && $output === null) {
             throw Exceptional::{'df/core/filter/UnexpectedValue,BadRequest'}([
-                'message' => 'Empty '.$type.' filter value',
+                'message' => 'Empty ' . $type . ' filter value',
                 'http' => 400
             ]);
         }
@@ -54,14 +53,14 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
 
         $value = $this->context->request[$key];
 
-        return new class ($this, $key, $value, $nullable) {
+        return new class($this, $key, $value, $nullable) {
             public $value;
             public $nullable = false;
 
             private $_key;
             private $_filter;
 
-            public function __construct(Filter $filter, string $key, $value, bool $nullable=false)
+            public function __construct(Filter $filter, string $key, $value, bool $nullable = false)
             {
                 $this->_filter = $filter;
                 $this->_key = $key;
@@ -75,7 +74,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
 
                 if (!$this->nullable && $output === null) {
                     throw Exceptional::{'df/core/filter/UnexpectedValue,BadRequest'}([
-                        'message' => 'Query var '.$this->_key.' did not contain a valid '.$type,
+                        'message' => 'Query var ' . $this->_key . ' did not contain a valid ' . $type,
                         'namespace' => __NAMESPACE__,
                         'http' => 400
                     ]);
@@ -104,7 +103,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
     {
         if ($nullable = substr($key, 0, 1) == '?') {
             $key = substr($key, 1);
-            $type = '?'.ltrim($type, '?');
+            $type = '?' . ltrim($type, '?');
         }
 
         return $this->__invoke($this->context->request[$key], $type, ...$args);
@@ -112,12 +111,12 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
 
 
     // Boolean
-    public function bool($value, array $options=[]): ?bool
+    public function bool($value, array $options = []): ?bool
     {
         return $this->boolean($value, $options);
     }
 
-    public function boolean($value, array $options=[]): ?bool
+    public function boolean($value, array $options = []): ?bool
     {
         return $this->_applyFilter($value, FILTER_VALIDATE_BOOLEAN, [
             'default' => $options['default'] ?? null
@@ -126,12 +125,12 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
 
 
     // Numbers
-    public function int($value, array $options=[]): ?int
+    public function int($value, array $options = []): ?int
     {
         return $this->integer($value, $options);
     }
 
-    public function integer($value, array $options=[]): ?int
+    public function integer($value, array $options = []): ?int
     {
         $value = $this->_applyFilter($value, FILTER_SANITIZE_NUMBER_INT);
 
@@ -142,7 +141,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
         ]);
     }
 
-    public function float($value, array $options=[]): ?float
+    public function float($value, array $options = []): ?float
     {
         $value = $this->_applyFilter($value, FILTER_SANITIZE_NUMBER_FLOAT, [], FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND);
 
@@ -164,7 +163,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
 
 
     // Basic strings
-    public function string($value, array $options=[]): ?string
+    public function string($value, array $options = []): ?string
     {
         $flags = 0;
 
@@ -204,7 +203,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
 
 
     // Email
-    public function email($value, array $options=[]): ?string
+    public function email($value, array $options = []): ?string
     {
         if (!$value = flow\mail\Address::factory($value)) {
             throw Exceptional::InvalidArgument(
@@ -223,7 +222,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
 
 
     // Url
-    public function url($value, array $options=[]): ?link\http\IUrl
+    public function url($value, array $options = []): ?link\http\IUrl
     {
         $value = $this->_applyFilter($value, FILTER_SANITIZE_URL);
 
@@ -267,7 +266,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
             $tldFound = false;
 
             foreach ((array)$options['tld'] as $tld) {
-                $tld = '.'.ltrim($tld);
+                $tld = '.' . ltrim($tld);
 
                 if (substr($domain, -strlen($tld)) === $tld) {
                     $tldFound = true;
@@ -287,7 +286,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
 
 
     // Ids
-    public function slug($value, array $options=[]): ?string
+    public function slug($value, array $options = []): ?string
     {
         if (empty($value)) {
             $value = $options['default'] ?? null;
@@ -304,7 +303,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
         return $output;
     }
 
-    public function intId($value, array $options=[]): ?int
+    public function intId($value, array $options = []): ?int
     {
         return $this->int($value, [
             'default' => $options['default'] ?? null,
@@ -312,7 +311,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
         ]);
     }
 
-    public function guid($value, array $options=[]): ?flex\IGuid
+    public function guid($value, array $options = []): ?flex\IGuid
     {
         if (empty($value)) {
             $value = $options['default'] ?? null;
@@ -329,7 +328,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
         return $value;
     }
 
-    public function date($value, array $options=[]): ?core\time\IDate
+    public function date($value, array $options = []): ?core\time\IDate
     {
         if (empty($value)) {
             $value = $options['default'] ?? null;
@@ -350,7 +349,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
         return $value;
     }
 
-    public function dateTime($value, array $options=[]): ?core\time\IDate
+    public function dateTime($value, array $options = []): ?core\time\IDate
     {
         if (empty($value)) {
             $value = $options['default'] ?? null;
@@ -373,7 +372,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
 
 
     // Helpers
-    protected function _applyFilter($value, $filter, array $options=[], int $flags=0)
+    protected function _applyFilter($value, $filter, array $options = [], int $flags = 0)
     {
         foreach ($options as $key => $option) {
             if ($option === null) {

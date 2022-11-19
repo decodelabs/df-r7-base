@@ -5,18 +5,18 @@
  */
 namespace df\core\validate\field;
 
-use df;
 use df\core;
 
-class Structure extends Base implements core\validate\IStructureField {
-
+class Structure extends Base implements core\validate\IStructureField
+{
     protected $_allowEmpty = false;
 
 
 
-// Options
-    public function shouldAllowEmpty(bool $flag=null) {
-        if($flag !== null) {
+    // Options
+    public function shouldAllowEmpty(bool $flag = null)
+    {
+        if ($flag !== null) {
             $this->_allowEmpty = $flag;
             return $this;
         }
@@ -27,9 +27,10 @@ class Structure extends Base implements core\validate\IStructureField {
 
 
 // Validate
-    public function validate() {
+    public function validate()
+    {
         // Sanitize
-        if($this->data->isEmpty()) {
+        if ($this->data->isEmpty()) {
             $value = $this->data->getValue();
         } else {
             $value = $this->data->toArray();
@@ -37,36 +38,36 @@ class Structure extends Base implements core\validate\IStructureField {
 
         $required = $this->_isRequired;
 
-        if($this->_toggleField) {
-            if($field = $this->validator->getField($this->_toggleField)) {
+        if ($this->_toggleField) {
+            if ($field = $this->validator->getField($this->_toggleField)) {
                 $toggle = (bool)$this->validator[$this->_toggleField];
 
-                if(!$toggle) {
+                if (!$toggle) {
                     $this->data->setValue($value = []);
                 }
 
-                if($required) {
+                if ($required) {
                     $required = $toggle;
                 }
             }
         }
 
-        if($value === null && $required && $this->_allowEmpty) {
+        if ($value === null && $required && $this->_allowEmpty) {
             $value = [];
         }
 
 
         // Validate
-        if($this->data->isEmpty() && !$this->data->hasValue() && $required && !$this->_allowEmpty) {
+        if ($this->data->isEmpty() && !$this->data->hasValue() && $required && !$this->_allowEmpty) {
             $this->addError('required', $this->validator->_(
                 'This field cannot be empty'
             ));
 
-            if($this->_requireGroup !== null && !$this->validator->checkRequireGroup($this->_requireGroup)) {
+            if ($this->_requireGroup !== null && !$this->validator->checkRequireGroup($this->_requireGroup)) {
                 $this->validator->setRequireGroupUnfulfilled($this->_requireGroup, $this->_name);
             }
         } else {
-            if($this->_requireGroup !== null) {
+            if ($this->_requireGroup !== null) {
                 $this->validator->setRequireGroupFulfilled($this->_requireGroup);
             }
         }

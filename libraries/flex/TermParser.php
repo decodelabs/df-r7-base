@@ -5,20 +5,19 @@
  */
 namespace df\flex;
 
-use df;
 use df\core;
 use df\flex;
 
 class TermParser implements ITermParser
 {
-    const STOP_WORDS = [
+    public const STOP_WORDS = [
         'and', 'the', 'if', 'of', 'in', 'to', 'is', 'or', 'it', 'its', 'on', 'an'
     ];
 
     protected $_locale;
     protected $_stemmer;
 
-    public function __construct($locale=null)
+    public function __construct($locale = null)
     {
         $this->_locale = core\i18n\Locale::factory($locale);
 
@@ -28,7 +27,7 @@ class TermParser implements ITermParser
         }
     }
 
-    public function parse($phrase, $natural=false)
+    public function parse($phrase, $natural = false)
     {
         $terms = [];
         $phrase = strip_tags($phrase);
@@ -93,7 +92,7 @@ class TermParser implements ITermParser
         return preg_match("/^[\p{L}|\p{N}\'\.@]$/u", $char);
     }
 
-    protected function _normalizeTerm($term, $natural=false)
+    protected function _normalizeTerm($term, $natural = false)
     {
         $term = strtolower(str_replace('\'', '', $term));
 

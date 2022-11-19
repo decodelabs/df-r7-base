@@ -6,15 +6,13 @@
 
 namespace df\apex\directory\front\tasks\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-
 use DecodeLabs\Atlas;
 use DecodeLabs\Genesis;
+
 use DecodeLabs\Glitch;
 use DecodeLabs\Terminus as Cli;
+use df\arch;
+use df\core;
 
 class TaskSpool extends arch\node\Task
 {
@@ -56,7 +54,7 @@ class TaskSpool extends arch\node\Task
         }
 
         // Clear out old logs
-        $this->runChild('tasks/purge-logs?log='.$this->_log['id'], false);
+        $this->runChild('tasks/purge-logs?log=' . $this->_log['id'], false);
 
         // Clear broken queue items
         $this->runChild('tasks/purge-queue', false);
@@ -76,10 +74,10 @@ class TaskSpool extends arch\node\Task
                 return;
             }
 
-            Cli::{'brightMagenta'}($task['request'].' ');
+            Cli::{'brightMagenta'}($task['request'] . ' ');
 
             $this->task->launchBackground(
-                'tasks/launch-queued?id='.$task['id'],
+                'tasks/launch-queued?id=' . $task['id'],
                 null,
                 false,
                 false
@@ -98,7 +96,7 @@ class TaskSpool extends arch\node\Task
             ->where('request', '=', self::SELF_REQUEST)
             ->where('id', '!=', $this->_log['id'])
             ->beginWhereClause()
-                ->where('startDate', '>', '-'.self::COOLOFF.' seconds')
+                ->where('startDate', '>', '-' . self::COOLOFF . ' seconds')
                 ->beginOrWhereClause()
                     ->where('startDate', '>', '-30 minutes')
                     ->where('runTime', '=', null)

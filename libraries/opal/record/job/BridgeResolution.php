@@ -5,10 +5,8 @@
  */
 namespace df\opal\record\job;
 
-use df;
-use df\core;
-use df\opal;
 use df\mesh;
+use df\opal;
 
 class BridgeResolution implements mesh\job\IResolution
 {
@@ -32,7 +30,7 @@ class BridgeResolution implements mesh\job\IResolution
     {
         if (
             !$subordinate instanceof opal\record\IJob ||
-            !$dependency instanceof  opal\record\IJob
+            !$dependency instanceof opal\record\IJob
         ) {
             return $this;
         }

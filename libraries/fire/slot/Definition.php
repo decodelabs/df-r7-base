@@ -6,9 +6,9 @@
 
 namespace df\fire\slot;
 
-use df\fire;
-
 use DecodeLabs\R7\Nightfire\CategoryAbstract;
+
+use df\fire;
 
 class Definition implements fire\ISlotDefinition
 {
@@ -57,7 +57,7 @@ class Definition implements fire\ISlotDefinition
 
 
     // Construct
-    public function __construct(string $id=null, string $name=null, bool $isStatic=false)
+    public function __construct(string $id = null, string $name = null, bool $isStatic = false)
     {
         $this->setId($id);
         $this->setName($name);

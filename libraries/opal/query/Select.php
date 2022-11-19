@@ -5,12 +5,10 @@
  */
 namespace df\opal\query;
 
-use df;
-use df\core;
-use df\opal;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
 
 class Select implements ISelectQuery, Dumpable
 {
@@ -70,7 +68,7 @@ class Select implements ISelectQuery, Dumpable
         });
     }
 
-    public function toList($valField1, $valField2=null)
+    public function toList($valField1, $valField2 = null)
     {
         if ($valField2 !== null) {
             $keyField = $valField1;
@@ -95,7 +93,7 @@ class Select implements ISelectQuery, Dumpable
         return $data;
     }
 
-    public function toValue($valField=null)
+    public function toValue($valField = null)
     {
         if ($valField !== null) {
             $valField = $this->_sourceManager->extrapolateDataField($this->_source, $valField);
@@ -235,7 +233,7 @@ class Select_Union extends Select implements IUnionSelectQuery
         parent::__construct($union->getSourceManager(), $source);
     }
 
-    public function isUnionDistinct(bool $flag=null)
+    public function isUnionDistinct(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isUnionDistinct = $flag;

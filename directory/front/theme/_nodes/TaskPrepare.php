@@ -6,12 +6,9 @@
 
 namespace df\apex\directory\front\theme\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-
 use DecodeLabs\Terminus as Cli;
+
+use df\arch;
 
 class TaskPrepare extends arch\node\Task
 {

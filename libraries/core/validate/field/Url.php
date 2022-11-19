@@ -5,17 +5,17 @@
  */
 namespace df\core\validate\field;
 
-use df;
 use df\core;
 
-class Url extends Base implements core\validate\IUrlField {
-
+class Url extends Base implements core\validate\IUrlField
+{
     protected $_allowInternal;
 
 
-// Options
-    public function allowInternal(bool $flag=null) {
-        if($flag !== null) {
+    // Options
+    public function allowInternal(bool $flag = null)
+    {
+        if ($flag !== null) {
             $this->_allowInternal = $flag;
             return $this;
         }
@@ -26,24 +26,25 @@ class Url extends Base implements core\validate\IUrlField {
 
 
 // Validate
-    public function validate() {
+    public function validate()
+    {
         // Sanitize
         $value = $this->_sanitizeValue($this->data->getValue());
 
-        if(!$length = $this->_checkRequired($value)) {
+        if (!$length = $this->_checkRequired($value)) {
             return null;
         }
 
 
         // Validate
-        if(!$this->_allowInternal) {
-            if(!preg_match('/^[a-zA-Z0-9]+\:/', $value)) {
-                $value = 'http://'.$value;
+        if (!$this->_allowInternal) {
+            if (!preg_match('/^[a-zA-Z0-9]+\:/', $value)) {
+                $value = 'http://' . $value;
             }
 
             $value = filter_var($value, FILTER_SANITIZE_URL);
 
-            if(!filter_var($value, FILTER_VALIDATE_URL)) {
+            if (!filter_var($value, FILTER_VALIDATE_URL)) {
                 $this->addError('invalid', $this->validator->_(
                     'This is not a valid URL'
                 ));

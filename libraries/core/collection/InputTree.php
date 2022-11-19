@@ -6,9 +6,6 @@
 
 namespace df\core\collection;
 
-use df;
-use df\core;
-
 class InputTree extends Tree implements IInputTree
 {
     use TErrorContainer;
@@ -87,7 +84,7 @@ class InputTree extends Tree implements IInputTree
         return $output;
     }
 
-    public function toArrayDelimitedErrorSet($prefix=null)
+    public function toArrayDelimitedErrorSet($prefix = null)
     {
         $output = [];
 
@@ -97,7 +94,7 @@ class InputTree extends Tree implements IInputTree
 
         foreach ($this as $key => $child) {
             if ($prefix) {
-                $key = $prefix.'['.$key.']';
+                $key = $prefix . '[' . $key . ']';
             }
 
             $output = array_merge($output, $child->toArrayDelimitedErrorSet($key));
@@ -121,9 +118,9 @@ class InputTree extends Tree implements IInputTree
 
         foreach ($this->_collection as $key => $child) {
             if ($child instanceof self && empty($child->_collection) && empty($child->_errors)) {
-                yield 'value:'.$key => $child->_value;
+                yield 'value:' . $key => $child->_value;
             } else {
-                yield 'value:'.$key => $child;
+                yield 'value:' . $key => $child;
             }
         }
     }

@@ -6,13 +6,11 @@
 
 namespace df\link\http;
 
-use df;
-use df\core;
-use df\link;
-use df\arch;
-
 use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy;
+
+use df\arch;
+use df\core;
 
 class Url extends core\uri\Url implements IUrl
 {
@@ -21,10 +19,10 @@ class Url extends core\uri\Url implements IUrl
 
     protected $_directoryRequest;
 
-    public static function fromDirectoryRequest(arch\IRequest $request, $scheme, core\app\http\Router_Map $map=null, arch\IRequest $routedRequest=null)
+    public static function fromDirectoryRequest(arch\IRequest $request, $scheme, core\app\http\Router_Map $map = null, arch\IRequest $routedRequest = null)
     {
         if ($request->isJustFragment()) {
-            $output = new self('#'.$request->getFragment());
+            $output = new self('#' . $request->getFragment());
         } else {
             $path = null;
             $area = 'front';
@@ -45,8 +43,8 @@ class Url extends core\uri\Url implements IUrl
                     }
                 }
 
-                if ($area == $request::AREA_MARKER.$request::DEFAULT_AREA
-                || ($mappedArea && $area == $request::AREA_MARKER.$mappedArea)) {
+                if ($area == $request::AREA_MARKER . $request::DEFAULT_AREA
+                || ($mappedArea && $area == $request::AREA_MARKER . $mappedArea)) {
                     $path->shift();
                 }
 
@@ -75,8 +73,8 @@ class Url extends core\uri\Url implements IUrl
                     unset($request->query->{$wildArea});
 
                     if (strlen($sub)) {
-                        $domain = $sub.'.'.$domain;
-                    } elseif (isset($_SERVER['HTTP_HOST']) && stristr($_SERVER['HTTP_HOST'], '.'.$domain)) {
+                        $domain = $sub . '.' . $domain;
+                    } elseif (isset($_SERVER['HTTP_HOST']) && stristr($_SERVER['HTTP_HOST'], '.' . $domain)) {
                         $domain = $_SERVER['HTTP_HOST'];
                     }
 
@@ -123,11 +121,11 @@ class Url extends core\uri\Url implements IUrl
         }
 
         if (isset($_SERVER['HTTP_X_ORIGINAL_HOST'])) {
-            $url .= '://'.$_SERVER['HTTP_X_ORIGINAL_HOST'].':'.$_SERVER['SERVER_PORT'];
+            $url .= '://' . $_SERVER['HTTP_X_ORIGINAL_HOST'] . ':' . $_SERVER['SERVER_PORT'];
         } elseif (isset($_SERVER['HTTP_HOST'])) {
-            $url .= '://'.$_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'];
+            $url .= '://' . $_SERVER['HTTP_HOST'] . ':' . $_SERVER['SERVER_PORT'];
         } else {
-            $url .= '://'.gethostname();
+            $url .= '://' . gethostname();
         }
 
         if (isset($_SERVER['REQUEST_URI'])) {
@@ -141,7 +139,7 @@ class Url extends core\uri\Url implements IUrl
         $req = explode('?', $req, 2);
         $req[0] = urldecode($req[0]);
 
-        $url .= '/'.implode('?', $req);
+        $url .= '/' . implode('?', $req);
         return new static($url);
     }
 
@@ -154,7 +152,7 @@ class Url extends core\uri\Url implements IUrl
         return new static($url);
     }
 
-    public function import($url='')
+    public function import($url = '')
     {
         if (empty($url)) {
             return $this;
@@ -313,7 +311,7 @@ class Url extends core\uri\Url implements IUrl
         return $this;
     }
 
-    public function isSecure(bool $flag=null)
+    public function isSecure(bool $flag = null)
     {
         if ($flag !== null) {
             if ($flag) {
@@ -345,7 +343,7 @@ class Url extends core\uri\Url implements IUrl
 
 
     // Arch request
-    public function setDirectoryRequest(arch\IRequest $request=null)
+    public function setDirectoryRequest(arch\IRequest $request = null)
     {
         $this->_directoryRequest = $request;
         return $this;
@@ -367,7 +365,7 @@ class Url extends core\uri\Url implements IUrl
         if ($this->_scheme === null) {
             $output = '//';
         } else {
-            $output = $this->getScheme().'://';
+            $output = $this->getScheme() . '://';
         }
 
         $output .= $this->_getCredentialString();
@@ -403,7 +401,7 @@ class Url extends core\uri\Url implements IUrl
         if ($this->_scheme === null) {
             $output = 'http://';
         } else {
-            $output = $this->getScheme().'://';
+            $output = $this->getScheme() . '://';
         }
 
         $output .= $this->_domain;

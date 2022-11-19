@@ -5,17 +5,14 @@
  */
 namespace df\apex\models\session\node;
 
-use df;
-use df\core;
-use df\apex;
 use df\axis;
-use df\user;
 
-class Unit extends axis\unit\Table {
+class Unit extends axis\unit\Table
+{
+    public const BROADCAST_HOOK_EVENTS = false;
 
-    const BROADCAST_HOOK_EVENTS = false;
-
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addField('bucket', 'Text', 255);
         $schema->addField('key', 'Text', 255);
 

@@ -5,17 +5,15 @@
  */
 namespace df\opal\query;
 
-use df;
-use df\core;
-use df\opal;
-use df\flex;
-
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
+
+use df\flex;
+use df\opal;
 
 class SearchController implements ISearchController, Dumpable
 {
-    const MAX_THRESHOLD_RATIO = 0.95;
+    public const MAX_THRESHOLD_RATIO = 0.95;
 
     use opal\query\TField;
 
@@ -27,7 +25,7 @@ class SearchController implements ISearchController, Dumpable
     protected $_isPrepared = false;
     protected $_query;
 
-    public function __construct(IReadQuery $query, string $phrase=null, array $fields=null)
+    public function __construct(IReadQuery $query, string $phrase = null, array $fields = null)
     {
         $this->_query = $query;
 
@@ -127,7 +125,7 @@ class SearchController implements ISearchController, Dumpable
 
                 default:
                     throw Exceptional::Runtime(
-                        'Field '.$key.' does not support search queries'
+                        'Field ' . $key . ' does not support search queries'
                     );
             }
 
@@ -221,12 +219,18 @@ class SearchController implements ISearchController, Dumpable
 
             if (empty($this->_terms)) {
                 $output->_addClause(new opal\query\clause\Clause(
-                    $set['field'], $set['operator'], $this->_phrase, true
+                    $set['field'],
+                    $set['operator'],
+                    $this->_phrase,
+                    true
                 ));
             } else {
                 foreach ($this->_terms as $term) {
                     $output->_addClause(new opal\query\clause\Clause(
-                        $set['field'], $set['operator'], $term, true
+                        $set['field'],
+                        $set['operator'],
+                        $term,
+                        true
                     ));
                 }
             }
@@ -261,7 +265,7 @@ class SearchController implements ISearchController, Dumpable
 
                 foreach ($adapter->getDefaultSearchFields() as $name => $score) {
                     if (false === strpos($name, '.')) {
-                        $name = $source->getAlias().'.'.$name;
+                        $name = $source->getAlias() . '.' . $name;
                     }
 
                     $fields[$name] = (int)$score;
@@ -359,7 +363,7 @@ class SearchController implements ISearchController, Dumpable
 
         if (!empty($this->_fields)) {
             foreach ($this->_fields as $name => $set) {
-                yield 'value:'.$name => 'x'.$set['weight'].', '.$set['operator'];
+                yield 'value:' . $name => 'x' . $set['weight'] . ', ' . $set['operator'];
             }
         }
     }

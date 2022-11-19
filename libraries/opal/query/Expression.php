@@ -5,13 +5,11 @@
  */
 namespace df\opal\query;
 
-use df;
-use df\core;
-use df\opal;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\opal;
 
 class Expression implements IExpression, Dumpable
 {
@@ -22,7 +20,7 @@ class Expression implements IExpression, Dumpable
 
     private $_isExpectingValue = true;
 
-    public function __construct(IDataUpdateQuery $parentQuery, $field, array $elements, IExpression $parentExpression=null)
+    public function __construct(IDataUpdateQuery $parentQuery, $field, array $elements, IExpression $parentExpression = null)
     {
         $this->_parentQuery = $parentQuery;
         $this->_parentExpression = $parentExpression;
@@ -69,7 +67,7 @@ class Expression implements IExpression, Dumpable
 
             default:
                 throw Exceptional::InvalidArgument(
-                    'Unknown operator: '.$operator
+                    'Unknown operator: ' . $operator
                 );
         }
 
@@ -107,7 +105,7 @@ class Expression implements IExpression, Dumpable
 
             if (!$field = $sourceManager->extrapolateIntrinsicField($source, $element)) {
                 throw Exceptional::InvalidArgument(
-                    'Cound not extract reference or value from: '.$element
+                    'Cound not extract reference or value from: ' . $element
                 );
             }
 

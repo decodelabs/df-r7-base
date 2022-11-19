@@ -5,13 +5,10 @@
  */
 namespace df\axis\schema\field;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
-use df\flex;
-
 use DecodeLabs\Dictum;
+use df\axis;
+
+use df\opal;
 
 class Slug extends Base implements axis\schema\IAutoUniqueField
 {
@@ -19,7 +16,7 @@ class Slug extends Base implements axis\schema\IAutoUniqueField
 
     protected $_allowPathFormat = false;
 
-    public function allowPathFormat(bool $flag=null)
+    public function allowPathFormat(bool $flag = null)
     {
         if ($flag !== null) {
             if ($flag != $this->_allowPathFormat) {
@@ -44,7 +41,7 @@ class Slug extends Base implements axis\schema\IAutoUniqueField
         return (string)$value;
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    public function sanitizeValue($value, opal\record\IRecord $forRecord = null)
     {
         if ($value === null && $this->isNullable()) {
             return null;

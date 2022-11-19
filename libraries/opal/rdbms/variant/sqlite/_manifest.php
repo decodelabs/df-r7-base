@@ -5,12 +5,9 @@
  */
 namespace df\opal\rdbms\variant\sqlite;
 
-use df;
-use df\core;
 use df\opal;
 
-
 // Interfaces
-interface ISchema extends opal\rdbms\schema\ISchema {
-    
+interface ISchema extends opal\rdbms\schema\ISchema
+{
 }

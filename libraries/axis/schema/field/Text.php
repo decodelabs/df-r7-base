@@ -5,13 +5,11 @@
  */
 namespace df\axis\schema\field;
 
-use df;
-use df\core;
+use DecodeLabs\Dictum;
 use df\axis;
-use df\opal;
 use df\flex;
 
-use DecodeLabs\Dictum;
+use df\opal;
 
 class Text extends Base implements
     axis\schema\ILengthRestrictedField,
@@ -24,7 +22,7 @@ class Text extends Base implements
 
     protected $_case = flex\ICase::NONE;
 
-    protected function _init($length=null, $case=flex\ICase::NONE)
+    protected function _init($length = null, $case = flex\ICase::NONE)
     {
         if (is_string($length)) {
             $this->setExponentSize($length);
@@ -58,7 +56,7 @@ class Text extends Base implements
         return Dictum::compare($value1, $value2);
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    public function sanitizeValue($value, opal\record\IRecord $forRecord = null)
     {
         if ($value !== null) {
             $value = (string)$value;

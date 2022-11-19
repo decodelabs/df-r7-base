@@ -5,24 +5,20 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\halo;
-use df\arch;
-
 use DecodeLabs\Exceptional;
+
+use df\arch;
 
 class Form extends Container implements IFormWidget, IWidgetShortcutProvider
 {
     use TWidget_VisualInput;
     use TWidget_TargetAware;
 
-    const PRIMARY_TAG = 'form';
+    public const PRIMARY_TAG = 'form';
 
-    const ENC_URLENCODED = 'application/x-www-form-urlencoded';
-    const ENC_MULTIPART = 'multipart/form-data';
-    const ENC_PLAINTEXT = 'text/plain';
+    public const ENC_URLENCODED = 'application/x-www-form-urlencoded';
+    public const ENC_MULTIPART = 'multipart/form-data';
+    public const ENC_PLAINTEXT = 'text/plain';
 
     protected $_action;
     protected $_method = 'post';
@@ -30,7 +26,7 @@ class Form extends Container implements IFormWidget, IWidgetShortcutProvider
     protected $_name;
     protected $_acceptCharset = 'utf-8';
 
-    public function __construct(arch\IContext $context, $action=null, $method=null, $encoding=null)
+    public function __construct(arch\IContext $context, $action = null, $method = null, $encoding = null)
     {
         parent::__construct($context);
 
@@ -105,7 +101,7 @@ class Form extends Container implements IFormWidget, IWidgetShortcutProvider
 
         if (!in_array($method, ['get', 'post', 'put', 'delete'])) {
             throw Exceptional::InvalidArgument(
-                'Invalid form method: '.$method
+                'Invalid form method: ' . $method
             );
         }
 

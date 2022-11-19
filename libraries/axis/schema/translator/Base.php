@@ -5,13 +5,11 @@
  */
 namespace df\axis\schema\translator;
 
-use df;
-use df\core;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch;
+
 use df\axis;
 use df\opal;
-
-use DecodeLabs\Glitch;
-use DecodeLabs\Exceptional;
 
 abstract class Base implements axis\schema\ITranslator
 {
@@ -20,7 +18,7 @@ abstract class Base implements axis\schema\ITranslator
     protected $_targetSchema;
     protected $_isNew = true;
 
-    public function __construct(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $axisSchema, opal\schema\ISchema $targetSchema=null)
+    public function __construct(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $axisSchema, opal\schema\ISchema $targetSchema = null)
     {
         $this->_unit = $unit;
         $this->_axisSchema = $axisSchema;
@@ -346,11 +344,11 @@ abstract class Base implements axis\schema\ITranslator
     protected function _createField(opal\schema\IPrimitive $primitive)
     {
         $type = $primitive->getType();
-        $func = '_create'.$type.'Field';
+        $func = '_create' . $type . 'Field';
 
         if (!method_exists($this, $func)) {
             throw Exceptional::{'df/axis/schema/Runtime'}(
-                'Primitive '.$type.' is currently not supported by RDBMS based tables, for field '.$primitive->getName()
+                'Primitive ' . $type . ' is currently not supported by RDBMS based tables, for field ' . $primitive->getName()
             );
         }
 
@@ -381,7 +379,7 @@ abstract class Base implements axis\schema\ITranslator
 
 
     // Indexes
-    protected function _createIndexes(opal\schema\IIndex $axisIndex, $isPrimary, $forChanges=false)
+    protected function _createIndexes(opal\schema\IIndex $axisIndex, $isPrimary, $forChanges = false)
     {
         $output = [];
         $fieldReferences = $axisIndex->getFieldReferences();
@@ -446,7 +444,7 @@ abstract class Base implements axis\schema\ITranslator
             } else {
                 if (!$indexField = $this->_targetSchema->getField($primitive->getName())) {
                     throw Exceptional::Logic(
-                        'Unable to find index field '.$primitive->getName()
+                        'Unable to find index field ' . $primitive->getName()
                     );
                 }
 
@@ -461,12 +459,12 @@ abstract class Base implements axis\schema\ITranslator
         return [$targetIndex];
     }
 
-    protected function _getIndexName(opal\schema\IIndex $axisIndex, $isPrimary, opal\schema\IPrimitive $primitive=null)
+    protected function _getIndexName(opal\schema\IIndex $axisIndex, $isPrimary, opal\schema\IPrimitive $primitive = null)
     {
         if ($primitive) {
-            return 'idx_'.$primitive->getName();
+            return 'idx_' . $primitive->getName();
         } else {
-            return 'idx_'.$axisIndex->getName();
+            return 'idx_' . $axisIndex->getName();
         }
     }
 }

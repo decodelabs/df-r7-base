@@ -6,20 +6,17 @@
 
 namespace df\spur\migrate;
 
-use df;
-use df\core;
-use df\spur;
-use df\link;
-use df\arch;
-use df\flex;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\R7\Legacy;
+use df;
+use df\arch;
+use df\core;
+
+use df\flex;
+use df\link;
 
 use GuzzleHttp\Client as HttpClient;
-use GuzzleHttp\Pool as HttpPool;
 use GuzzleHttp\Psr7\Request as HttpRequest;
-use Psr\Http\Message\ResponseInterface;
 
 class Handler implements IHandler
 {
@@ -111,7 +108,7 @@ class Handler implements IHandler
     }
 
 
-    public function createRequest($method, $request, array $data=null)
+    public function createRequest($method, $request, array $data = null)
     {
         if (is_string($request)) {
             $request = new arch\Request($request);
@@ -162,7 +159,7 @@ class Handler implements IHandler
         ]);
     }
 
-    public function callAsync(link\http\IRequest $request, callable $callback, ?callable $progress=null)
+    public function callAsync(link\http\IRequest $request, callable $callback, ?callable $progress = null)
     {
         $psrRequest = $this->_prepareRequest($request);
         return $this->_httpClient->sendAsync($psrRequest, [

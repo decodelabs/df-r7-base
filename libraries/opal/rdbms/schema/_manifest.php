@@ -5,11 +5,10 @@
  */
 namespace df\opal\rdbms\schema;
 
-use df;
 use df\core;
-use df\opal;
-use df\mesh;
 use df\flex;
+use df\mesh;
+use df\opal;
 
 // Interfaces
 interface ISqlVariantAware
@@ -42,7 +41,7 @@ interface ISchema extends
     public function getAdapter();
     public function getTable();
     public function getSqlVariant();
-    public function isTemporary(bool $flag=null);
+    public function isTemporary(bool $flag = null);
     public function normalize();
 }
 

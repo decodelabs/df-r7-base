@@ -6,13 +6,11 @@
 
 namespace df\plug;
 
-use df;
-use df\core;
-use df\plug;
-use df\arch;
-use df\link;
-
 use DecodeLabs\Disciple;
+use df\arch;
+use df\core;
+
+use df\link;
 
 class Avatar implements arch\IDirectoryHelper
 {
@@ -20,22 +18,22 @@ class Avatar implements arch\IDirectoryHelper
 
     public const GRAVATAR_BASE = '//www.gravatar.com/avatar/';
 
-    public function getClientAvatarUrl($size=null)
+    public function getClientAvatarUrl($size = null)
     {
         return $this->getAvatarUrl(Disciple::getId(), $size);
     }
 
-    public function getAvatarUrl($userId, $size=null)
+    public function getAvatarUrl($userId, $size = null)
     {
         return $this->context->uri->__invoke(
-            'avatar/download?user='.$userId.'&size='.$size.'&c='.$this->context->data->user->cache->getAvatarCacheTime()
+            'avatar/download?user=' . $userId . '&size=' . $size . '&c=' . $this->context->data->user->cache->getAvatarCacheTime()
         );
     }
 
-    public function getGravatarUrl($email, $size=null, $default='mm')
+    public function getGravatarUrl($email, $size = null, $default = 'mm')
     {
         $hash = md5(trim(strtolower($email)));
-        $output = new link\http\Url(self::GRAVATAR_BASE.$hash);
+        $output = new link\http\Url(self::GRAVATAR_BASE . $hash);
 
         if ($size !== null) {
             $output->query->s = (int)$size;
@@ -49,7 +47,7 @@ class Avatar implements arch\IDirectoryHelper
             } else {
                 if ($size !== null) {
                     $url = clone $url;
-                    $url->path->setFilename('default-'.$size);
+                    $url->path->setFilename('default-' . $size);
                 }
 
                 $default = $url;
@@ -73,7 +71,7 @@ class Avatar implements arch\IDirectoryHelper
 
             if ($path) {
                 $path = new core\uri\Path($path);
-                $this->_defaultImageUrl = $this->context->uri->__invoke('avatar/download?user=default&type='.$path->getExtension());
+                $this->_defaultImageUrl = $this->context->uri->__invoke('avatar/download?user=default&type=' . $path->getExtension());
 
                 $config = core\app\http\Config::getInstance();
 

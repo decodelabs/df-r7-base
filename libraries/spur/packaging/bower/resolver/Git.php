@@ -5,20 +5,17 @@
  */
 namespace df\spur\packaging\bower\resolver;
 
-use df;
-use df\core;
-use df\spur;
-use df\link;
-use df\flex;
-
-use DecodeLabs\Dictum;
 use DecodeLabs\Atlas;
+use DecodeLabs\Dictum;
+
+use df\flex;
+use df\spur;
 
 class Git implements spur\packaging\bower\IResolver
 {
     use spur\packaging\bower\TGitResolver;
 
-    const TAG_TIMEOUT = '5 hours';
+    public const TAG_TIMEOUT = '5 hours';
 
     protected $_remote;
 
@@ -33,7 +30,7 @@ class Git implements spur\packaging\bower\IResolver
         return substr($name, -4);
     }
 
-    public function fetchPackage(spur\packaging\bower\Package $package, $cachePath, $currentVersion=null)
+    public function fetchPackage(spur\packaging\bower\Package $package, $cachePath, $currentVersion = null)
     {
         $this->_getRemote($package);
 
@@ -55,10 +52,10 @@ class Git implements spur\packaging\bower\IResolver
             return false;
         }
 
-        $package->cacheFileName = $package->name.'#'.$version;
+        $package->cacheFileName = $package->name . '#' . $version;
 
-        if (!is_dir($cachePath.'/packages/'.$package->cacheFileName)) {
-            $repo = $this->_remote->cloneTo($cachePath.'/packages/'.$package->cacheFileName);
+        if (!is_dir($cachePath . '/packages/' . $package->cacheFileName)) {
+            $repo = $this->_remote->cloneTo($cachePath . '/packages/' . $package->cacheFileName);
             $repo->checkoutCommit($commitId);
         }
 
@@ -97,7 +94,7 @@ class Git implements spur\packaging\bower\IResolver
 
     protected function _fetchTags(spur\packaging\bower\Package $package, $cachePath)
     {
-        $path = $cachePath.'/tags/git-'.Dictum::fileName($package->url).'.json';
+        $path = $cachePath . '/tags/git-' . Dictum::fileName($package->url) . '.json';
 
         if (!Atlas::hasFileChangedIn($path, self::TAG_TIMEOUT)) {
             $tags = $this->_remote->getTags();

@@ -5,19 +5,17 @@
  */
 namespace df\flow\mailingList\adapter;
 
-use df;
+use DecodeLabs\Exceptional;
+use df\axis;
 use df\core;
 use df\flow;
 use df\spur;
-use df\user;
-use df\link;
-use df\axis;
 
-use DecodeLabs\Exceptional;
+use df\user;
 
 class Mailchimp3 extends Base
 {
-    const SETTINGS_FIELDS = ['*apiKey' => 'API key'];
+    public const SETTINGS_FIELDS = ['*apiKey' => 'API key'];
 
     protected $_mediator;
     protected $_memberUnit;
@@ -97,7 +95,7 @@ class Mailchimp3 extends Base
     }
 
 
-    public function subscribeUserToList(user\IClientDataObject $client, string $listId, array $manifest, array $groups=null, bool $replace=false, ?array $extraData=null): flow\mailingList\ISubscribeResult
+    public function subscribeUserToList(user\IClientDataObject $client, string $listId, array $manifest, array $groups = null, bool $replace = false, ?array $extraData = null): flow\mailingList\ISubscribeResult
     {
         $email = $client->getEmail();
         $merges = [];
@@ -262,7 +260,7 @@ class Mailchimp3 extends Base
         });
     }
 
-    protected function _getMemberData(string $listId, string $email=null): ?array
+    protected function _getMemberData(string $listId, string $email = null): ?array
     {
         $clientEmail = user\Manager::getInstance()->getClient()->getEmail();
 

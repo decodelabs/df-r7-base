@@ -5,30 +5,32 @@
  */
 namespace df\axis\unit;
 
-use df;
-use df\core;
 use df\axis;
+use df\core;
 
-abstract class Config extends core\Config implements axis\IUnit {
-
+abstract class Config extends core\Config implements axis\IUnit
+{
     use axis\TUnit;
 
-    public function __construct(axis\IModel $model) {
+    public function __construct(axis\IModel $model)
+    {
         $this->_model = $model;
         $id = static::ID;
 
-        if($id === null) {
-            $id = 'model/'.$model->getModelName().'.'.$this->getCanonicalUnitName();
+        if ($id === null) {
+            $id = 'model/' . $model->getModelName() . '.' . $this->getCanonicalUnitName();
         }
 
         parent::__construct($id);
     }
 
-    public function getUnitType() {
+    public function getUnitType()
+    {
         return 'config';
     }
 
-    public function getStorageBackendName() {
+    public function getStorageBackendName()
+    {
         return $this->getConfigId();
     }
 }

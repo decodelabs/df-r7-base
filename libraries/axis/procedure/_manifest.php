@@ -5,9 +5,7 @@
  */
 namespace df\axis\procedure;
 
-use df;
 use df\core;
-use df\axis;
 use df\opal;
 
 interface IProcedure extends core\IContextAware
@@ -26,6 +24,6 @@ interface IProcedure extends core\IContextAware
 
 interface IRecordProcedure extends IProcedure
 {
-    public function setRecord(opal\record\IRecord $record=null);
+    public function setRecord(opal\record\IRecord $record = null);
     public function getRecord();
 }

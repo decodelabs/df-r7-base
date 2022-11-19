@@ -5,14 +5,12 @@
  */
 namespace df\mint;
 
-use df;
-use df\core;
-use df\mint;
-use df\user;
-use df\arch;
-use df\mesh;
-
 use DecodeLabs\Exceptional;
+use df\core;
+use df\mesh;
+use df\mint;
+
+use df\user;
 
 // Gateway
 interface IGateway
@@ -29,7 +27,7 @@ interface IGateway
 
     public function submitCharge(IChargeRequest $charge): string;
     public function submitStandaloneCharge(IChargeRequest $charge): string;
-    public function newStandaloneCharge(ICurrency $amount, ICreditCardReference $card, string $description=null, string $email=null): IChargeRequest;
+    public function newStandaloneCharge(ICurrency $amount, ICreditCardReference $card, string $description = null, string $email = null): IChargeRequest;
 }
 
 interface ICaptureProviderGateway extends IGateway
@@ -67,12 +65,12 @@ trait TCaptureProviderGateway
 interface IRefundProviderGateway extends IGateway
 {
     public function refundCharge(IChargeRefund $refund): string;
-    public function newChargeRefund(string $id, ICurrency $amount=null): IChargeRefund;
+    public function newChargeRefund(string $id, ICurrency $amount = null): IChargeRefund;
 }
 
 trait TRefundProviderGateway
 {
-    public function newChargeRefund(string $id, ICurrency $amount=null): IChargeRefund
+    public function newChargeRefund(string $id, ICurrency $amount = null): IChargeRefund
     {
         return new mint\charge\Refund($id, $amount);
     }
@@ -81,9 +79,9 @@ trait TRefundProviderGateway
 interface ICustomerTrackingGateway extends IGateway
 {
     public function submitCustomerCharge(ICustomerChargeRequest $charge): string;
-    public function newCustomerCharge(ICurrency $amount, ICreditCardReference $card, string $customerId, string $description=null): ICustomerChargeRequest;
+    public function newCustomerCharge(ICurrency $amount, ICreditCardReference $card, string $customerId, string $description = null): ICustomerChargeRequest;
 
-    public function newCustomer(string $email=null, string $description=null, ICreditCard $card=null): ICustomer;
+    public function newCustomer(string $email = null, string $description = null, ICreditCard $card = null): ICustomer;
     public function fetchCustomer(string $id): ICustomer;
 
     public function addCustomer(ICustomer $customer): ICustomer;
@@ -93,12 +91,12 @@ interface ICustomerTrackingGateway extends IGateway
 
 trait TCustomerTrackingGateway
 {
-    public function newCustomerCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $customerId, string $description=null): ICustomerChargeRequest
+    public function newCustomerCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $customerId, string $description = null): ICustomerChargeRequest
     {
         return new mint\charge\CustomerRequest($amount, $card, $customerId, $description);
     }
 
-    public function newCustomer(string $email=null, string $description=null, ICreditCard $card=null): ICustomer
+    public function newCustomer(string $email = null, string $description = null, ICreditCard $card = null): ICustomer
     {
         return new mint\Customer(null, $email, $description, $card);
     }
@@ -127,8 +125,8 @@ interface ISubscriptionProviderGateway extends ICustomerTrackingGateway
 
     public function subscribeCustomer(ISubscription $subscription): ISubscription;
     public function updateSubscription(ISubscription $subscription): ISubscription;
-    public function endSubscriptionTrial(string $subscriptionId, int $inDays=null): ISubscription;
-    public function cancelSubscription(string $subscriptionId, bool $atPeriodEnd=false): ISubscription;
+    public function endSubscriptionTrial(string $subscriptionId, int $inDays = null): ISubscription;
+    public function cancelSubscription(string $subscriptionId, bool $atPeriodEnd = false): ISubscription;
 }
 
 trait TSubscriptionProviderGateway
@@ -141,8 +139,8 @@ trait TSubscriptionProviderGateway
 
 interface ISubscriptionPlanControllerGateway extends ISubscriptionProviderGateway
 {
-    public function syncPlans(iterable $local=[]): \Generator;
-    public function newPlan(string $id, string $name, mint\ICurrency $amount, string $interval='month');
+    public function syncPlans(iterable $local = []): \Generator;
+    public function newPlan(string $id, string $name, mint\ICurrency $amount, string $interval = 'month');
 
     public function addPlan(IPlan $plan): IPlan;
     public function updatePlan(IPlan $plan): IPlan;
@@ -152,7 +150,7 @@ interface ISubscriptionPlanControllerGateway extends ISubscriptionProviderGatewa
 
 trait TSubscriptionPlanControllerGateway
 {
-    public function syncPlans(iterable $local=[]): \Generator
+    public function syncPlans(iterable $local = []): \Generator
     {
         $planList = [];
         $this->clearPlanCache();
@@ -184,7 +182,7 @@ trait TSubscriptionPlanControllerGateway
         }
     }
 
-    public function newPlan(string $id, string $name, mint\ICurrency $amount, string $interval='month')
+    public function newPlan(string $id, string $name, mint\ICurrency $amount, string $interval = 'month')
     {
         return new mint\Plan($id, $name, $amount, $interval);
     }
@@ -234,7 +232,7 @@ interface ICreditCard extends ICreditCardReference, core\IArrayProvider
     public function setIssueNumber(?string $number);
     public function getIssueNumber(): ?string;
 
-    public function setBillingAddress(user\IPostalAddress $address=null);
+    public function setBillingAddress(user\IPostalAddress $address = null);
     public function getBillingAddress(): ?user\IPostalAddress;
 
     public function isValid(): bool;
@@ -305,7 +303,7 @@ interface ICustomer
     public function setUserId(?string $userId);
     public function getUserId(): ?string;
 
-    public function isDelinquent(bool $flag=null);
+    public function isDelinquent(bool $flag = null);
 
     public function setCachedSubscriptions(?array $subscriptions);
     public function getCachedSubscriptions(): ?array;
@@ -323,7 +321,7 @@ interface IPlan
     public function getAmount(): ICurrency;
     public function setName(string $name);
     public function getName(): string;
-    public function setInterval(string $interval, int $count=null);
+    public function setInterval(string $interval, int $count = null);
     public function getInterval();
     public function setIntervalCount(int $count);
     public function getIntervalCount();
@@ -364,7 +362,7 @@ interface ISubscription
     public function getStartDate(): ?core\time\IDate;
     public function setEndDate($date);
     public function getEndDate(): ?core\time\IDate;
-    public function setCancelDate($date, bool $atPeriodEnd=false);
+    public function setCancelDate($date, bool $atPeriodEnd = false);
     public function getCancelDate(): ?core\time\IDate;
     public function willCancelAtPeriodEnd(): bool;
 
@@ -414,7 +412,7 @@ interface IEvent extends mesh\entity\IEntity, core\collection\ITree
 // Model
 interface IModelConfig extends core\IConfig
 {
-    public function isEnabled(bool $flag=null);
+    public function isEnabled(bool $flag = null);
     public function getPrimaryAccount(): ?string;
     public function getPrimarySettings(): ?core\collection\ITree;
     public function getSubscriptionAccount(): ?string;

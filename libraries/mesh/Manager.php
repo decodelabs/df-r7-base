@@ -5,19 +5,18 @@
  */
 namespace df\mesh;
 
-use df;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
+
 use df\core;
 use df\mesh;
-
-use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
 
 class Manager implements IManager, Dumpable
 {
     use core\TManager;
     use mesh\event\TEmitter;
 
-    const REGISTRY_PREFIX = 'manager://mesh';
+    public const REGISTRY_PREFIX = 'manager://mesh';
 
     protected $_handlers = [];
 
@@ -56,8 +55,8 @@ class Manager implements IManager, Dumpable
 
         if (!isset($this->_handlers[$scheme])) {
             $classes = [
-                'df\\'.lcfirst($scheme).'\\MeshHandler',
-                'df\\mesh\\handler\\'.ucfirst($scheme)
+                'df\\' . lcfirst($scheme) . '\\MeshHandler',
+                'df\\mesh\\handler\\' . ucfirst($scheme)
             ];
 
             foreach ($classes as $class) {
@@ -88,7 +87,7 @@ class Manager implements IManager, Dumpable
         if ((!$handler = $this->getHandler($locator))
         || (!$handler instanceof IEntityHandler)) {
             throw Exceptional::Runtime(
-                'There is no entity handler for scheme: '.$locator->getScheme()
+                'There is no entity handler for scheme: ' . $locator->getScheme()
             );
         }
 
@@ -100,7 +99,7 @@ class Manager implements IManager, Dumpable
 
         if ($entity === null) {
             throw Exceptional::{'df/mesh/entity/NotFound'}(
-                'Entity type '.$locator->toStringUpTo($node).' could not be found'
+                'Entity type ' . $locator->toStringUpTo($node) . ' could not be found'
             );
         }
 
@@ -110,8 +109,8 @@ class Manager implements IManager, Dumpable
             foreach ($nodes as $node) {
                 if (!$entity instanceof mesh\entity\IParentEntity) {
                     throw Exceptional::{'df/mesh/entity/NotFound'}(
-                        'Could not load entity '.$locator->toString().' - '.
-                        'parent entity '.$locator->toStringUpTo($lastNode).' does not provide sub entities'
+                        'Could not load entity ' . $locator->toString() . ' - ' .
+                        'parent entity ' . $locator->toStringUpTo($lastNode) . ' does not provide sub entities'
                     );
                 }
 
@@ -119,7 +118,7 @@ class Manager implements IManager, Dumpable
 
                 if ($entity === null) {
                     throw Exceptional::{'df/mesh/entity/NotFound'}(
-                        'Entity type '.$locator->toStringUpTo($node).' could not be found'
+                        'Entity type ' . $locator->toStringUpTo($node) . ' could not be found'
                     );
                 }
 

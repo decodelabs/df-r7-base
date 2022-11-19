@@ -5,14 +5,12 @@
  */
 namespace df\neon\raster\driver;
 
-use df;
-use df\core;
 use df\neon;
 
 abstract class Base implements neon\raster\IDriver
 {
-    const READ_FORMATS = [];
-    const WRITE_FORMATS = [];
+    public const READ_FORMATS = [];
+    public const WRITE_FORMATS = [];
 
     protected $_width;
     protected $_height;
@@ -31,7 +29,7 @@ abstract class Base implements neon\raster\IDriver
     }
 
 
-    public function __construct($outputFormat=null)
+    public function __construct($outputFormat = null)
     {
         if ($outputFormat !== null) {
             $this->setOutputFormat($outputFormat);

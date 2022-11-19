@@ -5,12 +5,10 @@
  */
 namespace df\opal\query\field;
 
-use df;
-use df\core;
-use df\opal;
-
 use DecodeLabs\Glitch;
+
 use DecodeLabs\Glitch\Dumpable;
+use df\opal;
 
 class Expression implements opal\query\IExpressionField, Dumpable
 {
@@ -21,7 +19,7 @@ class Expression implements opal\query\IExpressionField, Dumpable
     protected $_source;
     protected $_altSourceAlias;
 
-    public function __construct(opal\query\ISource $source, $expression, $alias=null)
+    public function __construct(opal\query\ISource $source, $expression, $alias = null)
     {
         if ($alias === null) {
             $alias = uniqid('expr');
@@ -91,9 +89,9 @@ class Expression implements opal\query\IExpressionField, Dumpable
     public function getQualifiedName()
     {
         if ($this->_altSourceAlias) {
-            return $this->_altSourceAlias.'.'.$this->_alias;
+            return $this->_altSourceAlias . '.' . $this->_alias;
         } else {
-            return $this->getSourceAlias().'.'.$this->_alias;
+            return $this->getSourceAlias() . '.' . $this->_alias;
         }
     }
 
@@ -114,6 +112,6 @@ class Expression implements opal\query\IExpressionField, Dumpable
 
     public function toString(): string
     {
-        return 'expression('.$this->getName().')';
+        return 'expression(' . $this->getName() . ')';
     }
 }

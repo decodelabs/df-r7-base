@@ -5,13 +5,11 @@
  */
 namespace df\axis\unit\table\adapter;
 
-use df;
-use df\core;
+use DecodeLabs\Glitch\Dumpable;
 use df\axis;
 use df\opal;
-use df\user;
 
-use DecodeLabs\Glitch\Dumpable;
+use df\user;
 
 class Rdbms implements
     axis\ISchemaProviderAdapter,
@@ -71,7 +69,7 @@ class Rdbms implements
     // Query source
     public function getQuerySourceId()
     {
-        return 'axis://'.$this->_unit->getModel()->getModelName().'/'.ucfirst($this->_unit->getUnitName());
+        return 'axis://' . $this->_unit->getModel()->getModelName() . '/' . ucfirst($this->_unit->getUnitName());
     }
 
     public function getQuerySourceDisplayName()
@@ -208,12 +206,12 @@ class Rdbms implements
 
 
     // Record
-    public function newRecord(array $values=null)
+    public function newRecord(array $values = null)
     {
         return $this->_unit->newRecord($values);
     }
 
-    public function newPartial(array $values=null)
+    public function newPartial(array $values = null)
     {
         return $this->_unit->newPartial($values);
     }
@@ -350,7 +348,7 @@ class Rdbms implements
         return $this->getConnection()->getDatabase()->getTableList();
     }
 
-    public function describeStorage($name=null)
+    public function describeStorage($name = null)
     {
         if ($name === null) {
             $name = $this->_unit->getStorageBackendName();
@@ -386,12 +384,12 @@ class Rdbms implements
         return $this->_unit->getAccessLockDomain();
     }
 
-    public function lookupAccessKey(array $keys, $action=null)
+    public function lookupAccessKey(array $keys, $action = null)
     {
         return $this->_unit->lookupAccessKey($keys, $action);
     }
 
-    public function getDefaultAccess($action=null)
+    public function getDefaultAccess($action = null)
     {
         return $this->_unit->getDefaultAccess($action);
     }

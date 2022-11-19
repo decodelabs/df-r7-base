@@ -6,27 +6,27 @@
 
 namespace df\arch\node;
 
-use df\core;
-use df\aura;
-use df\arch;
-use df\flex;
-use df\link;
-use df\mesh;
-use df\opal;
-use df\user;
-
-use df\aura\html\widget\IContainerWidget;
-use df\aura\html\widget\Field as FieldWidget;
-use df\aura\html\widget\FieldSet as FieldSetWidget;
-use df\aura\view\IContentProvider as ViewContentProvider;
-use df\arch\node\form\State as FormState;
-use df\opal\record\IRecord;
-use df\opal\record\IPartial;
-
 use DecodeLabs\Fluidity\Cast;
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
 use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Terminus\Session;
+use df\arch;
+use df\arch\node\form\State as FormState;
+use df\aura;
+use df\aura\html\widget\Field as FieldWidget;
+
+use df\aura\html\widget\FieldSet as FieldSetWidget;
+use df\aura\html\widget\IContainerWidget;
+use df\aura\view\IContentProvider as ViewContentProvider;
+use df\core;
+use df\flex;
+use df\link;
+use df\mesh;
+
+use df\opal;
+use df\opal\record\IPartial;
+use df\opal\record\IRecord;
+use df\user;
 
 use Stringable;
 
@@ -39,7 +39,7 @@ interface INode extends core\IContextAware, user\IAccessLock, arch\IResponseForc
     public function getCallback(): ?callable;
     public function dispatch();
 
-    public function shouldOptimize(bool $flag=null);
+    public function shouldOptimize(bool $flag = null);
     public function getDispatchMethodName(): ?string;
     public function handleException(\Throwable $e);
 
@@ -60,7 +60,7 @@ interface ITaskNode extends INode
     public function prepareArguments(): array;
 
     public function execute(): void;
-    public function runChild($request, bool $announce=true);
+    public function runChild($request, bool $announce = true);
     public function ensureDfSource();
 }
 
@@ -71,13 +71,13 @@ interface IBuildTaskNode extends ITaskNode
 
 interface ITaskManager extends core\IManager
 {
-    public function launch($request, ?Session $session=null, $user=null, bool $dfSource=false, bool $decoratable=null): ProcessResult;
-    public function launchBackground($request, $user=null, bool $dfSource=false, bool $decoratable=null);
+    public function launch($request, ?Session $session = null, $user = null, bool $dfSource = false, bool $decoratable = null): ProcessResult;
+    public function launchBackground($request, $user = null, bool $dfSource = false, bool $decoratable = null);
     public function launchQuietly($request): void;
     public function invoke($request): void;
     public function initiateStream($request): link\http\IResponse;
-    public function queue($request, string $priority='medium'): flex\IGuid;
-    public function queueAndLaunch($request, ?Session $session=null): ProcessResult;
+    public function queue($request, string $priority = 'medium'): flex\IGuid;
+    public function queueAndLaunch($request, ?Session $session = null): ProcessResult;
     public function queueAndLaunchBackground($request);
 }
 
@@ -102,7 +102,7 @@ interface IRestApiResult extends arch\IProxyResponse
     public function hasException(): bool;
     public function getException(): ?\Throwable;
 
-    public function complete(callable $success, callable $failure=null);
+    public function complete(callable $success, callable $failure = null);
 
     public function setDataProcessor(?callable $processor);
     public function getDataProcessor(): ?callable;
@@ -137,7 +137,7 @@ interface IStoreProvider
 
     public function getStore(
         string $key,
-        mixed $default=null
+        mixed $default = null
     ): mixed;
 
     /**
@@ -158,7 +158,7 @@ interface IFormState extends IStoreProvider
 
     public function getDelegateState(string $id): FormState;
 
-    public function isNew(bool $flag=null);
+    public function isNew(bool $flag = null);
 
     /**
      * @return $this
@@ -193,8 +193,8 @@ interface IFormEventDescriptor
     public function setRedirect($redirect);
     public function getRedirect();
     public function hasRedirect(): bool;
-    public function shouldForceRedirect(bool $flag=null);
-    public function shouldReload(bool $flag=null);
+    public function shouldForceRedirect(bool $flag = null);
+    public function shouldReload(bool $flag = null);
 
     public function setResponse($response);
     public function getResponse();
@@ -231,7 +231,7 @@ interface IActiveForm extends IForm
 {
     public function isNew(): bool;
 
-    public function handleEvent(string $name, array $args=[]): IFormEventDescriptor;
+    public function handleEvent(string $name, array $args = []): IFormEventDescriptor;
 
     public function handleDelegateEvent(
         string $delegateId,
@@ -262,8 +262,8 @@ interface IActiveForm extends IForm
     public function reset(): static;
 
     public function complete(
-        bool|object|array|string $success=true,
-        ?callable $failure=null
+        bool|object|array|string $success = true,
+        ?callable $failure = null
     ): mixed;
 
     public function isComplete(): bool;
@@ -282,7 +282,7 @@ interface IWizard extends IFormNode
     public function setSection(string $section);
     public function getPrevSection(): ?string;
     public function getNextSection(): ?string;
-    public function getSectionData(string $section=null): core\collection\ITree;
+    public function getSectionData(string $section = null): core\collection\ITree;
 }
 
 
@@ -304,7 +304,7 @@ interface IDelegate extends
     public function setRenderContext(
         aura\view\IView $view,
         aura\view\content\WidgetContentProvider $content,
-        bool $isRenderingInline=false
+        bool $isRenderingInline = false
     ): static;
 
     public function setComplete(): void;
@@ -323,14 +323,14 @@ interface IModalDelegate
 
 interface IInlineFieldRenderableDelegate
 {
-    public function renderField(mixed $label=null): FieldWidget;
+    public function renderField(mixed $label = null): FieldWidget;
     public function renderInlineFieldContent(): Markup;
     public function renderFieldContent(FieldWidget $field): void;
 }
 
 interface ISelfContainedRenderableDelegate
 {
-    public function renderFieldSet(mixed $legend=null): FieldSetWidget;
+    public function renderFieldSet(mixed $legend = null): FieldSetWidget;
     public function renderContainer(): Markup;
     public function renderContainerContent(IContainerWidget $fieldSet);
 }
@@ -351,8 +351,8 @@ interface IResultProviderDelegate extends core\constraint\IRequirable, IParentEv
 
 interface ISelectionProviderDelegate extends IResultProviderDelegate
 {
-    public function isForOne(bool $flag=null);
-    public function isForMany(bool $flag=null);
+    public function isForOne(bool $flag = null);
+    public function isForMany(bool $flag = null);
 }
 
 interface ISelectorDelegate extends ISelectionProviderDelegate, IDependencyValueProvider
@@ -404,9 +404,9 @@ interface IDependentDelegate extends opal\query\IFilterConsumer
      */
     public function addDependency(
         mixed $value,
-        ?string $message=null,
-        ?callable $filter=null,
-        ?callable $callback=null
+        ?string $message = null,
+        ?callable $filter = null,
+        ?callable $callback = null
     ): static;
 
     /**
@@ -415,9 +415,9 @@ interface IDependentDelegate extends opal\query\IFilterConsumer
     public function setDependency(
         string $name,
         mixed $value,
-        ?string $message=null,
-        ?callable $filter=null,
-        ?callable $callback=null
+        ?string $message = null,
+        ?callable $filter = null,
+        ?callable $callback = null
     ): static;
 
     public function hasDependency(string $name): bool;

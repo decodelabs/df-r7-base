@@ -5,20 +5,17 @@
  */
 namespace df\apex\models\media\bucket;
 
-use df;
-use df\core;
-use df\apex;
-use df\axis;
-
 use DecodeLabs\Dictum;
+
+use df\axis;
 
 class Unit extends axis\unit\Table
 {
-    const ORDERABLE_FIELDS = [
+    public const ORDERABLE_FIELDS = [
         'name', 'slug', 'creationDate'
     ];
 
-    const DEFAULT_ORDER = 'name ASC';
+    public const DEFAULT_ORDER = 'name ASC';
 
     protected function createSchema($schema)
     {
@@ -30,7 +27,7 @@ class Unit extends axis\unit\Table
         $schema->addField('files', 'OneToMany', 'file', 'bucket');
     }
 
-    public function ensureSlugExists($slug, array $values=null)
+    public function ensureSlugExists($slug, array $values = null)
     {
         if (!$values) {
             $value = [];

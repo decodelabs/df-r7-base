@@ -6,11 +6,10 @@
 
 namespace df\core\validate\field;
 
-use df;
-use df\core;
-use df\flex;
-
 use DecodeLabs\R7\Legacy;
+use df\core;
+
+use df\flex;
 
 class Password extends Base implements core\validate\IPasswordField
 {
@@ -47,7 +46,7 @@ class Password extends Base implements core\validate\IPasswordField
         return $this->_minStrength;
     }
 
-    public function shouldCheckStrength(bool $flag=null)
+    public function shouldCheckStrength(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_checkStrength = $flag;
@@ -57,7 +56,7 @@ class Password extends Base implements core\validate\IPasswordField
         return $this->_checkStrength;
     }
 
-    public function shouldHash(bool $flag=null)
+    public function shouldHash(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_shouldHash = $flag;

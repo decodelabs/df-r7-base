@@ -5,13 +5,10 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
+use DecodeLabs\Glitch\Dumpable;
 
 use DecodeLabs\Spectrum\Color;
-use DecodeLabs\Glitch\Dumpable;
+use df\arch;
 
 class ColorPicker extends Base implements IDataEntryWidget, Dumpable
 {
@@ -21,10 +18,10 @@ class ColorPicker extends Base implements IDataEntryWidget, Dumpable
     use TWidget_VisualInput;
     use TWidget_DataListEntry;
 
-    const PRIMARY_TAG = 'input.color.picker';
-    const ARRAY_INPUT = false;
+    public const PRIMARY_TAG = 'input.color.picker';
+    public const ARRAY_INPUT = false;
 
-    public function __construct(arch\IContext $context, $name, $value=null)
+    public function __construct(arch\IContext $context, $name, $value = null)
     {
         parent::__construct($context);
 

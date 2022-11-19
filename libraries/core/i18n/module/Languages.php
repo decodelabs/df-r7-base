@@ -5,11 +5,9 @@
  */
 namespace df\core\i18n\module;
 
-use df\core;
-
 class Languages extends Base implements ILanguagesModule
 {
-    const MODULE_NAME = 'languages';
+    public const MODULE_NAME = 'languages';
 
     public function getName($id)
     {
@@ -21,7 +19,7 @@ class Languages extends Base implements ILanguagesModule
         if (!empty($parts)) {
             $temp = $id;
 
-            $id .= '_'.strtoupper((string)array_shift($parts));
+            $id .= '_' . strtoupper((string)array_shift($parts));
 
             if (!isset($this->_data[$id])) {
                 $id = $temp;
@@ -35,7 +33,7 @@ class Languages extends Base implements ILanguagesModule
         return $id;
     }
 
-    public function getList(array $ids=null)
+    public function getList(array $ids = null)
     {
         $this->_loadData();
         $output = [];

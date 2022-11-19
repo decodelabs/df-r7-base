@@ -5,20 +5,17 @@
  */
 namespace df\core\constraint;
 
-use df;
-use df\core;
-
 ## Required
 interface IRequirable
 {
-    public function isRequired(bool $flag=null);
+    public function isRequired(bool $flag = null);
 }
 
 trait TRequirable
 {
     protected $_isRequired = false;
 
-    public function isRequired(bool $flag=null)
+    public function isRequired(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isRequired = $flag;
@@ -34,14 +31,14 @@ trait TRequirable
 ## Disabled
 interface IDisableable
 {
-    public function isDisabled(bool $flag=null);
+    public function isDisabled(bool $flag = null);
 }
 
 trait TDisableable
 {
     protected $_isDisabled = false;
 
-    public function isDisabled(bool $flag=null)
+    public function isDisabled(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isDisabled = $flag;
@@ -56,14 +53,14 @@ trait TDisableable
 ## Optional
 interface IOptional
 {
-    public function isOptional(bool $flag=null);
+    public function isOptional(bool $flag = null);
 }
 
 trait TOptional
 {
     protected $_isOptional = false;
 
-    public function isOptional(bool $flag=null)
+    public function isOptional(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isOptional = $flag;
@@ -79,14 +76,14 @@ trait TOptional
 ## Nullable
 interface INullable
 {
-    public function isNullable(bool $flag=null);
+    public function isNullable(bool $flag = null);
 }
 
 trait TNullable
 {
     protected $_isNullable = false;
 
-    public function isNullable(bool $flag=null)
+    public function isNullable(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isNullable = $flag;
@@ -102,14 +99,14 @@ trait TNullable
 ## Read only
 interface IReadOnly
 {
-    public function isReadOnly(bool $flag=null);
+    public function isReadOnly(bool $flag = null);
 }
 
 trait TReadOnly
 {
     protected $_isReadOnly = false;
 
-    public function isReadOnly(bool $flag=null)
+    public function isReadOnly(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_isReadOnly = $flag;

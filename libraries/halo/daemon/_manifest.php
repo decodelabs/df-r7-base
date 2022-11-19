@@ -5,11 +5,9 @@
  */
 namespace df\halo\daemon;
 
-use df;
-use df\core;
-use df\halo;
-
 use DecodeLabs\Terminus\Session;
+
+use df\core;
 
 interface IDaemon extends core\IContextAware
 {

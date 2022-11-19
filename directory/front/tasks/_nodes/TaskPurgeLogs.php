@@ -6,12 +6,9 @@
 
 namespace df\apex\directory\front\tasks\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-
 use DecodeLabs\Terminus as Cli;
+
+use df\arch;
 
 class TaskPurgeLogs extends arch\node\Task
 {
@@ -51,6 +48,6 @@ class TaskPurgeLogs extends arch\node\Task
         } catch (\Exception $e) {
         }
 
-        Cli::success($count.' logs');
+        Cli::success($count . ' logs');
     }
 }

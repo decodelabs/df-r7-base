@@ -5,17 +5,16 @@
  */
 namespace df\apex\models\task\invoke;
 
-use df;
-use df\core;
-use df\apex;
-use df\axis;
 use df\arch;
+use df\axis;
+use df\core;
 
-class Unit extends axis\unit\Table {
+class Unit extends axis\unit\Table
+{
+    public const BROADCAST_HOOK_EVENTS = false;
 
-    const BROADCAST_HOOK_EVENTS = false;
-
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('token', 'Text', 32);
         $schema->addField('expiryDate', 'Date:Time');
         $schema->addField('request', 'Text', 1024);
@@ -23,7 +22,8 @@ class Unit extends axis\unit\Table {
             ->isNullable(true);
     }
 
-    public function prepareTask($request, core\time\IDate $expiryDate=null) {
+    public function prepareTask($request, core\time\IDate $expiryDate = null)
+    {
         $request = arch\Request::factory($request);
         $token = md5(uniqid('task', true));
         $parts = explode('://', (string)$request, 2);
@@ -38,7 +38,8 @@ class Unit extends axis\unit\Table {
         return $token;
     }
 
-    public function authorize($token) {
+    public function authorize($token)
+    {
         $this->purgeTasks();
         $invokeKey = md5(uniqid('k', true));
 
@@ -52,7 +53,7 @@ class Unit extends axis\unit\Table {
             ->where('invokeKey', '=', $invokeKey)
             ->toRow();
 
-        if(!$invoke) {
+        if (!$invoke) {
             return null;
         }
 
@@ -60,7 +61,8 @@ class Unit extends axis\unit\Table {
         return $invoke;
     }
 
-    public function purgeTasks() {
+    public function purgeTasks()
+    {
         $this->delete()
             ->where('expiryDate', '<', 'now')
             ->execute();

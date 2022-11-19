@@ -6,29 +6,29 @@
 
 namespace df\arch\node;
 
-use df\core;
-use df\arch;
-use df\aura;
-use df\opal;
-use df\link;
-
-use df\arch\scaffold\Loader as ScaffoldLoader;
-use df\arch\node\IFormEventDescriptor as EventDescriptor;
-use df\arch\node\form\State as FormState;
-use df\aura\view\content\WidgetContentProvider;
-use df\aura\html\widget\Field as FieldWidget;
-use df\aura\html\widget\FieldSet as FieldSetWidget;
-use df\core\collection\IInputTree as InputTree;
-use df\link\http\response\Redirect;
-use df\opal\record\IRecord;
-use df\opal\record\IPartial;
-use df\neon\bucket\IBucket;
-use df\apex\models\media\bucket\Record as BucketRecord;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Tagged\Markup;
+use df\apex\models\media\bucket\Record as BucketRecord;
+
+use df\arch;
+use df\arch\node\form\State as FormState;
+use df\arch\node\IFormEventDescriptor as EventDescriptor;
+use df\arch\scaffold\Loader as ScaffoldLoader;
+use df\aura;
+use df\aura\html\widget\Field as FieldWidget;
+use df\aura\html\widget\FieldSet as FieldSetWidget;
+use df\aura\view\content\WidgetContentProvider;
+use df\core;
+use df\core\collection\IInputTree as InputTree;
+use df\link;
+use df\link\http\response\Redirect;
+
+use df\neon\bucket\IBucket;
+use df\opal;
+use df\opal\record\IPartial;
+use df\opal\record\IRecord;
 
 use Stringable;
 
@@ -112,12 +112,12 @@ trait TForm
 
         $parts[] = ucfirst($topName);
         $state = $this->_state->getDelegateState($id);
-        $mainId = $this->_getDelegateIdPrefix().$id;
+        $mainId = $this->_getDelegateIdPrefix() . $id;
 
-        $class = 'df\\apex\\directory\\'.$area.'\\'.implode('\\', $parts);
+        $class = 'df\\apex\\directory\\' . $area . '\\' . implode('\\', $parts);
 
         if (!class_exists($class)) {
-            $class = 'df\\apex\\directory\\shared\\'.implode('\\', $parts);
+            $class = 'df\\apex\\directory\\shared\\' . implode('\\', $parts);
 
             if (!class_exists($class)) {
                 try {
@@ -128,7 +128,7 @@ trait TForm
                 }
 
                 throw Exceptional::{'df/arch/node/Delegate,NotFound'}(
-                    'Delegate '.$name.' could not be found at ~'.$area.'/'.$path
+                    'Delegate ' . $name . ' could not be found at ~' . $area . '/' . $path
                 );
             }
         }
@@ -140,7 +140,7 @@ trait TForm
     {
         if (!class_exists($class)) {
             throw Exceptional::{'df/arch/node/Delegate,NotFound'}(
-                'Cannot direct load delegate '.$id.' - class not found'
+                'Cannot direct load delegate ' . $id . ' - class not found'
             );
         }
 
@@ -148,7 +148,7 @@ trait TForm
             $this->context,
             $this->_state->getDelegateState($id),
             $this->event,
-            $this->_getDelegateIdPrefix().$id
+            $this->_getDelegateIdPrefix() . $id
         );
     }
 
@@ -160,7 +160,7 @@ trait TForm
             $this->context,
             $this->_state->getDelegateState($id),
             $this->event,
-            $this->_getDelegateIdPrefix().$id
+            $this->_getDelegateIdPrefix() . $id
         );
     }
 
@@ -179,7 +179,7 @@ trait TForm
 
         if (!isset($this->_delegates[$top])) {
             throw Exceptional::{'df/arch/node/Delegate,NotFound'}(
-                'Delegate '.$top.' could not be found'
+                'Delegate ' . $top . ' could not be found'
             );
         }
 
@@ -231,7 +231,7 @@ trait TForm
 
         if (!isset($this->_delegates[$top])) {
             throw Exceptional::{'df/arch/node/Delegate,NotFound'}(
-                'Delegate '.$top.' could not be found'
+                'Delegate ' . $top . ' could not be found'
             );
         }
 
@@ -252,7 +252,7 @@ trait TForm
     protected function _getDelegateIdPrefix(): string
     {
         if ($this instanceof IDelegate) {
-            return $this->_delegateId.'.';
+            return $this->_delegateId . '.';
         }
 
         return '';
@@ -323,7 +323,7 @@ trait TForm
 
     public function getStore(
         string $key,
-        mixed $default=null
+        mixed $default = null
     ): mixed {
         return $this->_state->getStore($key, $default);
     }
@@ -378,8 +378,8 @@ trait TForm
     }
 
     public function complete(
-        bool|object|array|string $success=true,
-        ?callable $failure=null
+        bool|object|array|string $success = true,
+        ?callable $failure = null
     ): mixed {
         $isDirect = is_bool($success);
 
@@ -429,8 +429,8 @@ trait TForm
     }
 
     protected function _getCompleteRedirect(
-        ?string $default=null,
-        bool $success=true
+        ?string $default = null,
+        bool $success = true
     ): Redirect {
         return Legacy::$http->defaultRedirect(
             $default,
@@ -446,14 +446,14 @@ trait TForm
         string $name,
         string ...$args
     ): string {
-        $output = $this->_getDelegateIdPrefix().$name;
+        $output = $this->_getDelegateIdPrefix() . $name;
 
         if (!empty($args)) {
             foreach ($args as $i => $arg) {
-                $args[$i] = '\''.addslashes($arg).'\'';
+                $args[$i] = '\'' . addslashes($arg) . '\'';
             }
 
-            $output .= '('.implode(',', $args).')';
+            $output .= '(' . implode(',', $args) . ')';
         }
 
         return $output;
@@ -464,7 +464,7 @@ trait TForm
     // Events
     public function handleEvent(
         string $name,
-        array $args=[]
+        array $args = []
     ): EventDescriptor {
         $this->event->setTarget(
             $this instanceof IDelegate ?
@@ -474,14 +474,14 @@ trait TForm
             ->setEventName($name)
             ->setEventArgs($args);
 
-        $func = 'on'.ucfirst($name).'Event';
+        $func = 'on' . ucfirst($name) . 'Event';
 
         if (!method_exists($this, $func)) {
             $func = 'onDefaultEvent';
 
             if (!method_exists($this, $func)) {
                 throw Exceptional::{'df/arch/node/Event,Definition'}(
-                    'Event '.$name.' does not have a handler'
+                    'Event ' . $name . ' does not have a handler'
                 );
             }
         }
@@ -616,7 +616,7 @@ trait TForm_ModalDelegate
 
         if (!in_array($mode, $modes)) {
             throw Exceptional::InvalidArgument(
-                'Mode '.$mode.' is not recognised in this form'
+                'Mode ' . $mode . ' is not recognised in this form'
             );
         }
 
@@ -640,7 +640,7 @@ trait TForm_ModalDelegate
         $this->_state->setStore('mode', $mode);
     }
 
-    protected function getMode(?string $default=null): string
+    protected function getMode(?string $default = null): string
     {
         if ($default === null) {
             $default = $this->getDefaultMode();
@@ -652,7 +652,7 @@ trait TForm_ModalDelegate
     protected function switchMode(
         string|array $from,
         string $to,
-        ?callable $do=null
+        ?callable $do = null
     ): void {
         if (!is_array($from)) {
             $from = [$from];
@@ -683,7 +683,7 @@ trait TForm_ModalDelegate
 
         if (!$func || !method_exists($this, $func)) {
             throw Exceptional::{'df/arch/node/Delegate,Definition'}(
-                'Selector delegate has no render handler for '.$mode.' mode'
+                'Selector delegate has no render handler for ' . $mode . ' mode'
             );
         }
 
@@ -695,7 +695,7 @@ trait TForm_ModalDelegate
 // Inline field renderable
 trait TForm_InlineFieldRenderableDelegate
 {
-    public function renderField(mixed $label=null): FieldWidget
+    public function renderField(mixed $label = null): FieldWidget
     {
         $this->renderFieldContent(
             $output = $this->html->field($label)
@@ -715,7 +715,7 @@ trait TForm_InlineFieldRenderableDelegate
 // Self contained renderable
 trait TForm_SelfContainedRenderableDelegate
 {
-    public function renderFieldSet(mixed $legend=null): FieldSetWidget
+    public function renderFieldSet(mixed $legend = null): FieldSetWidget
     {
         $this->renderContainerContent(
             $output = $this->html->fieldSet($legend)
@@ -747,7 +747,7 @@ trait TForm_SelectorDelegate
      * @return ($flag is null ? bool : $this)
      */
     public function isForOne(
-        ?bool $flag=null
+        ?bool $flag = null
     ): bool|static {
         if ($flag !== null) {
             $this->_isForMany = !$flag;
@@ -761,7 +761,7 @@ trait TForm_SelectorDelegate
      * @return ($flag is null ? bool : $this)
      */
     public function isForMany(
-        ?bool $flag=null
+        ?bool $flag = null
     ): bool|static {
         if ($flag !== null) {
             $this->_isForMany = $flag;
@@ -929,7 +929,7 @@ trait TForm_ValueListSelectorDelegate
     protected function onClearEvent(): mixed
     {
         unset($this->values->selected);
-        return Legacy::$http->redirect('#'.$this->elementId('selector'));
+        return Legacy::$http->redirect('#' . $this->elementId('selector'));
     }
 
     protected function onRemoveEvent(string $id): mixed
@@ -951,9 +951,9 @@ trait TForm_DependentDelegate
 
     public function addDependency(
         mixed $value,
-        ?string $message=null,
-        ?callable $filter=null,
-        ?callable $callback=null
+        ?string $message = null,
+        ?callable $filter = null,
+        ?callable $callback = null
     ): static {
         if ($value instanceof IDelegate) {
             $name = $value->getDelegateKey();
@@ -967,9 +967,9 @@ trait TForm_DependentDelegate
     public function setDependency(
         string $name,
         mixed $value,
-        ?string $message=null,
-        ?callable $filter=null,
-        ?callable $callback=null
+        ?string $message = null,
+        ?callable $filter = null,
+        ?callable $callback = null
     ): static {
         $this->_dependencies[$name] = [
             'value' => $value,
@@ -1032,7 +1032,9 @@ trait TForm_DependentDelegate
     {
         if (!$query instanceof opal\query\IWhereClauseQuery) {
             throw Exceptional::Logic(
-                'Filter query is not a where clause factory', null, $query
+                'Filter query is not a where clause factory',
+                null,
+                $query
             );
         }
 
@@ -1100,8 +1102,8 @@ trait TForm_DependentDelegate
             if ($dep['callback'] && $isResolved) {
                 $doCallback = $hasChanged = false;
 
-                if ($this->hasStore('__dependency:'.$name)) {
-                    @list($wasResolved, $lastValue) = $this->getStore('__dependency:'.$name);
+                if ($this->hasStore('__dependency:' . $name)) {
+                    @list($wasResolved, $lastValue) = $this->getStore('__dependency:' . $name);
                     $hasChanged = $value != $lastValue;
 
                     if (!$wasResolved || $hasChanged) {
@@ -1123,7 +1125,7 @@ trait TForm_DependentDelegate
             $this->_dependencies[$name]['resolved'] = $isResolved;
 
             if ($dep['callback']) {
-                $this->setStore('__dependency:'.$name, [$isResolved, $value]);
+                $this->setStore('__dependency:' . $name, [$isResolved, $value]);
             }
         }
     }
@@ -1142,7 +1144,7 @@ trait TForm_MediaBucketAwareSelector
      */
     public function setBucket(
         string|BucketRecord $bucket,
-        array $values=null
+        array $values = null
     ): static {
         $this->_bucket = $bucket;
         $this->_bucketData = $values;

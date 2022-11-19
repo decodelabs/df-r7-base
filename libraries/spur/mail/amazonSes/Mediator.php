@@ -5,20 +5,18 @@
  */
 namespace df\spur\mail\amazonSes;
 
-use df;
-use df\core;
-use df\spur;
+use DecodeLabs\Exceptional;
 use df\flow;
 use df\link;
 
-use DecodeLabs\Exceptional;
+use df\spur;
 use Psr\Http\Message\ResponseInterface;
 
 class Mediator implements IMediator
 {
     use spur\TGuzzleMediator;
 
-    const ALGORITHM = 'AWS4-HMAC-SHA256';
+    public const ALGORITHM = 'AWS4-HMAC-SHA256';
 
     protected $_accessKey;
     protected $_secretKey;
@@ -30,7 +28,7 @@ class Mediator implements IMediator
     protected $_date;
     protected $_amzDate;
 
-    public function __construct($url=null, $accessKey=null, $secretKey=null)
+    public function __construct($url = null, $accessKey = null, $secretKey = null)
     {
         if ($url !== null) {
             $this->setUrl($url);
@@ -59,12 +57,12 @@ class Mediator implements IMediator
 
     public function getUrl()
     {
-        return link\http\Url::factory('https://'.$this->getHost());
+        return link\http\Url::factory('https://' . $this->getHost());
     }
 
     public function getHost(): string
     {
-        return $this->_service.'.'.$this->_region.'.'.$this->_domain;
+        return $this->_service . '.' . $this->_region . '.' . $this->_domain;
     }
 
     // Keys
@@ -165,18 +163,18 @@ class Mediator implements IMediator
 
         $i = 1;
         foreach ($message->getToAddresses() as $address) {
-            $params['Destination.ToAddresses.member.'.$i] = (string)$address;
+            $params['Destination.ToAddresses.member.' . $i] = (string)$address;
             $i++;
         }
 
         $i = 1;
         foreach ($message->getCcAddresses() as $address) {
-            $params['Destination.CcAddresses.member.'.$i] = (string)$address;
+            $params['Destination.CcAddresses.member.' . $i] = (string)$address;
         }
 
         $i = 1;
         foreach ($message->getBccAddresses() as $address) {
-            $params['Destination.BccAddresses.member.'.$i] = (string)$address;
+            $params['Destination.BccAddresses.member.' . $i] = (string)$address;
         }
 
         if ($address = $message->getReplyToAddress()) {
@@ -233,10 +231,13 @@ class Mediator implements IMediator
 
 
     // IO
-    public function requestXml($method, array $data=[], array $headers=[])
+    public function requestXml($method, array $data = [], array $headers = [])
     {
         $response = $this->sendRequest($this->createRequest(
-            $method, '', $data, $headers
+            $method,
+            '',
+            $data,
+            $headers
         ));
 
         return simplexml_load_string((string)$response->getBody());
@@ -274,40 +275,40 @@ class Mediator implements IMediator
 
         $headers = $request->getHeaders();
         $canonicalHeaders =
-            'content-type:'.$headers->get('content-type')."\n".
-            'host:'.$this->getHost()."\n".
-            'x-amz-date:'.$this->_amzDate."\n";
+            'content-type:' . $headers->get('content-type') . "\n" .
+            'host:' . $this->getHost() . "\n" .
+            'x-amz-date:' . $this->_amzDate . "\n";
 
         $signedHeaders = 'content-type;host;x-amz-date';
         $hash = hash('sha256', $request->getBodyDataString());
 
         // Task 1
         $canonicalRequest =
-            strtoupper($request->getMethod())."\n".
-            '/'."\n".
+            strtoupper($request->getMethod()) . "\n" .
+            '/' . "\n" .
             //$canonicalParameters."\n".
-            ''."\n".
-            $canonicalHeaders."\n".
-            $signedHeaders."\n".
+            '' . "\n" .
+            $canonicalHeaders . "\n" .
+            $signedHeaders . "\n" .
             $hash;
 
 
         // Task 2
-        $scope = $this->_date.'/'.$this->_region.'/email/aws4_request';
+        $scope = $this->_date . '/' . $this->_region . '/email/aws4_request';
         $signatureString =
-            self::ALGORITHM."\n".
-            $this->_amzDate."\n".
-            $scope."\n".
+            self::ALGORITHM . "\n" .
+            $this->_amzDate . "\n" .
+            $scope . "\n" .
             hash('sha256', $canonicalRequest);
 
         // Task 3
-        $dateHmac = hash_hmac('sha256', $this->_date, 'AWS4'.$this->_secretKey, true);
+        $dateHmac = hash_hmac('sha256', $this->_date, 'AWS4' . $this->_secretKey, true);
         $regionHmac = hash_hmac('sha256', $this->_region, $dateHmac, true);
         $serviceHmac = hash_hmac('sha256', 'email', $regionHmac, true);
         $signatureKey = hash_hmac('sha256', 'aws4_request', $serviceHmac, true);
         $signature = hash_hmac('sha256', $signatureString, $signatureKey);
 
-        $auth = self::ALGORITHM.' Credential='.$this->_accessKey.'/'.$scope.', SignedHeaders='.$signedHeaders.', Signature='.$signature;
+        $auth = self::ALGORITHM . ' Credential=' . $this->_accessKey . '/' . $scope . ', SignedHeaders=' . $signedHeaders . ', Signature=' . $signature;
         $headers->set('Authorization', $auth);
         $headers->set('x-amz-date', $this->_amzDate);
         //$headers->set('Connection', 'close');

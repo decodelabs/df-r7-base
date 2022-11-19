@@ -5,32 +5,30 @@
  */
 namespace df\apex\models\user\client;
 
-use df;
-use df\core;
+use DecodeLabs\Disciple;
 use df\axis;
-use df\opal;
-use df\user;
+use df\core;
 use df\flex;
 
-use DecodeLabs\Disciple;
+use df\opal;
 
 class Unit extends axis\unit\Table
 {
-    const NAME_FIELD = 'fullName';
+    public const NAME_FIELD = 'fullName';
 
-    const SEARCH_FIELDS = [
+    public const SEARCH_FIELDS = [
         'fullName' => 5,
         'nickName' => 3,
         'email' => 1,
         'id' => 10
     ];
 
-    const ORDERABLE_FIELDS = [
+    public const ORDERABLE_FIELDS = [
         'email', 'fullName', 'nickName', 'status', 'joinDate',
         'loginDate', 'timezone', 'country', 'language'
     ];
 
-    const DEFAULT_ORDER = 'loginDate DESC';
+    public const DEFAULT_ORDER = 'loginDate DESC';
 
     protected function createSchema($schema)
     {
@@ -106,7 +104,7 @@ class Unit extends axis\unit\Table
 
 
     // Actions
-    public function prepareValidator(core\validate\IHandler $validator, opal\record\IRecord $record=null)
+    public function prepareValidator(core\validate\IHandler $validator, opal\record\IRecord $record = null)
     {
         $isNew = !$record || $record->isNew();
 

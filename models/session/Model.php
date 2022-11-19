@@ -5,9 +5,8 @@
  */
 namespace df\apex\models\session;
 
-use df;
-use df\core;
 use df\axis;
+use df\core;
 use df\user;
 
 class Model extends axis\Model implements user\session\IBackend
@@ -55,7 +54,7 @@ class Model extends axis\Model implements user\session\IBackend
         return $output;
     }
 
-    public function touchSession(user\session\Descriptor $descriptor, int $lifeTime=30)
+    public function touchSession(user\session\Descriptor $descriptor, int $lifeTime = 30)
     {
         $values = $descriptor->touchInfo($lifeTime);
 
@@ -139,7 +138,7 @@ class Model extends axis\Model implements user\session\IBackend
             ->toList('bucket');
     }
 
-    public function getBucketsLike(user\session\Descriptor $descriptor, string $bucket, string $operator=null): array
+    public function getBucketsLike(user\session\Descriptor $descriptor, string $bucket, string $operator = null): array
     {
         return $this->node->select('bucket')
             ->where('bucket', $operator ?? 'like', $bucket)
@@ -147,7 +146,7 @@ class Model extends axis\Model implements user\session\IBackend
             ->toList('bucket');
     }
 
-    public function getBucketsForUserLike(string $userId, string $bucket, string $operator=null): array
+    public function getBucketsForUserLike(string $userId, string $bucket, string $operator = null): array
     {
         return $this->node->selectDistinct('bucket')
             ->whereCorrelation('descriptor', 'in', 'id')
@@ -158,7 +157,7 @@ class Model extends axis\Model implements user\session\IBackend
             ->toList('bucket');
     }
 
-    public function getBucketsForAllLike(string $bucket, string $operator=null): array
+    public function getBucketsForAllLike(string $bucket, string $operator = null): array
     {
         return $this->node->selectDistinct('bucket')
             ->where('bucket', $operator ?? 'like', $bucket)
@@ -167,7 +166,7 @@ class Model extends axis\Model implements user\session\IBackend
 
 
 
-    public function clearBucket(user\session\Descriptor $descriptor, string $bucket, string $operator=null)
+    public function clearBucket(user\session\Descriptor $descriptor, string $bucket, string $operator = null)
     {
         $this->node->delete()
             ->where('descriptor', '=', $descriptor->id)
@@ -175,7 +174,7 @@ class Model extends axis\Model implements user\session\IBackend
             ->execute();
     }
 
-    public function clearBucketForUser(string $userId, string $bucket, string $operator=null)
+    public function clearBucketForUser(string $userId, string $bucket, string $operator = null)
     {
         $descriptors = $this->descriptor->select('id')
             ->where('user', '=', $userId)
@@ -189,7 +188,7 @@ class Model extends axis\Model implements user\session\IBackend
         }
     }
 
-    public function clearBucketForAll(string $bucket, string $operator=null)
+    public function clearBucketForAll(string $bucket, string $operator = null)
     {
         $this->node->delete()
             ->where('bucket', $operator ?? '=', $bucket)

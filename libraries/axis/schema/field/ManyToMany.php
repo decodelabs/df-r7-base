@@ -5,12 +5,9 @@
  */
 namespace df\axis\schema\field;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
-
 use DecodeLabs\Exceptional;
+
+use df\axis;
 
 class ManyToMany extends Many implements axis\schema\IManyToManyField
 {
@@ -18,14 +15,14 @@ class ManyToMany extends Many implements axis\schema\IManyToManyField
 
     protected $_isDominant = false;
 
-    protected function _init($targetUnit, $targetField=null)
+    protected function _init($targetUnit, $targetField = null)
     {
         $this->setTargetUnitId($targetUnit);
         $this->setTargetField($targetField);
     }
 
 
-    public function isDominant(bool $flag=null)
+    public function isDominant(bool $flag = null)
     {
         if ($flag !== null) {
             $flag = $flag;
@@ -52,7 +49,7 @@ class ManyToMany extends Many implements axis\schema\IManyToManyField
         // Local ids
         if (!$localPrimaryIndex = $localSchema->getPrimaryIndex()) {
             throw Exceptional::Runtime(
-                'Relation table '.$localUnit->getUnitId().' does not have a primary index'
+                'Relation table ' . $localUnit->getUnitId() . ' does not have a primary index'
             );
         }
 

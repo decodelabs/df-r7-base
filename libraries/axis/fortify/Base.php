@@ -6,14 +6,12 @@
 
 namespace df\axis\fortify;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
-
 use DecodeLabs\Exceptional;
-use DecodeLabs\Terminus as Cli;
 use DecodeLabs\R7\Legacy;
+
+use DecodeLabs\Terminus as Cli;
+use df\axis;
+use df\core;
 
 abstract class Base implements IFortify
 {
@@ -24,7 +22,7 @@ abstract class Base implements IFortify
 
     public static function loadAll(axis\IUnit $unit): \Generator
     {
-        $path = 'apex/models/'.$unit->getModel()->getModelName().'/'.$unit->getUnitName().'/fortify';
+        $path = 'apex/models/' . $unit->getModel()->getModelName() . '/' . $unit->getUnitName() . '/fortify';
 
         foreach (Legacy::getLoader()->lookupClassList($path, false) as $name => $class) {
             if (!class_exists($class)) {
@@ -46,11 +44,11 @@ abstract class Base implements IFortify
         $modelName = $unit->getModel()->getModelName();
         $unitName = $unit->getUnitName();
 
-        $class = 'df\\apex\\models\\'.$modelName.'\\'.$unitName.'\\fortify\\'.ucfirst($name);
+        $class = 'df\\apex\\models\\' . $modelName . '\\' . $unitName . '\\fortify\\' . ucfirst($name);
 
         if (!class_exists($class)) {
             throw Exceptional::NotFound(
-                'Unit fortify task '.$modelName.'/'.$unitName.'/'.ucfirst($name).' could not be found'
+                'Unit fortify task ' . $modelName . '/' . $unitName . '/' . ucfirst($name) . ' could not be found'
             );
         }
 

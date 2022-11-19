@@ -5,15 +5,14 @@
  */
 namespace df\opal\rdbms\schema\field;
 
-use df\core;
-use df\opal;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\opal;
 
 abstract class Base implements opal\rdbms\schema\IField, Dumpable
 {
-    const DEFAULT_VALUE = '';
+    public const DEFAULT_VALUE = '';
 
     use opal\schema\TField;
 
@@ -93,11 +92,11 @@ abstract class Base implements opal\rdbms\schema\IField, Dumpable
                 break;
         }
 
-        $class = 'df\\opal\\rdbms\\schema\\field\\'.$classType;
+        $class = 'df\\opal\\rdbms\\schema\\field\\' . $classType;
 
         if (!class_exists($class)) {
             throw Exceptional::UnexpectedValue(
-                'Field type '.$type.' is not currently supported'
+                'Field type ' . $type . ' is not currently supported'
             );
         }
 
@@ -227,7 +226,7 @@ abstract class Base implements opal\rdbms\schema\IField, Dumpable
         try {
             return $this->toString();
         } catch (\Throwable $e) {
-            return $this->_name.' '.strtoupper($this->_type);
+            return $this->_name . ' ' . strtoupper($this->_type);
         }
     }
 

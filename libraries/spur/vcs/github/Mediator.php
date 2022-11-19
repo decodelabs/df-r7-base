@@ -5,32 +5,30 @@
  */
 namespace df\spur\vcs\github;
 
-use df;
-use df\core;
-use df\spur;
-use df\link;
-use df\flex;
-
 use DecodeLabs\Glitch\Dumpable;
+use df\flex;
+use df\link;
+
+use df\spur;
 
 class Mediator implements IMediator, Dumpable
 {
     use spur\TGuzzleMediator;
 
-    const BASE_URL = 'https://api.github.com/';
-    const API_VERSION = 'v3';
+    public const BASE_URL = 'https://api.github.com/';
+    public const API_VERSION = 'v3';
 
 
     // Users
     public function getUser($username)
     {
-        $data = $this->requestJson('get', 'users/'.rawurlencode($username));
+        $data = $this->requestJson('get', 'users/' . rawurlencode($username));
         return new Profile($this, $data);
     }
 
     public function getUserOrganizations($username)
     {
-        $data = $this->requestJson('get', 'users/'.rawurlencode($username).'/orgs');
+        $data = $this->requestJson('get', 'users/' . rawurlencode($username) . '/orgs');
         $output = [];
 
         foreach ($data as $org) {
@@ -42,7 +40,7 @@ class Mediator implements IMediator, Dumpable
 
     public function getFollowersOf($username)
     {
-        $data = $this->requestJson('get', 'users/'.rawurlencode($username).'/followers');
+        $data = $this->requestJson('get', 'users/' . rawurlencode($username) . '/followers');
         $output = [];
 
         foreach ($data as $user) {
@@ -54,7 +52,7 @@ class Mediator implements IMediator, Dumpable
 
     public function getFollowedBy($username)
     {
-        $data = $this->requestJson('get', 'users/'.rawurlencode($username).'/following');
+        $data = $this->requestJson('get', 'users/' . rawurlencode($username) . '/following');
         $output = [];
 
         foreach ($data as $user) {
@@ -66,7 +64,7 @@ class Mediator implements IMediator, Dumpable
 
     public function getUserRepositories($username)
     {
-        $data = $this->requestJson('get', 'users/'.rawurlencode($username).'/repos', [
+        $data = $this->requestJson('get', 'users/' . rawurlencode($username) . '/repos', [
             'type' => 'all',
             'sort' => 'full_name',
             'direction' => 'asc'
@@ -82,7 +80,7 @@ class Mediator implements IMediator, Dumpable
 
     public function getUserOwnedRepositories($username)
     {
-        $data = $this->requestJson('get', 'users/'.rawurlencode($username).'/repos', [
+        $data = $this->requestJson('get', 'users/' . rawurlencode($username) . '/repos', [
             'type' => 'owner',
             'sort' => 'full_name',
             'direction' => 'asc'
@@ -98,7 +96,7 @@ class Mediator implements IMediator, Dumpable
 
     public function getUserWatchedRespositories($username)
     {
-        $data = $this->requestJson('get', 'users/'.rawurlencode($username).'/watched');
+        $data = $this->requestJson('get', 'users/' . rawurlencode($username) . '/watched');
         $output = [];
 
         foreach ($data as $repo) {
@@ -110,7 +108,7 @@ class Mediator implements IMediator, Dumpable
 
     public function getUserGists($username)
     {
-        $data = $this->requestJson('get', 'users/'.rawurlencode($username).'/gists');
+        $data = $this->requestJson('get', 'users/' . rawurlencode($username) . '/gists');
         $output = [];
 
         foreach ($data as $gist) {
@@ -122,7 +120,7 @@ class Mediator implements IMediator, Dumpable
 
     public function getUserKeys($username)
     {
-        $data = $this->requestJson('get', 'users/'.rawurlencode($username).'/keys');
+        $data = $this->requestJson('get', 'users/' . rawurlencode($username) . '/keys');
         $output = [];
 
         foreach ($data as $key) {
@@ -136,13 +134,13 @@ class Mediator implements IMediator, Dumpable
     // Organizations
     public function getOrganization($name)
     {
-        $data = $this->requestJson('get', 'orgs/'.rawurlencode($name));
+        $data = $this->requestJson('get', 'orgs/' . rawurlencode($name));
         return new Organization($this, $data);
     }
 
     public function getOrganizationRepositories($name)
     {
-        $data = $this->requestJson('get', 'orgs/'.rawurlencode($name).'/repos', [
+        $data = $this->requestJson('get', 'orgs/' . rawurlencode($name) . '/repos', [
             'type' => 'all'
         ]);
         $output = [];
@@ -159,14 +157,14 @@ class Mediator implements IMediator, Dumpable
     public function getRepository($name)
     {
         list($username, $name) = explode('/', $name, 2);
-        $data = $this->requestJson('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name));
+        $data = $this->requestJson('get', 'repos/' . rawurlencode($username) . '/' . rawurlencode($name));
         return new Repository($this, $data);
     }
 
     public function getRepositoryBranches($name)
     {
         list($username, $name) = explode('/', $name, 2);
-        $data = $this->requestJson('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/branches');
+        $data = $this->requestJson('get', 'repos/' . rawurlencode($username) . '/' . rawurlencode($name) . '/branches');
         $output = [];
 
         foreach ($data as $branch) {
@@ -179,7 +177,7 @@ class Mediator implements IMediator, Dumpable
     public function getRepositoryBranch($name, $branchName)
     {
         list($username, $name) = explode('/', $name, 2);
-        $data = $this->requestJson('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/branches/'.rawurlencode($branchName));
+        $data = $this->requestJson('get', 'repos/' . rawurlencode($username) . '/' . rawurlencode($name) . '/branches/' . rawurlencode($branchName));
         return new Branch($this, $data);
     }
 
@@ -187,7 +185,7 @@ class Mediator implements IMediator, Dumpable
     {
         list($username, $name) = explode('/', $name, 2);
 
-        $data = $this->_getPagedData('repos/'.rawurlencode($username).'/'.rawurlencode($name).'/tags');
+        $data = $this->_getPagedData('repos/' . rawurlencode($username) . '/' . rawurlencode($name) . '/tags');
         $output = [];
 
         foreach ($data as $tag) {
@@ -200,7 +198,7 @@ class Mediator implements IMediator, Dumpable
     public function getRepositoryLabels($name)
     {
         list($username, $name) = explode('/', $name, 2);
-        $data = $this->requestJson('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/labels');
+        $data = $this->requestJson('get', 'repos/' . rawurlencode($username) . '/' . rawurlencode($name) . '/labels');
         $output = [];
 
         foreach ($data as $label) {
@@ -213,7 +211,7 @@ class Mediator implements IMediator, Dumpable
     public function getRepositoryReleases($name)
     {
         list($username, $name) = explode('/', $name, 2);
-        $data = $this->requestJson('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/releases');
+        $data = $this->requestJson('get', 'repos/' . rawurlencode($username) . '/' . rawurlencode($name) . '/releases');
         $output = [];
 
         foreach ($data as $release) {
@@ -226,11 +224,11 @@ class Mediator implements IMediator, Dumpable
     public function getRepositoryRelease($name, $id)
     {
         list($username, $name) = explode('/', $name, 2);
-        $data = $this->requestJson('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/releases/'.rawurlencode($id));
+        $data = $this->requestJson('get', 'repos/' . rawurlencode($username) . '/' . rawurlencode($name) . '/releases/' . rawurlencode($id));
         return new Release($this, $data);
     }
 
-    public function getRepositoryWatchers($name, $page=null)
+    public function getRepositoryWatchers($name, $page = null)
     {
         list($username, $name) = explode('/', $name, 2);
 
@@ -238,7 +236,7 @@ class Mediator implements IMediator, Dumpable
             $page = 1;
         }
 
-        $data = $this->requestJson('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/watchers', [
+        $data = $this->requestJson('get', 'repos/' . rawurlencode($username) . '/' . rawurlencode($name) . '/watchers', [
             'page' => $page
         ]);
         $output = [];
@@ -250,7 +248,7 @@ class Mediator implements IMediator, Dumpable
         return $output;
     }
 
-    public function getRepositorySubscribers($name, $page=null)
+    public function getRepositorySubscribers($name, $page = null)
     {
         list($username, $name) = explode('/', $name, 2);
 
@@ -258,7 +256,7 @@ class Mediator implements IMediator, Dumpable
             $page = 1;
         }
 
-        $data = $this->requestJson('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/subscribers', [
+        $data = $this->requestJson('get', 'repos/' . rawurlencode($username) . '/' . rawurlencode($name) . '/subscribers', [
             'page' => $page
         ]);
         $output = [];
@@ -274,12 +272,12 @@ class Mediator implements IMediator, Dumpable
     // Server
     public function createUrl(string $path): link\http\IUrl
     {
-        return link\http\Url::factory(self::BASE_URL.ltrim($path, '/'));
+        return link\http\Url::factory(self::BASE_URL . ltrim($path, '/'));
     }
 
     protected function _prepareRequest(link\http\IRequest $request): link\http\IRequest
     {
-        $request->getHeaders()->set('accept', 'application/vnd.github.'.self::API_VERSION.'+json');
+        $request->getHeaders()->set('accept', 'application/vnd.github.' . self::API_VERSION . '+json');
         return $request;
     }
 

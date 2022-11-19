@@ -5,12 +5,10 @@
  */
 namespace df\flow\mail;
 
-use df;
-use df\core;
-use df\flow;
+use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
+use df\core;
 
 class Address implements IAddress, Dumpable
 {
@@ -20,7 +18,7 @@ class Address implements IAddress, Dumpable
     protected $_address;
     protected $_isValid = null;
 
-    public static function factory($address, $name=null): ?IAddress
+    public static function factory($address, $name = null): ?IAddress
     {
         if ($address === null) {
             return null;
@@ -51,7 +49,7 @@ class Address implements IAddress, Dumpable
         return new self($address, $name);
     }
 
-    public function __construct($address, $name=null)
+    public function __construct($address, $name = null)
     {
         $this->setAddress($address);
         $this->setName($name);
@@ -106,7 +104,7 @@ class Address implements IAddress, Dumpable
         $output = $this->_address;
 
         if (!empty($this->_name)) {
-            $output = '"'.$this->_name.'" <'.$output.'>';
+            $output = '"' . $this->_name . '" <' . $output . '>';
         }
 
         return $output;

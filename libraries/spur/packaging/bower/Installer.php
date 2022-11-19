@@ -5,15 +5,14 @@
  */
 namespace df\spur\packaging\bower;
 
-use df;
+use DecodeLabs\Atlas;
+use DecodeLabs\Exceptional;
+use DecodeLabs\Terminus\Session;
 use df\core;
-use df\spur;
+
 use df\flex;
 use df\fuse;
-
-use DecodeLabs\Atlas;
-use DecodeLabs\Terminus\Session;
-use DecodeLabs\Exceptional;
+use df\spur;
 
 class Installer implements IInstaller
 {
@@ -23,7 +22,7 @@ class Installer implements IInstaller
     protected $_session;
     protected $_resolvers = [];
 
-    public function __construct(Session $session=null)
+    public function __construct(Session $session = null)
     {
         $installPath = fuse\Manager::getAssetPath();
         $this->_installDir = Atlas::dir($installPath);
@@ -37,7 +36,7 @@ class Installer implements IInstaller
         return $this->_installDir;
     }
 
-    public function setCliSession(?Session $session=null)
+    public function setCliSession(?Session $session = null)
     {
         $this->_session = $session;
         return $this;
@@ -84,7 +83,7 @@ class Installer implements IInstaller
         return $this;
     }
 
-    protected function _installPackage(Package $package, $depLevel=0, $depParent=null)
+    protected function _installPackage(Package $package, $depLevel = 0, $depParent = null)
     {
         $output = false;
         $this->_preparePackage($package);
@@ -93,7 +92,7 @@ class Installer implements IInstaller
 
         if ($this->_session) {
             if ($depLevel) {
-                $this->_session->write('|'.str_repeat('--', $depLevel).' ');
+                $this->_session->write('|' . str_repeat('--', $depLevel) . ' ');
 
                 if ($depParent) {
                     $this->_session->write('[');
@@ -108,7 +107,7 @@ class Installer implements IInstaller
         $currentVersion = null;
 
         if ($this->_hasPackage($package)) {
-            $data = flex\Json::fromFile($this->_installDir.'/'.$package->installName.'/.bower.json');
+            $data = flex\Json::fromFile($this->_installDir . '/' . $package->installName . '/.bower.json');
             $currentVersion = $data['version'];
 
             if ($this->_session) {
@@ -145,7 +144,7 @@ class Installer implements IInstaller
         return $output;
     }
 
-    protected function _installDependencies(Package $package, $depLevel=0)
+    protected function _installDependencies(Package $package, $depLevel = 0)
     {
         if (!$data = $this->getPackageBowerData($package)) {
             return;
@@ -170,7 +169,7 @@ class Installer implements IInstaller
 
                     if (!$range->contains($installed->version) && $installed->installName == $depPackage->installName) {
                         throw Exceptional::Runtime(
-                            'Unable to satisfy '.$package->name.' dependencies - version conflict for '.$package->name
+                            'Unable to satisfy ' . $package->name . ' dependencies - version conflict for ' . $package->name
                         );
                     } else {
                         $depPackage = $installed;
@@ -197,7 +196,7 @@ class Installer implements IInstaller
             $name = $name->installName;
         }
 
-        if ($this->_installDir->hasFile($name.'/.bower.json')) {
+        if ($this->_installDir->hasFile($name . '/.bower.json')) {
             return true;
         }
 
@@ -206,7 +205,7 @@ class Installer implements IInstaller
                 continue;
             }
 
-            $data = flex\Json::fileToTree($dir.'/.bower.json');
+            $data = flex\Json::fileToTree($dir . '/.bower.json');
 
             if ($name == $data['name']) {
                 return true;
@@ -222,7 +221,7 @@ class Installer implements IInstaller
             $name = $name->installName;
         }
 
-        return $this->_installDir->hasFile($name.'/.bower.json');
+        return $this->_installDir->hasFile($name . '/.bower.json');
     }
 
     public function getInstalledPackages()
@@ -231,7 +230,7 @@ class Installer implements IInstaller
 
         foreach ($this->_installDir->scanDirs() as $dirName => $dir) {
             foreach ($dir->scanDirs() as $subDirName => $subDir) {
-                if ($package = $this->_getPackageInfo($dirName.'/'.$subDirName)) {
+                if ($package = $this->_getPackageInfo($dirName . '/' . $subDirName)) {
                     $output[(string)$subDir] = $package;
                 }
             }
@@ -246,7 +245,7 @@ class Installer implements IInstaller
             $name = $name->installName;
         }
 
-        if ($this->_installDir->hasFile($name.'/.bower.json')) {
+        if ($this->_installDir->hasFile($name . '/.bower.json')) {
             return $this->_getPackageInfo($name);
         }
 
@@ -255,7 +254,7 @@ class Installer implements IInstaller
                 continue;
             }
 
-            $data = flex\Json::fileToTree($dir.'/.bower.json');
+            $data = flex\Json::fileToTree($dir . '/.bower.json');
 
             if ($name == $data['name']) {
                 $package = new Package($dirName, $data['url']);
@@ -274,7 +273,7 @@ class Installer implements IInstaller
             $name = $name->installName;
         }
 
-        $file = $this->_installDir->getFile($name.'/.bower.json');
+        $file = $this->_installDir->getFile($name . '/.bower.json');
 
         if ($file->exists()) {
             $data = flex\Json::fileToTree($file);
@@ -294,7 +293,7 @@ class Installer implements IInstaller
             $name = $name->installName;
         }
 
-        $file = $this->_installDir->getFile($name.'/bower.json');
+        $file = $this->_installDir->getFile($name . '/bower.json');
 
         if ($file->exists()) {
             return flex\Json::fileToTree($file);
@@ -307,7 +306,7 @@ class Installer implements IInstaller
             $name = $name->installName;
         }
 
-        $file = $this->_installDir->getFile($name.'/package.json');
+        $file = $this->_installDir->getFile($name . '/package.json');
 
         if ($file->exists()) {
             return flex\Json::fileToTree($file);
@@ -317,7 +316,7 @@ class Installer implements IInstaller
 
 
     // Resolvers
-    protected function _preparePackage(Package $package, $useRegistry=true)
+    protected function _preparePackage(Package $package, $useRegistry = true)
     {
         if (!strlen($package->source)) {
             $package->source = 'latest';
@@ -328,7 +327,7 @@ class Installer implements IInstaller
         }
 
         if (preg_match('/^([^\/\@#\:]+)\/([^\/\@#\:]+)$/', $package->source)) {
-            $package->source = 'git://github.com/'.$package->source.'.git';
+            $package->source = 'git://github.com/' . $package->source . '.git';
         }
 
 
@@ -380,9 +379,9 @@ class Installer implements IInstaller
                 $package->name = basename($package->url);
             }
 
-            if (is_dir($package->url.'/.git')) {
+            if (is_dir($package->url . '/.git')) {
                 $package->resolver = 'GitFileSystem';
-            } elseif (is_dir($package->url.'/.svn')) {
+            } elseif (is_dir($package->url . '/.svn')) {
                 $package->resolver = 'SvnFileSystem';
             } else {
                 $package->resolver = 'FileSystem';
@@ -425,7 +424,7 @@ class Installer implements IInstaller
 
         if (!$package->resolver) {
             throw Exceptional::Runtime(
-                'No valid resolver could be found for package: '.$package->name
+                'No valid resolver could be found for package: ' . $package->name
             );
         }
 
@@ -450,7 +449,7 @@ class Installer implements IInstaller
                     $versions = $dir->listDirNames();
 
                     if (in_array('latest', $versions)) {
-                        $package->installName = $package->name.'/latest';
+                        $package->installName = $package->name . '/latest';
                     } else {
                         rsort($versions);
 
@@ -462,7 +461,7 @@ class Installer implements IInstaller
                             }
 
                             if (!$range || $range->contains($version)) {
-                                $package->installName = $package->name.'/'.$versionStr;
+                                $package->installName = $package->name . '/' . $versionStr;
                                 break;
                             }
                         }
@@ -472,7 +471,7 @@ class Installer implements IInstaller
 
             if (!$package->installName) {
                 if (!$package->isDependency && ($package->version == '*' || $package->version == 'latest' || !strlen($package->version))) {
-                    $package->installName = $package->name.'/latest';
+                    $package->installName = $package->name . '/latest';
                 } else {
                     if ($range) {
                         $version = $range->getMinorGroupVersion();
@@ -486,15 +485,16 @@ class Installer implements IInstaller
                         }
 
                         $version = $resolver->getTargetVersion(
-                            $package, $this->_cachePath
+                            $package,
+                            $this->_cachePath
                         );
                     }
 
                     if ($version instanceof flex\Version) {
-                        $version = $version->getMajor().'.'.$version->getMinor();
+                        $version = $version->getMajor() . '.' . $version->getMinor();
                     }
 
-                    $package->installName = $package->name.'/'.$version;
+                    $package->installName = $package->name . '/' . $version;
                 }
             }
         }
@@ -510,11 +510,11 @@ class Installer implements IInstaller
             return $this->_resolvers[$name];
         }
 
-        $class = 'df\\spur\\packaging\\bower\\resolver\\'.$name;
+        $class = 'df\\spur\\packaging\\bower\\resolver\\' . $name;
 
         if (!class_exists($class)) {
             throw Exceptional::Logic(
-                $name.' resolver isn\'t done yet'
+                $name . ' resolver isn\'t done yet'
             );
         }
 
@@ -525,7 +525,7 @@ class Installer implements IInstaller
     // Cache
     public function tidyCache()
     {
-        $path = $this->_cachePath.'/packages';
+        $path = $this->_cachePath . '/packages';
 
         if (!is_dir($path)) {
             return $this;
@@ -549,14 +549,16 @@ class Installer implements IInstaller
 
     protected function _extractCache(Package $package)
     {
-        $sourcePath = $this->_cachePath.'/packages/'.$package->cacheFileName;
+        $sourcePath = $this->_cachePath . '/packages/' . $package->cacheFileName;
         $destination = $this->_installDir->getDir($package->installName);
         $destination->delete();
 
         if (is_file($sourcePath)) {
             try {
                 core\archive\Base::extract(
-                    $sourcePath, (string)$destination, true
+                    $sourcePath,
+                    (string)$destination,
+                    true
                 );
             } catch (\Throwable $e) {
                 Atlas::deleteFile($sourcePath);
@@ -566,14 +568,14 @@ class Installer implements IInstaller
             Atlas::copyDir($sourcePath, $destination);
         } else {
             throw Exceptional::Runtime(
-                'Unable to locate fetched package source in cache: '.$package->cacheFileName
+                'Unable to locate fetched package source in cache: ' . $package->cacheFileName
             );
         }
 
         $this->_filterFiles($destination);
 
         flex\Json::toFile(
-            $destination.'/.bower.json',
+            $destination . '/.bower.json',
             [
                 'name' => $package->name,
                 'url' => $package->url,
@@ -589,8 +591,8 @@ class Installer implements IInstaller
         $force = [];
         $ignore = ['.bower.json', '.git', '.svn'];
 
-        if (is_file($destination.'/bower.json')) {
-            $bowerData = flex\Json::fileToTree($destination.'/bower.json');
+        if (is_file($destination . '/bower.json')) {
+            $bowerData = flex\Json::fileToTree($destination . '/bower.json');
             $ignore = array_merge($ignore, $bowerData->ignore->toArray());
 
             if (count($bowerData->main)) {

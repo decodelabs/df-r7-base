@@ -6,11 +6,10 @@
 
 namespace df\axis\schema\constraint;
 
-use df\core;
-use df\opal;
+use DecodeLabs\Glitch\Dumpable;
 use df\axis;
 
-use DecodeLabs\Glitch\Dumpable;
+use df\opal;
 
 class Index implements opal\schema\IIndex, Dumpable
 {
@@ -26,7 +25,7 @@ class Index implements opal\schema\IIndex, Dumpable
     public function __construct(
         axis\schema\ISchema $schema,
         $name,
-        $fields=null
+        $fields = null
     ) {
         $this->_setName($name);
         $this->setFields($fields);

@@ -6,14 +6,14 @@
 
 namespace df\fire;
 
-use df\core;
-use df\aura;
+use DecodeLabs\Exemplar\Serializable as XmlSerializable;
+use DecodeLabs\R7\Nightfire\Block;
+use DecodeLabs\R7\Nightfire\Category;
+
 use df\arch;
 
-use DecodeLabs\R7\Nightfire\Block;
-
-use DecodeLabs\Exemplar\Serializable as XmlSerializable;
-use DecodeLabs\R7\Nightfire\Category;
+use df\aura;
+use df\core;
 
 // Manager
 interface IManager extends core\IManager
@@ -77,7 +77,7 @@ interface ISlotContent extends
     public function setNested(bool $nested): static;
     public function isNested(): bool;
 
-    public function hasChanged(bool $flag=null);
+    public function hasChanged(bool $flag = null);
 
     public function setBlocks(array $blocks);
     public function addBlocks(array $blocks);
@@ -97,7 +97,7 @@ interface ISlotContent extends
 // Layout
 interface ILayoutConfig extends core\IConfig
 {
-    public function getLayoutList(string $area=null): array;
+    public function getLayoutList(string $area = null): array;
     public function getLayoutDefinition(string $id): ILayoutDefinition;
     public function isStaticLayout(string $id): bool;
     public function getStaticLayoutDefinition(string $id): ILayoutDefinition;
@@ -156,7 +156,7 @@ interface ILayoutMap extends aura\view\ILayoutMap
 {
     public function getTheme(): aura\theme\ITheme;
 
-    public function setGenerator(callable $generator=null);
+    public function setGenerator(callable $generator = null);
     public function getGenerator(): ?callable;
 
     public function setEntries(array $entries);

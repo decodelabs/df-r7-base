@@ -5,12 +5,11 @@
  */
 namespace df\core\validate\field;
 
-use df;
 use df\core;
 use df\mint;
 
-class Currency extends Base implements core\validate\ICurrencyField {
-
+class Currency extends Base implements core\validate\ICurrencyField
+{
     use core\validate\TRangeField;
 
     protected $_currency = null;
@@ -18,9 +17,10 @@ class Currency extends Base implements core\validate\ICurrencyField {
     protected $_currencyFieldName = null;
 
 
-// Options
-    public function setCurrency($code) {
-        if($code !== null) {
+    // Options
+    public function setCurrency($code)
+    {
+        if ($code !== null) {
             $code = mint\Currency::normalizeCode($code);
         }
 
@@ -28,21 +28,25 @@ class Currency extends Base implements core\validate\ICurrencyField {
         return $this;
     }
 
-    public function getCurrency() {
+    public function getCurrency()
+    {
         return $this->_currency;
     }
 
-    public function setCurrencyFieldName($name) {
+    public function setCurrencyFieldName($name)
+    {
         $this->_currencyFieldName = $name;
         return $this;
     }
 
-    public function getCurrencyFieldName() {
+    public function getCurrencyFieldName()
+    {
         return $this->_currencyFieldName;
     }
 
-    public function allowSelection(bool $flag=null) {
-        if($flag !== null) {
+    public function allowSelection(bool $flag = null)
+    {
+        if ($flag !== null) {
             $this->_currencySelectable = $flag;
             return $this;
         }
@@ -53,22 +57,23 @@ class Currency extends Base implements core\validate\ICurrencyField {
 
 
 // Validate
-    public function validate() {
+    public function validate()
+    {
         // Sanitize
         $value = $this->_sanitizeValue($this->data->getValue());
 
-        if($this->_currencySelectable && ($currency = $this->data->currency->getValue())) {
+        if ($this->_currencySelectable && ($currency = $this->data->currency->getValue())) {
             $this->_currency = $currency;
         }
 
-        if(!$length = $this->_checkRequired($value)) {
+        if (!$length = $this->_checkRequired($value)) {
             return null;
         }
 
 
 
         // Validate
-        if(!filter_var($value, FILTER_VALIDATE_FLOAT, ['decimal' => true]) && $value !== '0') {
+        if (!filter_var($value, FILTER_VALIDATE_FLOAT, ['decimal' => true]) && $value !== '0') {
             $this->addError('invalid', $this->validator->_(
                 'This is not a valid number'
             ));
@@ -87,10 +92,11 @@ class Currency extends Base implements core\validate\ICurrencyField {
 
 
 // Apply
-    public function applyValueTo(&$record, $value) {
+    public function applyValueTo(&$record, $value)
+    {
         $output = parent::applyValueTo($record, $value);
 
-        if($this->_currencyFieldName) {
+        if ($this->_currencyFieldName) {
             $record[$this->_currencyFieldName] = $this->_currency;
         }
 

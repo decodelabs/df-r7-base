@@ -6,40 +6,37 @@
 
 namespace df\arch\scaffold\Record;
 
-use df\arch\scaffold\Record\DataProvider;
+use ArrayAccess;
+use DecodeLabs\Dictum;
+use DecodeLabs\Exceptional;
 
-use df\arch\IComponent as Component;
-use df\aura\view\IView as View;
-use df\aura\view\IDeferredRenderable as DeferredRenderableView;
+use DecodeLabs\Spectrum\Color;
+use DecodeLabs\Tagged as Html;
+
+use DecodeLabs\Tagged\Markup;
 
 use df\arch\component\AttributeList as AttributeListComponent;
 use df\arch\component\CollectionList as CollectionListComponent;
 
-use df\arch\component\RecordLink as RecordLinkComponent;
-use df\arch\scaffold\Component\RecordLink as ScaffoldRecordLinkComponent;
-
-use df\arch\scaffold\Node\DeleteForm as ScaffoldDeleteForm;
-use df\arch\scaffold\Node\DeleteSelectedForm as ScaffoldDeleteSelectedForm;
-
+use df\arch\IComponent as Component;
 use df\arch\node\Form as FormNode;
-use df\arch\node\IDelegate as Delegate;
-use df\arch\scaffold\Node\Form\SelectorDelegate as ScaffoldSelectorDelegate;
-
 use df\arch\node\form\State as FormState;
+
+use df\arch\node\IDelegate as Delegate;
 use df\arch\node\IFormEventDescriptor as FormEventDescriptor;
 
-use df\core\unit\Priority as PriorityUnit;
-use df\user\IPostalAddress as PostalAddress;
+use df\arch\scaffold\Component\RecordLink as ScaffoldRecordLinkComponent;
+use df\arch\scaffold\Node\DeleteForm as ScaffoldDeleteForm;
 
+use df\arch\scaffold\Node\DeleteSelectedForm as ScaffoldDeleteSelectedForm;
+
+use df\arch\scaffold\Node\Form\SelectorDelegate as ScaffoldSelectorDelegate;
+use df\aura\view\IDeferredRenderable as DeferredRenderableView;
+use df\aura\view\IView as View;
 use df\axis\IUnit as Unit;
+use df\core\unit\Priority as PriorityUnit;
 
-use DecodeLabs\Tagged as Html;
-use DecodeLabs\Tagged\Markup;
-use DecodeLabs\Exceptional;
-use DecodeLabs\Spectrum\Color;
-use DecodeLabs\Dictum;
-
-use ArrayAccess;
+use df\user\IPostalAddress as PostalAddress;
 use Throwable;
 
 trait DecoratorTrait
@@ -48,7 +45,7 @@ trait DecoratorTrait
     //const LIST_FIELDS = [];
 
     // Node handlers
-    public function buildRecordListNode(?callable $filter=null, array $fields=null): View
+    public function buildRecordListNode(?callable $filter = null, array $fields = null): View
     {
         return $this->buildNode(
             $this->renderRecordList($filter, $fields)
@@ -82,7 +79,7 @@ trait DecoratorTrait
     public function renderDetailsSectionBody($record)
     {
         $keyName = $this->getRecordKeyName();
-        return $this->apex->component(ucfirst($keyName).'Details', null, $record);
+        return $this->apex->component(ucfirst($keyName) . 'Details', null, $record);
     }
 
 
@@ -174,18 +171,16 @@ trait DecoratorTrait
         return $this->html->form($request)->setMethod('get')->push(
             $this->html->fieldSet()->addClass('scaffold search')->push(
                 $this->buildQueryPropagationInputs($filter),
-
                 $this->html->searchTextbox('search', $search)
                     ->setPlaceholder('search'),
                 $this->html->submitButton(null, $this->_('Go'))
                     ->setIcon('search')
                     ->addClass('slim')
                     ->setDisposition('positive'),
-
                 $this->html->link(
-                        $resetRequest,
-                        $this->_('Reset')
-                    )
+                    $resetRequest,
+                    $this->_('Reset')
+                )
                     ->setIcon('refresh')
             )
         );
@@ -207,9 +202,9 @@ trait DecoratorTrait
     {
         $menu->addLinks(
             $this->html->link(
-                    $this->uri('./delete-selected', true),
-                    $this->_('Delete')
-                )
+                $this->uri('./delete-selected', true),
+                $this->_('Delete')
+            )
                 ->setIcon('delete')
         );
     }
@@ -225,19 +220,19 @@ trait DecoratorTrait
         $recordAdapter = $this->getRecordAdapter();
 
         yield 'add' => $this->html->link(
-                $this->uri($this->getNodeUri('add'), true),
-                $this->_('Add '.$this->getRecordItemName())
-            )
+            $this->uri($this->getNodeUri('add'), true),
+            $this->_('Add ' . $this->getRecordItemName())
+        )
             ->setIcon('add')
             ->chainIf($recordAdapter instanceof Unit, function ($link) use ($recordAdapter) {
-                $link->addAccessLock($recordAdapter->getEntityLocator()->toString().'#add');
+                $link->addAccessLock($recordAdapter->getEntityLocator()->toString() . '#add');
             });
     }
 
 
 
     // List generators
-    public function generateCollectionList(array $fields, ?iterable $collection=null): CollectionListComponent
+    public function generateCollectionList(array $fields, ?iterable $collection = null): CollectionListComponent
     {
         if (!$this instanceof DataProvider) {
             throw Exceptional::Logic(
@@ -252,13 +247,13 @@ trait DecoratorTrait
         }
 
         $output = new CollectionListComponent($this->context, [$fields, $collection]);
-        $output->setViewArg(lcfirst($this->getRecordKeyName()).'List');
+        $output->setViewArg(lcfirst($this->getRecordKeyName()) . 'List');
         $output->setRenderTarget($this->view);
 
         foreach ($output->getFields() as $field => $enabled) {
             if ($enabled === true) {
-                $method1 = 'define'.ucfirst($field).'Field';
-                $method2 = 'override'.ucfirst($field).'Field';
+                $method1 = 'define' . ucfirst($field) . 'Field';
+                $method2 = 'override' . ucfirst($field) . 'Field';
 
                 if (method_exists($this, $method2)) {
                     $output->setField($field, function ($list, $key) use ($method2) {
@@ -287,7 +282,7 @@ trait DecoratorTrait
         return $output;
     }
 
-    public function generateAttributeList(array $fields, $record=true): AttributeListComponent
+    public function generateAttributeList(array $fields, $record = true): AttributeListComponent
     {
         if (!$this instanceof DataProvider) {
             throw Exceptional::Logic(
@@ -324,8 +319,8 @@ trait DecoratorTrait
             */
 
             if ($enabled === true) {
-                $method1 = 'define'.ucfirst($field).'Field';
-                $method2 = 'override'.ucfirst($field).'Field';
+                $method1 = 'define' . ucfirst($field) . 'Field';
+                $method2 = 'override' . ucfirst($field) . 'Field';
                 $method = null;
 
                 if (method_exists($this, $method2)) {
@@ -357,8 +352,8 @@ trait DecoratorTrait
                             } elseif (is_object($data)) {
                                 if (method_exists($data, '__get')) {
                                     $value = $data->__get($key);
-                                } elseif (method_exists($data, 'get'.ucfirst($key))) {
-                                    $value = $data->{'get'.ucfirst($key)}();
+                                } elseif (method_exists($data, 'get' . ucfirst($key))) {
+                                    $value = $data->{'get' . ucfirst($key)}();
                                 }
                             }
 
@@ -424,11 +419,11 @@ trait DecoratorTrait
         }
 
         return $this->html->link(
-                $this->getRecordUri($record, 'edit', null, true),
-                $this->_('Edit %n%', [
-                    '%n%' => $this->getRecordItemName()
-                ])
-            )
+            $this->getRecordUri($record, 'edit', null, true),
+            $this->_('Edit %n%', [
+                '%n%' => $this->getRecordItemName()
+            ])
+        )
             ->setIcon('edit')
             ->isDisabled(!$this->isRecordEditable($record));
     }
@@ -443,11 +438,11 @@ trait DecoratorTrait
             $this->getRecordParentUri($record) : null;
 
         return $this->html->link(
-                $this->getRecordUri($record, 'delete', null, true, $redirTo),
-                $this->_('Delete %n%', [
-                    '%n%' => $this->getRecordItemName()
-                ])
-            )
+            $this->getRecordUri($record, 'delete', null, true, $redirTo),
+            $this->_('Delete %n%', [
+                '%n%' => $this->getRecordItemName()
+            ])
+        )
             ->setIcon('delete')
             ->isDisabled(!$this->isRecordDeleteable($record));
     }
@@ -456,7 +451,7 @@ trait DecoratorTrait
 
 
     // Fields
-    public function autoDefineNameKeyField(string $fieldName, $list, string $mode, ?string $label=null)
+    public function autoDefineNameKeyField(string $fieldName, $list, string $mode, ?string $label = null)
     {
         if ($label === null) {
             $label = Dictum::name($fieldName);
@@ -465,9 +460,9 @@ trait DecoratorTrait
         $list->addField($fieldName, $label, function ($item) use ($mode, $fieldName) {
             if ($mode == 'list') {
                 return $this->apex->component(
-                        ucfirst($this->getRecordKeyName().'Link'),
-                        $item
-                    )
+                    ucfirst($this->getRecordKeyName() . 'Link'),
+                    $item
+                )
                     ->setMaxLength($this->getRecordNameFieldMaxLength())
                     ->setDisposition('informative');
             }
@@ -618,8 +613,8 @@ trait DecoratorTrait
     {
         $list->addField('priority', function ($item) {
             $priority = PriorityUnit::factory($item['priority']);
-            return $this->html->icon('priority-'.$priority->getOption(), $priority->getLabel())
-                ->addClass('priority-'.$priority->getOption());
+            return $this->html->icon('priority-' . $priority->getOption(), $priority->getLabel())
+                ->addClass('priority-' . $priority->getOption());
         });
     }
 
@@ -693,7 +688,7 @@ trait DecoratorTrait
                 }
 
                 return Html::{'span'}(
-                    $addr->getLocality().', '.$addr->getCountryName(),
+                    $addr->getLocality() . ', ' . $addr->getCountryName(),
                     ['title' => str_replace("\n", ', ', $addr->toString())]
                 );
             });

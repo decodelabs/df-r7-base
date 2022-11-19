@@ -5,9 +5,6 @@
  */
 namespace df\spur\packaging\bower;
 
-use df;
-use df\core;
-use df\spur;
 use df\fuse;
 
 class Package
@@ -59,7 +56,7 @@ class Package
 
     public function getKey()
     {
-        return $this->name.'#'.$this->version;
+        return $this->name . '#' . $this->version;
     }
 
     public function setVersion($version)

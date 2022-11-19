@@ -5,11 +5,10 @@
  */
 namespace df\user\helper;
 
-use df;
-use df\core;
-use df\user;
-
 use DecodeLabs\Exceptional;
+use df\core;
+
+use df\user;
 
 class Auth extends Base
 {
@@ -20,11 +19,11 @@ class Auth extends Base
 
     public function loadAdapter($name)
     {
-        $class = 'df\\user\\authentication\\adapter\\'.ucfirst($name);
+        $class = 'df\\user\\authentication\\adapter\\' . ucfirst($name);
 
         if (!class_exists($class)) {
             throw Exceptional::{'df/user/Authentication'}(
-                'Authentication adapter '.$name.' could not be found'
+                'Authentication adapter ' . $name . ' could not be found'
             );
         }
 
@@ -49,7 +48,7 @@ class Auth extends Base
 
         if (!$config->isAdapterEnabled($name)) {
             throw Exceptional::{'df/user/Authentication'}(
-                'Authentication adapter '.$name.' is not enabled'
+                'Authentication adapter ' . $name . ' is not enabled'
             );
         }
 
@@ -117,7 +116,7 @@ class Auth extends Base
 
 
     // Access key
-    public function bindDirect($userId, bool $asAdmin=false)
+    public function bindDirect($userId, bool $asAdmin = false)
     {
         $manager = $this->manager;
         $bucket = $manager->session->getBucket($manager::USER_SESSION_BUCKET);
@@ -235,7 +234,7 @@ class Auth extends Base
 
 
     // Unbind
-    public function unbind(bool $restartSession=false)
+    public function unbind(bool $restartSession = false)
     {
         $this->manager->emitEvent($this->manager->client, 'logout');
         $this->manager->session->destroy($restartSession);

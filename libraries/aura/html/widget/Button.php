@@ -5,12 +5,9 @@
  */
 namespace df\aura\html\widget;
 
-use df;
-use df\core;
-use df\aura;
-use df\arch;
-
 use DecodeLabs\Glitch\Dumpable;
+
+use df\arch;
 
 class Button extends Base implements IButtonWidget, IIconProviderWidget, Dumpable
 {
@@ -21,14 +18,14 @@ class Button extends Base implements IButtonWidget, IIconProviderWidget, Dumpabl
     use TWidget_DispositionAware;
     use TWidget_IconProvider;
 
-    const PRIMARY_TAG = 'button.btn';
-    const ARRAY_INPUT = false;
-    const BUTTON_TYPE = 'button';
-    const HAS_VALUE = true;
+    public const PRIMARY_TAG = 'button.btn';
+    public const ARRAY_INPUT = false;
+    public const BUTTON_TYPE = 'button';
+    public const HAS_VALUE = true;
 
     protected $_shouldValidate = true;
 
-    public function __construct(arch\IContext $context, $name, $body=null, $value=null)
+    public function __construct(arch\IContext $context, $name, $body = null, $value = null)
     {
         parent::__construct($context);
 
@@ -62,7 +59,7 @@ class Button extends Base implements IButtonWidget, IIconProviderWidget, Dumpabl
 
 
     // Validate
-    public function shouldValidate(bool $flag=null)
+    public function shouldValidate(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_shouldValidate = $flag;

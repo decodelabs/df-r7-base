@@ -5,11 +5,6 @@
  */
 namespace df\arch\scaffold\Component;
 
-use df;
-use df\core;
-use df\arch;
-use df\aura;
-
 use df\arch\component\Base as ComponentBase;
 use df\arch\Scaffold;
 
@@ -18,7 +13,7 @@ class Generic extends ComponentBase
     protected $scaffold;
     protected $name;
 
-    public function __construct(Scaffold $scaffold, string $name, array $args=null)
+    public function __construct(Scaffold $scaffold, string $name, array $args = null)
     {
         $this->scaffold = $scaffold;
         $this->name = $name;
@@ -27,7 +22,7 @@ class Generic extends ComponentBase
 
     protected function _execute()
     {
-        $method = 'generate'.$this->name.'Component';
+        $method = 'generate' . $this->name . 'Component';
         return $this->scaffold->{$method}(...$this->getComponentArgs());
     }
 }

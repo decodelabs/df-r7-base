@@ -6,16 +6,14 @@
 
 namespace df\arch\navigation\menu\source;
 
-use df;
-use df\core;
-use df\arch;
-use df\flex;
-
-use df\arch\scaffold\Loader as ScaffoldLoader;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+
 use DecodeLabs\R7\Legacy;
+
+use df\arch;
+use df\arch\scaffold\Loader as ScaffoldLoader;
+use df\core;
 
 class Directory extends Base implements arch\navigation\menu\IListableSource
 {
@@ -34,19 +32,19 @@ class Directory extends Base implements arch\navigation\menu\IListableSource
             $area = arch\Request::DEFAULT_AREA;
         }
 
-        $classBase = 'df\\apex\\directory\\'.$area;
-        $sharedClassBase = 'df\\apex\\directory\\'.$area;
-        $baseId = 'Directory://'.arch\Request::AREA_MARKER.$area;
+        $classBase = 'df\\apex\\directory\\' . $area;
+        $sharedClassBase = 'df\\apex\\directory\\' . $area;
+        $baseId = 'Directory://' . arch\Request::AREA_MARKER . $area;
 
         if (!empty($parts)) {
-            $classBase .= '\\'.implode('\\', $parts);
-            $sharedClassBase .= '\\'.implode('\\', $parts);
-            $baseId .= '/'.implode('/', $parts);
+            $classBase .= '\\' . implode('\\', $parts);
+            $sharedClassBase .= '\\' . implode('\\', $parts);
+            $baseId .= '/' . implode('/', $parts);
         }
 
-        $classBase .= '\\_menus\\'.$name;
-        $sharedClassBase .= '\\_menus\\'.$name;
-        $baseId .= '/'.$name;
+        $classBase .= '\\_menus\\' . $name;
+        $sharedClassBase .= '\\_menus\\' . $name;
+        $baseId .= '/' . $name;
 
 
         $menus = [];
@@ -54,30 +52,30 @@ class Directory extends Base implements arch\navigation\menu\IListableSource
         foreach (Legacy::getLoader()->getPackages() as $package) {
             $packageName = ucfirst($package->name);
 
-            if (class_exists($classBase.'_'.$packageName)) {
-                $class = $classBase.'_'.$packageName;
-            } elseif (class_exists($sharedClassBase.'_'.$packageName)) {
-                $class = $sharedClassBase.'_'.$packageName;
+            if (class_exists($classBase . '_' . $packageName)) {
+                $class = $classBase . '_' . $packageName;
+            } elseif (class_exists($sharedClassBase . '_' . $packageName)) {
+                $class = $sharedClassBase . '_' . $packageName;
             } else {
                 continue;
             }
 
-            $menus[$name.'_'.$packageName] = (new $class($this->context, $baseId.'_'.$packageName))
+            $menus[$name . '_' . $packageName] = (new $class($this->context, $baseId . '_' . $packageName))
                 ->setSubId($packageName);
         }
 
         try {
-            $contextRequest = arch\Request::AREA_MARKER.$area.'/';
+            $contextRequest = arch\Request::AREA_MARKER . $area . '/';
 
             if (!empty($parts)) {
-                $contextRequest .= implode('/', $parts).'/';
+                $contextRequest .= implode('/', $parts) . '/';
             }
 
             $contextRequest .= lcfirst($name);
             $context = new arch\Context(new arch\Request($contextRequest));
 
             $scaffold = ScaffoldLoader::fromContext($context);
-            $scaffoldId = $baseId.'__scaffold';
+            $scaffoldId = $baseId . '__scaffold';
             $menus[$scaffoldId] = $scaffold->loadMenu($name, $scaffoldId);
         } catch (arch\scaffold\Exception $e) {
         }
@@ -89,7 +87,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource
             $output = new $sharedClassBase($this->context, $baseId);
         } elseif (empty($menus)) {
             throw Exceptional::NotFound(
-                'Directory menu '.$baseId.' could not be found'
+                'Directory menu ' . $baseId . ' could not be found'
             );
         } else {
             $output = new arch\navigation\menu\Base($this->context, $baseId);
@@ -105,12 +103,12 @@ class Directory extends Base implements arch\navigation\menu\IListableSource
         return $output;
     }
 
-    public function loadAllMenus(array $whiteList=null)
+    public function loadAllMenus(array $whiteList = null)
     {
         return $this->loadIds($this->getMenuIds(), $whiteList);
     }
 
-    public function loadIds(array $ids, array $whiteList=null)
+    public function loadIds(array $ids, array $whiteList = null)
     {
         $output = [];
 
@@ -123,8 +121,8 @@ class Directory extends Base implements arch\navigation\menu\IListableSource
             $parts = explode('/', ltrim($id, arch\Request::AREA_MARKER));
             $name = (string)array_pop($parts);
 
-            $classBase = 'df\\apex\\directory\\'.implode('\\', $parts).'\\_menus';
-            $class = $classBase.'\\'.$name;
+            $classBase = 'df\\apex\\directory\\' . implode('\\', $parts) . '\\_menus';
+            $class = $classBase . '\\' . $name;
 
             if (!class_exists($class)) {
                 continue;
@@ -160,12 +158,12 @@ class Directory extends Base implements arch\navigation\menu\IListableSource
         return $output;
     }
 
-    public function loadListedMenus($areas=null)
+    public function loadListedMenus($areas = null)
     {
         return $this->loadIds($this->getMenuIds($areas));
     }
 
-    public function loadNestedMenus($areas=null)
+    public function loadNestedMenus($areas = null)
     {
         $flatList = $this->loadIds($this->getMenuIds($areas));
         $index = $output = [];
@@ -205,7 +203,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource
         return $output;
     }
 
-    public function getMenuIds($areas=null)
+    public function getMenuIds($areas = null)
     {
         $cache = arch\navigation\menu\Cache::getInstance();
         $cacheId = 'Directory://__ID_LIST__';
@@ -222,10 +220,10 @@ class Directory extends Base implements arch\navigation\menu\IListableSource
 
                 $dir = new \RecursiveDirectoryIterator($path);
                 $it = new \RecursiveIteratorIterator($dir);
-                $regex = new \RegexIterator($it, '/^'.preg_quote($path, '/').'\/(.+)\/_menus\/(.+)\.php$/i', \RecursiveRegexIterator::GET_MATCH);
+                $regex = new \RegexIterator($it, '/^' . preg_quote($path, '/') . '\/(.+)\/_menus\/(.+)\.php$/i', \RecursiveRegexIterator::GET_MATCH);
 
                 foreach ($regex as $item) {
-                    $list[] = arch\Request::AREA_MARKER.$item[1].'/'.$item[2];
+                    $list[] = arch\Request::AREA_MARKER . $item[1] . '/' . $item[2];
                 }
             }
 

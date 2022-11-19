@@ -5,18 +5,15 @@
  */
 namespace df\opal\rdbms\variant\mysql;
 
-use df;
-use df\core;
-use df\opal;
-use df\flex;
-
-use DecodeLabs\Glitch;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch;
+
+use df\flex;
+use df\opal;
 
 class SchemaExecutor extends opal\rdbms\SchemaExecutor
 {
-
-## Stats ##
+    ## Stats ##
     public function getTableStats($name)
     {
         $stmt = $this->_adapter->prepare($sql = 'SHOW TABLE STATUS WHERE Name = :a');
@@ -25,7 +22,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
         if ($res->isEmpty()) {
             throw Exceptional::{'df/opal/rdbms/TableNotFound,NotFound'}(
-                'Table '.$name.' could not be found',
+                'Table ' . $name . ' could not be found',
                 [
                     'code' => 1051,
                     'data' => [
@@ -38,7 +35,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
         $status = $res->getCurrent();
         $output = new opal\rdbms\TableStats();
 
-        $count = $this->_adapter->prepare('SELECT COUNT(*) as count FROM '.$this->_adapter->quoteIdentifier($name))
+        $count = $this->_adapter->prepare('SELECT COUNT(*) as count FROM ' . $this->_adapter->quoteIdentifier($name))
             ->executeRead()
             ->getCurrent()['count'];
 
@@ -64,7 +61,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
         if ($res->isEmpty()) {
             throw Exceptional::{'df/opal/rdbms/TableNotFound,NotFound'}(
-                'Table '.$name.' could not be found',
+                'Table ' . $name . ' could not be found',
                 [
                     'code' => 1051,
                     'data' => [
@@ -85,7 +82,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
 
         // Columns
-        $sql = 'SHOW FULL COLUMNS FROM '.$this->_adapter->quoteIdentifier($name);
+        $sql = 'SHOW FULL COLUMNS FROM ' . $this->_adapter->quoteIdentifier($name);
         $res = $this->_adapter->prepare($sql)->executeRead();
 
         foreach ($res as $row) {
@@ -112,7 +109,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                     $field->isUnsigned(true);
                 } else {
                     throw Exceptional::UnexpectedValue(
-                        'Field '.$field->getName().' is marked as unsigned, but the field type does not support this option'
+                        'Field ' . $field->getName() . ' is marked as unsigned, but the field type does not support this option'
                     );
                 }
             }
@@ -122,7 +119,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                     $field->shouldZerofill(true);
                 } else {
                     throw Exceptional::UnexpectedValue(
-                        'Field '.$field->getName().' is marked as zerofill, but the field type does not support this option'
+                        'Field ' . $field->getName() . ' is marked as zerofill, but the field type does not support this option'
                     );
                 }
             }
@@ -132,7 +129,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                     $field->setCharacterSet($matches[8]);
                 } else {
                     throw Exceptional::UnexpectedValue(
-                        'Field '.$field->getName().' is marked as having a character set of '.$matches[8].' , but the field type does not support this option'
+                        'Field ' . $field->getName() . ' is marked as having a character set of ' . $matches[8] . ' , but the field type does not support this option'
                     );
                 }
             }
@@ -152,7 +149,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                         $field->shouldAutoIncrement(true);
                     } else {
                         throw Exceptional::UnexpectedValue(
-                            'Field '.$field->getName().' is marked as auto increment, but the field type does not support this option'
+                            'Field ' . $field->getName() . ' is marked as auto increment, but the field type does not support this option'
                         );
                     }
 
@@ -163,7 +160,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                         $field->shouldTimestampOnUpdate(true);
                     } else {
                         throw Exceptional::UnexpectedValue(
-                            'Field '.$field->getName().' is marked to auto timestamp on update, but the field type does not support this option'
+                            'Field ' . $field->getName() . ' is marked to auto timestamp on update, but the field type does not support this option'
                         );
                     }
 
@@ -173,7 +170,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
 
         // Indexes
-        $sql = 'SHOW INDEXES FROM '.$this->_adapter->quoteIdentifier($name);
+        $sql = 'SHOW INDEXES FROM ' . $this->_adapter->quoteIdentifier($name);
         $res = $this->_adapter->prepare($sql)->executeRead();
 
         foreach ($res as $row) {
@@ -190,7 +187,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
             if (!$field = $schema->getField($row['Column_name'])) {
                 throw Exceptional::{'df/opal/rdbms/IndexNotFound,NotFound'}(
-                    'Index field '.$row['Column_name'].' could not be found'
+                    'Index field ' . $row['Column_name'] . ' could not be found'
                 );
             }
 
@@ -202,7 +199,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
         // Foreign keys
         if ($schema->getEngine() == 'InnoDB') {
             $stmt = $this->_adapter->prepare(
-                'SELECT * FROM information_schema.REFERENTIAL_CONSTRAINTS '.
+                'SELECT * FROM information_schema.REFERENTIAL_CONSTRAINTS ' .
                 'WHERE CONSTRAINT_SCHEMA = :a && TABLE_NAME = :b'
             );
 
@@ -220,7 +217,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
 
             $stmt = $this->_adapter->prepare(
-                'SELECT * FROM information_schema.KEY_COLUMN_USAGE '.
+                'SELECT * FROM information_schema.KEY_COLUMN_USAGE ' .
                 'WHERE TABLE_SCHEMA = :a && TABLE_NAME = :b && REFERENCED_TABLE_NAME IS NOT NULL'
             );
 
@@ -242,7 +239,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
                 if (!$field = $schema->getField($row['COLUMN_NAME'])) {
                     throw Exceptional::{'df/opal/rdbms/ForeignKeyConflict'}(
-                        'Foreign key field '.$row['COLUMN_NAME'].' could not be found'
+                        'Foreign key field ' . $row['COLUMN_NAME'] . ' could not be found'
                     );
                 }
 
@@ -254,7 +251,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
         // Triggers
         if ($this->_adapter->supports(opal\rdbms\adapter\Base::TRIGGERS)) {
             $stmt = $this->_adapter->prepare(
-                'SELECT * FROM information_schema.TRIGGERS '.
+                'SELECT * FROM information_schema.TRIGGERS ' .
                 'WHERE TRIGGER_SCHEMA = :a && EVENT_OBJECT_TABLE = :b'
             );
 
@@ -265,11 +262,11 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
             foreach ($res as $row) {
                 $trigger = $schema->addTrigger(
-                        $row['TRIGGER_NAME'],
-                        $row['EVENT_MANIPULATION'],
-                        $row['ACTION_TIMING'],
-                        explode(';', $row['ACTION_STATEMENT'])
-                    )
+                    $row['TRIGGER_NAME'],
+                    $row['EVENT_MANIPULATION'],
+                    $row['ACTION_TIMING'],
+                    explode(';', $row['ACTION_STATEMENT'])
+                )
                     ->setCharacterSet($row['CHARACTER_SET_CLIENT'])
                     ->setCollation($row['DATABASE_COLLATION']);
             }
@@ -294,10 +291,10 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
     // Fields
     protected function _generateFieldDefinition(opal\rdbms\schema\IField $field)
     {
-        $fieldSql = $this->_adapter->quoteIdentifier($field->getName()).' '.$field->getType();
+        $fieldSql = $this->_adapter->quoteIdentifier($field->getName()) . ' ' . $field->getType();
 
         if ($field instanceof opal\schema\IOptionProviderField) {
-            $fieldSql .= '('.flex\Delimited::implode($field->getOptions()).')';
+            $fieldSql .= '(' . flex\Delimited::implode($field->getOptions()) . ')';
         } else {
             $options = [];
 
@@ -317,7 +314,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
             }
 
             if (!empty($options)) {
-                $fieldSql .= '('.implode(',', $options).')';
+                $fieldSql .= '(' . implode(',', $options) . ')';
             }
         }
 
@@ -330,11 +327,11 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
         if ($field instanceof opal\schema\ICharacterSetAwareField
         && null !== ($charset = $field->getCharacterSet())) {
-            $fieldSql .= ' CHARACTER SET '.$this->_adapter->quoteValue($charset);
+            $fieldSql .= ' CHARACTER SET ' . $this->_adapter->quoteValue($charset);
         }
 
         if (null !== ($collation = $field->getCollation())) {
-            $fieldSql .= ' COLLATE '.$this->_adapter->quoteValue($collation);
+            $fieldSql .= ' COLLATE ' . $this->_adapter->quoteValue($collation);
         }
 
         if ($field instanceof opal\schema\INumericField) {
@@ -359,7 +356,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
         } elseif (!$field instanceof opal\rdbms\schema\field\Blob
         && !$field instanceof opal\rdbms\schema\field\Text
         && null !== ($defaultValue = $field->getDefaultValue())) {
-            $fieldSql .= ' DEFAULT '.$this->_adapter->prepareValue($defaultValue, $field);
+            $fieldSql .= ' DEFAULT ' . $this->_adapter->prepareValue($defaultValue, $field);
         }
 
         if ($field instanceof opal\schema\IAutoIncrementableField
@@ -374,7 +371,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
 
         if (null !== ($comment = $field->getComment())) {
-            $fieldSql .= ' COMMENT '.$this->_adapter->prepareValue($comment);
+            $fieldSql .= ' COMMENT ' . $this->_adapter->prepareValue($comment);
         }
 
         return $fieldSql;
@@ -382,7 +379,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
 
     // Indexes
-    protected function _generateInlineIndexDefinition($tableName, opal\rdbms\schema\IIndex $index, opal\rdbms\schema\IIndex $primaryIndex=null)
+    protected function _generateInlineIndexDefinition($tableName, opal\rdbms\schema\IIndex $index, opal\rdbms\schema\IIndex $primaryIndex = null)
     {
         if (null !== ($type = $index->getIndexType())) {
             switch ($type = strtoupper($type)) {
@@ -407,17 +404,17 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
             if ($index->isUnique()) {
                 $indexSql .= 'UNIQUE ';
             } elseif ($type == 'FULLTEXT' || $type == 'SPACIAL') {
-                $indexSql .= $type.' ';
+                $indexSql .= $type . ' ';
                 $type = null;
             }
 
-            $indexSql .= 'INDEX '.$this->_adapter->quoteIdentifier($index->getName());
+            $indexSql .= 'INDEX ' . $this->_adapter->quoteIdentifier($index->getName());
         }
 
         if ($type !== null
         && $type !== 'FULLTEXT'
         && $type !== 'SPACIAL') {
-            $indexSql .= ' USING '.$type;
+            $indexSql .= ' USING ' . $type;
         }
 
         $indexFields = [];
@@ -426,7 +423,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
             $fieldDef = $this->_adapter->quoteIdentifier($reference->getField()->getName());
 
             if (null !== ($indexSize = $reference->getSize())) {
-                $fieldDef .= ' ('.$indexSize.')';
+                $fieldDef .= ' (' . $indexSize . ')';
             }
 
             if ($reference->isDescending()) {
@@ -438,21 +435,21 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
             $indexFields[] = $fieldDef;
         }
 
-        $indexSql .= ' ('.implode(',', $indexFields).')';
+        $indexSql .= ' (' . implode(',', $indexFields) . ')';
 
         if (version_compare($serverVersion, '5.1.0', '>=')) {
             if (null !== ($blockSize = $index->getKeyBlockSize())) {
-                $indexSql .= ' KEY_BLOCK_SIZE '.(int)$blockSize;
+                $indexSql .= ' KEY_BLOCK_SIZE ' . (int)$blockSize;
             }
 
             if ($type === 'FULLTEXT'
             && null !== ($fulltextParser = $index->getFulltextParser())) {
-                $indexSql .= ' WITH PARSER '.$this->_adapter->quoteValue($fulltextParser);
+                $indexSql .= ' WITH PARSER ' . $this->_adapter->quoteValue($fulltextParser);
             }
 
             if (null !== ($comment = $index->getComment())
             && version_compare($serverVersion, '5.5.0', '>=')) {
-                $indexSql .= ' COMMENT '.$this->_adapter->prepareValue($comment);
+                $indexSql .= ' COMMENT ' . $this->_adapter->prepareValue($comment);
             }
         }
 
@@ -460,7 +457,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
         return $indexSql;
     }
 
-    protected function _generateStandaloneIndexDefinition($tableName, opal\rdbms\schema\IIndex $index, opal\rdbms\schema\IIndex $primaryIndex=null)
+    protected function _generateStandaloneIndexDefinition($tableName, opal\rdbms\schema\IIndex $index, opal\rdbms\schema\IIndex $primaryIndex = null)
     {
         return null;
     }
@@ -479,7 +476,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
             default:
                 throw Exceptional::InvalidArgument(
-                    'Mysql does not support '.$trigger->getTimingName().' trigger timing'
+                    'Mysql does not support ' . $trigger->getTimingName() . ' trigger timing'
                 );
         }
 
@@ -496,27 +493,27 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
             switch ($key) {
                 case 'engine':
                     if ($value !== null) {
-                        $sql[] = 'ENGINE '.$value;
+                        $sql[] = 'ENGINE ' . $value;
                     }
 
                     break;
 
                 case 'avgRowLength':
                     if ($value !== null) {
-                        $sql[] = 'AVG_ROW_LENGTH '.(int)$value;
+                        $sql[] = 'AVG_ROW_LENGTH ' . (int)$value;
                     }
 
                     break;
 
                 case 'autoIncrementPosition':
                     if ($value !== null) {
-                        $sql[] = 'AUTO_INCREMENT '.(int)$value;
+                        $sql[] = 'AUTO_INCREMENT ' . (int)$value;
                     }
 
                     break;
 
                 case 'checksum':
-                    $sql[] = 'CHECKSUM '.(int)((bool)$value);
+                    $sql[] = 'CHECKSUM ' . (int)((bool)$value);
                     break;
 
                 case 'characterSet':
@@ -524,44 +521,44 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                         $value = 'DEFAULT';
                     }
 
-                    $sql[] = 'CHARACTER SET '.$this->_adapter->prepareValue($value);
+                    $sql[] = 'CHARACTER SET ' . $this->_adapter->prepareValue($value);
 
                     break;
 
                 case 'collation':
                     if ($value !== null) {
-                        $sql[] = 'COLLATION '.$this->_adapter->prepareValue($value);
+                        $sql[] = 'COLLATION ' . $this->_adapter->prepareValue($value);
                     }
 
                     break;
 
                 case 'comment':
-                    $sql[] = 'COMMENT '.$this->_adapter->prepareValue($value);
+                    $sql[] = 'COMMENT ' . $this->_adapter->prepareValue($value);
                     break;
 
                 case 'federatedConnection':
                     if ($value !== null && $schema instanceof Schema && $schema->getEngine() == 'FEDERATED') {
-                        $sql[] = 'CONNECTION '.$this->_adapter->prepareValue($value);
+                        $sql[] = 'CONNECTION ' . $this->_adapter->prepareValue($value);
                     }
 
                     break;
 
                 case 'dataDirectory':
                     if ($value !== null) {
-                        $sql[] = 'DATA DIRECTORY '.$this->_adapter->prepareValue($value);
+                        $sql[] = 'DATA DIRECTORY ' . $this->_adapter->prepareValue($value);
                     }
 
                     break;
 
                 case 'indexDirectory':
                     if ($value !== null) {
-                        $sql[] = 'INDEX DIRECTORY '.$this->_adapter->prepareValue($value);
+                        $sql[] = 'INDEX DIRECTORY ' . $this->_adapter->prepareValue($value);
                     }
 
                     break;
 
                 case 'delayKeyWrite':
-                    $sql[] = 'DELAY_KEY_WRITE '.(int)((bool)$value);
+                    $sql[] = 'DELAY_KEY_WRITE ' . (int)((bool)$value);
                     break;
 
                 case 'keyBlockSize':
@@ -570,21 +567,21 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                             $value = 0;
                         }
 
-                        $sql[] = 'KEY_BLOCK_SIZE '.(int)$value;
+                        $sql[] = 'KEY_BLOCK_SIZE ' . (int)$value;
                     }
 
                     break;
 
                 case 'maxRows':
                     if ($value !== null) {
-                        $sql[] = 'MAX_ROWS '.(int)$value;
+                        $sql[] = 'MAX_ROWS ' . (int)$value;
                     }
 
                     break;
 
                 case 'minRows':
                     if ($value !== null) {
-                        $sql[] = 'MIN_ROWS '.(int)$value;
+                        $sql[] = 'MIN_ROWS ' . (int)$value;
                     }
 
                     break;
@@ -596,7 +593,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                         $value = (int)$value;
                     }
 
-                    $sql[] = 'PACK_KEYS '.$value;
+                    $sql[] = 'PACK_KEYS ' . $value;
                     break;
 
                 case 'rowFormat':
@@ -604,12 +601,12 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                         $value = 'DEFAULT';
                     }
 
-                    $sql[] = 'ROW_FORMAT '.$value;
+                    $sql[] = 'ROW_FORMAT ' . $value;
                     break;
 
                 case 'insertMethod':
                     if ($value !== null) {
-                        $sql[] = 'INSERT_METHOD '.$value;
+                        $sql[] = 'INSERT_METHOD ' . $value;
                     }
 
                     break;
@@ -620,7 +617,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                             $table = $this->_adapter->quoteIdentifier($table);
                         }
 
-                        $sql[] = 'UNION ('.implode(', ', $value).')';
+                        $sql[] = 'UNION (' . implode(', ', $value) . ')';
                     }
 
                     break;
@@ -684,16 +681,16 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
         $addTriggers = $schema->getTriggersToAdd();
 
         $sql = [];
-        $mainSql = 'ALTER TABLE '.$this->_adapter->quoteIdentifier($currentName);
+        $mainSql = 'ALTER TABLE ' . $this->_adapter->quoteIdentifier($currentName);
 
 
         // Remove triggers
         foreach ($removeTriggers as $name => $trigger) {
-            $sql[] = 'DROP TRIGGER '.$this->_adapter->quoteIdentifier($name);
+            $sql[] = 'DROP TRIGGER ' . $this->_adapter->quoteIdentifier($name);
         }
 
         foreach ($updateTriggers as $name => $trigger) {
-            $sql[] = 'DROP TRIGGER '.$this->_adapter->quoteIdentifier($name);
+            $sql[] = 'DROP TRIGGER ' . $this->_adapter->quoteIdentifier($name);
         }
 
 
@@ -703,14 +700,14 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
             $definitions = [];
 
             foreach ($tempSwapKeys as $origName => $key) {
-                $definitions[] = 'DROP FOREIGN KEY '.$this->_adapter->quoteIdentifier($origName);
+                $definitions[] = 'DROP FOREIGN KEY ' . $this->_adapter->quoteIdentifier($origName);
             }
 
             foreach ($removeKeys as $name => $key) {
-                $definitions[] = 'DROP FOREIGN KEY '.$this->_adapter->quoteIdentifier($name);
+                $definitions[] = 'DROP FOREIGN KEY ' . $this->_adapter->quoteIdentifier($name);
             }
 
-            $swapSql .= "\n".'    '.implode(','."\n".'    ', $definitions);
+            $swapSql .= "\n" . '    ' . implode(',' . "\n" . '    ', $definitions);
             $sql[] = $swapSql;
         }
 
@@ -724,7 +721,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
             if ($index === $primaryIndex) {
                 $definitions[] = 'DROP PRIMARY KEY';
             } else {
-                $definitions[] = 'DROP INDEX '.$this->_adapter->quoteIdentifier($name);
+                $definitions[] = 'DROP INDEX ' . $this->_adapter->quoteIdentifier($name);
             }
         }
 
@@ -732,19 +729,19 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
             if ($index === $primaryIndex) {
                 $definitions[] = 'DROP PRIMARY KEY';
             } else {
-                $definitions[] = 'DROP INDEX '.$this->_adapter->quoteIdentifier($name);
+                $definitions[] = 'DROP INDEX ' . $this->_adapter->quoteIdentifier($name);
             }
         }
 
 
         // Remove fields
         foreach ($removeFields as $name => $field) {
-            $definitions[] = 'DROP COLUMN '.$this->_adapter->quoteIdentifier($field->getName());
+            $definitions[] = 'DROP COLUMN ' . $this->_adapter->quoteIdentifier($field->getName());
         }
 
         // Update fields
         foreach ($updateFields as $name => $field) {
-            $definitions[] = 'CHANGE COLUMN '.$this->_adapter->quoteIdentifier($name).' '.$this->_generateFieldDefinition($field);
+            $definitions[] = 'CHANGE COLUMN ' . $this->_adapter->quoteIdentifier($name) . ' ' . $this->_generateFieldDefinition($field);
         }
 
         // Add fields
@@ -752,12 +749,12 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
         foreach ($fields as $name => $field) {
             if (isset($addFields[$name])) {
-                $fieldSql = 'ADD COLUMN '.$this->_generateFieldDefinition($field);
+                $fieldSql = 'ADD COLUMN ' . $this->_generateFieldDefinition($field);
 
                 if ($lastField === null) {
                     $fieldSql .= ' FIRST';
                 } else {
-                    $fieldSql .= ' AFTER '.$this->_adapter->quoteIdentifier($lastField->getName());
+                    $fieldSql .= ' AFTER ' . $this->_adapter->quoteIdentifier($lastField->getName());
                 }
 
                 $definitions[] = $fieldSql;
@@ -769,25 +766,25 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
         // Add indexes
         foreach ($updateIndexes as $name => $index) {
-            $definitions[] = 'ADD '.$this->_generateInlineIndexDefinition($newName, $index, $primaryIndex);
+            $definitions[] = 'ADD ' . $this->_generateInlineIndexDefinition($newName, $index, $primaryIndex);
         }
 
         foreach ($addIndexes as $name => $index) {
-            $definitions[] = 'ADD '.$this->_generateInlineIndexDefinition($newName, $index, $primaryIndex);
+            $definitions[] = 'ADD ' . $this->_generateInlineIndexDefinition($newName, $index, $primaryIndex);
         }
 
 
         // Add keys
         foreach ($tempSwapKeys as $key) {
-            $definitions[] = 'ADD '.$this->_generateInlineForeignKeyDefinition($key);
+            $definitions[] = 'ADD ' . $this->_generateInlineForeignKeyDefinition($key);
         }
 
         foreach ($addKeys as $key) {
-            $definitions[] = 'ADD '.$this->_generateInlineForeignKeyDefinition($key);
+            $definitions[] = 'ADD ' . $this->_generateInlineForeignKeyDefinition($key);
         }
 
 
-        $mainSql .= "\n".'    '.implode(','."\n".'    ', $definitions);
+        $mainSql .= "\n" . '    ' . implode(',' . "\n" . '    ', $definitions);
 
 
         $sql[] = $mainSql;
@@ -814,9 +811,9 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
 
     ## Character sets
-    public function setCharacterSet($name, $charset, $collation=null, $convert=false)
+    public function setCharacterSet($name, $charset, $collation = null, $convert = false)
     {
-        $sql = 'ALTER TABLE `'.$name.'` '.($convert ? 'CONVERT TO ':'').'CHARACTER SET :charset';
+        $sql = 'ALTER TABLE `' . $name . '` ' . ($convert ? 'CONVERT TO ' : '') . 'CHARACTER SET :charset';
 
         if ($collation !== null) {
             $sql .= ' COLLATE :collation';
@@ -847,9 +844,9 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
         return 'utf8';
     }
 
-    public function setCollation($name, $collation, $convert=false)
+    public function setCollation($name, $collation, $convert = false)
     {
-        $stmt = $this->_adapter->prepare('ALTER TABLE `'.$name.'` '.($convert ? 'CONVERT TO ':'').'CHARACTER SET :charset COLLATE :collation');
+        $stmt = $this->_adapter->prepare('ALTER TABLE `' . $name . '` ' . ($convert ? 'CONVERT TO ' : '') . 'CHARACTER SET :charset COLLATE :collation');
         $stmt->bind('charset', explode('_', $collation)[0]);
         $stmt->bind('collation', $collation);
         $stmt->executeWrite();

@@ -6,13 +6,11 @@
 
 namespace df\apex\directory\front\cache\_nodes;
 
-use df;
-use df\core;
-use df\apex;
-use df\arch;
-
-use DecodeLabs\Terminus as Cli;
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\Terminus as Cli;
+
+use df\arch;
+use df\core;
 
 class TaskPurge extends arch\node\Task
 {

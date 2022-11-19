@@ -6,13 +6,12 @@
 
 namespace df\flex;
 
-use df;
+use DecodeLabs\Dictum;
+use DecodeLabs\Exceptional;
+
+use DecodeLabs\Glitch\Dumpable;
 use df\core;
 use df\flex;
-
-use DecodeLabs\Dictum;
-use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\Exceptional;
 
 class Guid implements IGuid, Dumpable
 {
@@ -70,7 +69,7 @@ class Guid implements IGuid, Dumpable
 
 
 
-    public static function uuid1($node=null, $time=null)
+    public static function uuid1($node = null, $time = null)
     {
         if ($time === null) {
             $time = self::_getMicrotime();
@@ -80,7 +79,7 @@ class Guid implements IGuid, Dumpable
         $time = base_convert($time, 10, 16);
         $time = pack('H*', str_pad($time, 16, '0', STR_PAD_LEFT));
 
-        $uuid = $time[4].$time[5].$time[6].$time[7].$time[2].$time[3].$time[0].$time[1];
+        $uuid = $time[4] . $time[5] . $time[6] . $time[7] . $time[2] . $time[3] . $time[0] . $time[1];
         $uuid .= Generator::randomBytes(2);
 
         $uuid[8] = chr(ord($uuid[8]) & self::CLEAR_VARIANT | self::VARIANT_RFC);
@@ -99,7 +98,7 @@ class Guid implements IGuid, Dumpable
         return new self($uuid);
     }
 
-    public static function uuid3($name, $namespace=null)
+    public static function uuid3($name, $namespace = null)
     {
         $namespace = self::_makeBin($namespace, 16);
 
@@ -107,7 +106,7 @@ class Guid implements IGuid, Dumpable
             $namespace = self::uuid4();
         }
 
-        $uuid = md5($namespace.$name, true);
+        $uuid = md5($namespace . $name, true);
         $uuid[8] = chr(ord($uuid[8]) & self::CLEAR_VARIANT | self::VARIANT_RFC);
         $uuid[6] = chr(ord($uuid[6]) & self::CLEAR_VERSION | self::VERSION_3);
 
@@ -123,7 +122,7 @@ class Guid implements IGuid, Dumpable
         return new self($uuid);
     }
 
-    public static function uuid5($name, $namespace=null)
+    public static function uuid5($name, $namespace = null)
     {
         $namespace = self::_makeBin($namespace, 16);
 
@@ -131,7 +130,7 @@ class Guid implements IGuid, Dumpable
             $namespace = self::uuid4();
         }
 
-        $uuid = md5($namespace.$name, true);
+        $uuid = md5($namespace . $name, true);
         $uuid[8] = chr(ord($uuid[8]) & self::CLEAR_VARIANT | self::VARIANT_RFC);
         $uuid[6] = chr(ord($uuid[6]) & self::CLEAR_VERSION | self::VERSION_5);
 
@@ -147,7 +146,7 @@ class Guid implements IGuid, Dumpable
         $time = base_convert($time, 10, 16);
         $time = pack('H*', str_pad($time, 16, '0', STR_PAD_LEFT));
 
-        $uuid .= $time[1].$time[0].$time[7].$time[6].$time[5].$time[4].$time[3].$time[2];
+        $uuid .= $time[1] . $time[0] . $time[7] . $time[6] . $time[5] . $time[4] . $time[3] . $time[2];
 
         $uuid[8] = chr(ord($uuid[8]) & self::CLEAR_VARIANT | self::VARIANT_RESERVED);
         $uuid[6] = chr(ord($uuid[6]) & self::CLEAR_VERSION | self::VERSION_COMB);
@@ -159,7 +158,7 @@ class Guid implements IGuid, Dumpable
     {
         $time = explode(' ', (string)microtime());
         $time[0] = substr($time[0], 2);
-        return ((int)($time[1].$time[0])) / 100;
+        return ((int)($time[1] . $time[0])) / 100;
     }
 
     private static function _makeBin($string, $length)
@@ -235,7 +234,7 @@ class Guid implements IGuid, Dumpable
 
     public function getUrn()
     {
-        return 'urn:uuid:'.$this->toString();
+        return 'urn:uuid:' . $this->toString();
     }
 
     public function getVersion()
@@ -291,13 +290,13 @@ class Guid implements IGuid, Dumpable
         }
 
         $time = bin2hex(
-            $this->_bytes[6].
-            $this->_bytes[7].
-            $this->_bytes[4].
-            $this->_bytes[5].
-            $this->_bytes[0].
-            $this->_bytes[1].
-            $this->_bytes[2].
+            $this->_bytes[6] .
+            $this->_bytes[7] .
+            $this->_bytes[4] .
+            $this->_bytes[5] .
+            $this->_bytes[0] .
+            $this->_bytes[1] .
+            $this->_bytes[2] .
             $this->_bytes[3]
         );
 
@@ -308,10 +307,10 @@ class Guid implements IGuid, Dumpable
 
     public function toString(): string
     {
-        return bin2hex(substr($this->_bytes, 0, 4)).'-'.
-               bin2hex(substr($this->_bytes, 4, 2)).'-'.
-               bin2hex(substr($this->_bytes, 6, 2)).'-'.
-               bin2hex(substr($this->_bytes, 8, 2)).'-'.
+        return bin2hex(substr($this->_bytes, 0, 4)) . '-' .
+               bin2hex(substr($this->_bytes, 4, 2)) . '-' .
+               bin2hex(substr($this->_bytes, 6, 2)) . '-' .
+               bin2hex(substr($this->_bytes, 8, 2)) . '-' .
                bin2hex(substr($this->_bytes, 10, 6));
     }
 

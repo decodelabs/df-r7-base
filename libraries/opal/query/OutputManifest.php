@@ -5,8 +5,6 @@
  */
 namespace df\opal\query;
 
-use df;
-use df\core;
 use df\opal;
 
 class OutputManifest implements IOutputManifest
@@ -22,7 +20,7 @@ class OutputManifest implements IOutputManifest
     protected $_searchController = null;
     protected $_queryRequiresPartial = false;
 
-    public function __construct(ISource $source, array $rows=null, $isNormalized=true)
+    public function __construct(ISource $source, array $rows = null, $isNormalized = true)
     {
         $this->importSource($source, $rows, $isNormalized);
     }
@@ -37,7 +35,7 @@ class OutputManifest implements IOutputManifest
         return $this->_sources;
     }
 
-    public function importSource(ISource $source, array $rows=null, $isNormalized=true)
+    public function importSource(ISource $source, array $rows = null, $isNormalized = true)
     {
         if ($isDerived = $source->isDerived()) {
             $source = $source->getAdapter()->getDerivationSource();
@@ -81,7 +79,7 @@ class OutputManifest implements IOutputManifest
 
                 if ($s == $sourceAlias
                 && substr($fieldName, 0, 1) != '@'
-                //&& !isset($this->_outputFields[$alias])
+                    //&& !isset($this->_outputFields[$alias])
                 ) {
                     if (array_key_exists($fieldName, $muteFields)) {
                         if ($muteFields[$fieldName] === null) {
@@ -204,7 +202,7 @@ class OutputManifest implements IOutputManifest
                         continue;
                     }
 
-                    $this->_fieldProcessors[$sourceAlias.'.'.$name] = $field;
+                    $this->_fieldProcessors[$sourceAlias . '.' . $name] = $field;
                 }
             }
         }
@@ -222,7 +220,7 @@ class OutputManifest implements IOutputManifest
         return $this->_searchController;
     }
 
-    public function queryRequiresPartial(bool $flag=null)
+    public function queryRequiresPartial(bool $flag = null)
     {
         if ($flag !== null) {
             $this->_queryRequiresPartial = $flag;
@@ -232,7 +230,7 @@ class OutputManifest implements IOutputManifest
         return $this->_queryRequiresPartial;
     }
 
-    public function requiresPartial($forFetch=true)
+    public function requiresPartial($forFetch = true)
     {
         if ($this->_queryRequiresPartial) {
             return true;

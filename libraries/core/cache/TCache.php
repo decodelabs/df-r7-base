@@ -6,11 +6,9 @@
 
 namespace df\core\cache;
 
-use df;
-use df\core;
-
-use DecodeLabs\Exceptional;
 use DecodeLabs\R7\Legacy;
+
+use df\core;
 
 trait TCache
 {
@@ -23,7 +21,7 @@ trait TCache
 
     public static function getInstance()
     {
-        $id = self::REGISTRY_PREFIX.static::getCacheId();
+        $id = self::REGISTRY_PREFIX . static::getCacheId();
 
         if (!$cache = Legacy::getRegistryObject($id)) {
             Legacy::setRegistryObject(
@@ -36,7 +34,7 @@ trait TCache
 
     final public function getRegistryObjectKey(): string
     {
-        return self::REGISTRY_PREFIX.static::getCacheId();
+        return self::REGISTRY_PREFIX . static::getCacheId();
     }
 
     public static function getCacheId(): string

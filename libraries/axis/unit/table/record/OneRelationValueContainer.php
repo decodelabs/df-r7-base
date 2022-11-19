@@ -5,14 +5,12 @@
  */
 namespace df\axis\unit\table\record;
 
-use df;
-use df\core;
-use df\axis;
-use df\opal;
-use df\mesh;
-
-use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Glitch\Dumpable;
+use df\axis;
+
+use df\mesh;
+use df\opal;
 
 class OneRelationValueContainer implements
     opal\record\IJobAwareValueContainer,
@@ -25,11 +23,13 @@ class OneRelationValueContainer implements
     protected $_parentRecord;
     protected $_field;
 
-    public function __construct(axis\schema\IRelationField $field, opal\record\IRecord $parentRecord=null, $value=null)
+    public function __construct(axis\schema\IRelationField $field, opal\record\IRecord $parentRecord = null, $value = null)
     {
         if (!$field instanceof opal\schema\ITargetPrimaryFieldAwareRelationField) {
             throw Exceptional::Logic(
-                'Unsupport field type', null, $field
+                'Unsupport field type',
+                null,
+                $field
             );
         }
 
@@ -140,7 +140,7 @@ class OneRelationValueContainer implements
         return $this;
     }
 
-    public function getValue($default=null)
+    public function getValue($default = null)
     {
         if ($this->_record !== false) {
             return $this->_record;
@@ -166,7 +166,7 @@ class OneRelationValueContainer implements
         }
     }
 
-    public function getStringValue($default=''): string
+    public function getStringValue($default = ''): string
     {
         return $this->__toString();
     }
@@ -208,7 +208,7 @@ class OneRelationValueContainer implements
         return axis\Model::loadUnitFromId($this->_field->getTargetUnitId());
     }
 
-    public function newRecord(array $values=null)
+    public function newRecord(array $values = null)
     {
         return $this->getTargetUnit()->newRecord($values);
     }
@@ -218,7 +218,7 @@ class OneRelationValueContainer implements
         return clone $this;
     }
 
-    public function populateInverse(opal\record\IRecord $record=null)
+    public function populateInverse(opal\record\IRecord $record = null)
     {
         $this->_record = $record;
         return $this;
@@ -232,7 +232,7 @@ class OneRelationValueContainer implements
 
 
     // Tasks
-    public function deploySaveJobs(mesh\job\IQueue $queue, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordJob=null)
+    public function deploySaveJobs(mesh\job\IQueue $queue, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordJob = null)
     {
         if ($this->_record instanceof opal\record\IRecord) {
             $record = $this->_record;
@@ -258,7 +258,7 @@ class OneRelationValueContainer implements
         return $this;
     }
 
-    public function deployDeleteJobs(mesh\job\IQueue $queue, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordJob=null)
+    public function deployDeleteJobs(mesh\job\IQueue $queue, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordJob = null)
     {
     }
 
@@ -295,7 +295,7 @@ class OneRelationValueContainer implements
         }
 
 
-        $output = $this->_field->getTargetUnitId().' : ';
+        $output = $this->_field->getTargetUnitId() . ' : ';
 
         if ($this->_value->countFields() == 1) {
             $value = $this->_value->getFirstKeyValue();
@@ -309,7 +309,7 @@ class OneRelationValueContainer implements
             $t = [];
 
             foreach ($this->_value->toArray() as $key => $value) {
-                $valString = $key.'=';
+                $valString = $key . '=';
 
                 if ($value === null) {
                     $valString .= 'null';

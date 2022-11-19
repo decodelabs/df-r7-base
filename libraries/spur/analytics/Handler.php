@@ -5,20 +5,19 @@
  */
 namespace df\spur\analytics;
 
-use df;
-use df\core;
-use df\spur;
-use df\aura;
-use df\user;
-use df\mint;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
+use df\aura;
+use df\core;
+
+use df\mint;
+use df\spur;
+use df\user;
 
 class Handler implements IHandler
 {
-    const AVAILABLE_USER_ATTRIBUTES = [
+    public const AVAILABLE_USER_ATTRIBUTES = [
         'id', 'email', 'fullName', 'nickName', 'joinDate', 'loginDate',
         'isLoggedIn', 'status', 'country', 'language', 'timezone'
     ];
@@ -40,7 +39,7 @@ class Handler implements IHandler
         return new self(true);
     }
 
-    public function __construct($addConfigAdapters=false)
+    public function __construct($addConfigAdapters = false)
     {
         if ($addConfigAdapters) {
             $this->addConfigAdapters();
@@ -137,7 +136,7 @@ class Handler implements IHandler
         return $this;
     }
 
-    public function getDefinedUserAttributes(array $attributes, $includeCustom=true)
+    public function getDefinedUserAttributes(array $attributes, $includeCustom = true)
     {
         $output = $includeCustom ? $this->_userAttributes : [];
 
@@ -220,7 +219,7 @@ class Handler implements IHandler
         return $this;
     }
 
-    public function addEvent($event, $name=null, $label=null, array $attributes=null)
+    public function addEvent($event, $name = null, $label = null, array $attributes = null)
     {
         if (!$event instanceof IEvent) {
             $event = new Event($event, $name, $label, $attributes);
@@ -257,7 +256,7 @@ class Handler implements IHandler
         return $this;
     }
 
-    public function addECommerceTransaction($transaction, mint\ICurrency $amount=null, $affiliation=null, mint\ICurrency $shipping=null, mint\ICurrency $tax=null)
+    public function addECommerceTransaction($transaction, mint\ICurrency $amount = null, $affiliation = null, mint\ICurrency $shipping = null, mint\ICurrency $tax = null)
     {
         if (!$transaction instanceof IECommerceTransaction) {
             if (!$amount) {
