@@ -42,6 +42,7 @@ class Development extends Base
                     }
 
                     $output[] = $location.'/'.$pathPackageName.'/'.$pathName.'.php';
+                    $output[] = $location.'/r7-'.$pathPackageName.'/'.$pathName.'.php';
                     return $output;
 
                 default:
