@@ -150,7 +150,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         }
 
         $output->setHttpVersion($matches[1]);
-        $output->setStatusCode($matches[2]);
+        $output->setStatusCode((int)$matches[2]);
         $output->setStatusMessage($matches[4] ?? self::statusCodeToMessage($matches[2]));
 
         foreach ($lines as $line) {
