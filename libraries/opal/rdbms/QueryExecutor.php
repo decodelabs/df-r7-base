@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms;
 
 use DecodeLabs\Exceptional;
@@ -927,8 +928,9 @@ abstract class QueryExecutor implements IQueryExecutor
         // Intrinsic
         } elseif ($field instanceof opal\query\IIntrinsicField) {
             // Intrinsic
-            $output = $this->_adapter->quoteTableAliasReference($field->getSourceAlias()) . '.' .
-                      $this->_adapter->quoteFieldAliasReference($field->getName());
+            $output =
+                $this->_adapter->quoteTableAliasReference($field->getSourceAlias()) . '.' .
+                $this->_adapter->quoteFieldAliasReference($field->getName());
 
 
         // Virtual
@@ -1034,7 +1036,7 @@ abstract class QueryExecutor implements IQueryExecutor
             return $this->_adapter->quoteFieldAliasReference($field->getLogicalAlias());
         } else {
             return $this->_adapter->quoteTableAliasReference($field->getSourceAlias()) . '.' .
-                   $this->_adapter->quoteFieldAliasReference($field->getName());
+                    $this->_adapter->quoteFieldAliasReference($field->getName());
         }
     }
 

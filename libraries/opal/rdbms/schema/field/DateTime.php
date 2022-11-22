@@ -3,12 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms\schema\field;
 
 class DateTime extends Base
 {
     public const DEFAULT_VALUE = 'now';
-    
+
     // String
     public function toString(): string
     {

@@ -193,7 +193,7 @@ class Manager implements IManager, core\IShutdownAware
                 // Turn this on when it works properly :)
                 $bodyText = Metamorph::htmlToText($bodyHtml);
                 $message->setBodyText($bodyText);
-                */
+                 */
             }
 
             $part = $mime->newMultiPart(flow\mime\IMultiPart::ALTERNATIVE);

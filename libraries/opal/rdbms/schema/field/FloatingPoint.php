@@ -3,15 +3,16 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms\schema\field;
 
 use df\opal;
 
 class FloatingPoint extends Base implements opal\schema\IFloatingPointNumericField
 {
-    public const DEFAULT_VALUE = 0;
-    
     use opal\schema\TField_FloatingPointNumeric;
+
+    public const DEFAULT_VALUE = 0;
 
     protected function _init($precision = null, $scale = null)
     {

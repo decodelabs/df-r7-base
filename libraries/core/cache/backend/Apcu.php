@@ -168,7 +168,7 @@ class Apcu implements core\cache\IBackend
             if($this->_isCli) {
                 $this->_retrigger('remove', $key);
             }
-            */
+             */
         }
 
         return true;

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms;
 
 use DecodeLabs\Exceptional;
@@ -469,6 +470,6 @@ class Table implements ITable, Dumpable
         yield 'properties' => [
             '*adapter' => $this->_adapter->getDsn()->getDisplayString(),
             '*name' => $this->_name
-       ];
+        ];
     }
 }

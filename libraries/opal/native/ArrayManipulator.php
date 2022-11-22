@@ -152,7 +152,7 @@ class ArrayManipulator implements IArrayManipulator
                 $keyField, $valField, $query->getNestFields(),
                 $query instanceof opal\query\IFetchQuery
             );
-            */
+             */
         }
 
         return $this->_rows;

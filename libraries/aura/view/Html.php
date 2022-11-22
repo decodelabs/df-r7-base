@@ -1008,8 +1008,8 @@ class Html extends Base implements IHtmlView, Dumpable
 
             if (isset($entry['noScript'])) {
                 $line .= '    <noscript>' . "\n" .
-                         '        ' . str_replace("\n", "\n        ", $entry['noScript']) . "\n" .
-                         '    </noscript>' . "\n";
+                        '        ' . str_replace("\n", "\n        ", $entry['noScript']) . "\n" .
+                        '    </noscript>' . "\n";
             }
 
             if (isset($entry['condition'])) {

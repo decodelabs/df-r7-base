@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\query;
 
 use DecodeLabs\Exceptional;
@@ -581,7 +582,7 @@ class Initiator implements IInitiator
                         'A source has already been aliased as "'.$alias.'" - join source aliases must be unique'
                     );
                 }
-                */
+                 */
 
 
                 $fields = null;

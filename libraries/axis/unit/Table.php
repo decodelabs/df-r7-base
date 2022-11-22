@@ -430,7 +430,7 @@ abstract class Table implements
     public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr = false)
     {
         if ((!$axisField = $this->getUnitSchema()->getField($field->getName()))
-         || !$axisField instanceof opal\schema\IQueryClauseRewriterField) {
+        || !$axisField instanceof opal\schema\IQueryClauseRewriterField) {
             throw Exceptional::{'df/axis/schema/Runtime'}(
                 'Query field ' . $field->getName() . ' has no virtual field rewriter'
             );

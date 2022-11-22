@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\schema\translator;
 
 use DecodeLabs\Exceptional;
@@ -256,7 +257,7 @@ abstract class Base implements axis\schema\ITranslator
                     $this->_createField($primitive)
                 );
             }
-            */
+             */
         }
 
         // Add fields

@@ -316,7 +316,7 @@ trait DecoratorTrait
 
                 continue;
             }
-            */
+             */
 
             if ($enabled === true) {
                 $method1 = 'define' . ucfirst($field) . 'Field';

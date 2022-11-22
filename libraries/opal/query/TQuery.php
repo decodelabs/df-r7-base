@@ -455,8 +455,8 @@ trait TQuery_Distinct
 
 
 /****************************
-* Correlations
-*/
+ * Correlations
+ */
 
 trait TQuery_Correlatable
 {
@@ -603,8 +603,8 @@ trait TQuery_Correlatable
 
 
 /****************************
-* Joins
-*/
+ * Joins
+ */
 trait TQuery_JoinProvider
 {
     protected $_joins = [];
@@ -667,7 +667,7 @@ trait TQuery_JoinProvider
             $correlation = $this->correlate($aggregateType.'('.$bridgeAlias.'.'.$targetName.')', $alias)
                 ->from($bridgeAdapter, $bridgeAlias)
                 ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
-            */
+             */
         } elseif (
             $field instanceof opal\schema\IInverseRelationField &&
             (
@@ -2410,8 +2410,8 @@ trait TQuery_Write
 
 
 /**************************
-* Insert data
-*/
+ * Insert data
+ */
 trait TQuery_DataInsert
 {
     protected $_shouldReplace = false;

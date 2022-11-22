@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\schema\field;
 
 use df\axis;
@@ -36,18 +37,18 @@ class Duration extends Base implements opal\schema\ISignedField
             return null;
         }
     }
-    
+
     public function deflateValue($value)
     {
         $value = $this->sanitizeValue($value);
-        
+
         if (empty($value)) {
             return null;
         }
-        
+
         return $value->getSeconds();
     }
-    
+
     public function sanitizeValue($value, opal\record\IRecord $forRecord = null)
     {
         if ($value === '') {
@@ -71,7 +72,7 @@ class Duration extends Base implements opal\schema\ISignedField
         return core\time\Duration::factory($value);
     }
 
-    
+
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
     {
@@ -83,7 +84,7 @@ class Duration extends Base implements opal\schema\ISignedField
 
         return $output;
     }
-    
+
 // Ext. serialize
     protected function _importStorageArray(array $data)
     {

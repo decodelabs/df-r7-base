@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\mint;
 
 use DecodeLabs\Exceptional;
@@ -113,7 +114,7 @@ interface ICardStoreGateway extends ICustomerTrackingGateway
     public function addCard(string $customerId, ICreditCard $card);
     public function updateCard(string $customerId, string $cardId, ICreditCard $card);
     public function deleteCard(string $customerId, string $cardId, ICreditCard $card);
-    */
+     */
 }
 
 interface ISubscriptionProviderGateway extends ICustomerTrackingGateway

@@ -588,10 +588,11 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
 
             // Copy data
-            $sql = 'INSERT INTO ' . $this->_adapter->quoteIdentifier($backupName) . ' ' .
-                   '(' . implode(',', $destinationFields) . ') ' .
-                   'SELECT ' . implode(',', $sourceFields) . ' ' .
-                   'FROM ' . $this->_adapter->quoteIdentifier($currentName);
+            $sql =
+                'INSERT INTO ' . $this->_adapter->quoteIdentifier($backupName) . ' ' .
+                '(' . implode(',', $destinationFields) . ') ' .
+                'SELECT ' . implode(',', $sourceFields) . ' ' .
+                'FROM ' . $this->_adapter->quoteIdentifier($currentName);
 
             $this->_adapter->executeSql($sql);
 
@@ -600,8 +601,9 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
             $this->_adapter->executeSql($sql);
 
             // Rename target
-            $sql = 'ALTER TABLE ' . $this->_adapter->quoteIdentifier($backupName) . ' ' .
-                   'RENAME TO ' . $this->_adapter->quoteIdentifier($currentName);
+            $sql =
+                'ALTER TABLE ' . $this->_adapter->quoteIdentifier($backupName) . ' ' .
+                'RENAME TO ' . $this->_adapter->quoteIdentifier($currentName);
 
             $this->_adapter->executeSql($sql);
 

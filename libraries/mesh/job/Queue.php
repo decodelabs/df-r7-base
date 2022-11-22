@@ -328,7 +328,7 @@ class Queue implements IQueue
             /*
             } else if($object instanceof mesh\entity\ILocatorProvider) {
                 return (string)$object->getEntityLocator();
-            */
+             */
         } else {
             return spl_object_hash($object);
         }

@@ -28,7 +28,7 @@ class File extends Base implements link\http\IFileResponse
             ->setCacheExpiration(core\time\Duration::fromDays(1))
             //->shouldRevalidateCache(true)
             ;
-            */
+         */
     }
 
     public function setFile($file, $checkPath = true)

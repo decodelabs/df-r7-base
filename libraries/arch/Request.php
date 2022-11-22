@@ -1106,7 +1106,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
         array_map('strtolower', $parts);
         return $parts;
     }
-    */
+     */
 
 
     /**

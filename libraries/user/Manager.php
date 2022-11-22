@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\user;
 
 use DecodeLabs\Exceptional;
@@ -209,8 +210,12 @@ class Manager implements IManager, core\IShutdownAware
                 ->setAccessLockDomain('*');
         } elseif (substr($lock, 0, 10) == 'virtual://') {
             $lock = new user\access\lock\Virtual(substr($lock, 10));
-        } elseif (substr($lock, 0, 12) == 'directory://'
-              || (is_string($lock) && false === strpos($lock, '://'))) {
+        } elseif (
+            substr($lock, 0, 12) == 'directory://' ||
+            (
+                is_string($lock) && false === strpos($lock, '://')
+            )
+        ) {
             $lock = new arch\Request($lock);
         } else {
             $action = null;

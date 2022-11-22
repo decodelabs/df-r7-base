@@ -93,7 +93,7 @@ class Mail extends flow\mail\Message implements ILayoutView
             // Turn this on when it works properly :)
             $this->setBodyText(Metamorph::htmlToText($content));
         }
-        */
+         */
 
         return $content;
     }

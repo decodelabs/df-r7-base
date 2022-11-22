@@ -3,15 +3,16 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms\schema\field;
 
 use df\opal;
 
 class Bit extends Base implements opal\schema\ILengthRestrictedField
 {
-    public const DEFAULT_VALUE = 0;
-    
     use opal\schema\TField_LengthRestricted;
+
+    public const DEFAULT_VALUE = 0;
 
     protected function _init($length)
     {

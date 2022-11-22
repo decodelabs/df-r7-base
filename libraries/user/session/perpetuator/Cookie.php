@@ -46,7 +46,7 @@ class Cookie implements user\session\IPerpetuator
                     'message' => 'Invalid join cookie: "'.$cookie.'"',
                     'previous' => $e
                 ]);
-                */
+                 */
             }
         }
 

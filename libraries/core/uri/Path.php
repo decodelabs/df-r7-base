@@ -329,7 +329,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
         if ($input instanceof core\collection\ICollection) {
             $input = $input->toArray();
         }
-        */
+         */
 
         if (is_array($input)) {
             return $input;

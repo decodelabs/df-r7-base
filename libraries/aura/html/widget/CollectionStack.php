@@ -156,7 +156,7 @@ class CollectionStack extends Base implements IDataDrivenListWidget, IMappedList
 
                         $even = false;
                     }
-                    */
+                     */
                 }
 
                 $first = false;

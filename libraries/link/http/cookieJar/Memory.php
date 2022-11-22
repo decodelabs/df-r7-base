@@ -128,8 +128,8 @@ class Memory implements link\http\ICookieJar, Dumpable
             $this->_cookies,
             function ($cookie) use ($domain, $path, $name) {
                 return !($cookie->matchesDomain($domain)
-                      && $cookie->matchesPath($path)
-                      && $cookie->matchesName($name));
+                    && $cookie->matchesPath($path)
+                    && $cookie->matchesName($name));
             }
         );
 

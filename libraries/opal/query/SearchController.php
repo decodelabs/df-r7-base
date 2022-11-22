@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\query;
 
 use DecodeLabs\Exceptional;
@@ -13,9 +14,8 @@ use df\opal;
 
 class SearchController implements ISearchController, Dumpable
 {
-    public const MAX_THRESHOLD_RATIO = 0.95;
-
     use opal\query\TField;
+    public const MAX_THRESHOLD_RATIO = 0.95;
 
     protected $_phrase = null;
     protected $_type = 'string';
@@ -287,7 +287,7 @@ class SearchController implements ISearchController, Dumpable
         if(!$paginator->isApplied()) {
             $paginator->applyWith([]);
         }
-        */
+         */
 
         $this->_isPrepared = true;
     }

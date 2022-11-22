@@ -496,7 +496,7 @@ class Base implements IRecord, \Serializable, Dumpable
                 'Record has already been populated'
             );
         }
-        */
+         */
 
         foreach ($row as $key => $value) {
             $this->_values[$key] = $this->_inflateValue($key, $value);
@@ -588,7 +588,7 @@ class Base implements IRecord, \Serializable, Dumpable
             foreach($row as $key => $value) {
                 $this->_changes[$key] = $this->_sanitizeValue($key, $value);
             }
-            */
+             */
 
             foreach ($row as $key => $value) {
                 $this->offsetSet($key, $value);
@@ -631,7 +631,7 @@ class Base implements IRecord, \Serializable, Dumpable
             if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
                 $value->prepareValue($this, $key);
             }
-            */
+             */
 
             if ($value instanceof IValueContainer) {
                 $value = $value->getValue();
@@ -654,7 +654,7 @@ class Base implements IRecord, \Serializable, Dumpable
             if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
                 $value->prepareValue($this, $key);
             }
-            */
+             */
 
             if ($value instanceof IValueContainer) {
                 $value = $value->getValue();

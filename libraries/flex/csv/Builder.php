@@ -199,11 +199,11 @@ class Builder implements IBuilder
             }
 
             if (strpos($value, $delimiter) !== false ||
-               strpos($value, $enclosure) !== false ||
-               strpos($value, "\n") !== false ||
-               strpos($value, "\r") !== false ||
-               strpos($value, "\t") !== false ||
-               strpos($value, ' ') !== false) {
+                strpos($value, $enclosure) !== false ||
+                strpos($value, "\n") !== false ||
+                strpos($value, "\r") !== false ||
+                strpos($value, "\t") !== false ||
+                strpos($value, ' ') !== false) {
                 $str2 = $enclosure;
                 $escaped = 0;
                 $len = strlen($value);

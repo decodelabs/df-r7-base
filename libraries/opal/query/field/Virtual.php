@@ -119,7 +119,7 @@ class Virtual implements opal\query\IVirtualField, Dumpable
         }
 
         return new self($source, $this->_source->getAlias().'.'.$this->_name, $this->_source->getAlias().'.'.$this->_alias, $targetFields);
-        */
+         */
     }
 
     public function toString(): string

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\mint;
 
 use df\core;
@@ -18,7 +19,7 @@ class Event extends core\collection\Tree implements IEvent
     public function __construct(string $source, string $action, core\collection\ITree $data)
     {
         parent::__construct();
-        
+
         $this->_source = $source;
         $this->_action = $action;
 

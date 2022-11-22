@@ -18,3 +18,8 @@ indent_size = 2
 
 [*.md]
 trim_trailing_whitespace = false
+
+[*.loc]
+indent_size = unset
+trim_trailing_whitespace = false
+insert_final_newline = false

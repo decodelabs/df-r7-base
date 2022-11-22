@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\schema;
 
 use DecodeLabs\Exceptional;
@@ -27,7 +28,7 @@ trait TField
             $this->_init(...$args);
         }
     }
-    */
+     */
 
     public function getFieldType()
     {

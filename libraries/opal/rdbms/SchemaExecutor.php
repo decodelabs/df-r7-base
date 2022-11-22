@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms;
 
 use DecodeLabs\Exceptional;
@@ -229,8 +230,9 @@ abstract class SchemaExecutor implements ISchemaExecutor
     ## Rename ##
     public function rename($oldName, $newName)
     {
-        $sql = 'ALTER TABLE ' . $this->_adapter->quoteIdentifier($oldName) . ' ' .
-               'RENAME TO ' . $this->_adapter->quoteIdentifier($newName);
+        $sql =
+            'ALTER TABLE ' . $this->_adapter->quoteIdentifier($oldName) . ' ' .
+            'RENAME TO ' . $this->_adapter->quoteIdentifier($newName);
 
         $this->_adapter->prepare($sql)->executeRaw();
         return $this;

@@ -4,6 +4,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\user\access\lock;
 
 use df\user;
@@ -29,7 +30,7 @@ class Virtual implements user\IAccessLock
         if (isset($keys[$this->_value])) {
             return $keys[$this->_value];
         }
-        
+
         return null;
     }
 

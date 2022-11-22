@@ -646,5 +646,5 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
 
         return $this;
     }
-    */
+     */
 }

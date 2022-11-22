@@ -450,8 +450,8 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
 
                     case IState::DEV:
                         $output = Genesis::$environment->isDevelopment()
-                               && $this->_authState >= IState::GUEST
-                               && $this->_authState != IState::PENDING;
+                                && $this->_authState >= IState::GUEST
+                                && $this->_authState != IState::PENDING;
                         break;
 
                     default:

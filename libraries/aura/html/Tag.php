@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html;
 
 use DecodeLabs\Elementary\Style\Collection as StyleList;
@@ -32,9 +33,9 @@ class Tag implements ITag, Dumpable
         'q', 'rt', 'ins', 'font', 'small', 'strong',
         's', 'tt', 'sub', 'mark',
         'u', 'xm', 'sup', 'nobr',
-                   'var', 'ruby',
-                   'wbr', 'span',
-                          'time',
+        /* .     */'var', 'ruby',
+        /* .     */'wbr', 'span',
+        /* .     */'time',
     ];
 
     public const BOOLEAN_ATTRIBUTES = [

@@ -265,7 +265,7 @@ abstract class SelectorDelegate extends Delegate implements
         if($messages = $this->_getSelectionErrors()) {
             $fa->push($this->html->fieldError($messages));
         }
-        */
+         */
 
         $count = $this->_countTotalItems();
         $threshold = $this->_isForMany ?

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\http\response;
 
 use DecodeLabs\Exceptional;
@@ -91,8 +92,9 @@ class Redirect extends Base implements link\http\IRedirectResponse
     {
         $url = $this->_url->toString(false);
 
-        return '<html><head><title>Redirecting...</title></head><body>' .
-               '<p>Redirecting to <a href="' . $url . '">' . $url . '</a></p>' .
-               '</body></html>';
+        return
+            '<html><head><title>Redirecting...</title></head><body>' .
+            '<p>Redirecting to <a href="' . $url . '">' . $url . '</a></p>' .
+            '</body></html>';
     }
 }

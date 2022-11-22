@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\schema;
 
 use df\opal;
@@ -70,7 +71,7 @@ class Introspector
         if ($adapter === null) {
             return [];
         }
-        
+
         $id = $adapter->getQuerySourceId();
 
         if (!isset(self::$_fieldProcessors[$id])) {
