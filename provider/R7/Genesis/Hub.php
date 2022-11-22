@@ -11,9 +11,9 @@ use DecodeLabs\Archetype;
 use DecodeLabs\Archetype\Resolver\Extension as ArchetypeExtension;
 use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Fluidity\CastTrait;
 use DecodeLabs\Genesis\Build;
 use DecodeLabs\Genesis\Context;
-
 use DecodeLabs\Genesis\Environment\Config as EnvConfig;
 use DecodeLabs\Genesis\Hub as HubInterface;
 use DecodeLabs\Genesis\Kernel;
@@ -25,6 +25,7 @@ use DecodeLabs\R7\Genesis\Kernel as R7Kernel;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Veneer;
+
 use df;
 use df\core;
 use df\core\app\Base as AppBase;
@@ -36,6 +37,8 @@ use Throwable;
 
 class Hub implements HubInterface
 {
+    use CastTrait;
+
     protected string $envId;
     protected string $appPath;
 
