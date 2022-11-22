@@ -66,7 +66,7 @@ abstract class Generator implements IGenerator
 
     public static function passKey()
     {
-        return self::random(10, 20, '!£$%^&*()_-+=#');
+        return self::random(10, 20, '!£$%^&*()_-+=#'); // @ignore-non-ascii
     }
 
     public static function sessionId($raw = false)

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\time;
 
 use DecodeLabs\Exceptional;
@@ -829,7 +830,7 @@ class Duration implements IDuration, Dumpable
         switch ($unit) {
             case self::MICROSECONDS:
                 return $i18n->_(
-                    '%n% μs',
+                    '%n% μs', // @ignore-non-ascii
                     ['%n%' => $number]
                 );
 

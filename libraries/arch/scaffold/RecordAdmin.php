@@ -137,7 +137,7 @@ abstract class RecordAdmin extends Generic implements
             $selectBar = $this->apex->component('SelectBar');
 
             $list->addCustomField('select', function ($list) {
-                $list->addFieldAtIndex(0, 'select', '✓', function ($record) {
+                $list->addFieldAtIndex(0, 'select', '✓', function ($record) { // @ignore-non-ascii
                     return $this->html->checkbox('select[]', null, null, $record['id'])
                         ->addClass('selection');
                 });

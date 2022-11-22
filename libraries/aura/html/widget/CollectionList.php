@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget;
 
 use DecodeLabs\Exceptional;
@@ -234,7 +235,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                         }
 
                         $query->__set($keyMap['order'], $key . ' ' . $direction);
-                        $nullLabel = $newOrder == 'ascending' ? '○' : '●';
+                        $nullLabel = $newOrder == 'ascending' ? '○' : '●'; // @ignore-non-ascii
 
                         if ($this->_mode == 'get') {
                             $tagContent[] = (new aura\html\Element('a', $nullLabel, [

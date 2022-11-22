@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget;
 
 use DecodeLabs\Glitch\Dumpable;
@@ -87,7 +88,7 @@ class Select extends Base implements
             }
 
             if ($isSelected && $this->_markSelected) {
-                $option->unshift('» ');
+                $option->unshift('» '); // @ignore-non-ascii
             }
 
             $optionList->push($option->render());

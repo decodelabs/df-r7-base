@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\i18n\module;
 
 use df\core;
@@ -146,8 +147,8 @@ class Numbers extends Base implements core\i18n\module\INumbersModule
 
                         continue;
                     } else {
-                        $pos = strpos($part, '≤');
-                        $t = strlen('≤') - 1;
+                        $pos = strpos($part, '≤'); // @ignore-non-ascii
+                        $t = strlen('≤') - 1; // @ignore-non-ascii
                         $a = substr($part, 0, (int)$pos);
                         $s = substr($part, $pos + $t + 1);
 

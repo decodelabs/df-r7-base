@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget;
 
 use df\arch;
@@ -116,7 +117,7 @@ class OrderList extends Base implements IMappedListWidget
 
                     $query->__set($keyMap['order'], $key . ' ' . $direction);
 
-                    $tagContent[] = (new aura\html\Element('a', $newOrder == 'ascending' ? '○' : '●', [
+                    $tagContent[] = (new aura\html\Element('a', $newOrder == 'ascending' ? '○' : '●', [ // @ignore-non-ascii
                             'href' => $this->_context->uri->__invoke($request),
                             'class' => 'null-order null-' . $newOrder,
                             'rel' => 'nofollow'

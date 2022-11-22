@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget;
 
 use DecodeLabs\Exceptional;
@@ -127,7 +128,7 @@ class Paginator extends Base implements Dumpable
             $query->__set($map['page'], $currentPage - 1);
 
             if ($this->_prevText === null) {
-                $prevText = '←';
+                $prevText = '←'; // @ignore-non-ascii
             } else {
                 $prevText = $this->_prevText;
             }
@@ -202,7 +203,7 @@ class Paginator extends Base implements Dumpable
             $query->__set($map['page'], $currentPage + 1);
 
             if ($this->_nextText === null) {
-                $nextText = '→';
+                $nextText = '→'; // @ignore-non-ascii
             } else {
                 $nextText = $this->_nextText;
             }
