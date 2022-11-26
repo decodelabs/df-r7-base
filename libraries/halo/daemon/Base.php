@@ -11,6 +11,7 @@ use DecodeLabs\Deliverance;
 
 use DecodeLabs\Dictum;
 use DecodeLabs\Eventful\Dispatcher as EventDispatcher;
+use DecodeLabs\Eventful\Dispatcher\Select as SelectDispatcher;
 use DecodeLabs\Eventful\Factory as EventFactory;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
@@ -203,9 +204,15 @@ abstract class Base implements IDaemon
         }
     }
 
+    protected function newDispatcher(): EventDispatcher
+    {
+        //return EventFactory::newDispatcher();
+        return new SelectDispatcher();
+    }
+
     private function _runForked()
     {
-        $this->events = EventFactory::newDispatcher();
+        $this->events = $this->newDispatcher();
         $this->process->setTitle(Genesis::$hub->getApplicationName() . ' - ' . $this->getName());
 
         $pidPath = $this->getPidFilePath();
@@ -242,7 +249,7 @@ abstract class Base implements IDaemon
         $this->_setup();
 
         $this->_setupDefaultEvents($this->events);
-        $pauseEvents = $this->_setupDefaultEvents(EventFactory::newDispatcher(), true);
+        $pauseEvents = $this->_setupDefaultEvents($this->newDispatcher(), true);
 
         while (true) {
             if ($this->_isStopping) {
