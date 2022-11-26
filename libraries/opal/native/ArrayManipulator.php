@@ -767,7 +767,7 @@ class ArrayManipulator implements IArrayManipulator
         }
 
         $this->normalizeRows();
-        $this->_rows = array_slice($this->_rows, $offset, $limit);
+        $this->_rows = array_slice($this->_rows, (int)$offset, (int)$limit);
 
         return $this;
     }
