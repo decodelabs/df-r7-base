@@ -28,6 +28,7 @@
         "decodelabs/genesis": "^0.7",
         "decodelabs/glitch": "^0.18.2",
         "decodelabs/idiom": "^0.2",
+        "decodelabs/integra": "^0.1.4",
         "decodelabs/lucid": "^0.3",
         "decodelabs/metamorph": "^0.5",
         "decodelabs/overpass": "^0.2",
