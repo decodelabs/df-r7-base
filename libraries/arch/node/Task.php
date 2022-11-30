@@ -93,12 +93,11 @@ abstract class Task extends Base implements ITaskNode
         Cli::notice('Switching to source mode');
         Cli::newLine();
 
-        throw new arch\ForcedResponse(function () {
-            $args = $_SERVER['argv'];
-            $args[] = '--df-source';
+        $args = $_SERVER['argv'];
+        $args[] = '--df-source';
 
-            Systemic::runScript($args);
-        });
+        Systemic::runScript($args);
+        exit;
     }
 
 
