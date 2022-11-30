@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flex\code\probe;
 
 use DecodeLabs\Systemic;
@@ -21,7 +22,7 @@ class Syntax implements flex\code\IProbe
             return;
         }
 
-        $result = Systemic::$process->launch('php', ['-l', $location->path . '/' . $localPath]);
+        $result = Systemic::capture(['php', '-l', $location->path . '/' . $localPath]);
         $result = trim($result->getOutput());
         $lines = explode("\n", $result);
         $result = (string)array_shift($lines);

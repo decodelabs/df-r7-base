@@ -162,17 +162,10 @@ trait TRepository
             }
         }
 
-        $launcher = Systemic::$process->newLauncher(self::$_gitPath, $args)
-            ->setUser($user)
-            ->thenIf($session !== null, function ($launcher) use ($session) {
-                $launcher->setBroker($session->getBroker());
-            });
-
-        if ($path !== null) {
-            $launcher->setWorkingDirectory($path);
-        }
-
-        $result = $launcher->launch();
+        $result = Systemic::{$session ? 'liveCapture' : 'capture'}(
+            [self::$_gitPath, ...$args],
+            $path
+        );
 
         $output = ltrim($result->getOutput(), "\r\n");
         $output = rtrim($output);

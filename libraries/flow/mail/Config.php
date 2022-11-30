@@ -146,7 +146,7 @@ class Config extends core\Config
 
     protected function _getDefaultAdminAddress()
     {
-        $name = Systemic::$process->getCurrent()->getOwnerName();
+        $name = Systemic::getCurrentProcess()->getOwnerName();
         $rootUrl = core\app\http\Config::getInstance()->getRootUrl();
 
         if ($rootUrl) {

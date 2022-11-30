@@ -111,7 +111,7 @@ class Config extends core\Config
 
     protected function _extrapolateDaemonUser()
     {
-        return Systemic::$process->getCurrentOwner();
+        return Systemic::getCurrentProcess()->getOwnerName();
     }
 
     public function setDaemonGroup($group)
@@ -157,6 +157,6 @@ class Config extends core\Config
 
     protected function _extrapolateDaemonGroup()
     {
-        return Systemic::$process->getCurrentGroup();
+        return Systemic::getCurrentProcess()->getGroupName();
     }
 }

@@ -3,6 +3,7 @@
  * This is a stub file for IDE compatibility only.
  * It should not be included in your projects.
  */
+
 namespace DecodeLabs\R7;
 
 use Carbon\Carbon as Ref15;
@@ -12,7 +13,7 @@ use DecodeLabs\R7\Legacy\Helper as Inst;
 use DecodeLabs\R7\Legacy\Plugins\Http as HttpPlugin;
 use DecodeLabs\R7\Nightfire\Block as Ref29;
 use DecodeLabs\Systemic\Process as Ref34;
-use DecodeLabs\Systemic\Process\Result as Ref33;
+use DecodeLabs\Systemic\Result as Ref33;
 use DecodeLabs\Terminus\Session as Ref32;
 use DecodeLabs\Veneer\Plugin\Wrapper as PluginWrapper;
 use DecodeLabs\Veneer\Proxy;

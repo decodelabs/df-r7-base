@@ -9,8 +9,7 @@ namespace df\apex\directory\front\composer\_nodes;
 use DecodeLabs\Atlas;
 
 use DecodeLabs\Genesis;
-use DecodeLabs\Systemic;
-use DecodeLabs\Terminus as Cli;
+use DecodeLabs\Integra;
 use df\arch;
 
 class TaskInstall extends arch\node\Task
@@ -29,9 +28,6 @@ class TaskInstall extends arch\node\Task
             $args[] = '--no-dev';
         }
 
-        Systemic::$process->newLauncher('composer install', $args)
-            ->setWorkingDirectory(Genesis::$hub->getApplicationPath())
-            ->setBroker(Cli::getSession()->getBroker())
-            ->launch();
+        Integra::run('install', ...$args);
     }
 }

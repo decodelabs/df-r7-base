@@ -7,7 +7,6 @@
 namespace df\arch\node;
 
 use DecodeLabs\Fluidity\Cast;
-use DecodeLabs\Systemic\Process\Result as ProcessResult;
 use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Terminus\Session;
 use df\arch;
@@ -71,13 +70,13 @@ interface IBuildTaskNode extends ITaskNode
 
 interface ITaskManager extends core\IManager
 {
-    public function launch($request, ?Session $session = null, $user = null, bool $dfSource = false, bool $decoratable = null): ProcessResult;
+    public function launch($request, ?Session $session = null, $user = null, bool $dfSource = false, bool $decoratable = null): bool;
     public function launchBackground($request, $user = null, bool $dfSource = false, bool $decoratable = null);
     public function launchQuietly($request): void;
     public function invoke($request): void;
     public function initiateStream($request): link\http\IResponse;
     public function queue($request, string $priority = 'medium'): flex\IGuid;
-    public function queueAndLaunch($request, ?Session $session = null): ProcessResult;
+    public function queueAndLaunch($request, ?Session $session = null): bool;
     public function queueAndLaunchBackground($request);
 }
 

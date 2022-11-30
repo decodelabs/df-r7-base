@@ -6,9 +6,9 @@
 
 namespace df\user;
 
+use DecodeLabs\Cosmos;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch;
-use DecodeLabs\Systemic;
 use df\arch;
 use df\axis;
 
@@ -60,8 +60,8 @@ class Manager implements IManager, core\IShutdownAware
 
 
         try {
-            Systemic::$timezone->set($this->client->getTimezone());
-            Systemic::$locale->set($this->client->getLanguage() . '_' . $this->client->getCountry());
+            Cosmos::setTimezone($this->client->getTimezone());
+            Cosmos::setLocale($this->client->getLanguage() . '_' . $this->client->getCountry());
         } catch (\Throwable $e) {
             Glitch::logException($e);
         }

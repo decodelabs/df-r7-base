@@ -67,9 +67,10 @@ class Bridge implements IBridge
     {
         $this->generate($deps);
 
-        $result = Systemic::$process->newLauncher('bower install')
-            ->setWorkingDirectory($this->_execPath)
-            ->launch();
+        $result = Systemic::capture(
+            ['bower', 'install'],
+            $this->_execPath
+        );
 
         Glitch::incomplete($result);
     }

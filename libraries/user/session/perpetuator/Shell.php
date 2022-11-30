@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\user\session\perpetuator;
 
 use DecodeLabs\Systemic;
@@ -17,7 +18,7 @@ class Shell implements user\session\IPerpetuator
 
     public function __construct()
     {
-        $process = Systemic::$process->getCurrent();
+        $process = Systemic::getCurrentProcess();
 
         $uid = $process->getOwnerId();
         $name = $process->getOwnerName();

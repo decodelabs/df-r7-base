@@ -12,7 +12,6 @@ use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy;
 
 use DecodeLabs\Systemic;
-use DecodeLabs\Systemic\Process\Result as ProcessResult;
 use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Terminus\Session;
 use df\arch;
@@ -26,8 +25,13 @@ class Manager implements arch\node\ITaskManager
 
     public const REGISTRY_PREFIX = 'manager://task';
 
-    public function launch($request, ?Session $session = null, $user = null, bool $dfSource = false, bool $decoratable = null): ProcessResult
-    {
+    public function launch(
+        $request,
+        ?Session $session = null,
+        $user = null,
+        bool $dfSource = false,
+        bool $decoratable = null
+    ): bool {
         $request = arch\Request::factory($request);
         $path = Genesis::$hub->getApplicationPath() . '/entry/';
         $path .= Genesis::$environment->getName() . '.php';
@@ -37,28 +41,23 @@ class Manager implements arch\node\ITaskManager
             $args[] = '--df-source';
         }
 
-        if ($decoratable === null) {
-            $decoratable = true;
+        $command = Systemic::scriptCommand([$path, ...$args])
+            ->setWorkingDirectory(Genesis::$hub->getApplicationPath())
+            ->setUser($user);
 
-            if ($user !== null && $user !== Systemic::$process->getCurrent()->getOwnerName()) {
-                $decoratable = false;
-            }
+        if ($session) {
+            return $command->run();
+        } else {
+            return $command->capture()->wasSuccessful();
         }
-
-        return Systemic::$process->newScriptLauncher($path, $args, null, $user)
-            ->thenIf($session !== null, function ($launcher) use ($session) {
-                if (method_exists($launcher, 'setSession')) {
-                    $launcher->setSession($session);
-                } else {
-                    $launcher->setBroker($session->getBroker());
-                }
-            })
-            ->setDecoratable($decoratable)
-            ->launch();
     }
 
-    public function launchBackground($request, $user = null, bool $dfSource = false, bool $decoratable = null)
-    {
+    public function launchBackground(
+        $request,
+        $user = null,
+        bool $dfSource = false,
+        bool $decoratable = null
+    ) {
         $request = arch\Request::factory($request);
         $path = Genesis::$hub->getApplicationPath() . '/entry/';
         $path .= Genesis::$environment->getName() . '.php';
@@ -68,17 +67,10 @@ class Manager implements arch\node\ITaskManager
             $args[] = '--df-source';
         }
 
-        if ($decoratable === null) {
-            $decoratable = true;
-
-            if ($user !== null && $user !== Systemic::$process->getCurrent()->getOwnerName()) {
-                $decoratable = false;
-            }
-        }
-
-        return Systemic::$process->newScriptLauncher($path, $args, null, $user)
-            ->setDecoratable($decoratable)
-            ->launchBackground();
+        return Systemic::scriptCommand([$path, ...$args])
+            ->setWorkingDirectory(Genesis::$hub->getApplicationPath())
+            ->setUser($user)
+            ->launch();
     }
 
     public function launchQuietly($request): void
@@ -136,7 +128,7 @@ class Manager implements arch\node\ITaskManager
         return $queue['id'];
     }
 
-    public function queueAndLaunch($request, ?Session $session = null): ProcessResult
+    public function queueAndLaunch($request, ?Session $session = null): bool
     {
         $id = $this->queue($request, 'medium');
         return $this->launch('tasks/launch-queued?id=' . $id, $session);

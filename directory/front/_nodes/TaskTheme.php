@@ -22,9 +22,8 @@ class TaskTheme extends arch\node\Task
         Cli::prepareArguments();
         $appPath = Genesis::$hub->getApplicationPath();
 
-        Systemic::$process->newLauncher(
-            $appPath . '/vendor/bin/zest',
-            [
+        Systemic::command([
+                $appPath . '/vendor/bin/zest',
                 Cli::getArgument('command'),
                 ...Cli::getPassthroughArguments(
                     'task',
@@ -32,11 +31,9 @@ class TaskTheme extends arch\node\Task
                     'command',
                     'df-source'
                 )
-            ],
-            $appPath . '/themes/' . Cli::getArgument('theme'),
-            Cli::getSession()
-        )
+            ])
+            ->setWorkingDirectory($appPath . '/themes/' . Cli::getArgument('theme'))
             ->addSignal('SIGINT', 'SIGTERM', 'SIGQUIT')
-            ->launch();
+            ->run();
     }
 }

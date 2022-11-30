@@ -22,7 +22,7 @@ trait TDaemonTask
             $this->forceResponse('');
         }
 
-        $process = Systemic::$process->getCurrent();
+        $process = Systemic::getCurrentProcess();
         $user = $env->getDaemonUser();
 
         if ($user != $process->getOwnerName() && !$process->isPrivileged() && !isset($this->request['_privileged'])) {

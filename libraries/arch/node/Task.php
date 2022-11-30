@@ -93,16 +93,11 @@ abstract class Task extends Base implements ITaskNode
         Cli::notice('Switching to source mode');
         Cli::newLine();
 
-        $user = Systemic::$process->getCurrent()->getOwnerName();
-
-        throw new arch\ForcedResponse(function () use ($user) {
+        throw new arch\ForcedResponse(function () {
             $args = $_SERVER['argv'];
-            $path = array_shift($args);
             $args[] = '--df-source';
 
-            Systemic::$process->newScriptLauncher($path, $args, null, $user)
-                ->setSession(Cli::getSession())
-                ->launch();
+            Systemic::runScript($args);
         });
     }
 
@@ -112,8 +107,13 @@ abstract class Task extends Base implements ITaskNode
         Cli::notice('Switching to new process');
         Cli::newLine();
 
-        $user = Systemic::$process->getCurrent()->getOwnerName();
-        $this->task->launch($request, Cli::getSession(), $user, true);
+        $request = arch\Request::factory($request);
+        $path = Genesis::$hub->getApplicationPath() . '/entry/';
+        $path .= Genesis::$environment->getName() . '.php';
+
+        return Systemic::scriptCommand([$path, $request, '--df-source'])
+            ->setWorkingDirectory(Genesis::$hub->getApplicationPath())
+            ->run();
     }
 
 

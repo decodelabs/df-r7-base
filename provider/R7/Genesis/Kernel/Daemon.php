@@ -12,7 +12,7 @@ use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis\Kernel;
 use DecodeLabs\R7\Genesis\KernelTrait;
 use DecodeLabs\Systemic;
-use DecodeLabs\Systemic\Process\Managed as ManagedProcess;
+use DecodeLabs\Systemic\Process;
 
 use DecodeLabs\Terminus as Cli;
 use df\core\environment\Config as EnvConfig;
@@ -101,7 +101,7 @@ class Daemon implements Kernel
 
 
         // Check privileges
-        $currentProcess = Systemic::$process->getCurrent();
+        $currentProcess = Systemic::getCurrentProcess();
         $user = $daemon->getUser();
 
         if (
@@ -188,7 +188,7 @@ class Daemon implements Kernel
      */
     protected function spawn(
         IDaemon $daemon,
-        ?ManagedProcess $process = null
+        ?Process $process = null
     ): void {
         if ($process) {
             return;
@@ -204,7 +204,7 @@ class Daemon implements Kernel
      */
     protected function start(
         IDaemon $daemon,
-        ?ManagedProcess $process = null
+        ?Process $process = null
     ): void {
         $name = $daemon->getName();
 
@@ -228,12 +228,7 @@ class Daemon implements Kernel
             $this->context->hub->getApplicationPath() . '/entry/' .
             $this->context->environment->getName() . '.php';
 
-        Systemic::$process->newScriptLauncher($entryPath, [
-                'daemon', $name, '__spawn'
-            ])
-            ->setSession(Cli::getSession())
-            ->setDecoratable(false)
-            ->launch();
+        Systemic::runScript([$entryPath, 'daemon', $name, '__spawn']);
 
         $remote = Remote::factory($daemon);
         $count = 0;
@@ -263,7 +258,7 @@ class Daemon implements Kernel
      */
     protected function stop(
         IDaemon $daemon,
-        ?ManagedProcess $process = null
+        ?Process $process = null
     ): void {
         $name = $daemon->getName();
 
@@ -275,7 +270,7 @@ class Daemon implements Kernel
         Cli::write('Stopping ');
         Cli::{'brightMagenta'}($name . ': ');
 
-        $process->sendSignal('SIGTERM');
+        $process->sendSignal('SIGINT');
         $count = 0;
 
         while ($process->isAlive()) {
@@ -303,7 +298,7 @@ class Daemon implements Kernel
      */
     protected function status(
         IDaemon $daemon,
-        ?ManagedProcess $process = null
+        ?Process $process = null
     ): void {
         $name = $daemon->getName();
 
@@ -332,7 +327,7 @@ class Daemon implements Kernel
 
     protected function nudge(
         IDaemon $daemon,
-        ?ManagedProcess $process = null
+        ?Process $process = null
     ): void {
         $name = $daemon->getName();
         Cli::{'yellow'}('Checking daemon ' . $name . ': ');

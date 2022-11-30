@@ -18,7 +18,6 @@ use DecodeLabs\R7\Legacy\Plugins\Http as HttpPlugin;
 use DecodeLabs\R7\Nightfire\Block;
 use DecodeLabs\R7\Theme\Config as ThemeConfig;
 use DecodeLabs\Systemic\Process;
-use DecodeLabs\Systemic\Process\Result as ProcessResult;
 use DecodeLabs\Terminus\Session as TerminusSession;
 use DecodeLabs\Veneer\LazyLoad;
 
@@ -709,7 +708,7 @@ class Helper
         ?string $user = null,
         bool $dfSource = false,
         bool $decoratable = null
-    ): ProcessResult {
+    ): bool {
         return $this->getContext()->task->launch(
             $request,
             $session,

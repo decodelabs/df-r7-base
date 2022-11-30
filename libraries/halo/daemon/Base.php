@@ -58,7 +58,9 @@ abstract class Base implements IDaemon
         $path = Genesis::$hub->getApplicationPath() . '/entry/';
         $path .= Genesis::$environment->getName() . '.php';
 
-        return Systemic::$process->launchScript($path, ['daemon', $name], null, $user);
+        return Systemic::scriptCommand([$path, 'daemon', $name])
+            ->setUser($user)
+            ->run();
     }
 
     public static function loadAll()
@@ -153,7 +155,7 @@ abstract class Base implements IDaemon
 
         gc_enable();
         $this->context = new core\SharedContext();
-        $this->process = Systemic::$process->getCurrent();
+        $this->process = Systemic::getCurrentProcess();
 
         $basePath = Genesis::$hub->getLocalDataPath() . '/daemons/' . Dictum::fileName($this->getName());
         Atlas::createDir(dirname($basePath));
@@ -212,8 +214,10 @@ abstract class Base implements IDaemon
 
     private function _runForked()
     {
+        fclose(\STDIN);
+        fclose(\STDOUT);
+        fclose(\STDERR);
         $this->events = $this->newDispatcher();
-        $this->process->setTitle(Genesis::$hub->getApplicationName() . ' - ' . $this->getName());
 
         $pidPath = $this->getPidFilePath();
 
@@ -390,9 +394,10 @@ abstract class Base implements IDaemon
             return $this;
         }
 
+        Cli::info('STOPPING');
+
         $this->_isStopping = true;
         $this->events->stop();
-        Cli::info('STOPPING');
         return $this;
     }
 

@@ -11,6 +11,7 @@ use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\Systemic;
+use DecodeLabs\Systemic\Process;
 use DecodeLabs\Terminus\Session;
 use df\flex;
 
@@ -72,7 +73,7 @@ class Remote implements IRemote
         return $this->_statusData;
     }
 
-    public function getProcess()
+    public function getProcess(): ?Process
     {
         if (!$this->_isChecked) {
             $this->refresh();
@@ -116,7 +117,7 @@ class Remote implements IRemote
             }
         }
 
-        $this->_process = Systemic::$process->fromPid((int)$pid);
+        $this->_process = Systemic::getProcess((int)$pid);
 
         if (!$this->_process->isAlive()) {
             $this->_process = null;
@@ -179,13 +180,9 @@ class Remote implements IRemote
 
         $path = Genesis::$hub->getApplicationPath() . '/entry/' . Genesis::$environment->getName() . '.php';
 
-        return Systemic::$process->newScriptLauncher($path, [
-                'daemon', $this->_daemon->getName(), $command
-            ])
-            ->thenIf($this->_session !== null, function ($launcher) {
-                $launcher->setBroker($this->_session->getBroker());
-            })
-            //->setDecoratable(false)
-            ->launch();
+        return Systemic::runScript(
+            [$path, 'daemon', $this->_daemon->getName(), $command],
+            Genesis::$hub->getApplicationPath()
+        );
     }
 }
