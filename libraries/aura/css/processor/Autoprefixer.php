@@ -65,6 +65,7 @@ class Autoprefixer extends Base
             Glitch::logException(Exceptional::Runtime(
                 'Unable to autoprefix css'
             ));
+            return;
         }
 
         Atlas::createFile($cssPath, $output['css']);
