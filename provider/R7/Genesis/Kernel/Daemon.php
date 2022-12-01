@@ -104,6 +104,7 @@ class Daemon implements Kernel
         $currentProcess = Systemic::getCurrentProcess();
         $user = $daemon->getUser();
 
+        /*
         if (
             !$currentProcess->isPrivileged() &&
             $user != $currentProcess->getOwnerName()
@@ -111,6 +112,7 @@ class Daemon implements Kernel
             Cli::error('You are trying to control this daemon as a user with conflicting permissions - either run it as ' . $user . ' or with sudo!');
             return;
         }
+        */
 
 
         // Run command

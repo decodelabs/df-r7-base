@@ -6,10 +6,10 @@
 
 namespace df\apex\directory\shared\tasks\_nodes;
 
-use DecodeLabs\Deliverance;
-
+use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy;
-use DecodeLabs\Terminus as Cli;
+use DecodeLabs\Systemic;
+
 use df\arch;
 
 class HttpInvoke extends arch\node\Base
@@ -37,16 +37,20 @@ class HttpInvoke extends arch\node\Base
                 return;
             }
 
-            $this->task->launch(
-                $invoke['request'],
-                Cli::newSession(
-                    Cli::newRequest([]),
-                    Deliverance::newBroker()->addOutputReceiver($generator)
-                ),
-                null,
-                false,
-                false
-            );
+            $path = Genesis::$hub->getApplicationPath() . '/entry/';
+            $path .= Genesis::$environment->getName() . '.php';
+            $request = (string)arch\Request::factory($invoke['request']);
+
+
+            Systemic::scriptCommand([$path, $request])
+                ->setWorkingDirectory(Genesis::$hub->getApplicationPath())
+                ->start(function ($controller) use ($generator) {
+                    /** @phpstan-ignore-next-line */
+                    while (true) {
+                        $generator->write($controller->read());
+                        yield null;
+                    }
+                });
         });
     }
 }

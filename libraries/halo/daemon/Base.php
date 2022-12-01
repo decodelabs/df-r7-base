@@ -240,10 +240,10 @@ abstract class Base implements IDaemon
             $this->_preparePrivilegedResources();
             $this->process->setIdentity($user, $group);
         } else {
-            if ($user != $this->process->getOwnerName()) {
-                Cli::error('You are trying to run this daemon as a user with conflicting permissions - either run it as ' . $user . ' or with sudo!');
-                return;
-            }
+            //if ($user != $this->process->getOwnerName()) {
+            //Cli::error('You are trying to run this daemon as a user with conflicting permissions - either run it as ' . $user . ' or with sudo!');
+            //return;
+            //}
         }
 
 
