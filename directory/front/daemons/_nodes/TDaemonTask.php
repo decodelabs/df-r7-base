@@ -41,7 +41,7 @@ trait TDaemonTask
 
             Systemic::scriptCommand([$path, (string)$request])
                 ->setWorkingDirectory(Genesis::$hub->getApplicationPath())
-                ->setUser($user)
+                ->setUser('root')
                 ->run();
             exit;
         }
