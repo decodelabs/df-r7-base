@@ -182,6 +182,7 @@ abstract class Base implements ICache
 
     public function count(): int
     {
+        /** @phpstan-ignore-next-line */
         return $this->_backend?->count() ?? 0;
     }
 
