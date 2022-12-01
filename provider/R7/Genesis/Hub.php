@@ -9,6 +9,7 @@ namespace DecodeLabs\R7\Genesis;
 
 use DecodeLabs\Archetype;
 use DecodeLabs\Archetype\Resolver\Extension as ArchetypeExtension;
+use DecodeLabs\Atlas;
 use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Fluidity\CastTrait;
@@ -19,6 +20,7 @@ use DecodeLabs\Genesis\Hub as HubInterface;
 use DecodeLabs\Genesis\Kernel;
 use DecodeLabs\Genesis\Loader\Stack as StackLoader;
 use DecodeLabs\Glitch;
+use DecodeLabs\Integra\Context as IntegraContext;
 use DecodeLabs\Metamorph;
 use DecodeLabs\R7\Disciple\Adapter as DiscipleAdapter;
 use DecodeLabs\R7\Genesis\Kernel as R7Kernel;
@@ -329,6 +331,10 @@ class Hub implements HubInterface
             }
         });
 
+        $this->context->container->bind(
+            IntegraContext::class,
+            new IntegraContext(Atlas::dir($this->getApplicationPath()))
+        );
 
         $this->context->container->get(AppBase::class)->initializePlatform();
     }
