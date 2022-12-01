@@ -6,9 +6,7 @@
 
 namespace df\apex\directory\shared\tasks\_nodes;
 
-use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy;
-use DecodeLabs\Systemic;
 
 use df\arch;
 
@@ -37,13 +35,7 @@ class HttpInvoke extends arch\node\Base
                 return;
             }
 
-            $path = Genesis::$hub->getApplicationPath() . '/entry/';
-            $path .= Genesis::$environment->getName() . '.php';
-            $request = (string)arch\Request::factory($invoke['request']);
-
-
-            Systemic::scriptCommand([$path, $request])
-                ->setWorkingDirectory(Genesis::$hub->getApplicationPath())
+            Legacy::taskCommand($invoke['request'])
                 ->start(function ($controller) use ($generator) {
                     /** @phpstan-ignore-next-line */
                     while (true) {

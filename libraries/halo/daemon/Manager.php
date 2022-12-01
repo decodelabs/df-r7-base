@@ -8,9 +8,9 @@ namespace df\halo\daemon;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Exceptional;
-
 use DecodeLabs\Genesis;
-use df\arch;
+use DecodeLabs\R7\Legacy;
+
 use df\core;
 
 class Manager implements IManager
@@ -59,22 +59,11 @@ class Manager implements IManager
         if ($launch) {
             Atlas::createDir(dirname($path));
             touch($path);
-            $taskManager = arch\node\task\Manager::getInstance();
 
             if ($spoolOnly) {
-                $taskManager->launchBackground(
-                    'tasks/spool',
-                    null,
-                    false,
-                    false
-                );
+                Legacy::launchTask('tasks/spool');
             } else {
-                $taskManager->launchBackground(
-                    'daemons/ensure-activity',
-                    null,
-                    false,
-                    false
-                );
+                Legacy::launchTask('daemons/ensure-activity');
             }
         }
 

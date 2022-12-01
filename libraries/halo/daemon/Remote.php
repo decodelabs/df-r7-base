@@ -10,6 +10,7 @@ use DecodeLabs\Dictum;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
 use DecodeLabs\Systemic;
 use DecodeLabs\Systemic\Process;
 use DecodeLabs\Terminus\Session;
@@ -178,10 +179,8 @@ class Remote implements IRemote
                 );
         }
 
-        $path = Genesis::$hub->getApplicationPath() . '/entry/' . Genesis::$environment->getName() . '.php';
-
         return Systemic::runScript(
-            [$path, 'daemon', $this->_daemon->getName(), $command],
+            [Legacy::getEntryFile(), 'daemon', $this->_daemon->getName(), $command],
             Genesis::$hub->getApplicationPath()
         );
     }

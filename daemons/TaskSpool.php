@@ -3,9 +3,10 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\daemons;
 
-use DecodeLabs\Terminus as Cli;
+use DecodeLabs\R7\Legacy;
 
 use df\halo;
 
@@ -21,12 +22,6 @@ class TaskSpool extends halo\daemon\Base
 
     public function spool()
     {
-        $this->task->launch(
-            'tasks/spool',
-            Cli::getSession(),
-            null,
-            false,
-            false
-        );
+        Legacy::runTask('tasks/spool');
     }
 }

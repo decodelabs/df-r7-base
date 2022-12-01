@@ -10,50 +10,42 @@ namespace DecodeLabs\R7\Legacy;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use DateInterval;
-
 use DateTime;
+
+use DecodeLabs\Deliverance;
 use DecodeLabs\Genesis;
 use DecodeLabs\R7\Legacy\Plugins\Http as HttpPlugin;
-
 use DecodeLabs\R7\Nightfire\Block;
 use DecodeLabs\R7\Theme\Config as ThemeConfig;
+use DecodeLabs\Systemic;
+use DecodeLabs\Systemic\Command;
 use DecodeLabs\Systemic\Process;
-use DecodeLabs\Terminus\Session as TerminusSession;
+use DecodeLabs\Systemic\Result as ProcessResult;
+use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Veneer\LazyLoad;
-
 use DecodeLabs\Veneer\Plugin;
+
 use df\arch\Context;
-
 use df\arch\mail\Base as ArchMail;
-
 use df\arch\Request;
 use df\aura\theme\Config as StaticThemeConfig;
 use df\aura\view\content\Template;
-
 use df\aura\view\IHtmlView as View;
-
 use df\axis\IUnit as Unit;
 use df\axis\Model;
-
 use df\axis\unit\Cache as CacheUnit;
-
 use df\axis\unit\Config as ConfigUnit;
 use df\axis\unit\Enum as EnumUnit;
 use df\axis\unit\Table as TableUnit;
-
 use df\core\app\Base as AppBase;
 use df\core\collection\Tree;
-
 use df\core\IRegistryObject as RegistryObject;
 use df\core\loader\Base as LoaderBase;
 use df\core\time\Date;
-
 use df\core\time\Duration;
 use df\core\uri\IUrl as Url;
 use df\fire\ISlotContent as Slot;
 use df\flex\Guid;
-
-
 use df\flow\Manager as CommsManager;
 use df\mesh\entity\Locator as EntityLocator;
 use df\mesh\job\IJob as Job;
@@ -698,41 +690,85 @@ class Helper
     }
 
 
+    /**
+     * New task command
+     */
+    public function taskCommand(
+        string|Request $request,
+        bool $dfSource = false
+    ): Command {
+        $request = Request::factory($request);
+        $args = [$request];
+
+        if ($dfSource) {
+            $args[] = '--df-source';
+        }
+
+        return Systemic::scriptCommand([$this->getEntryFile(), ...$args])
+            ->setWorkingDirectory(Genesis::$hub->getApplicationPath());
+    }
+
+    /**
+     * Get entry file
+     */
+    public function getEntryFile(): string
+    {
+        $path = Genesis::$hub->getApplicationPath() . '/entry/';
+        $path .= Genesis::$environment->getName() . '.php';
+        return $path;
+    }
+
+    /**
+     * Run r7 task in foreground
+     */
+    public function runTask(
+        string|Request $request,
+        bool $dfSource = false
+    ): bool {
+        return $this->taskCommand($request, $dfSource)
+            ->run();
+    }
+
+    /**
+     * Run task quietly
+     */
+    public function runTaskQuietly(
+        string|Request $request,
+        bool $dfSource = false
+    ): void {
+        if (Genesis::$kernel->getMode() === 'Task') {
+            $session = Cli::getSession();
+            $oldBroker = $session->getBroker();
+            $session->setBroker(Deliverance::newBroker());
+
+            $this->getContext()->task->invoke($request);
+            $session->setBroker($oldBroker);
+        } else {
+            $this->launchTask($request, $dfSource);
+        }
+    }
+
+    /**
+     * Run r7 task in foreground
+     */
+    public function captureTask(
+        string|Request $request,
+        bool $dfSource = false
+    ): ProcessResult {
+        return $this->taskCommand($request, $dfSource)
+            ->capture();
+    }
+
 
     /**
      * Launch a foreground task
      */
     public function launchTask(
-        string $request,
-        ?TerminusSession $session = null,
-        ?string $user = null,
-        bool $dfSource = false,
-        bool $decoratable = null
-    ): bool {
-        return $this->getContext()->task->launch(
-            $request,
-            $session,
-            $user,
-            $dfSource,
-            $decoratable
-        );
-    }
-
-    /**
-     * Launch a background task
-     */
-    public function launchBackgroundTask(
-        string $request,
-        ?string $user = null,
-        bool $dfSource = false,
-        bool $decoratable = null
+        string|Request $request,
+        bool $dfSource = false
     ): Process {
-        return $this->getContext()->task->launchBackground(
-            $request,
-            $user,
-            $dfSource,
-            $decoratable
-        );
+        return $this->taskCommand($request, $dfSource)
+            ->launch();
     }
 
 

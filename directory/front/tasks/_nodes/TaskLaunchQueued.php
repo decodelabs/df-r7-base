@@ -8,7 +8,7 @@ namespace df\apex\directory\front\tasks\_nodes;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Genesis;
-
+use DecodeLabs\R7\Legacy;
 use DecodeLabs\Terminus as Cli;
 use df\arch;
 use df\core;
@@ -26,10 +26,6 @@ class TaskLaunchQueued extends arch\node\Task
     {
         $this->_outputReceiver = Atlas::newMemoryFile();
         $this->_errorReceiver = Atlas::newMemoryFile();
-
-        Cli::getSession()->getBroker()
-            ->addOutputReceiver($this->_outputReceiver)
-            ->addErrorReceiver($this->_errorReceiver);
     }
 
     public function execute(): void
@@ -56,13 +52,10 @@ class TaskLaunchQueued extends arch\node\Task
 
         $this->_timer = new core\time\Timer();
 
-        $this->task->launch(
-            $this->_entry['request'],
-            Cli::getSession(),
-            null,
-            false,
-            false
-        );
+        Legacy::taskCommand($this->_entry['request'])
+            ->addOutputReceiver($this->_outputReceiver)
+            ->addErrorReceiver($this->_errorReceiver)
+            ->run();
     }
 
     protected function _afterDispatch(mixed $output): mixed

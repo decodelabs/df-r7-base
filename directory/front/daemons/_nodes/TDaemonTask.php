@@ -6,7 +6,7 @@
 
 namespace df\apex\directory\front\daemons\_nodes;
 
-use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
 use DecodeLabs\Systemic;
 use DecodeLabs\Terminus as Cli;
 use df\core;
@@ -36,11 +36,7 @@ trait TDaemonTask
             $request = clone $this->request;
             $request->query->_privileged = true;
 
-            $path = Genesis::$hub->getApplicationPath() . '/entry/';
-            $path .= Genesis::$environment->getName() . '.php';
-
-            Systemic::scriptCommand([$path, (string)$request])
-                ->setWorkingDirectory(Genesis::$hub->getApplicationPath())
+            Legacy::taskCommand($request)
                 ->setUser('root')
                 ->run();
             exit;

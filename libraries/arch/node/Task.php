@@ -8,9 +8,10 @@ namespace df\arch\node;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
-
+use DecodeLabs\R7\Legacy;
 use DecodeLabs\Systemic;
 use DecodeLabs\Terminus as Cli;
+
 use df\arch;
 use df\core;
 
@@ -84,6 +85,15 @@ abstract class Task extends Base implements ITaskNode
     }
 
 
+    public function launch($request)
+    {
+        Cli::notice('Switching to new process');
+        Cli::newLine();
+
+        return Legacy::runTask($request, true);
+    }
+
+
     public function ensureDfSource()
     {
         if (!Genesis::$build->isCompiled()) {
@@ -98,21 +108,6 @@ abstract class Task extends Base implements ITaskNode
 
         Systemic::runScript($args);
         exit;
-    }
-
-
-    public function launch($request)
-    {
-        Cli::notice('Switching to new process');
-        Cli::newLine();
-
-        $request = arch\Request::factory($request);
-        $path = Genesis::$hub->getApplicationPath() . '/entry/';
-        $path .= Genesis::$environment->getName() . '.php';
-
-        return Systemic::scriptCommand([$path, $request, '--df-source'])
-            ->setWorkingDirectory(Genesis::$hub->getApplicationPath())
-            ->run();
     }
 
 

@@ -8,9 +8,10 @@ namespace df\apex\directory\front\tasks\_nodes;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Genesis;
-
 use DecodeLabs\Glitch;
+use DecodeLabs\R7\Legacy;
 use DecodeLabs\Terminus as Cli;
+
 use df\arch;
 use df\core;
 
@@ -76,12 +77,7 @@ class TaskSpool extends arch\node\Task
 
             Cli::{'brightMagenta'}($task['request'] . ' ');
 
-            $this->task->launchBackground(
-                'tasks/launch-queued?id=' . $task['id'],
-                null,
-                false,
-                false
-            );
+            Legacy::launchTask('tasks/launch-queued?id=' . $task['id']);
 
             if (!$this->_checkCompleted($task['id'])) {
                 return;

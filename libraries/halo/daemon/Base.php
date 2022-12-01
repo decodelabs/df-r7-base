@@ -55,10 +55,9 @@ abstract class Base implements IDaemon
             $user = core\environment\Config::getInstance()->getDaemonUser();
         }
 
-        $path = Genesis::$hub->getApplicationPath() . '/entry/';
-        $path .= Genesis::$environment->getName() . '.php';
-
-        return Systemic::scriptCommand([$path, 'daemon', $name])
+        return Systemic::scriptCommand([
+                Legacy::getEntryFile(), 'daemon', $name
+            ])
             ->setUser($user)
             ->run();
     }

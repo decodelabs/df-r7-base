@@ -115,8 +115,8 @@ class BuildManifest implements Manifest
         foreach ($this->scanTaskNodes() as $request) {
             yield new GenericTask(
                 'Running task: ' . $request->getPath(),
-                function (Session $session) use ($request) {
-                    Legacy::launchTask((string)$request, $session, null, true);
+                function () use ($request) {
+                    Legacy::runTask($request, true);
                 }
             );
         }
@@ -248,8 +248,8 @@ class BuildManifest implements Manifest
         foreach ($this->scanTaskNodes(true) as $request) {
             yield new GenericTask(
                 'Running task: ' . $request->getPath(),
-                function (Session $session) use ($request) {
-                    Legacy::launchTask((string)$request, $session, null, true);
+                function () use ($request) {
+                    Legacy::runTask($request, true);
                 }
             );
         }
@@ -264,8 +264,8 @@ class BuildManifest implements Manifest
         // Clear cache
         yield new GenericTask(
             'Purging caches',
-            function (Session $session) {
-                Legacy::launchTask('cache/purge', $session, null, true);
+            function () {
+                Legacy::runTask('cache/purge', true);
             }
         );
 
@@ -273,7 +273,7 @@ class BuildManifest implements Manifest
         yield new GenericTask(
             'Restarting daemons',
             function (Session $session) {
-                Legacy::launchTask('daemons/restart-all', $session, null, true);
+                Legacy::runTask('daemons/restart-all', true);
             }
         );
 
@@ -281,14 +281,14 @@ class BuildManifest implements Manifest
         yield new GenericTask(
             'Scanning for scheduled tasks',
             function (Session $session) {
-                Legacy::launchTask('tasks/scan', $session, null, true);
+                Legacy::runTask('tasks/scan', true);
             }
         );
 
         yield new GenericTask(
             'Running task spool',
             function (Session $session) {
-                Legacy::launchTask('tasks/spool', $session, null, true);
+                Legacy::runTask('tasks/spool', true);
             }
         );
     }

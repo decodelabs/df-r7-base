@@ -36,9 +36,7 @@ class Apcu implements core\cache\IBackend
 
         $request = new arch\Request('cache/apcu-clear.json?purge=app');
         $request->query->mode = (php_sapi_name() == 'cli' ? 'http' : 'cli');
-
-        $taskMan = arch\node\task\Manager::getInstance();
-        $session ? $taskMan->launch($request, $session) : $taskMan->launchBackground($request);
+        $session ? Legacy::runTask($request) : Legacy::launchTask($request);
     }
 
     public static function purgeAll(core\collection\ITree $options, ?Session $session = null)
@@ -49,9 +47,7 @@ class Apcu implements core\cache\IBackend
 
         $request = new arch\Request('cache/apcu-clear.json?purge=all');
         $request->query->mode = (php_sapi_name() == 'cli' ? 'http' : 'cli');
-
-        $taskMan = arch\node\task\Manager::getInstance();
-        $session ? $taskMan->launch($request, $session) : $taskMan->launchBackground($request);
+        $session ? Legacy::runTask($request) : Legacy::launchTask($request);
     }
 
     public static function prune(core\collection\ITree $options)
@@ -284,7 +280,7 @@ class Apcu implements core\cache\IBackend
         $request->query->{$method} = $arg;
 
         try {
-            arch\node\task\Manager::getInstance()->launchQuietly($request);
+            Legacy::runTaskQuietly($request);
         } catch (\Throwable $e) {
             core\log\Manager::getInstance()->logException($e);
         }

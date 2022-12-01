@@ -8,7 +8,6 @@ namespace df\arch\node;
 
 use DecodeLabs\Fluidity\Cast;
 use DecodeLabs\Tagged\Markup;
-use DecodeLabs\Terminus\Session;
 use df\arch;
 use df\arch\node\form\State as FormState;
 use df\aura;
@@ -18,7 +17,6 @@ use df\aura\html\widget\FieldSet as FieldSetWidget;
 use df\aura\html\widget\IContainerWidget;
 use df\aura\view\IContentProvider as ViewContentProvider;
 use df\core;
-use df\flex;
 use df\link;
 use df\mesh;
 
@@ -60,6 +58,7 @@ interface ITaskNode extends INode
 
     public function execute(): void;
     public function runChild($request, bool $announce = true);
+    public function launch($request);
     public function ensureDfSource();
 }
 
@@ -70,14 +69,8 @@ interface IBuildTaskNode extends ITaskNode
 
 interface ITaskManager extends core\IManager
 {
-    public function launch($request, ?Session $session = null, $user = null, bool $dfSource = false, bool $decoratable = null): bool;
-    public function launchBackground($request, $user = null, bool $dfSource = false, bool $decoratable = null);
-    public function launchQuietly($request): void;
     public function invoke($request): void;
     public function initiateStream($request): link\http\IResponse;
-    public function queue($request, string $priority = 'medium'): flex\IGuid;
-    public function queueAndLaunch($request, ?Session $session = null): bool;
-    public function queueAndLaunchBackground($request);
 }
 
 
