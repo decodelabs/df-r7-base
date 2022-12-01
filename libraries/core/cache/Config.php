@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\cache;
 
 use df\core;
@@ -50,7 +51,7 @@ class Config extends core\Config
             if ($cache->isCacheDistributed()) {
                 $list = ['Memcached', 'Memcache', 'LocalFile'];
             } else {
-                $list = ['Apcu', 'Memcached', 'Memcache', 'LocalFile'];
+                $list = ['Memcached', 'Apcu', 'Memcache', 'LocalFile'];
             }
         }
 

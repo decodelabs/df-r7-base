@@ -182,7 +182,7 @@ abstract class Base implements ICache
 
     public function count(): int
     {
-        return $this->_backend->count();
+        return $this->_backend?->count() ?? 0;
     }
 
     public function getKeys(): array
