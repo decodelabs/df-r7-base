@@ -10,6 +10,7 @@ use DecodeLabs\Atlas;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\Glitch;
 use DecodeLabs\Overpass\Bridge;
 use DecodeLabs\Terminus\Session;
 use df\flex;
@@ -59,6 +60,12 @@ class Autoprefixer extends Base
             'path' => $cssPath,
             'settings' => $this->settings
         ]);
+
+        if (!isset($output)) {
+            Glitch::logException(Exceptional::Runtime(
+                'Unable to autoprefix css'
+            ));
+        }
 
         Atlas::createFile($cssPath, $output['css']);
 
