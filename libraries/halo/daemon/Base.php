@@ -393,7 +393,7 @@ abstract class Base implements IDaemon
             return $this;
         }
 
-        Cli::info('STOPPING');
+        //Cli::info('STOPPING');
 
         $this->_isStopping = true;
         $this->events->stop();
@@ -412,7 +412,7 @@ abstract class Base implements IDaemon
         }
 
         $this->_isPaused = true;
-        Cli::info('PAUSED');
+        //Cli::info('PAUSED');
         return $this;
     }
 
@@ -423,7 +423,7 @@ abstract class Base implements IDaemon
         }
 
         $this->_isPaused = false;
-        Cli::info('RESUMING');
+        //Cli::info('RESUMING');
         return $this;
     }
 
