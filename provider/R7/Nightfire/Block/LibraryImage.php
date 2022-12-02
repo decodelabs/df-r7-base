@@ -145,7 +145,7 @@ class LibraryImage extends BlockAbstract
             ->setDataAttribute('type', $this->getName());
 
         if ($this->width !== null) {
-            $output->setStyle('width', $this->width.'%');
+            $output->setStyle('width', $this->width . '%');
         }
 
         return $output;
