@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Nightfire\Block;
 
+use DecodeLabs\Coercion;
 use DecodeLabs\Exemplar\Element as XmlElement;
 use DecodeLabs\Exemplar\Writer as XmlWriter;
 use DecodeLabs\R7\Nightfire\BlockAbstract;
@@ -20,6 +21,7 @@ class LibraryImage extends BlockAbstract
     protected ?string $imageId = null;
     protected ?string $alt = null;
     protected ?string $link = null;
+    protected ?float $width = null;
 
     public function getFormat(): string
     {
@@ -77,6 +79,28 @@ class LibraryImage extends BlockAbstract
     }
 
 
+    // Width
+
+    /**
+     * Set width constraint
+     *
+     * @return $this
+     */
+    public function setWidth(?float $width): static
+    {
+        $this->width = $width;
+        return $this;
+    }
+
+    /**
+     * Get width
+     */
+    public function getWidth(): ?float
+    {
+        return $this->width;
+    }
+
+
     // IO
     public function isEmpty(): bool
     {
@@ -88,6 +112,7 @@ class LibraryImage extends BlockAbstract
         $this->imageId = $element->getAttribute('image');
         $this->alt = $element->getAttribute('alt');
         $this->setLink($element->getAttribute('href'));
+        $this->width = Coercion::toFloatOrNull($element->getAttribute('width'));
     }
 
     protected function writeXml(XmlWriter $writer): void
@@ -98,6 +123,8 @@ class LibraryImage extends BlockAbstract
         if ($this->link) {
             $writer['href'] = $this->link;
         }
+
+        $writer['width'] = $this->width;
     }
 
 
@@ -116,6 +143,10 @@ class LibraryImage extends BlockAbstract
         $output
             ->addClass('block')
             ->setDataAttribute('type', $this->getName());
+
+        if ($this->width !== null) {
+            $output->setStyle('width', $this->width.'%');
+        }
 
         return $output;
     }

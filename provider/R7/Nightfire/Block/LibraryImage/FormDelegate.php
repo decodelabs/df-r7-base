@@ -42,6 +42,7 @@ class FormDelegate extends BlockDelegateAbstract
 
         $this->values->alt = $this->block->getAltText();
         $this->values->link = $this->block->getLink();
+        $this->values->width = $this->block->getWidth();
     }
 
     public function renderFieldContent(FieldWidget $field): void
@@ -81,6 +82,15 @@ class FormDelegate extends BlockDelegateAbstract
         // Link URL
         $field->addField($this->_('Link URL'))->push(
             $this->html->textbox($this->fieldName('link'), $this->values->link)
+        );
+
+        // Width
+        $field->addField($this->_('Width'))->push(
+            $this->html->numberTextbox($this->fieldName('width'), $this->values->width)
+                ->setStep(0.1)
+                ->setMin(0.1)
+                ->setMax(100),
+            ' %'
         );
     }
 
@@ -122,11 +132,16 @@ class FormDelegate extends BlockDelegateAbstract
             // Link
             ->addField('link', 'text')
 
+            // Width
+            ->addField('width', 'floatingPoint')
+                ->setRange(0.1, 100)
+
             ->validate($this->values);
 
         $this->block->setImageId($validator['image']);
         $this->block->setAltText($validator['alt']);
         $this->block->setLink($validator['link']);
+        $this->block->setWidth($validator['width']);
 
         return $this->block;
     }
