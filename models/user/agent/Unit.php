@@ -39,6 +39,7 @@ class Unit extends axis\unit\Table
                         'body' => $agent,
                         'isBot' => $isBot
                     ])
+                    ->ifNotExists(true)
                     ->execute()['id'];
             } else {
                 $id = null;
