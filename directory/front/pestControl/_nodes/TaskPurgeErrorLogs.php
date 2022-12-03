@@ -42,11 +42,13 @@ class TaskPurgeErrorLogs extends arch\node\Task
             usleep(50000);
         }
 
+        Cli::success('Purged ' . $total . ' critical error records');
 
-        $loop = 0;
+
+        $loop = $total = 0;
 
         while (++$loop < self::MAX_LOOP) {
-            $count = $this->data->pestControl->error->delete()
+            $total += $count = $this->data->pestControl->error->delete()
                 ->chainIf(!$all, function ($query) use ($threshold) {
                     $query->where('lastSeen', '<', $threshold);
                 })
@@ -64,5 +66,25 @@ class TaskPurgeErrorLogs extends arch\node\Task
         }
 
         Cli::success('Purged ' . $total . ' critical error logs');
+
+
+        $loop = $total = 0;
+
+        while (++$loop < self::MAX_LOOP) {
+            $total += $count = $this->data->pestControl->stackTrace->delete()
+                ->whereCorrelation('id', '!in', 'stackTrace')
+                    ->from('axis://pestControl/ErrorLog', 'log')
+                    ->endCorrelation()
+                ->limit(100)
+                ->execute();
+
+            if (!$count) {
+                break;
+            }
+
+            usleep(50000);
+        }
+
+        Cli::success('Purged ' . $total . ' stack traces');
     }
 }
