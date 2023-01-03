@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\view;
 
 use DecodeLabs\Tagged\Markup;
@@ -251,14 +252,29 @@ interface IHtmlView extends IResponseView, ILayoutView
     public function clearFootJs();
 
     // Scripts
-    public function addScript($id, $script, $condition = null, $noScript = null);
-    public function addHeadScript($id, $script, $condition = null, $noScript = null);
-    public function addFootScript($id, $script, $condition = null, $noScript = null);
-    public function getHeadScript($id);
-    public function getFootScript($id);
-    public function removeScript($id);
-    public function removeHeadScript($id);
-    public function removeFootScript($id);
+    public function addScript(
+        string $id,
+        string $script,
+        ?array $attributes = null,
+        ?string $noScript = null
+    );
+    public function addHeadScript(
+        string $id,
+        string $script,
+        ?array $attributes = null,
+        ?string $noScript = null
+    );
+    public function addFootScript(
+        string $id,
+        string $script,
+        ?array $attributes = null,
+        ?string $noScript = null
+    );
+    public function getHeadScript(string $id);
+    public function getFootScript(string $id);
+    public function removeScript(string $id);
+    public function removeHeadScript(string $id);
+    public function removeFootScript(string $id);
     public function clearScripts();
     public function clearHeadScripts();
     public function clearFootScripts();

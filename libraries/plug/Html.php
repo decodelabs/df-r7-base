@@ -414,7 +414,7 @@ class Html implements arch\IDirectoryHelper
         return $output;
     }
 
-    public function jsonLd(string $type, $data, string $context = null): Buffer
+    public function jsonLd(string $type, $data, string $context = null): void
     {
         if ($context === null) {
             $context = 'http://schema.org';
@@ -428,15 +428,20 @@ class Html implements arch\IDirectoryHelper
         $tree->merge(core\collection\Tree::factory($data));
         $tree->removeEmpty();
 
-        return Tagged::raw(
-            Tagged::tag('script', ['type' => 'application/ld+json']) .
-            flex\Json::toString($tree, \JSON_UNESCAPED_SLASHES) .
-            '</script>'
-        )
-        ;
+        if (!$this->view) {
+            throw Exceptional::Runtime('No view available', null, $tree);
+        }
+
+        $data = flex\Json::toString($tree, \JSON_UNESCAPED_SLASHES);
+
+        $this->view->addHeadScript(
+            'jsonLd-'.md5($data),
+            $data,
+            ['type' => 'application/ld+json']
+        );
     }
 
-    public function breadcrumbsLd(arch\navigation\breadcrumbs\EntryList $breadcrumbs)
+    public function breadcrumbsLd(arch\navigation\breadcrumbs\EntryList $breadcrumbs): void
     {
         $data = [];
         $i = 0;
@@ -450,7 +455,7 @@ class Html implements arch\IDirectoryHelper
             ];
         }
 
-        return $this->jsonLd('BreadcrumbList', ['itemListElement' => $data]);
+        $this->jsonLd('BreadcrumbList', ['itemListElement' => $data]);
     }
 
 

@@ -670,55 +670,67 @@ class Html extends Base implements IHtmlView, Dumpable
 
 
     // Scripts
-    public function addScript($id, $script, $condition = null, $noScript = null)
-    {
-        return $this->addHeadScript($id, $script, $condition, $noScript);
+    public function addScript(
+        string $id,
+        string $script,
+        ?array $attributes = null,
+        ?string $noScript = null
+    ) {
+        return $this->addHeadScript($id, $script, $attributes, $noScript);
     }
 
-    public function addHeadScript($id, $script, $condition = null, $noScript = null)
-    {
+    public function addHeadScript(
+        string $id,
+        string $script,
+        ?array $attributes = null,
+        ?string $noScript = null
+    ) {
         $this->_headScripts[$id] = [
             'script' => $script,
-            'condition' => $condition,
+            'attributes' => $attributes,
             'noScript' => $noScript
         ];
 
         return $this;
     }
 
-    public function addFootScript($id, $script, $condition = null, $noScript = null)
-    {
+    public function addFootScript(
+        string $id,
+        string $script,
+        ?array $attributes = null,
+        ?string $noScript = null
+    ) {
         $this->_footScripts[$id] = [
             'script' => $script,
-            'condition' => $condition,
+            'attributes' => $attributes,
             'noScript' => $noScript
         ];
 
         return $this;
     }
 
-    public function getHeadScript($id)
+    public function getHeadScript(string $id)
     {
         return $this->_headScripts[$id] ?? null;
     }
 
-    public function getFootScript($id)
+    public function getFootScript(string $id)
     {
         return $this->_footScripts[$id] ?? null;
     }
 
-    public function removeScript($id)
+    public function removeScript(string $id)
     {
         return $this->removeHeadScript($id)->removeFootScript($id);
     }
 
-    public function removeHeadScript($id)
+    public function removeHeadScript(string $id)
     {
         unset($this->_headScripts[$id]);
         return $this;
     }
 
-    public function removeFootScript($id)
+    public function removeFootScript(string $id)
     {
         unset($this->_footScripts[$id]);
         return $this;
@@ -996,13 +1008,15 @@ class Html extends Base implements IHtmlView, Dumpable
         }
 
         foreach ($scripts as $id => $entry) {
-            $line = '    <script type="text/javascript" id="script-' . $id . '"';
+            $attributes = $entry['attributes'] ?? [];
+            $attributes['id'] = 'script-'.$id;
+            $attributes['nonce'] = $nonce;
 
-            if ($nonce !== null) {
-                $line .= ' nonce="' . $nonce . '"';
+            if (!isset($attributes['type'])) {
+                $attributes['type'] = 'text/javascript';
             }
 
-            $line .= '>' .
+            $line = '    '.Tagged::tag('script', $attributes) .
                     "\n        " . str_replace("\n", "\n        ", $entry['script']) . "\n" .
                     '    </script>' . "\n";
 
