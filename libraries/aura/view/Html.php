@@ -1009,14 +1009,14 @@ class Html extends Base implements IHtmlView, Dumpable
 
         foreach ($scripts as $id => $entry) {
             $attributes = $entry['attributes'] ?? [];
-            $attributes['id'] = 'script-'.$id;
+            $attributes['id'] = 'script-' . $id;
             $attributes['nonce'] = $nonce;
 
             if (!isset($attributes['type'])) {
                 $attributes['type'] = 'text/javascript';
             }
 
-            $line = '    '.Tagged::tag('script', $attributes) .
+            $line = '    ' . Tagged::tag('script', $attributes) .
                     "\n        " . str_replace("\n", "\n        ", $entry['script']) . "\n" .
                     '    </script>' . "\n";
 

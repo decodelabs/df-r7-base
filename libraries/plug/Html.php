@@ -12,7 +12,6 @@ use DecodeLabs\Genesis;
 use DecodeLabs\Metamorph;
 use DecodeLabs\Tagged;
 
-use DecodeLabs\Tagged\Buffer;
 use df\arch;
 use df\aura;
 use df\core;
@@ -435,7 +434,7 @@ class Html implements arch\IDirectoryHelper
         $data = flex\Json::toString($tree, \JSON_UNESCAPED_SLASHES);
 
         $this->view->addHeadScript(
-            'jsonLd-'.md5($data),
+            'jsonLd-' . md5($data),
             $data,
             ['type' => 'application/ld+json']
         );
