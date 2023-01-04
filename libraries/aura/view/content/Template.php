@@ -8,9 +8,9 @@ namespace df\aura\view\content;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\R7\Legacy;
+
 use df\arch;
-
-
 use df\aura;
 use df\core;
 
@@ -32,17 +32,35 @@ class Template implements aura\view\ITemplate, Dumpable
     public static function loadDirectoryTemplate(arch\IContext $context, $path)
     {
         $request = $context->location;
-        $contextPath = $request->getDirectoryLocation();
-        $lookupPath = 'apex/directory/' . $contextPath . '/_templates/' . ltrim($path, '/') . '.php';
+        $contextPath = trim($request->getDirectoryLocation(), '/');
+        $contextParts = explode('/', $contextPath);
+        $contextParts[0] = 'shared';
+        $sharedContextPath = implode('/', $contextParts);
+        $themeId = ucfirst($context->apex->getTheme()->getId());
+        $lookupPaths = [];
 
-        if (!$absolutePath = $context->findFile($lookupPath)) {
-            if (!$request->isArea('shared')) {
-                $parts = explode('/', $contextPath);
-                array_shift($parts);
-                array_unshift($parts, 'shared');
-                $contextPath = implode('/', $parts);
-                $lookupPath = 'apex/directory/' . $contextPath . '/_templates/' . ltrim($path, '/') . '.php';
-                $absolutePath = $context->findFile($lookupPath);
+        $parts = explode('/', trim($path, '/'));
+        $fileName = array_pop($parts);
+        $base = rtrim('apex/directory/' . $contextPath . '/_templates/'.implode('/', $parts), '/');
+        $sharedBase = rtrim('apex/directory/' . $sharedContextPath . '/_templates/'.implode('/', $parts), '/');
+
+        $fileParts = explode('.', $fileName);
+        $topName = array_shift($fileParts);
+        $themeName = $topName.'@'.$themeId.'.'.implode('.', $fileParts).'.php';
+        $rootName = $topName.'.'.implode('.', $fileParts).'.php';
+
+        $lookupPaths[] = $base.'/'.$themeName;
+        $lookupPaths[] = $base.'/'.$rootName;
+
+        if (!$request->isArea('shared')) {
+            $lookupPaths[] = $sharedBase.'/'.$rootName;
+        }
+
+        $absolutePath = null;
+
+        foreach ($lookupPaths as $i => $path) {
+            if ($absolutePath = $context->findFile($path)) {
+                break;
             }
         }
 
