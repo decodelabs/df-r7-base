@@ -8,7 +8,6 @@ namespace df\aura\view\content;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch\Dumpable;
-use DecodeLabs\R7\Legacy;
 
 use df\arch;
 use df\aura;
@@ -41,19 +40,19 @@ class Template implements aura\view\ITemplate, Dumpable
 
         $parts = explode('/', trim($path, '/'));
         $fileName = array_pop($parts);
-        $base = rtrim('apex/directory/' . $contextPath . '/_templates/'.implode('/', $parts), '/');
-        $sharedBase = rtrim('apex/directory/' . $sharedContextPath . '/_templates/'.implode('/', $parts), '/');
+        $base = rtrim('apex/directory/' . $contextPath . '/_templates/' . implode('/', $parts), '/');
+        $sharedBase = rtrim('apex/directory/' . $sharedContextPath . '/_templates/' . implode('/', $parts), '/');
 
         $fileParts = explode('.', $fileName);
         $topName = array_shift($fileParts);
-        $themeName = $topName.'@'.$themeId.'.'.implode('.', $fileParts).'.php';
-        $rootName = $topName.'.'.implode('.', $fileParts).'.php';
+        $themeName = $topName . '@' . $themeId . '.' . implode('.', $fileParts) . '.php';
+        $rootName = $topName . '.' . implode('.', $fileParts) . '.php';
 
-        $lookupPaths[] = $base.'/'.$themeName;
-        $lookupPaths[] = $base.'/'.$rootName;
+        $lookupPaths[] = $base . '/' . $themeName;
+        $lookupPaths[] = $base . '/' . $rootName;
 
         if (!$request->isArea('shared')) {
-            $lookupPaths[] = $sharedBase.'/'.$rootName;
+            $lookupPaths[] = $sharedBase . '/' . $rootName;
         }
 
         $absolutePath = null;
