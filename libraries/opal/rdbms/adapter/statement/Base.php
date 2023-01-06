@@ -31,6 +31,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
     protected $_adapter;
 
     private $_keyIndex = 0;
+    private static $_stmtIndex = 0;
 
     public function __construct(opal\rdbms\IAdapter $adapter, $sql = null)
     {
@@ -113,7 +114,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
             );
         }
 
-        return Dictum::numericToAlpha($this->_keyIndex++);
+        return Dictum::numericToAlpha($this->_keyIndex++) . '_' . self::$_stmtIndex++;
     }
 
     public function setKeyIndex($index)
