@@ -8,6 +8,7 @@ namespace df\aura\html\widget;
 
 use df\arch;
 use df\aura;
+use df\aura\view\IHtmlView as View;
 use df\spur;
 
 class Recaptcha extends Base
@@ -15,6 +16,7 @@ class Recaptcha extends Base
     public const PRIMARY_TAG = 'div.recaptcha';
 
     protected $_siteKey = null;
+    protected ?View $_view = null;
 
     public function __construct(arch\IContext $context, $siteKey = null)
     {
@@ -31,6 +33,17 @@ class Recaptcha extends Base
     public function getSiteKey()
     {
         return $this->_siteKey;
+    }
+
+    public function setView(?View $view): static
+    {
+        $this->_view = $view;
+        return $this;
+    }
+
+    public function getView(): ?View
+    {
+        return $this->_view;
     }
 
     protected function _render()
@@ -57,14 +70,24 @@ class Recaptcha extends Base
             $nonce = $csp->getNonce();
         }
 
-        $script = new aura\html\Tag('script', [
-            'src' => 'https://www.google.com/recaptcha/api.js'
-        ]);
+        $output = '';
 
-        if ($nonce !== null) {
-            $script->setAttribute('nonce', $nonce);
+
+        if ($this->_view) {
+            $this->_view->linkJs('https://www.google.com/recaptcha/api.js');
+        } else {
+            $script = new aura\html\Tag('script', [
+                'src' => 'https://www.google.com/recaptcha/api.js'
+            ]);
+
+            if ($nonce !== null) {
+                $script->setAttribute('nonce', $nonce);
+            }
+
+            $output .= $script;
         }
 
-        return $script->render() . $tag->render();
+        $output .= $tag->render();
+        return $output;
     }
 }
