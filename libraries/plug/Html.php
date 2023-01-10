@@ -11,7 +11,7 @@ use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\Metamorph;
 use DecodeLabs\Tagged;
-use DecodeLabs\Tagged\Element;
+use DecodeLabs\Tagged\Markup;
 
 use df\arch;
 use df\aura;
@@ -249,16 +249,10 @@ class Html implements arch\IDirectoryHelper
     }
 
     public function flashList(
-        ?string $containerTag = null,
+        string|false|null $containerTag = null,
         ?string $messageTag = null,
-    ): ?Element {
-        if ($containerTag === null) {
-            $containerTag = 'div.w.list.flash';
-        }
-
-        $containerTag = '?' . ltrim($containerTag, '?');
-
-        return Tagged::{$containerTag}(function () use ($messageTag) {
+    ): ?Markup {
+        $output = function () use ($messageTag) {
             $manager = flow\Manager::getInstance();
             $manager->processFlashQueue();
             $messageCount = 0;
@@ -295,7 +289,20 @@ class Html implements arch\IDirectoryHelper
             if ($change) {
                 $manager->flashHasChanged(true);
             }
-        });
+        };
+
+
+        if ($containerTag === false) {
+            return Tagged::wrap($output);
+        }
+
+        if ($containerTag === null) {
+            $containerTag = 'div.w.list.flash';
+        }
+
+        $containerTag = '?' . ltrim($containerTag, '?');
+
+        return Tagged::{$containerTag}($output);
     }
 
     public function defaultButtonGroup($mainEvent = null, $mainEventText = null, $mainEventIcon = null)

@@ -38,6 +38,10 @@ class FlashMessage extends Base
         $tag = $this->getTag();
         $tag->addClass($this->_message->getType());
 
+        if (!in_array($tag->getName(), ['a', 'div'])) {
+            $tag->setAttribute('type', $this->_message->getType());
+        }
+
         $icon = $this->_showIcon ?
             $this->_context->html->icon($this->_message->getType()) :
             null;
