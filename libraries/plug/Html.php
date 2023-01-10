@@ -11,6 +11,7 @@ use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\Metamorph;
 use DecodeLabs\Tagged;
+use DecodeLabs\Tagged\Element;
 
 use df\arch;
 use df\aura;
@@ -247,52 +248,49 @@ class Html implements arch\IDirectoryHelper
         return $output;
     }
 
-    public function flashList()
-    {
-        $manager = flow\Manager::getInstance();
-        $manager->processFlashQueue();
-        $messageCount = 0;
+    public function flashList(
+        ?string $containerTag = null,
+        ?string $messageTag = null,
+    ): ?Element {
+        if ($containerTag === null) {
+            $containerTag = 'div.w.list.flash';
+        }
 
-        $isProduction = Genesis::$environment->isProduction();
+        $containerTag = '?' . ltrim($containerTag, '?');
 
-        $output = '<div class="w list flash">' . "\n";
-        $change = false;
+        return Tagged::{$containerTag}(function () use ($messageTag) {
+            $manager = flow\Manager::getInstance();
+            $manager->processFlashQueue();
+            $messageCount = 0;
+            $isProduction = Genesis::$environment->isProduction();
 
-        foreach ($manager->getConstantFlashes() as $message) {
-            $message->isDisplayed(true);
-            $change = true;
+            $change = false;
 
-            if ($isProduction && $message->isDebug()) {
-                continue;
+            foreach (
+                $manager->getConstantFlashes() +
+                $manager->getInstantFlashes()
+            as $message) {
+                $message->isDisplayed(true);
+                $change = true;
+
+                if ($isProduction && $message->isDebug()) {
+                    continue;
+                }
+
+                $messageCount++;
+                $flash = $this->flashMessage($message);
+
+                if ($messageTag !== null) {
+                    $flash->getTag()->setName($messageTag);
+                }
+
+                yield $flash;
             }
 
-            $messageCount++;
-            $output .= $this->flashMessage($message);
-        }
-
-        foreach ($manager->getInstantFlashes() as $message) {
-            $message->isDisplayed(true);
-            $change = true;
-
-            if ($isProduction && $message->isDebug()) {
-                continue;
+            if ($change) {
+                $manager->flashHasChanged(true);
             }
-
-            $messageCount++;
-            $output .= $this->flashMessage($message);
-        }
-
-        if ($change) {
-            $manager->flashHasChanged(true);
-        }
-
-        $output .= '</div>';
-
-        if (!$messageCount) {
-            return null;
-        }
-
-        return $output;
+        });
     }
 
     public function defaultButtonGroup($mainEvent = null, $mainEventText = null, $mainEventIcon = null)
