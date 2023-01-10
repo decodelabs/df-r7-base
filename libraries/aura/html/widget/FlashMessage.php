@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget;
 
 use df\arch;
@@ -12,6 +13,7 @@ use df\flow;
 class FlashMessage extends Base
 {
     protected $_message;
+    protected $_showIcon = true;
 
     public function __construct(arch\IContext $context, $message, $type = null)
     {
@@ -34,10 +36,12 @@ class FlashMessage extends Base
     protected function _render()
     {
         $tag = $this->getTag();
-
         $tag->addClass($this->_message->getType());
 
-        $icon = $this->_context->html->icon($this->_message->getType());
+        $icon = $this->_showIcon ?
+            $this->_context->html->icon($this->_message->getType()) :
+            null;
+
         $title = new aura\html\Element('p.message', $this->_message->getMessage());
 
         if ($description = $this->_message->getDescription()) {
@@ -108,5 +112,15 @@ class FlashMessage extends Base
         }
 
         return $this->_message->shouldLinkOpenInNewWindow();
+    }
+
+    public function shouldShowIcon(bool $flag = null)
+    {
+        if ($flag !== null) {
+            $this->_showIcon = $flag;
+            return $this;
+        }
+
+        return $this->_showIcon;
     }
 }

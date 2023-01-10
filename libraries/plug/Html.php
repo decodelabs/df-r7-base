@@ -278,10 +278,15 @@ class Html implements arch\IDirectoryHelper
                 }
 
                 $messageCount++;
+
+                /** @var \df\aura\html\widget\FlashMessage $flash */
                 $flash = $this->flashMessage($message);
 
                 if ($messageTag !== null) {
-                    $flash->getTag()->setName($messageTag);
+                    $flash
+                        ->shouldShowIcon(false)
+                        ->getTag()
+                            ->setName($messageTag);
                 }
 
                 yield $flash;
