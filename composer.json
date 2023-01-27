@@ -3,10 +3,10 @@
     "description": "DF r7 base",
     "type": "library",
     "license": "MIT",
-    "authors": [{
-        "name": "Tom Wright",
-        "email": "tom@inflatablecookie.com"
-    }],
+    "authors": [ {
+            "name": "Tom Wright",
+            "email": "tom@inflatablecookie.com"
+        } ],
     "require": {
         "php": "^8.0",
         "symfony/polyfill-mbstring": "~1.7",
@@ -82,6 +82,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
+        "veneer-stub": "php tests/veneer-stub.php",
         "analyze-provider": "composer global exec phpstan analyze -- --configuration=phpstan.provider.neon"
     }
 }
