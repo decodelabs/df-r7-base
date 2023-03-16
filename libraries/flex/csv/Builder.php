@@ -141,7 +141,7 @@ class Builder implements IBuilder
             $newRow[] = array_shift($row) ?? null;
         }
 
-        $this->_writeRow($row);
+        $this->_writeRow($newRow);
     }
 
     public function addRow(array $row): void
