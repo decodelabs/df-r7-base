@@ -125,6 +125,25 @@ class Builder implements IBuilder
         return $this->_writeFields;
     }
 
+    public function addInfoRow(array $row): void
+    {
+        if (empty($this->_fields)) {
+            throw Exceptional::Runtime('Fields must be set before writing info rows');
+        }
+
+        if ($this->_fieldsWritten) {
+            throw Exceptional::Runtime('Info rows must be written before data rows');
+        }
+
+        $newRow = [];
+
+        foreach ($this->_fields as $key => $label) {
+            $newRow[] = array_shift($row) ?? null;
+        }
+
+        $this->_writeRow($row);
+    }
+
     public function addRow(array $row): void
     {
         if (empty($this->_fields)) {

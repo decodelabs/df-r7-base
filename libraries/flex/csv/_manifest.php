@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flex\csv;
 
 use DecodeLabs\Atlas\File;
@@ -36,6 +37,7 @@ interface IBuilder extends DataSender
     public function getFields(): ?array;
     public function shouldWriteFields(bool $flag = null);
 
+    public function addInfoRow(array $row): void;
     public function addRow(array $row): void;
     public function getRows(): array;
 }
