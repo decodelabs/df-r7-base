@@ -22,7 +22,10 @@ class Image implements IImage
     // Drivers
     public static function getDriverList()
     {
-        return ['ImageMagick', 'Gd'];
+        return [
+            'Gd',
+            'ImageMagick'
+        ];
     }
 
     public static function setDefaultDriver($driver)
