@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\scaffold\Record;
 
 use DecodeLabs\Tagged as Html;
@@ -113,7 +114,8 @@ trait FilterProviderTrait
                         iterator_to_array($filter->getOptions())
                     )
                         ->isRequired(true)
-                        ->setNoSelectionLabel($filter->getLabel() ?? 'All');
+                        ->setNoSelectionLabel($filter->getLabel() ?? 'All')
+                        ->setStyle('max-width', '8em');
                 }
             })
         );
@@ -215,7 +217,8 @@ trait FilterProviderTrait
                         iterator_to_array($filter->getOptions())
                     )
                         ->isRequired($required)
-                        ->setNoSelectionLabel($filter->getLabel() ?? 'All');
+                        ->setNoSelectionLabel($filter->getLabel() ?? 'All')
+                        ->setStyle('max-width', '12em');
                 }
             })
         );
