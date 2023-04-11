@@ -173,10 +173,8 @@ trait TAcceptTypeProcessor
             }
 
             if ($type[0] == '.') {
-                $type = Typify::detect($type);
-            }
-
-            if (false === strpos($type, '/')) {
+                $type = $this->expandAcceptTypeExtension($type);
+            } elseif (false === strpos($type, '/')) {
                 $type .= '/*';
             }
 
@@ -186,6 +184,11 @@ trait TAcceptTypeProcessor
         }
 
         return $this;
+    }
+
+    protected function expandAcceptTypeExtension(string $type): string
+    {
+        return $type;
     }
 
     public function getAcceptTypes()

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget;
 
 use DecodeLabs\Glitch\Dumpable;
@@ -28,7 +29,6 @@ class FileUpload extends Base implements IFileUploadWidget, Dumpable
         $this->setName($name);
         $this->setValue($value);
     }
-
 
     protected function _render()
     {
