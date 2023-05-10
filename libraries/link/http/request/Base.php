@@ -35,6 +35,7 @@ class Base implements link\http\IRequest, Dumpable
     public const OPTIONS = 'options';
     public const CONNECT = 'connect';
     public const MERGE = 'merge';
+    public const PROPFIND = 'propfind';
 
     public $url;
     public $method = self::GET;
@@ -274,6 +275,7 @@ class Base implements link\http\IRequest, Dumpable
             case self::OPTIONS:
             case self::CONNECT:
             case self::MERGE:
+            case self::PROPFIND:
                 $this->method = $method;
                 break;
 

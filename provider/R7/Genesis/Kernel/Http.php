@@ -148,6 +148,7 @@ class Http implements Kernel
      */
     protected function prepareHttpRequest(): void
     {
+        // HTTPS redirect
         if (
             $this->router->shouldUseHttps() &&
             !$this->httpRequest->getUrl()->isSecure() &&
@@ -163,9 +164,21 @@ class Http implements Kernel
             throw new ForcedResponse($response);
         }
 
+
+        // Options request
         if (Legacy::$http->getMethod() == 'options') {
             throw new ForcedResponse(
-                (Legacy::$http->stringResponse('content'))->withHeaders(function ($headers) {
+                (Legacy::$http->stringResponse(''))->withHeaders(function ($headers) {
+                    $headers->set('allow', 'OPTIONS, GET, HEAD, POST');
+                })
+            );
+        }
+
+        // Propfind request
+        if (Legacy::$http->getMethod() == 'propfind') {
+            throw new ForcedResponse(
+                (Legacy::$http->stringResponse('Propfind is not supported'))->withHeaders(function ($headers) {
+                    $headers->setStatusCode(405);
                     $headers->set('allow', 'OPTIONS, GET, HEAD, POST');
                 })
             );
