@@ -334,7 +334,7 @@ class Http
 
         return
             strtolower($headers->get('x-requested-with') ?? '') === 'xmlhttprequest' ||
-            $headers->get('x-ajax-request-type') === 'ajax';
+            $headers->has('x-ajax-request-type');
     }
 
 
