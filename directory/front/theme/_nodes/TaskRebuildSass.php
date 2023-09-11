@@ -88,6 +88,8 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             $done[] = $sassPath;
 
             if (!$processorsPrepared) {
+                $processorsPrepared = true;
+
                 // Prepare processors
                 foreach (aura\css\SassBridge::DEFAULT_PROCESSOR_OPTIONS as $name => $settings) {
                     $processor = aura\css\processor\Base::factory($name, $settings);
