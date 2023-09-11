@@ -13,7 +13,6 @@ use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Tagged;
 use df\arch;
-use df\aura;
 
 class Html extends Base implements IHtmlView, Dumpable
 {
