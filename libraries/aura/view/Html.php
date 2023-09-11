@@ -64,8 +64,8 @@ class Html extends Base implements IHtmlView, Dumpable
     {
         parent::__construct($type, $context);
 
-        $this->htmlTag = new aura\html\Tag('html', ['lang' => 'en']);
-        $this->bodyTag = new aura\html\Tag('body');
+        $this->htmlTag = Tagged::tag('html', ['lang' => 'en']);
+        $this->bodyTag = Tagged::tag('body');
 
         //$this->_baseHref = $this->uri->__invoke('/');
 
@@ -565,7 +565,17 @@ class Html extends Base implements IHtmlView, Dumpable
 
     protected function _linkJs($location, $uri, $weight = null, array $attributes = null, $condition = null)
     {
-        $url = $this->uri($uri);
+        if (
+            is_string($uri) &&
+            (
+                str_starts_with((string)$uri, 'http:') ||
+                str_starts_with((string)$uri, 'https:')
+            )
+        ) {
+            $url = $uri;
+        } else {
+            $url = $this->uri($uri);
+        }
 
         if ($weight === null) {
             $weight = ++$this->_jsMaxWeight;
@@ -924,7 +934,7 @@ class Html extends Base implements IHtmlView, Dumpable
                 ]
             );
 
-            $tag = new aura\html\Tag('link', $attributes);
+            $tag = Tagged::tag('link', $attributes);
             $line = '    ' . $tag->__toString() . "\n";
 
             if (isset($entry['condition'])) {
@@ -968,7 +978,7 @@ class Html extends Base implements IHtmlView, Dumpable
                 $attributes['nonce'] = $nonce;
             }
 
-            $tag = new aura\html\Tag('script', $attributes);
+            $tag = Tagged::tag('script', $attributes);
             $line = '    ' . $tag->open() . $tag->close() . "\n";
 
             if (isset($entry['condition'])) {
@@ -986,7 +996,7 @@ class Html extends Base implements IHtmlView, Dumpable
                     $attributes['nonce'] = $nonce;
                 }
 
-                $tag = new aura\html\Tag('script', $attributes);
+                $tag = Tagged::tag('script', $attributes);
                 $output .= '    ' . $tag->open() . $entry['invoke'] . $tag->close() . "\n";
             }
         }
@@ -1051,7 +1061,7 @@ class Html extends Base implements IHtmlView, Dumpable
             $nameKey = 'name';
         }
 
-        $output = new aura\html\Tag('meta', [$nameKey => $key]);
+        $output = Tagged::tag('meta', [$nameKey => $key]);
 
         if (is_array($value)) {
             $output->setAttributes($value);
