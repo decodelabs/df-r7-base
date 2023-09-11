@@ -17,14 +17,18 @@ class TaskTheme extends arch\node\Task
     {
         Cli::getCommandDefinition()
             ->addArgument('theme', 'Theme name')
-            ->addArgument('command', 'Target command');
+            ->addArgument('command=dev', 'Target command');
 
         Cli::prepareArguments();
         $appPath = Genesis::$hub->getApplicationPath();
+        $parts = explode(':', Cli::getArgument('theme'));
+        $theme = array_shift($parts);
+        $config = array_shift($parts) ?? 'vite';
 
         Systemic::command([
                 $appPath . '/vendor/bin/zest',
                 Cli::getArgument('command'),
+                '--config=' . $config,
                 ...Cli::getPassthroughArguments(
                     'task',
                     'theme',
@@ -32,7 +36,7 @@ class TaskTheme extends arch\node\Task
                     'df-source'
                 )
             ])
-            ->setWorkingDirectory($appPath . '/themes/' . Cli::getArgument('theme'))
+            ->setWorkingDirectory($appPath . '/themes/' . $theme)
             ->addSignal('SIGINT', 'SIGTERM', 'SIGQUIT')
             ->run();
     }
