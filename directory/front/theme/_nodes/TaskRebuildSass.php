@@ -34,11 +34,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
         $buildId = $this->request['buildId'];
         $done = [];
 
-        // Prepare processors
-        foreach (aura\css\SassBridge::DEFAULT_PROCESSOR_OPTIONS as $name => $settings) {
-            $processor = aura\css\processor\Base::factory($name, $settings);
-            $processor->setup(Cli::getSession());
-        }
+        $processorsPrepared = false;
 
 
         $runPath = Genesis::$hub->getLocalDataPath() . '/run';
@@ -90,6 +86,14 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             }
 
             $done[] = $sassPath;
+
+            if (!$processorsPrepared) {
+                // Prepare processors
+                foreach (aura\css\SassBridge::DEFAULT_PROCESSOR_OPTIONS as $name => $settings) {
+                    $processor = aura\css\processor\Base::factory($name, $settings);
+                    $processor->setup(Cli::getSession());
+                }
+            }
 
             Cli::{'brightMagenta'}($shortPath . ' ');
 
