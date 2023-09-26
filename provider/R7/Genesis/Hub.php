@@ -281,7 +281,7 @@ class Hub implements HubInterface
         /** @phpstan-ignore-next-line */
         $name = ucfirst(df\COMPILE_ENV_MODE ?? $conf->getMode());
 
-        /** @phpstan-var class-string<EnvConfig\Development|EnvConfig\Testing|EnvConfig\Production> */
+        /** @var class-string<EnvConfig\Development|EnvConfig\Testing|EnvConfig\Production> */
         $class = EnvConfig::class . '\\' . $name;
         $output = new $class($this->envId);
 

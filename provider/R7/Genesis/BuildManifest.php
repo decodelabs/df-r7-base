@@ -315,7 +315,7 @@ class BuildManifest implements Manifest
             }
 
             $keyParts = explode('/', dirname($key));
-            /** @phpstan-var class-string */
+            /** @var class-string */
             $class = 'df\\apex\\directory\\' . implode('\\', $keyParts) . '\\' . $basename;
             $ref = new ReflectionClass($class);
 

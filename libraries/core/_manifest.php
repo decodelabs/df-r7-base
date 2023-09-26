@@ -181,7 +181,7 @@ interface ILoader
 
     /**
      * @return \Generator<string, string>
-     * @phpstan-return \Generator<string, class-string>
+     * @return \Generator<string, class-string>
      */
     public function lookupClassList(string $path, bool $test = true): \Generator;
 

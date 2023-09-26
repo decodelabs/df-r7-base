@@ -218,7 +218,7 @@ abstract class BlockAbstract implements Block
             throw Exceptional::Setup('Unable to find form delegate for Nightfire Block: ' . $this->getName());
         }
 
-        /** @phpstan-var class-string<NodeDelegate> $class */
+        /** @var class-string<NodeDelegate> $class */
         return new $class($this, $context, $state, $event, $id);
     }
 }

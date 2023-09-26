@@ -30,7 +30,7 @@ abstract class BlockDelegateAbstract extends FormDelegate implements BlockDelega
     protected Block $block;
 
     /**
-     * @phpstan-param TBlock $block
+     * @param TBlock $block
      */
     public function __construct(
         Block $block,
@@ -44,7 +44,7 @@ abstract class BlockDelegateAbstract extends FormDelegate implements BlockDelega
     }
 
     /**
-     * @phpstan-param TBlock $block
+     * @param TBlock $block
      */
     public function setBlock(Block $block): static
     {
@@ -53,7 +53,7 @@ abstract class BlockDelegateAbstract extends FormDelegate implements BlockDelega
     }
 
     /**
-     * @phpstan-return TBlock
+     * @return TBlock
      */
     public function getBlock(): Block
     {
