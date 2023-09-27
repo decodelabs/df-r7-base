@@ -212,6 +212,12 @@ interface IForm extends
      */
     public function unloadDelegate(string $id): static;
 
+    /**
+     * @param string $id
+     * @return IDelegate
+     */
+    public function offsetGet(mixed $id): mixed;
+
     public function isValid(): bool;
     public function countErrors(): int;
     public function fieldName(string $name): string;
