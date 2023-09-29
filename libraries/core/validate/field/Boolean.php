@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\validate\field;
 
 use DecodeLabs\Dictum;
@@ -42,7 +43,7 @@ class Boolean extends Base implements core\validate\IBooleanField
         $isRequired = $this->_isRequiredAfterToggle($value);
 
         if (!is_bool($value)) {
-            if (!$length = strlen($value)) {
+            if (!$length = strlen((string)$value)) {
                 $value = null;
 
                 if ($this->_isRequired && $this->_forceAnswer) {

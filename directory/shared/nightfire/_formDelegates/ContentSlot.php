@@ -490,7 +490,10 @@ class ContentSlot extends arch\node\form\Delegate implements
 
             $type = $this->values->blockType[$delegateId];
 
-            if (!strlen($type) || $type == $block->getName()) {
+            if (
+                !strlen((string)$type) ||
+                $type == $block->getName()
+            ) {
                 continue;
             }
 

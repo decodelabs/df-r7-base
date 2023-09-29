@@ -194,7 +194,6 @@ class Memcached implements core\cache\IBackend
     public function count(): int
     {
         $output = 0;
-        $length = strlen($this->_prefix);
         $keys = $this->_connection->getAllKeys();
 
         if (!is_iterable($keys)) {

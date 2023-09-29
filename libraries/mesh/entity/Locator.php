@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\mesh\entity;
 
 use DecodeLabs\Exceptional;
@@ -394,7 +395,7 @@ class Locator implements ILocator, Dumpable
             return null;
         }
 
-        if (!strlen($id)) {
+        if (!strlen((string)$id)) {
             $id = null;
         } else {
             $id = (string)$id;

@@ -36,7 +36,7 @@ class Html implements arch\IDirectoryHelper
 
     public function convert($body, $format = 'SimpleTags')
     {
-        switch (strtolower($format)) {
+        switch (strtolower((string)$format)) {
             case 'simpletags':
                 return Metamorph::idiom($body);
 
@@ -59,7 +59,7 @@ class Html implements arch\IDirectoryHelper
 
     public function shorten($string, $length = 20)
     {
-        if (strlen($string) <= $length) {
+        if (strlen((string)$string) <= $length) {
             return $string;
         }
 

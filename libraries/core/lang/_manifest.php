@@ -166,7 +166,7 @@ trait TAcceptTypeProcessor
     public function addAcceptTypes(...$types)
     {
         foreach ($types as $type) {
-            $type = trim(strtolower($type));
+            $type = trim(strtolower((string)$type));
 
             if (!strlen($type)) {
                 continue;

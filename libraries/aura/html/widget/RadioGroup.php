@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget;
 
 use DecodeLabs\Glitch\Dumpable;
@@ -56,7 +57,7 @@ class RadioGroup extends Base implements IUngroupedSelectionInputWidget, Dumpabl
 
             $currValue = $this->getValue()->getValue();
 
-            if (!strlen($currValue) && $currValue !== false) {
+            if (!strlen((string)$currValue) && $currValue !== false) {
                 $this->getValue()->setValue(null);
             }
         }
@@ -75,7 +76,7 @@ class RadioGroup extends Base implements IUngroupedSelectionInputWidget, Dumpabl
             $this->_applyFormDataAttributes($inputTag);
             $this->_applyInputAttributes($inputTag);
 
-            if ($value === static::EMPTY_PLACEHOLDER || !strlen($value)) {
+            if ($value === static::EMPTY_PLACEHOLDER || !strlen((string)$value)) {
                 $value = null;
             }
 

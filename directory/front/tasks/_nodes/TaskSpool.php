@@ -195,8 +195,8 @@ class TaskSpool extends arch\node\Task
             return;
         }
 
-        $output = $this->_outputReceiver->getContents();
-        $error = $this->_errorReceiver->getContents();
+        $output = (string)$this->_outputReceiver->getContents();
+        $error = (string)$this->_errorReceiver->getContents();
 
         if (!strlen($output)) {
             $output = null;

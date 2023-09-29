@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\schema;
 
 use DecodeLabs\Exceptional;
@@ -643,9 +644,9 @@ trait TConstraint_Trigger
 
     public function setTiming($timing)
     {
-        if ($timing == opal\schema\ITriggerTiming::INSTEAD_OF || strtoupper($timing) == 'INSTEAD OF') {
+        if ($timing == opal\schema\ITriggerTiming::INSTEAD_OF || strtoupper((string)$timing) == 'INSTEAD OF') {
             $timing = opal\schema\ITriggerTiming::INSTEAD_OF;
-        } elseif ($timing == opal\schema\ITriggerTiming::AFTER || strtoupper($timing) == 'AFTER') {
+        } elseif ($timing == opal\schema\ITriggerTiming::AFTER || strtoupper((string)$timing) == 'AFTER') {
             $timing = opal\schema\ITriggerTiming::AFTER;
         } else {
             $timing = opal\schema\ITriggerTiming::BEFORE;

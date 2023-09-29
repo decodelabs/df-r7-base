@@ -299,10 +299,10 @@ class HeaderMap implements IHeaderMap, Dumpable
             $comp = [$comp];
         }
 
-        $value = strtolower($value);
+        $value = strtolower((string)$value);
 
         foreach ($comp as $compVal) {
-            $compVal = strtolower($compVal);
+            $compVal = strtolower((string)$compVal);
 
             if ($compVal == $value) {
                 return true;

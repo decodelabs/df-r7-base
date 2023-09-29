@@ -31,7 +31,7 @@ abstract class Enum implements IStaticEnum, Dumpable
 
     public static function normalize($value): ?string
     {
-        if (!strlen($value)) {
+        if (!strlen((string)$value)) {
             return null;
         }
 
@@ -191,7 +191,7 @@ abstract class Enum implements IStaticEnum, Dumpable
 
     public static function label($option): ?string
     {
-        if (!strlen($option)) {
+        if (!strlen((string)$option)) {
             return null;
         }
 

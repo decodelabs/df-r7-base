@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget;
 
 use DecodeLabs\Exceptional;
@@ -97,7 +98,7 @@ class Form extends Container implements IFormWidget, IWidgetShortcutProvider
             $method = 'post';
         }
 
-        $method = strtolower($method);
+        $method = strtolower((string)$method);
 
         if (!in_array($method, ['get', 'post', 'put', 'delete'])) {
             throw Exceptional::InvalidArgument(

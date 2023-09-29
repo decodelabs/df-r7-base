@@ -20,7 +20,7 @@ trait TApcuClear
         $purgeType = null;
 
         if ($isPurge) {
-            switch (strtolower($this->request['purge'])) {
+            switch (strtolower((string)$this->request['purge'])) {
                 case 'all':
                     $purgeType = 'all';
                     break;

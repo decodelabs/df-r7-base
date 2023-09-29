@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\unit\table\adapter;
 
 use DecodeLabs\Glitch\Dumpable;
@@ -280,7 +281,7 @@ class Rdbms implements
         if ($e instanceof opal\rdbms\TableNotFoundException) {
             $table = $e->getData()['table'] ?? null;
 
-            if ($table !== null && strtolower($table) == strtolower($this->_unit->getStorageBackendName())) {
+            if ($table !== null && strtolower((string)$table) == strtolower($this->_unit->getStorageBackendName())) {
                 $this->ensureStorageConsistency();
                 return true;
             }

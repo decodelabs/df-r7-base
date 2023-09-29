@@ -3,8 +3,10 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\schema\field;
 
+use DecodeLabs\Coercion;
 use df\axis;
 use df\core;
 use df\opal;
@@ -25,13 +27,20 @@ class Enum extends Base implements
         }
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord = null)
-    {
+    public function sanitizeValue(
+        mixed $value,
+        opal\record\IRecord $forRecord = null
+    ): ?string {
         if ($value instanceof core\lang\IEnum) {
             $value = $value->getOption();
         }
 
-        if (!strlen($value)) {
+        $value = Coercion::toStringOrNull($value);
+
+        if (
+            $value !== null &&
+            !strlen($value)
+        ) {
             $value = null;
         }
 

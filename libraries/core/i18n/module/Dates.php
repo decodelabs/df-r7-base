@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\i18n\module;
 
 use df\core;
@@ -84,7 +85,7 @@ class Dates extends Base
     {
         $this->_loadData();
 
-        $calendar = strtolower($calendar);
+        $calendar = strtolower((string)$calendar);
 
         if (!isset($this->_data[$calendar])) {
             $calendar = $this->getDefaultCalendar();
@@ -103,7 +104,7 @@ class Dates extends Base
     {
         $this->_loadData();
 
-        $calendar = strtolower($calendar);
+        $calendar = strtolower((string)$calendar);
 
         if (!isset($this->_data[$calendar])) {
             $calendar = $this->getDefaultCalendar();
@@ -198,7 +199,7 @@ class Dates extends Base
     {
         $this->_loadData();
 
-        $calendar = strtolower($calendar);
+        $calendar = strtolower((string)$calendar);
 
         if (!isset($this->_data[$calendar])) {
             $calendar = $this->getDefaultCalendar();
@@ -217,7 +218,7 @@ class Dates extends Base
     {
         $this->_loadData();
 
-        $calendar = strtolower($calendar);
+        $calendar = strtolower((string)$calendar);
 
         if (!isset($this->_data[$calendar])) {
             $calendar = $this->getDefaultCalendar();

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms\schema\constraint;
 
 use df\opal;
@@ -22,6 +23,6 @@ class ForeignKey implements opal\rdbms\schema\IForeignKey
 
     protected function _normalizeAction($action)
     {
-        return strtoupper($action);
+        return strtoupper((string)$action);
     }
 }

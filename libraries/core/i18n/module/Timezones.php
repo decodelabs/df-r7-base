@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\i18n\module;
 
 use DecodeLabs\Exceptional;
@@ -20,7 +21,7 @@ class Timezones extends Base implements ITimezonesModule
             $country = $this->_manager->getLocale()->getCountry();
         }
 
-        $country = strtoupper($country);
+        $country = strtoupper((string)$country);
 
         if (isset(self::COUNTRIES[$country])) {
             return self::COUNTRIES[$country];
@@ -43,7 +44,7 @@ class Timezones extends Base implements ITimezonesModule
     public function forContinent($continent)
     {
         self::_createContinentList();
-        $continent = ucfirst(strtolower($continent));
+        $continent = ucfirst(strtolower((string)$continent));
 
         if (isset(self::$_continents[$continent])) {
             return self::$_continents[$continent];

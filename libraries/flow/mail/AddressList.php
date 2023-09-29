@@ -134,7 +134,7 @@ class AddressList implements IAddressList, Dumpable
             $address = $address->getAddress();
         }
 
-        $address = strtolower($address);
+        $address = strtolower((string)$address);
 
         if (isset($this->_addresses[$address])) {
             return $this->_addresses[$address];
@@ -150,7 +150,7 @@ class AddressList implements IAddressList, Dumpable
                 $address = $address->getAddress();
             }
 
-            $address = strtolower($address);
+            $address = strtolower((string)$address);
 
             if (isset($this->_addresses[$address])) {
                 return true;
@@ -167,7 +167,7 @@ class AddressList implements IAddressList, Dumpable
                 $address = $address->getAddress();
             }
 
-            $address = strtolower($address);
+            $address = strtolower((string)$address);
             unset($this->_addresses[$address]);
         }
 

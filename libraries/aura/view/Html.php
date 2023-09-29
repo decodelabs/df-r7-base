@@ -835,7 +835,7 @@ class Html extends Base implements IHtmlView, Dumpable
         ksort($meta);
 
         foreach ($meta as $key => $value) {
-            if (in_array(strtolower($key), self::META_PRIORITY)) {
+            if (in_array(strtolower((string)$key), self::META_PRIORITY)) {
                 $output .= '    ' . $this->_metaToString($key, $meta[$key]) . "\n";
                 unset($meta[$key]);
             }
@@ -1052,7 +1052,7 @@ class Html extends Base implements IHtmlView, Dumpable
 
     protected function _metaToString($key, $value)
     {
-        if (in_array(strtolower($key), self::META_HTTP)) {
+        if (in_array(strtolower((string)$key), self::META_HTTP)) {
             $nameKey = 'http-equiv';
         } elseif (strpos($key, 'og:') === 0) {
             $nameKey = 'property';

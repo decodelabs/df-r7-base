@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget;
 
 use df\arch;
@@ -108,7 +109,7 @@ class Textarea extends Base implements ITextareaWidget
         if (!$wrap) {
             $this->_wrap = null;
         } else {
-            switch ($wrap = strtolower($wrap)) {
+            switch ($wrap = strtolower((string)$wrap)) {
                 case 'soft':
                 case 'hard':
                     $this->_wrap = $wrap;

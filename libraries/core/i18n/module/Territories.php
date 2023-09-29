@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\i18n\module;
 
 class Territories extends Base implements ITerritoriesModule
@@ -12,7 +13,7 @@ class Territories extends Base implements ITerritoriesModule
     public function getName($id)
     {
         $this->_loadData();
-        $id = strtoupper($id);
+        $id = strtoupper((string)$id);
 
         if (isset($this->_data[$id])) {
             return $this->_data[$id];

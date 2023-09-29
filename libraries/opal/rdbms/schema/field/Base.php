@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms\schema\field;
 
 use DecodeLabs\Exceptional;
@@ -12,9 +13,8 @@ use df\opal;
 
 abstract class Base implements opal\rdbms\schema\IField, Dumpable
 {
-    public const DEFAULT_VALUE = '';
-
     use opal\schema\TField;
+    public const DEFAULT_VALUE = '';
 
     protected $_type;
     protected $_sqlVariant;
@@ -24,7 +24,7 @@ abstract class Base implements opal\rdbms\schema\IField, Dumpable
 
     public static function factory(opal\rdbms\schema\ISchema $schema, $type, $name, array $args)
     {
-        $type = strtolower($type);
+        $type = strtolower((string)$type);
 
         switch ($type) {
             case 'bool':

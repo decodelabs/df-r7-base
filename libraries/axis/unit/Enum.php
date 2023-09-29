@@ -31,7 +31,7 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
 
     public function normalize($value): ?string
     {
-        if (!strlen($value)) {
+        if (!strlen((string)$value)) {
             return null;
         }
 
@@ -86,7 +86,7 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
 
     public function label($option): ?string
     {
-        if (!strlen($option)) {
+        if (!strlen((string)$option)) {
             return null;
         }
 

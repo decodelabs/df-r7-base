@@ -213,7 +213,7 @@ class Guid implements IGuid, Dumpable
 
     public function __construct($bytes)
     {
-        if (strlen($bytes) != 16) {
+        if (strlen((string)$bytes) != 16) {
             throw Exceptional::InvalidArgument(
                 'Guid must be a 128 bit integer'
             );

@@ -397,7 +397,7 @@ class ElementContent implements IElementContentCollection, Dumpable
 
 class ElementString implements IElementRepresentation, Dumpable
 {
-    protected $_content;
+    protected $_content = '';
 
     public function __construct($content)
     {

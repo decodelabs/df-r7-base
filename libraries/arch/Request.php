@@ -274,7 +274,11 @@ class Request extends core\uri\Url implements IRequest, Dumpable
 
     public function getNode()
     {
-        if (!$this->_path || $this->_path->shouldAddTrailingSlash() || !strlen($fileName = $this->_path->getFileName())) {
+        if (
+            !$this->_path ||
+            $this->_path->shouldAddTrailingSlash() ||
+            !strlen($fileName = $this->_path->getFileName())
+        ) {
             return static::DEFAULT_NODE;
         }
 
@@ -283,7 +287,11 @@ class Request extends core\uri\Url implements IRequest, Dumpable
 
     public function getRawNode()
     {
-        if (!$this->_path || $this->_path->shouldAddTrailingSlash() || !strlen($fileName = $this->_path->getFileName())) {
+        if (
+            !$this->_path ||
+            $this->_path->shouldAddTrailingSlash() ||
+            !strlen($fileName = $this->_path->getFileName())
+        ) {
             return static::DEFAULT_NODE;
         }
 
@@ -419,7 +427,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
             $node = substr($node, 0, $pos);
         }
 
-        if (strlen($node)) {
+        if (strlen((string)$node)) {
             $parts[] = $node;
         }
 

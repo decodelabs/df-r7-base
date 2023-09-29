@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flex;
 
 use DecodeLabs\Exceptional;
@@ -327,12 +328,12 @@ class Version implements core\IStringProvider, Dumpable
             $right = $version->preRelease[$i];
 
             if ($left != $right) {
-                if ($leftGreek = in_array(strtolower($left), self::GREEK)) {
-                    $left = strtolower($left);
+                if ($leftGreek = in_array(strtolower((string)$left), self::GREEK)) {
+                    $left = strtolower((string)$left);
                 }
 
-                if ($rightGreek = in_array(strtolower($right), self::GREEK)) {
-                    $right = strtolower($right);
+                if ($rightGreek = in_array(strtolower((string)$right), self::GREEK)) {
+                    $right = strtolower((string)$right);
                 }
 
                 if ($leftGreek && !$rightGreek) {

@@ -804,6 +804,8 @@ class Image implements IImage
 
     public static function getFormatFromExtension($extension)
     {
+        $extension = (string)$extension;
+
         if (isset(self::FORMATS[strtoupper($extension)])) {
             return self::FORMATS[strtoupper($extension)];
         }

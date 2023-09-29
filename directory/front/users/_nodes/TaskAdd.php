@@ -62,7 +62,7 @@ class TaskAdd extends arch\node\Task
             return $this->data->newValidator()
                 ->addRequiredField('country', 'text')
                     ->setSanitizer(function ($value) {
-                        return strtoupper($value);
+                        return strtoupper((string)$value);
                     })
                     ->extend(function ($value, $field) {
                         if (!$this->i18n->countries->isValidId($value)) {
@@ -77,7 +77,7 @@ class TaskAdd extends arch\node\Task
             return $this->data->newValidator()
                 ->addRequiredField('language', 'text')
                     ->setSanitizer(function ($value) {
-                        return strtolower($value);
+                        return strtolower((string)$value);
                     })
                     ->extend(function ($value, $field) {
                         if (!$this->i18n->languages->isValidId($value)) {

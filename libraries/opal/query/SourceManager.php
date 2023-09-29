@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\query;
 
 use DecodeLabs\Dictum;
@@ -278,7 +279,7 @@ class SourceManager implements ISourceManager, Dumpable
             $name = $name->getQualifiedName();
         }
 
-        if (!strlen($name)) {
+        if (!strlen((string)$name)) {
             $name = null;
         }
 

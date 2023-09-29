@@ -96,7 +96,7 @@ class MailtoUrl implements IMailtoUrl, Dumpable
     // Email
     public function setEmail($email)
     {
-        if (strlen($email)) {
+        if (strlen((string)$email)) {
             $parts = explode('@', $email);
             $this->setUsername(array_shift($parts));
             $this->setDomain(array_shift($parts));
@@ -131,7 +131,7 @@ class MailtoUrl implements IMailtoUrl, Dumpable
     // Subject
     public function setSubject($subject)
     {
-        if (strlen($subject)) {
+        if (strlen((string)$subject)) {
             $this->getQuery()->subject = (string)$subject;
         } elseif ($this->_query) {
             unset($this->_query->subject);

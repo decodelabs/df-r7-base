@@ -300,7 +300,7 @@ class Descriptor implements IDescriptor
         }
 
         $path = new core\uri\Path($this->_fileName);
-        $path->setFileName($path->getFileName() . '.' . strtolower($path->getExtension()));
+        $path->setFileName($path->getFileName() . '.' . strtolower((string)$path->getExtension()));
         $path->setExtension('ico');
         $this->_fileName = (string)$path;
 

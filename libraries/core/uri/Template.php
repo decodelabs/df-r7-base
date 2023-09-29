@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\uri;
 
 use DecodeLabs\Exceptional;
@@ -160,7 +161,7 @@ class Template implements ITemplate
 
     protected function _parseExpression($expression)
     {
-        if (!strlen($expression)) {
+        if (!strlen((string)$expression)) {
             throw Exceptional::UnexpectedValue(
                 'Empty template expression'
             );

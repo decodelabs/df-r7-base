@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\unit;
 
 use DecodeLabs\Exceptional;
@@ -50,7 +51,7 @@ class DisplayPosition implements IDisplayPosition, Dumpable
         }
 
 
-        $parts = explode(' ', strtolower($position));
+        $parts = explode(' ', strtolower((string)$position));
 
         while (!empty($parts)) {
             $part = array_shift($parts);
@@ -117,7 +118,7 @@ class DisplayPosition implements IDisplayPosition, Dumpable
 
     public function setX($value)
     {
-        $parts = explode(' ', strtolower($value), 2);
+        $parts = explode(' ', strtolower((string)$value), 2);
 
         if (isset($parts[1])) {
             $this->setXOffset(array_pop($parts));
@@ -149,7 +150,7 @@ class DisplayPosition implements IDisplayPosition, Dumpable
 
     public function setXAnchor($anchor)
     {
-        $anchor = strtolower($anchor);
+        $anchor = strtolower((string)$anchor);
 
         switch ($anchor) {
             case 'left':
@@ -191,7 +192,7 @@ class DisplayPosition implements IDisplayPosition, Dumpable
 
     public function setY($value)
     {
-        $parts = explode(' ', strtolower($value), 2);
+        $parts = explode(' ', strtolower((string)$value), 2);
 
         if (isset($parts[1])) {
             $this->setYOffset(array_pop($parts));
@@ -223,7 +224,7 @@ class DisplayPosition implements IDisplayPosition, Dumpable
 
     public function setYAnchor($anchor)
     {
-        $anchor = strtolower($anchor);
+        $anchor = strtolower((string)$anchor);
 
         switch ($anchor) {
             case 'top':

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\models\user\client;
 
 use DecodeLabs\Disciple;
@@ -161,7 +162,7 @@ class Unit extends axis\unit\Table
             ->addRequiredField('country', 'text')
                 ->isOptional(true)
                 ->setSanitizer(function ($value) {
-                    return strtoupper($value);
+                    return strtoupper((string)$value);
                 })
                 ->extend(function ($value, $field) {
                     if (!$this->context->i18n->countries->isValidId($value)) {
@@ -175,7 +176,7 @@ class Unit extends axis\unit\Table
             ->addRequiredField('language', 'text')
                 ->isOptional(true)
                 ->setSanitizer(function ($value) {
-                    return strtolower($value);
+                    return strtolower((string)$value);
                 })
                 ->extend(function ($value, $field) {
                     if (!$this->context->i18n->languages->isValidId($value)) {

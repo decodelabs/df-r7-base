@@ -50,12 +50,12 @@ class Tag implements ITag, Dumpable
 
     public static function isClosableTagName($name)
     {
-        return in_array(strtolower($name), self::CLOSED_TAGS);
+        return in_array(strtolower((string)$name), self::CLOSED_TAGS);
     }
 
     public static function isInlineTagName($name)
     {
-        return in_array(strtolower($name), self::INLINE_TAGS);
+        return in_array(strtolower((string)$name), self::INLINE_TAGS);
     }
 
     public function __construct($name, array $attributes = null)
@@ -172,7 +172,7 @@ class Tag implements ITag, Dumpable
 
     public function setAttribute($key, $value)
     {
-        $key = strtolower($key);
+        $key = strtolower((string)$key);
 
         if ($key == 'style' && !$value instanceof StyleList) {
             $value = new StyleList($value);
@@ -191,7 +191,7 @@ class Tag implements ITag, Dumpable
 
     public function getAttribute($key, $default = null)
     {
-        $key = strtolower($key);
+        $key = strtolower((string)$key);
 
         if (isset($this->_attributes[$key])) {
             return $this->_attributes[$key];
@@ -212,7 +212,7 @@ class Tag implements ITag, Dumpable
 
     public function removeAttribute($key)
     {
-        $key = strtolower($key);
+        $key = strtolower((string)$key);
 
         if ($key == 'class') {
             $this->_classes = [];
@@ -225,7 +225,7 @@ class Tag implements ITag, Dumpable
 
     public function hasAttribute($key)
     {
-        $key = strtolower($key);
+        $key = strtolower((string)$key);
 
         if ($key == 'class') {
             return !empty($this->_classes);
@@ -258,7 +258,7 @@ class Tag implements ITag, Dumpable
 
     public function setDataAttribute($key, $value)
     {
-        $key = 'data-' . strtolower($key);
+        $key = 'data-' . strtolower((string)$key);
         $this->_attributes[$key] = $value;
 
         return $this;
@@ -266,7 +266,7 @@ class Tag implements ITag, Dumpable
 
     public function getDataAttribute($key, $default = null)
     {
-        $key = 'data-' . strtolower($key);
+        $key = 'data-' . strtolower((string)$key);
 
         if (isset($this->_attributes[$key])) {
             return $this->_attributes[$key];
@@ -277,12 +277,12 @@ class Tag implements ITag, Dumpable
 
     public function hasDataAttribute($key)
     {
-        return array_key_exists('data-' . strtolower($key), $this->_attributes);
+        return array_key_exists('data-' . strtolower((string)$key), $this->_attributes);
     }
 
     public function removeDataAttribute($key)
     {
-        unset($this->_attributes['data-' . strtolower($key)]);
+        unset($this->_attributes['data-' . strtolower((string)$key)]);
         return $this;
     }
 

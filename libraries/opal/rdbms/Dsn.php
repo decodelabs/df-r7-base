@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms;
 
 use DecodeLabs\Exceptional;
@@ -390,7 +391,7 @@ class Dsn implements IDsn, Dumpable
         if ($this->_protocol !== null) {
             $output .= $this->_protocol . '(';
 
-            if (strlen($this->_socket)) {
+            if (strlen((string)$this->_socket)) {
                 $output .= $this->_socket;
             } else {
                 $output .= $this->_hostname;
@@ -449,7 +450,7 @@ class Dsn implements IDsn, Dumpable
         if ($this->_protocol !== null) {
             $output .= $this->_protocol . '(';
 
-            if (strlen($this->_socket)) {
+            if (strlen((string)$this->_socket)) {
                 $output .= $this->_socket;
             } else {
                 $output .= $this->_hostname;

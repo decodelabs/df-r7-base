@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\analytics;
 
 use df\core;
@@ -40,7 +41,7 @@ class ECommerceTransaction implements IECommerceTransaction
 
     public function setAffiliation($affiliation)
     {
-        if (!strlen($affiliation)) {
+        if (!strlen((string)$affiliation)) {
             $affiliation = null;
         }
 

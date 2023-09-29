@@ -226,7 +226,7 @@ class Options implements link\http\IRequestOptions
 
     public function setAuthType($type)
     {
-        $type = strtolower($type);
+        $type = strtolower((string)$type);
 
         switch ($type) {
             case 'basic':
@@ -294,7 +294,7 @@ class Options implements link\http\IRequestOptions
     // Secure transport
     public function setSecureTransport($transport)
     {
-        $transport = strtolower($transport);
+        $transport = strtolower((string)$transport);
 
         switch ($transport) {
             case 'ssl':

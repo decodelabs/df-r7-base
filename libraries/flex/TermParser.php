@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flex;
 
 use df\core;
@@ -94,7 +95,7 @@ class TermParser implements ITermParser
 
     protected function _normalizeTerm($term, $natural = false)
     {
-        $term = strtolower(str_replace('\'', '', $term));
+        $term = strtolower(str_replace('\'', '', (string)$term));
 
         if ($this->_stemmer) {
             $term = $this->_stemmer->stemWord($term, $natural);

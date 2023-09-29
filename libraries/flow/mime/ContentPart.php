@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flow\mime;
 
 use DecodeLabs\Atlas\File;
@@ -35,7 +36,7 @@ class ContentPart implements IContentPart, Dumpable
         if ($decodeContent) {
             $encoding = $this->_headers->get('content-transfer-encoding');
 
-            switch (strtolower($encoding)) {
+            switch (strtolower((string)$encoding)) {
                 case strtolower(flex\IEncoding::A7BIT):
                 case strtolower(flex\IEncoding::A8BIT):
                     $content = $this->_unchunk($content, IPart::LINE_LENGTH, IPart::LINE_END);
@@ -85,7 +86,7 @@ class ContentPart implements IContentPart, Dumpable
 
     public function setContentType($type)
     {
-        if (strtolower(substr($type, 0, 10)) == 'multipart/') {
+        if (strtolower(substr((string)$type, 0, 10)) == 'multipart/') {
             throw Exceptional::InvalidArgument(
                 'Please use newMultiPart() for multipart types'
             );

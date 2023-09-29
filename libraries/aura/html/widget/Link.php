@@ -268,7 +268,7 @@ class Link extends Base implements
     public function addRelationship(...$rel)
     {
         foreach ($rel as $val) {
-            $val = strtolower($val);
+            $val = strtolower((string)$val);
             $parts = explode(' ', $val);
 
             foreach ($parts as $part) {
@@ -304,7 +304,7 @@ class Link extends Base implements
     public function removeRelationship(...$rel)
     {
         foreach ($rel as $val) {
-            $val = strtolower($val);
+            $val = strtolower((string)$val);
             $parts = explode(' ', $val);
 
             foreach ($parts as $part) {

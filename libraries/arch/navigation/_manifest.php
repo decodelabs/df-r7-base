@@ -394,7 +394,7 @@ trait TSharedLinkComponents
 
     public function addAltMatch($match)
     {
-        $match = trim($match);
+        $match = trim((string)$match);
 
         if (strlen($match)) {
             $this->_altMatches[] = $match;

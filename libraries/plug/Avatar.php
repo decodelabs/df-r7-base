@@ -32,7 +32,7 @@ class Avatar implements arch\IDirectoryHelper
 
     public function getGravatarUrl($email, $size = null, $default = 'mm')
     {
-        $hash = md5(trim(strtolower($email)));
+        $hash = md5(trim(strtolower((string)$email)));
         $output = new link\http\Url(self::GRAVATAR_BASE . $hash);
 
         if ($size !== null) {

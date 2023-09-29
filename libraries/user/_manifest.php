@@ -396,7 +396,7 @@ trait TPostalAddress
     public function getPostOfficeBox()
     {
         foreach ([$this->getStreetLine1(), $this->getStreetLine2(), $this->getStreetLine3()] as $line) {
-            if (substr(str_replace('.', ' ', strtolower($line)), 0, 6) == 'po box') {
+            if (substr(str_replace('.', ' ', strtolower((string)$line)), 0, 6) == 'po box') {
                 return $line;
             }
         }

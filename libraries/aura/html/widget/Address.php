@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget;
 
 use DecodeLabs\Glitch\Dumpable;
@@ -121,7 +122,7 @@ class Address extends Base implements Dumpable
         }
 
         if (!empty($postcode)) {
-            if (strlen($region) == 2) {
+            if (strlen((string)$region) == 2) {
                 $content->push(' ', new aura\html\Element('span', $postcode, ['class' => 'postcode']));
             } else {
                 if (!$isFull && !$content->isEmpty()) {

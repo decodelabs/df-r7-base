@@ -195,7 +195,7 @@ class Base implements link\http\IRequest, Dumpable
                 $usePost = true;
                 $output = null;
 
-                switch (strtolower($this->headers->getBase('content-type'))) {
+                switch (strtolower((string)$this->headers->getBase('content-type'))) {
                     case 'application/x-www-form-urlencoded':
                         try {
                             $output = core\collection\Tree::fromArrayDelimitedString($payload);
@@ -262,7 +262,7 @@ class Base implements link\http\IRequest, Dumpable
     // Method
     public function setMethod($method)
     {
-        $method = strtolower($method);
+        $method = strtolower((string)$method);
 
         switch ($method) {
             case self::POST:
@@ -303,7 +303,7 @@ class Base implements link\http\IRequest, Dumpable
     public function isMethod(...$methods)
     {
         foreach ($methods as $method) {
-            if (strtolower($method) == $this->method) {
+            if (strtolower((string)$method) == $this->method) {
                 return true;
             }
         }

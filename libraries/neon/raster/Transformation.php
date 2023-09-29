@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\neon\raster;
 
 use DecodeLabs\Exceptional;
@@ -277,7 +278,7 @@ class Transformation implements ITransformation, Dumpable
     protected function _addTransformation($method, array $args = [])
     {
         foreach ($args as $i => $arg) {
-            if (!strlen($arg)) {
+            if (!strlen((string)$arg)) {
                 $args[$i] = null;
             }
         }

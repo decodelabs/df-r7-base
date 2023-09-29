@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\http\response;
 
 use df\core;
@@ -26,7 +27,7 @@ class CacheControl implements link\http\ICacheControl
             $parts = explode(',', $string);
 
             foreach ($parts as $part) {
-                $part = strtolower(trim($part));
+                $part = strtolower(trim((string)$part));
                 $value = null;
 
                 if (false !== strpos($part, '=')) {

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\i18n\module;
 
 class Countries extends Base implements ICountriesModule
@@ -12,7 +13,7 @@ class Countries extends Base implements ICountriesModule
     public function getName($id)
     {
         $this->_loadData();
-        $id = strtoupper($id);
+        $id = strtoupper((string)$id);
 
         if (isset($this->_data[$id])) {
             return $this->_data[$id];
@@ -48,7 +49,7 @@ class Countries extends Base implements ICountriesModule
     public function suggestCountryForLanguage($language)
     {
         $match = [];
-        $language = strtolower($language);
+        $language = strtolower((string)$language);
 
         switch ($language) {
             case 'en': return 'GB';

@@ -566,7 +566,7 @@ class Date implements IDate, Dumpable
             return true;
         }
 
-        if ($year < 100 && strlen($year) == 2 && $this->format('y') == $year) {
+        if ($year < 100 && strlen((string)$year) == 2 && $this->format('y') == $year) {
             return true;
         }
 
@@ -586,7 +586,7 @@ class Date implements IDate, Dumpable
     public function isMonth($month)
     {
         if (!is_numeric($month)) {
-            $month = strtolower($month);
+            $month = strtolower((string)$month);
 
             if (!isset(self::MONTHS[$month])) {
                 throw Exceptional::InvalidArgument(
@@ -653,7 +653,7 @@ class Date implements IDate, Dumpable
     public function isDayOfWeek($day)
     {
         if (!is_numeric($day)) {
-            $day = strtolower($day);
+            $day = strtolower((string)$day);
 
             if (!isset(self::DAYS[$day])) {
                 throw Exceptional::InvalidArgument(

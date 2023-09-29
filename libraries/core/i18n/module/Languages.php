@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\i18n\module;
 
 class Languages extends Base implements ILanguagesModule
@@ -74,6 +75,6 @@ class Languages extends Base implements ILanguagesModule
     public function isValidId($id)
     {
         $this->_loadData();
-        return isset($this->_data[strtolower($id)]);
+        return isset($this->_data[strtolower((string)$id)]);
     }
 }

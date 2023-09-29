@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\i18n\module;
 
 class Scripts extends Base implements IScriptsModule
@@ -12,7 +13,7 @@ class Scripts extends Base implements IScriptsModule
     public function getName($id)
     {
         $this->_loadData();
-        $id = ucfirst(strtolower($id));
+        $id = ucfirst(strtolower((string)$id));
 
         if (isset($this->_data[$id])) {
             return $this->_data[$id];

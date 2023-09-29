@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flex;
 
 use DecodeLabs\Dictum;
@@ -101,7 +102,7 @@ class PasswordAnalyzer implements IPasswordAnalyzer
 
     protected function _getFrequencyIndex($char)
     {
-        $char = strtolower($char);
+        $char = strtolower((string)$char);
 
         if ($char < 'a' || $char > 'z') {
             return 0;

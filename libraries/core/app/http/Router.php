@@ -574,7 +574,7 @@ class Router_Map
         $domain = (string)array_pop($parts);
         $scheme = array_shift($parts) ?? 'http';
 
-        if (strtolower($scheme) === 'https') {
+        if (strtolower((string)$scheme) === 'https') {
             $this->isSecure = true;
         }
 

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flow\mail;
 
 use DecodeLabs\Exceptional;
@@ -58,7 +59,7 @@ class Address implements IAddress, Dumpable
 
     public function setAddress($address)
     {
-        $address = strtolower($address);
+        $address = strtolower((string)$address);
         $address = str_replace([' at ', ' dot '], ['@', '.'], $address);
         $address = filter_var($address, \FILTER_SANITIZE_EMAIL);
 

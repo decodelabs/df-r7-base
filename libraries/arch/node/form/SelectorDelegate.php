@@ -530,7 +530,7 @@ abstract class SelectorDelegate extends Delegate implements
 
 
         // Show search results
-        if (strlen($search = $this->values['search'])) {
+        if (strlen($search = (string)$this->values['search'])) {
             if ($search == '*' || $search == '?') {
                 $search = null;
             }

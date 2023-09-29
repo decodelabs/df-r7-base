@@ -151,7 +151,7 @@ class Handler implements link\http\IUploadHandler
 
     protected function _normalizeExtension($ext)
     {
-        return ltrim(trim(strtolower($ext)), '.');
+        return ltrim(trim(strtolower((string)$ext)), '.');
     }
 
 

@@ -58,7 +58,7 @@ trait TUrl_UsernameContainer
 
     public function setUsername($username)
     {
-        if (strlen($username)) {
+        if (strlen((string)$username)) {
             $this->_username = (string)$username;
         } else {
             $this->_username = null;
@@ -184,7 +184,7 @@ trait TUrl_DomainContainer
 
     public function isAbsolute()
     {
-        return (bool)strlen($this->_domain);
+        return (bool)strlen((string)$this->_domain);
     }
 
     protected function _resetDomain()

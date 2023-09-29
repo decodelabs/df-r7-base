@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\validate\field;
 
 use df\core;
@@ -111,7 +112,7 @@ class Date extends Base implements core\validate\IDateField
         // Sanitize
         $value = $this->_sanitizeValue($this->data->getValue());
 
-        if ($this->_defaultToNow && !$value && !strlen($value)) {
+        if ($this->_defaultToNow && !$value && !strlen((string)$value)) {
             $value = 'now';
         }
 

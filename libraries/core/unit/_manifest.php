@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\unit;
 
 use DecodeLabs\Exceptional;
@@ -77,7 +78,7 @@ trait TSingleValueUnit
 
     public function setUnit($unit, $convertValue = true)
     {
-        $unit = strtolower($unit);
+        $unit = strtolower((string)$unit);
 
         if (empty($unit)) {
             $unit = static::DEFAULT_UNIT;

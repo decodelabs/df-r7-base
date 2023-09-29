@@ -47,13 +47,13 @@ class Request implements IRequest
 
     public function setCredential($name, $value)
     {
-        $this->_credentials[strtolower($name)] = $value;
+        $this->_credentials[strtolower((string)$name)] = $value;
         return $this;
     }
 
     public function getCredential($name)
     {
-        $name = strtolower($name);
+        $name = strtolower((string)$name);
 
         if (isset($this->_credentials[$name])) {
             return $this->_credentials[$name];

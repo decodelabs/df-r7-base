@@ -1029,7 +1029,7 @@ trait TWidget_DispositionAware
             }
         }
 
-        $disposition = strtolower($disposition);
+        $disposition = strtolower((string)$disposition);
 
         switch ($disposition) {
             case 'positive':

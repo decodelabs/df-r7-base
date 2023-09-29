@@ -118,7 +118,7 @@ class Numbers extends Base implements core\i18n\module\INumbersModule
     public function getCurrencyName($code)
     {
         $this->_loadData();
-        $code = strtoupper($code);
+        $code = strtoupper((string)$code);
 
         if (isset($this->_data['currencies'][$code])) {
             return $this->_data['currencies'][$code]['name'];
@@ -130,7 +130,7 @@ class Numbers extends Base implements core\i18n\module\INumbersModule
     public function getCurrencySymbol($code, $amount = 1)
     {
         $this->_loadData();
-        $code = strtoupper($code);
+        $code = strtoupper((string)$code);
 
         if (isset($this->_data['currencies'][$code])) {
             $symbol = $this->_data['currencies'][$code]['symbol'];
@@ -184,7 +184,7 @@ class Numbers extends Base implements core\i18n\module\INumbersModule
     public function isValidCurrency($code)
     {
         $this->_loadData();
-        return isset($this->_data['currencies'][strtoupper($code)]);
+        return isset($this->_data['currencies'][strtoupper((string)$code)]);
     }
 
     // Scientific

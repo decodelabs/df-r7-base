@@ -30,7 +30,7 @@ class TaskApcuClear extends arch\node\Task
         $isHttp = $isCli = true;
 
         if ($mode) {
-            $mode = strtolower($mode);
+            $mode = strtolower((string)$mode);
         }
 
         if ($mode == 'task') {
