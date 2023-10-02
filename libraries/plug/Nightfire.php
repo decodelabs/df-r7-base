@@ -82,8 +82,8 @@ class Nightfire implements arch\IDirectoryHelper
             return null;
         }
 
-        $output = (string)$slot->renderTo($this->getView());
-        $test = trim($output);
+        $output = $slot->renderTo($this->getView());
+        $test = trim((string)$output);
 
         if (empty($test)) {
             return null;
