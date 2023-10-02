@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\validate\field;
 
 use DecodeLabs\Tagged as Html;
@@ -15,7 +16,7 @@ class VideoEmbed extends Base implements core\validate\IVideoEmbedField
     public function validate()
     {
         // Sanitize
-        $value = trim($this->data->getValue());
+        $value = trim((string)$this->data->getValue());
         $value = $this->_sanitizeValue($value);
 
         if (!$length = $this->_checkRequired($value)) {

@@ -41,7 +41,7 @@ class MultiPart implements IMultiPart, Dumpable
         if (substr($contentType, 0, 10) == 'multipart/') {
             $output = new $class($contentType, $headers);
             $boundary = $output->getBoundary();
-            $parts = explode("\n" . '--' . $boundary, "\n" . trim($body));
+            $parts = explode("\n" . '--' . $boundary, "\n" . trim((string)$body));
 
             array_shift($parts);
             array_pop($parts);

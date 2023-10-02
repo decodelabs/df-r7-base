@@ -285,7 +285,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
 
         // Fill values
         foreach ($input as $value) {
-            $this->_collection[] = trim($value);
+            $this->_collection[] = trim((string)$value);
         }
 
 
@@ -313,7 +313,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
 
     protected function _onInsert()
     {
-        if (!strlen($this->getLast())) {
+        if (!strlen((string)$this->getLast())) {
             array_pop($this->_collection);
             $this->_addTrailingSlash = true;
         }
@@ -341,7 +341,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
             return [];
         }
 
-        return explode($this->_separator, ltrim($input, $this->_separator));
+        return explode($this->_separator, ltrim((string)$input, $this->_separator));
     }
 
 

@@ -111,8 +111,8 @@ class PanelSet_Panel
 
     public function setWidth($width)
     {
-        if (substr($width, -1) == '%') {
-            $width = substr($width, 0, -1);
+        if (substr((string)$width, -1) == '%') {
+            $width = substr((string)$width, 0, -1);
         }
 
         $this->_width = Coercion::clampFloat($width, 0.1, 100);

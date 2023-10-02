@@ -258,7 +258,7 @@ class HeaderMap implements IHeaderMap, Dumpable
         }
 
         $parts = core\collection\Tree::fromArrayDelimitedString('@value=' . $value, ';');
-        return trim($parts->get($name, $default), '"');
+        return trim((string)$parts->get($name, $default), '"');
     }
 
     public function hasDelimitedValue($key, $name)

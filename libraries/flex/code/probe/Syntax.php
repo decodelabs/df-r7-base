@@ -23,7 +23,7 @@ class Syntax implements flex\code\IProbe
         }
 
         $result = Systemic::capture(['php', '-l', $location->path . '/' . $localPath]);
-        $result = trim($result->getOutput());
+        $result = trim((string)$result->getOutput());
         $lines = explode("\n", $result);
         $result = (string)array_shift($lines);
 

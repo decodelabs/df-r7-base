@@ -65,8 +65,8 @@ class ContentPart implements IContentPart, Dumpable
 
     protected function _unchunk($content, $length, $end)
     {
-        $strlen = strlen($content) + $length - 1;
-        $endlen = strlen($end);
+        $strlen = strlen((string)$content) + $length - 1;
+        $endlen = strlen((string)$end);
         $output = '';
 
         for ($i = 0; $i < $strlen; $i += $length) {
@@ -299,7 +299,7 @@ class ContentPart implements IContentPart, Dumpable
             if ($parts[0] == 'text' || $parts[0] == 'application') {
                 $content = $this->_content;
             } else {
-                $content = strlen($this->_content) . ' bytes';
+                $content = strlen((string)$this->_content) . ' bytes';
             }
 
             yield 'value' => $content;

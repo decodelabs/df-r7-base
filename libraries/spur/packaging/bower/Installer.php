@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\packaging\bower;
 
 use DecodeLabs\Atlas;
@@ -318,7 +319,7 @@ class Installer implements IInstaller
     // Resolvers
     protected function _preparePackage(Package $package, $useRegistry = true)
     {
-        if (!strlen($package->source)) {
+        if (!strlen((string)$package->source)) {
             $package->source = 'latest';
         }
 
@@ -373,7 +374,7 @@ class Installer implements IInstaller
         // Local
         elseif (preg_match('/^\.\.?[\/\\\\]/', $package->source)
         || preg_match('/^~?\//', $package->source)) {
-            $package->url = rtrim($package->source, '/');
+            $package->url = rtrim((string)$package->source, '/');
 
             if (!$package->name) {
                 $package->name = basename($package->url);
@@ -470,7 +471,14 @@ class Installer implements IInstaller
             }
 
             if (!$package->installName) {
-                if (!$package->isDependency && ($package->version == '*' || $package->version == 'latest' || !strlen($package->version))) {
+                if (
+                    !$package->isDependency &&
+                    (
+                        $package->version == '*' ||
+                        $package->version == 'latest' ||
+                        !strlen((string)$package->version)
+                    )
+                ) {
                     $package->installName = $package->name . '/latest';
                 } else {
                     if ($range) {
@@ -480,7 +488,10 @@ class Installer implements IInstaller
                     }
 
                     if (!$version) {
-                        if (!strlen($package->version) || $package->version == 'latest') {
+                        if (
+                            !strlen((string)$package->version) ||
+                            $package->version == 'latest'
+                        ) {
                             $package->version = '*';
                         }
 
@@ -499,7 +510,10 @@ class Installer implements IInstaller
             }
         }
 
-        if (!strlen($package->version) || $package->version == 'latest') {
+        if (
+            !strlen((string)$package->version) ||
+            $package->version == 'latest'
+        ) {
             $package->version = '*';
         }
     }

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\vcs\git;
 
 class Remote implements IRemote
@@ -62,7 +63,7 @@ class Remote implements IRemote
 
     protected function _splitRefList($result, $callback = null)
     {
-        $result = str_replace(["\t", "\r\n"], [' ', "\n"], trim($result));
+        $result = str_replace(["\t", "\r\n"], [' ', "\n"], trim((string)$result));
         $lines = explode("\n", $result);
         $output = [];
 

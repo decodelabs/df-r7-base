@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flex\stemmer;
 
 class En extends Base
@@ -39,7 +40,7 @@ class En extends Base
 
     public function stemWord($word, $natural = false)
     {
-        if (strlen($word) <= 4) {
+        if (strlen((string)$word) <= 4) {
             return $word;
         }
 
@@ -63,7 +64,7 @@ class En extends Base
             self::_replace($word, 'ies', 'i');//   ||
             //self::_replace($word, 'ss', 'ss');
 
-            if (strlen($word) > 4 || preg_match("#$v+#", substr($word, 0, 1))) {
+            if (strlen((string)$word) > 4 || preg_match("#$v+#", substr($word, 0, 1))) {
                 self::_replace($word, 's', '');
             }
         }
@@ -87,7 +88,7 @@ class En extends Base
             }
         }
 
-        //if(strlen($word) > 4 && substr($word, -1) == 'y' && preg_match("#$v+#", substr($word, 0, -1))) {
+        //if(strlen((string)$word) > 4 && substr($word, -1) == 'y' && preg_match("#$v+#", substr($word, 0, -1))) {
         //self::_replace($word, 'y', 'i');
         //}
 
@@ -286,7 +287,7 @@ class En extends Base
             return false;
         }
 
-        $len = 0 - strlen($check);
+        $len = 0 - strlen((string)$check);
 
         if (substr($str, $len) == $check) {
             $substr = substr($str, 0, $len);

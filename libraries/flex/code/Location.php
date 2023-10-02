@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flex\code;
 
 use df\core;
@@ -50,7 +51,7 @@ class Location
     public function setBlackList(array $blackList)
     {
         foreach ($blackList as $i => $path) {
-            $blackList[$i] = trim($path, '/');
+            $blackList[$i] = trim((string)$path, '/');
         }
 
         $this->blackList = $blackList;

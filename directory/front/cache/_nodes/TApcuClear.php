@@ -87,7 +87,7 @@ trait TApcuClear
             }
         } elseif (isset($this->request['clearMatches'])) {
             $regex = $this->request['clearMatches'];
-            $prefixLength = strlen($this->_prefix);
+            $prefixLength = strlen((string)$this->_prefix);
 
             foreach (core\cache\backend\Apcu::getCacheList() as $set) {
                 if (0 === strpos($set['info'], (string)$prefix)

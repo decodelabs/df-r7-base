@@ -138,7 +138,7 @@ class Options implements link\http\IRequestOptions
             return null;
         }
 
-        return rtrim($this->downloadFolder, '/') . '/' . $this->downloadFileName;
+        return rtrim((string)$this->downloadFolder, '/') . '/' . $this->downloadFileName;
     }
 
     public function setDownloadStream(Channel $stream = null)

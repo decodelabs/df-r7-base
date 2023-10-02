@@ -103,7 +103,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
     {
         if ($nullable = substr($key, 0, 1) == '?') {
             $key = substr($key, 1);
-            $type = '?' . ltrim($type, '?');
+            $type = '?' . ltrim((string)$type, '?');
         }
 
         return $this->__invoke($this->context->request[$key], $type, ...$args);
@@ -165,39 +165,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
     // Basic strings
     public function string($value, array $options = []): ?string
     {
-        $flags = 0;
-
-        if ($options['noEncodeQuotes'] ?? false) {
-            $flags |= FILTER_FLAG_NO_ENCODE_QUOTES;
-        }
-        if ($options['stripLow'] ?? false) {
-            $flags |= FILTER_FLAG_STRIP_LOW;
-        }
-        if ($options['stripHigh'] ?? false) {
-            $flags |= FILTER_FLAG_STRIP_HIGH;
-        }
-        if ($options['stripBacktick'] ?? false) {
-            $flags |= FILTER_FLAG_STRIP_BACKTICK;
-        }
-        if ($options['encodeLow'] ?? false) {
-            $flags |= FILTER_FLAG_ENCODE_LOW;
-        }
-        if ($options['encodeHigh'] ?? false) {
-            $flags |= FILTER_FLAG_ENCODE_HIGH;
-        }
-        if ($options['encodeAmp'] ?? false) {
-            $flags |= FILTER_FLAG_ENCODE_AMP;
-        }
-
-        $value = $this->_applyFilter($value, FILTER_SANITIZE_STRING, [
-            'default' => $options['default'] ?? null
-        ], $flags);
-
-        if (isset($options['options']) && is_array($options['options']) && !in_array($value, $options['options'])) {
-            $value = null;
-        }
-
-        return $value;
+        return (string)($value ?? $options['default'] ?? null);
     }
 
 
@@ -266,7 +234,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
             $tldFound = false;
 
             foreach ((array)$options['tld'] as $tld) {
-                $tld = '.' . ltrim($tld);
+                $tld = '.' . ltrim((string)$tld);
 
                 if (substr($domain, -strlen($tld)) === $tld) {
                     $tldFound = true;

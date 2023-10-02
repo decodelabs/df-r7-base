@@ -108,7 +108,7 @@ class Reader implements IReader
         $this->setFields(...$row);
         $this->_currentRow = null;
         $this->_rowCount = 0;
-        $this->_rewindSeek = $this->_file->getPosition() - strlen($this->_buffer);
+        $this->_rewindSeek = $this->_file->getPosition() - strlen((string)$this->_buffer);
         $this->_buffer = null;
 
         return $this;
@@ -181,7 +181,7 @@ class Reader implements IReader
                     if ($char == $this->_delimiter) {
                         $this->_writeCell($cell);
                         $mode = self::MODE_START;
-                    } elseif ($char == $this->_enclosure && trim($cell) == '') {
+                    } elseif ($char == $this->_enclosure && trim((string)$cell) == '') {
                         $mode = self::MODE_ENCLOSURE;
                     } elseif ($cellHasEnclosure && $char == ' ') {
                         break;
@@ -242,12 +242,12 @@ class Reader implements IReader
 
     protected function _fillBuffer(): bool
     {
-        if (strlen($this->_buffer) > self::BUFFER_THRESHOLD) {
+        if (strlen((string)$this->_buffer) > self::BUFFER_THRESHOLD) {
             return true;
         }
 
         if ($this->_file->isAtEnd()) {
-            if (strlen($this->_buffer) && substr($this->_buffer, -1) != "\n") {
+            if (strlen((string)$this->_buffer) && substr($this->_buffer, -1) != "\n") {
                 $this->_buffer .= "\n";
             }
 
@@ -296,7 +296,7 @@ class Reader implements IReader
     {
         return
             !$this->_file->isAtEnd() ||
-            strlen($this->_buffer) ||
+            strlen((string)$this->_buffer) ||
             $this->_currentRow !== null;
     }
 }

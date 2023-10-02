@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\vcs\git;
 
 use DecodeLabs\Exceptional;
@@ -230,7 +231,7 @@ class Commit implements ICommit, Dumpable
             $this->_message .= trim(array_shift($result)) . "\n";
         }
 
-        $this->_message = rtrim($this->_message);
+        $this->_message = rtrim((string)$this->_message);
         $this->_isFetched = true;
     }
 

@@ -145,7 +145,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
 
     public static function formatArea($area)
     {
-        return lcfirst(ltrim($area, static::AREA_MARKER));
+        return lcfirst(ltrim((string)$area, static::AREA_MARKER));
     }
 
 
@@ -277,7 +277,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
         if (
             !$this->_path ||
             $this->_path->shouldAddTrailingSlash() ||
-            !strlen($fileName = $this->_path->getFileName())
+            !strlen((string)$fileName = $this->_path->getFileName())
         ) {
             return static::DEFAULT_NODE;
         }
@@ -290,7 +290,7 @@ class Request extends core\uri\Url implements IRequest, Dumpable
         if (
             !$this->_path ||
             $this->_path->shouldAddTrailingSlash() ||
-            !strlen($fileName = $this->_path->getFileName())
+            !strlen((string)$fileName = $this->_path->getFileName())
         ) {
             return static::DEFAULT_NODE;
         }

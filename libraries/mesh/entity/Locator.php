@@ -65,7 +65,7 @@ class Locator implements ILocator, Dumpable
     // handler://[path/to/]Entity[:id][/[path/to/]SubEntity[:id]]]
     private function _parseString($path)
     {
-        $path = trim($path, '/') . '/';
+        $path = trim((string)$path, '/') . '/';
         $length = strlen($path);
         $mode = 0;
         $part = '';
@@ -326,7 +326,7 @@ class Locator implements ILocator, Dumpable
             if (empty($location)) {
                 $location = [];
             } else {
-                $location = explode('/', trim($location, '/'));
+                $location = explode('/', trim((string)$location, '/'));
             }
         }
 
@@ -346,7 +346,7 @@ class Locator implements ILocator, Dumpable
             if (empty($location)) {
                 return $this;
             } else {
-                $location = explode('/', trim($location, '/'));
+                $location = explode('/', trim((string)$location, '/'));
             }
         }
 
@@ -578,7 +578,7 @@ class Locator implements ILocator, Dumpable
             if (empty($node['location'])) {
                 $node['location'] = [];
             } else {
-                $node['location'] = explode('/', trim($node['location'], '/'));
+                $node['location'] = explode('/', trim((string)$node['location'], '/'));
             }
         }
 

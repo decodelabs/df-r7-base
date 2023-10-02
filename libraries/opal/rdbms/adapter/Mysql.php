@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms\adapter;
 
 use DecodeLabs\Exceptional;
@@ -156,7 +157,7 @@ class Mysql extends Base_Pdo
         $parts = explode('.', $identifier);
 
         foreach ($parts as $key => $part) {
-            $parts[$key] = '`' . trim($part, '`\'') . '`';
+            $parts[$key] = '`' . trim((string)$part, '`\'') . '`';
         }
 
         return implode('.', $parts);
@@ -164,12 +165,12 @@ class Mysql extends Base_Pdo
 
     public function quoteFieldAliasDefinition($alias)
     {
-        return '"' . trim($alias, '`\'') . '"';
+        return '"' . trim((string)$alias, '`\'') . '"';
     }
 
     public function quoteFieldAliasReference($alias)
     {
-        return '`' . trim($alias, '`\'') . '`';
+        return '`' . trim((string)$alias, '`\'') . '`';
     }
 
     public function quoteValue($value)

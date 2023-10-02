@@ -692,7 +692,7 @@ trait TConstraint_Trigger
 
     public function addStatement($statement)
     {
-        $statement = trim($statement, ' ;');
+        $statement = trim((string)$statement, ' ;');
 
         if (!empty($statement)) {
             $this->_hasChanged = true;

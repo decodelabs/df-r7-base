@@ -229,7 +229,7 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
         $node = $this;
 
         while (null !== ($part = array_shift($parts))) {
-            if (!strlen($part)) {
+            if (!strlen((string)$part)) {
                 if (!empty($node->_collection)) {
                     $k = array_keys($node->_collection);
 

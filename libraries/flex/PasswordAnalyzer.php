@@ -28,7 +28,7 @@ class PasswordAnalyzer implements IPasswordAnalyzer
     {
         $this->_passKey = $passKey;
         $this->_hash = core\crypt\Util::passwordHash($password, $passKey);
-        $this->_length = mb_strlen($password);
+        $this->_length = mb_strlen((string)$password);
         $this->_isCommon = in_array($password, $this->_getCommonWords());
         $this->_charsetSize = $this->_getCharsetSize($password);
         $this->_entropy = $this->_calculateEntropy($password);

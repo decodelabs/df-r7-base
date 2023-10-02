@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\schema\field;
 
 use DecodeLabs\Dictum;
@@ -28,7 +29,7 @@ class PathSlug extends Base implements
         $output = $row[$key . '_name'];
 
         if (isset($row[$key . '_location'])) {
-            $location = trim($row[$key . '_location'], '/');
+            $location = trim((string)$row[$key . '_location'], '/');
         } else {
             $location = null;
         }

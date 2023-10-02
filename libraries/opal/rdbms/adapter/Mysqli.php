@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms\adapter;
 
 use DecodeLabs\Exceptional;
@@ -239,7 +240,7 @@ class Mysqli extends opal\rdbms\adapter\Base
         $parts = explode('.', $identifier);
 
         foreach ($parts as $key => $part) {
-            $parts[$key] = '`' . trim($part, '`\'') . '`';
+            $parts[$key] = '`' . trim((string)$part, '`\'') . '`';
         }
 
         return implode('.', $parts);
@@ -247,12 +248,12 @@ class Mysqli extends opal\rdbms\adapter\Base
 
     public function quoteFieldAliasDefinition($alias)
     {
-        return '"' . trim($alias, '`\'') . '"';
+        return '"' . trim((string)$alias, '`\'') . '"';
     }
 
     public function quoteFieldAliasReference($alias)
     {
-        return '`' . trim($alias, '`\'') . '`';
+        return '`' . trim((string)$alias, '`\'') . '`';
     }
 
     public function quoteValue($value)

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\models\user\client\fortify;
 
 use DecodeLabs\Dictum;
@@ -22,7 +23,7 @@ class FixNames extends axis\fortify\Base
             ->isUnbuffered(true);
 
         foreach ($list as $client) {
-            $client['fullName'] = trim($client['fullName']);
+            $client['fullName'] = trim((string)$client['fullName']);
 
             if (!strlen(trim($client['nickName']))) {
                 $client['nickName'] = Dictum::firstName($client['fullName']);

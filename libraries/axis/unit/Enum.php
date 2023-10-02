@@ -51,7 +51,7 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
 
                 $this->_options[] = lcfirst(str_replace(' ', '', ucwords(strtolower(str_replace('_', ' ', $name)))));
 
-                if (!strlen($label)) {
+                if (!strlen((string)$label)) {
                     $label = ucwords(strtolower(str_replace('_', ' ', $name)));
                 }
 

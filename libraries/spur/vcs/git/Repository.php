@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\vcs\git;
 
 use DecodeLabs\Atlas;
@@ -312,7 +313,7 @@ class Repository implements ILocalRepository
 
     protected function _splitRefList($result, $callback = null)
     {
-        $result = str_replace(["\r\n"], ["\n"], trim($result));
+        $result = str_replace(["\r\n"], ["\n"], trim((string)$result));
         $lines = explode("\n", $result);
         $output = [];
 

@@ -105,7 +105,7 @@ class Unit extends axis\unit\Table
             $type = core\lang\Util::normalizeClassName($type);
         }
 
-        if (strlen($type) > 255) {
+        if (strlen((string)$type) > 255) {
             $type = substr($type, 0, 252) . '...';
         }
 

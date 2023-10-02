@@ -76,7 +76,7 @@ abstract class Enum implements IStaticEnum, Dumpable
             foreach ($reflection->getConstants() as $name => $label) {
                 self::$_options[$class][] = self::normalizeOption($name);
 
-                if (!strlen($label)) {
+                if (!strlen((string)$label)) {
                     $label = ucwords(strtolower(str_replace('_', ' ', $name)));
                 }
 

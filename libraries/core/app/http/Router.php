@@ -568,8 +568,8 @@ class Router_Map
             $area = '*';
         }
 
-        $this->area = ltrim($area, '~');
-        $domain = trim($domain, '/');
+        $this->area = ltrim((string)$area, '~');
+        $domain = trim((string)$domain, '/');
         $parts = explode('://', $domain, 2);
         $domain = (string)array_pop($parts);
         $scheme = array_shift($parts) ?? 'http';

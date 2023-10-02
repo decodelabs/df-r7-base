@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flex;
 
 use DecodeLabs\Exceptional;
@@ -15,7 +16,7 @@ class Delimited implements IDelimited
         $source = str_replace(["\r\n", "\r"], "\n", $source);
 
         if ($trim) {
-            $source = trim($source, "\n");
+            $source = trim((string)$source, "\n");
         }
 
         return self::split("\n", $source);
@@ -23,7 +24,7 @@ class Delimited implements IDelimited
 
     public static function split($delimiter, $source)
     {
-        $length = strlen($source);
+        $length = strlen((string)$source);
 
         while ($length) {
             $pos = strpos($source, $delimiter);
@@ -54,7 +55,7 @@ class Delimited implements IDelimited
 
     public static function iterate($input, $delimiter = ',', $quoteMap = '"\'', $terminator = null)
     {
-        $input = trim($input);
+        $input = trim((string)$input);
 
         if (!strlen($input)) {
             return;

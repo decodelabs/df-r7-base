@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\validate\field;
 
 use df\core;
@@ -76,7 +77,7 @@ class TextList extends Base implements core\validate\ITextListField
         // Validate
         if (!$this->_allowEmptyEntries || $this->_filterEmptyEntries) {
             foreach ($value as $key => $keyValue) {
-                if (trim($keyValue) === '') {
+                if (trim((string)$keyValue) === '') {
                     if ($this->_filterEmptyEntries) {
                         unset($value[$key]);
                     } else {

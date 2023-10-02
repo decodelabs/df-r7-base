@@ -123,7 +123,7 @@ class Text extends Base implements core\validate\ITextField
         $value = $this->data->getValue();
 
         if ($this->_shouldTrim) {
-            $value = trim($value);
+            $value = trim((string)$value);
         }
 
         $value = $this->_sanitizeValue($value);

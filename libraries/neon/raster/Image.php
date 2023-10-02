@@ -573,7 +573,7 @@ class Image implements IImage
             return null;
         }
 
-        $percent = (float)trim($percent, '%');
+        $percent = (float)trim((string)$percent, '%');
 
         if (!$ignoreLowBound && $percent < 0) {
             $percent = 0;

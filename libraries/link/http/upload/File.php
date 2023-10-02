@@ -201,7 +201,7 @@ class File implements link\http\IUploadFile
         }
 
         $destination = Atlas::createDir((string)$destination)->getPath();
-        $fullPath = rtrim($destination, '/') . '/' . $this->getBaseName();
+        $fullPath = rtrim((string)$destination, '/') . '/' . $this->getBaseName();
         $i18n = core\i18n\Manager::getInstance();
 
         if (file_exists($fullPath)) {

@@ -88,7 +88,7 @@ class Config extends core\Config
             }
         }
 
-        return trim($output, '/');
+        return trim((string)$output, '/');
     }
 
     public function getBaseUrlMap($envMode = null)
@@ -106,11 +106,11 @@ class Config extends core\Config
         $output = [];
 
         if ($node->hasValue()) {
-            $output['*'] = trim($node->getValue(), '/');
+            $output['*'] = trim((string)$node->getValue(), '/');
         }
 
         foreach ($node as $key => $value) {
-            $output[$key] = trim($value, '/');
+            $output[$key] = trim((string)$value, '/');
         }
 
         return $output;

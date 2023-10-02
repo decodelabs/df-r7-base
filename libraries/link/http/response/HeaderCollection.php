@@ -156,7 +156,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         foreach ($lines as $line) {
             $output->add(
                 trim(
-                    (string)strtok(trim($line), ':')
+                    (string)strtok(trim((string)$line), ':')
                 ),
                 trim(
                     (string)strtok('')

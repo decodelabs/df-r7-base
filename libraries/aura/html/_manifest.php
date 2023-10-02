@@ -433,7 +433,7 @@ class ElementString implements IElementRepresentation, Dumpable
 
     public function isEmpty(): bool
     {
-        return !strlen($this->_content);
+        return !strlen((string)$this->_content);
     }
 
     /**

@@ -198,7 +198,7 @@ class Apcu implements core\cache\IBackend
 
     public function clearMatches(string $regex)
     {
-        $prefixLength = strlen($this->_prefix);
+        $prefixLength = strlen((string)$this->_prefix);
 
         foreach ($this->getCacheList() as $set) {
             if (0 === strpos($set['info'], $this->_prefix)
@@ -227,7 +227,7 @@ class Apcu implements core\cache\IBackend
     public function getKeys(): array
     {
         $output = [];
-        $length = strlen($this->_prefix);
+        $length = strlen((string)$this->_prefix);
 
         foreach ($this->getCacheList() as $set) {
             if (0 === strpos($set['info'], $this->_prefix)) {

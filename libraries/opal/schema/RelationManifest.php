@@ -45,7 +45,7 @@ class RelationManifest implements IRelationManifest, Dumpable
     {
         if ($prefix !== null) {
             $output = [];
-            $prefix = rtrim($prefix, '_') . '_';
+            $prefix = rtrim((string)$prefix, '_') . '_';
 
             foreach ($this->_primitives as $name => $processor) {
                 $output[] = $prefix . $name;
@@ -61,7 +61,7 @@ class RelationManifest implements IRelationManifest, Dumpable
     {
         if ($prefix !== null) {
             $output = [];
-            $prefix = rtrim($prefix, '_') . '_';
+            $prefix = rtrim((string)$prefix, '_') . '_';
 
             foreach ($this->_primitives as $name => $processor) {
                 $output[$prefix . $name] = $processor;

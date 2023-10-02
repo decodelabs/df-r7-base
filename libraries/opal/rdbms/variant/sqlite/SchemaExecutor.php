@@ -184,7 +184,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                         preg_match('/' . $type . ' \((.*)\)/i', $def, $matches);
 
                         foreach (flex\Delimited::parse($matches[1], ',', null) as $part) {
-                            $temp = explode(' ', trim($part), 2);
+                            $temp = explode(' ', trim((string)$part), 2);
                             $fieldName = trim((string)array_shift($temp), '`\' ');
                             $isDescending = strtoupper(trim((string)array_shift($temp))) == 'DESC';
 
@@ -257,7 +257,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
             }
 
             foreach (flex\Delimited::parse($matches[1], ',', null) as $part) {
-                $temp = explode(' ', trim($part), 2);
+                $temp = explode(' ', trim((string)$part), 2);
                 $fieldName = trim((string)array_shift($temp), '`" ');
                 $isDescending = strtoupper(trim((string)array_shift($temp))) == 'DESC';
 

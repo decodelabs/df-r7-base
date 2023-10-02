@@ -31,14 +31,14 @@ class Template implements aura\view\ITemplate, Dumpable
     public static function loadDirectoryTemplate(arch\IContext $context, $path)
     {
         $request = $context->location;
-        $contextPath = trim($request->getDirectoryLocation(), '/');
+        $contextPath = trim((string)$request->getDirectoryLocation(), '/');
         $contextParts = explode('/', $contextPath);
         $contextParts[0] = 'shared';
         $sharedContextPath = implode('/', $contextParts);
         $themeId = ucfirst($context->apex->getTheme()->getId());
         $lookupPaths = [];
 
-        $parts = explode('/', trim($path, '/'));
+        $parts = explode('/', trim((string)$path, '/'));
         $fileName = array_pop($parts);
         $base = rtrim('apex/directory/' . $contextPath . '/_templates/' . implode('/', $parts), '/');
         $sharedBase = rtrim('apex/directory/' . $sharedContextPath . '/_templates/' . implode('/', $parts), '/');
@@ -69,7 +69,7 @@ class Template implements aura\view\ITemplate, Dumpable
             }
 
             throw Exceptional::{'df/aura/view/NotFound'}(
-                'Template ~' . rtrim($request->getDirectoryLocation(), '/') . '/' . $path . ' could not be found'
+                'Template ~' . rtrim((string)$request->getDirectoryLocation(), '/') . '/' . $path . ' could not be found'
             );
         }
 
@@ -379,7 +379,7 @@ class Template implements aura\view\ITemplate, Dumpable
         mixed $key,
         mixed $value
     ): void {
-        $this->setSlot($key, $value);
+        $this->setSlot((string)$key, $value);
     }
 
     public function offsetGet(mixed $key): mixed
@@ -394,7 +394,7 @@ class Template implements aura\view\ITemplate, Dumpable
 
     public function offsetUnset(mixed $key): void
     {
-        $this->removeSlot($key);
+        $this->removeSlot((string)$key);
     }
 
 

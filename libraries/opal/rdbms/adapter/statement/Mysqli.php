@@ -23,7 +23,7 @@ class Mysqli extends Base
 
         $bindings = [];
         $sql = '';
-        $length = strlen($this->_sql);
+        $length = strlen((string)$this->_sql);
         $mode = 0;
         $var = '';
         $quoteChar = null;

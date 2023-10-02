@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\query;
 
 use DecodeLabs\Glitch\Dumpable;
@@ -267,8 +268,8 @@ class Paginator implements IPaginator, Dumpable
             }
 
             foreach ($order as $part) {
-                $t = explode(' ', trim($part), 2);
-                $key = trim($t[0]);
+                $t = explode(' ', trim((string)$part), 2);
+                $key = trim((string)$t[0]);
 
                 if (isset($this->_orderableFields[$key])) {
                     $dir = 'ASC';

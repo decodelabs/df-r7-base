@@ -89,7 +89,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         $output = [];
 
         foreach ($matches[0] as $line) {
-            $line = trim($line);
+            $line = trim((string)$line);
 
             if (!strlen($line)) {
                 continue;

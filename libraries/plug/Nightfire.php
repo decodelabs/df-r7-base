@@ -41,7 +41,7 @@ class Nightfire implements arch\IDirectoryHelper
             return null;
         }
 
-        $output = $block->renderTo($this->getView());
+        $output = (string)$block->renderTo($this->getView());
         $test = trim($output);
 
         if (empty($test)) {
@@ -82,7 +82,7 @@ class Nightfire implements arch\IDirectoryHelper
             return null;
         }
 
-        $output = $slot->renderTo($this->getView());
+        $output = (string)$slot->renderTo($this->getView());
         $test = trim($output);
 
         if (empty($test)) {

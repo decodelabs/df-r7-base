@@ -212,7 +212,7 @@ class Memcached implements core\cache\IBackend
     public function getKeys(): array
     {
         $output = [];
-        $length = strlen($this->_prefix);
+        $length = strlen((string)$this->_prefix);
         $keys = $this->_connection->getAllKeys();
 
         if (!is_iterable($keys)) {

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\i18n;
 
 use DecodeLabs\Exceptional;
@@ -126,7 +127,7 @@ class Translator implements ITranslator
 
                     $test = $plural;
 
-                    if (isset($matches[1]) && strlen($matches[1])) {
+                    if (isset($matches[1]) && strlen((string)$matches[1])) {
                         switch ($matches[2]) {
                             case '/':
                                 $test /= $matches[3];

@@ -161,13 +161,13 @@ class Slug extends Base implements core\validate\ISlugField
 
     protected function _sanitizeSlugValue($value)
     {
-        $value = trim($value);
+        $value = trim((string)$value);
 
         if (empty($value) && $this->_defaultValueField) {
             $data = $this->validator->getCurrentData();
 
             if ($data->has($this->_defaultValueField)) {
-                $value = trim($data[$this->_defaultValueField]);
+                $value = trim((string)$data[$this->_defaultValueField]);
 
                 if ($this->_defaultValueSanitizer) {
                     $value = $this->_defaultValueSanitizer->invoke($value, $this);

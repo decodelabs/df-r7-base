@@ -172,7 +172,7 @@ class Duration implements IDuration, Dumpable
             }
         }
 
-        $time = trim($time);
+        $time = trim((string)$time);
 
         if (preg_match('/^(([0-9]+)\:)?([0-9]{1,2})\:([0-9.]+)$/', $time)) {
             $parts = explode(':', $time);

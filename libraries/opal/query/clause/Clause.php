@@ -625,7 +625,7 @@ class Clause implements opal\query\IClause, Dumpable
         $parentName = $parentField->getName();
 
         if (0 === strpos($name, $parentName)) {
-            $innerName = substr($name, strlen($parentName));
+            $innerName = substr($name, strlen((string)$parentName));
 
             if (array_key_exists($innerName, $value)) {
                 return $value[$innerName];
@@ -635,7 +635,7 @@ class Clause implements opal\query\IClause, Dumpable
         foreach ($value as $key => $innerValue) {
             if (0 === strpos($name, $key . '_')) {
                 return $innerValue;
-            } elseif (substr($name, -(strlen($key) + 1)) == '_' . $key) {
+            } elseif (substr($name, -(strlen((string)$key) + 1)) == '_' . $key) {
                 return $innerValue;
             }
         }

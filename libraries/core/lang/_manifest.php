@@ -203,7 +203,7 @@ trait TAcceptTypeProcessor
         }
 
         foreach ($types as $type) {
-            if (!strlen($type)) {
+            if (!strlen((string)$type)) {
                 continue;
             }
 

@@ -61,11 +61,11 @@ class Version implements core\IStringProvider, Dumpable
         }
 
         if (isset($matches[2])) {
-            $this->preRelease = explode('.', ltrim($matches[2], '-'));
+            $this->preRelease = explode('.', ltrim((string)$matches[2], '-'));
         }
 
         if (isset($matches[3])) {
-            $this->build = explode('.', ltrim($matches[3], '+'));
+            $this->build = explode('.', ltrim((string)$matches[3], '+'));
         }
     }
 
@@ -106,7 +106,7 @@ class Version implements core\IStringProvider, Dumpable
     public function setPreRelease($preRelease)
     {
         if (!is_array($preRelease)) {
-            if (strlen($preRelease)) {
+            if (strlen((string)$preRelease)) {
                 $preRelease = explode('.', $preRelease);
             } else {
                 $preRelease = null;

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\fire\layout;
 
 use DecodeLabs\Glitch\Dumpable;
@@ -71,7 +72,7 @@ class Definition implements fire\ILayoutDefinition, Dumpable
         $this->_areas = $areas;
 
         foreach ($this->_areas as $i => $area) {
-            $this->_areas[$i] = ltrim($area, '~');
+            $this->_areas[$i] = ltrim((string)$area, '~');
         }
 
         return $this;

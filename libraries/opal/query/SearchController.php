@@ -42,8 +42,8 @@ class SearchController implements ISearchController, Dumpable
     {
         $this->_phrase = (string)$phrase;
 
-        if (is_numeric(ltrim($this->_phrase, '#'))) {
-            $this->_phrase = ltrim($this->_phrase, '#');
+        if (is_numeric(ltrim((string)$this->_phrase, '#'))) {
+            $this->_phrase = ltrim((string)$this->_phrase, '#');
             $this->_type = 'integer';
             $this->_terms = [];
         } elseif (flex\Guid::isValidString($this->_phrase)) {

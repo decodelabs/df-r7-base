@@ -72,7 +72,7 @@ class Url extends core\uri\Url implements IUrl
                     $sub = $request->query[$wildArea];
                     unset($request->query->{$wildArea});
 
-                    if (strlen($sub)) {
+                    if (strlen((string)$sub)) {
                         $domain = $sub . '.' . $domain;
                     } elseif (isset($_SERVER['HTTP_HOST']) && stristr($_SERVER['HTTP_HOST'], '.' . $domain)) {
                         $domain = $_SERVER['HTTP_HOST'];
@@ -129,7 +129,7 @@ class Url extends core\uri\Url implements IUrl
         }
 
         if (isset($_SERVER['REQUEST_URI'])) {
-            $req = ltrim($_SERVER['REQUEST_URI'], '/');
+            $req = ltrim((string)$_SERVER['REQUEST_URI'], '/');
         } elseif (isset($_SERVER['argv'][2])) {
             $req = $_SERVER['argv'][2];
         } else {
@@ -193,7 +193,7 @@ class Url extends core\uri\Url implements IUrl
 
         // Scheme
         if (substr($url, 0, 2) == '//') {
-            $url = ltrim($url, '/');
+            $url = ltrim((string)$url, '/');
             $this->_scheme = null;
         } else {
             $parts = explode('://', $url, 2);

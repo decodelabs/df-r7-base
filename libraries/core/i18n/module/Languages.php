@@ -44,7 +44,7 @@ class Languages extends Base implements ILanguagesModule
                 continue;
             }
 
-            if (strlen($key) == 2) {
+            if (strlen((string)$key) == 2) {
                 $output[$key] = $name;
             }
         }
@@ -58,7 +58,7 @@ class Languages extends Base implements ILanguagesModule
         $output = [];
 
         foreach ($this->_data as $key => $name) {
-            if (strlen($key) == 2) {
+            if (strlen((string)$key) == 2) {
                 $output[] = $key;
             }
         }

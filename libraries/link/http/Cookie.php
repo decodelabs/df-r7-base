@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\http;
 
 use DecodeLabs\Exceptional;
@@ -29,7 +30,7 @@ class Cookie implements ICookie
         $hasMaxAge = false;
 
         foreach ($parts as $part) {
-            $set = explode('=', trim($part), 2);
+            $set = explode('=', trim((string)$part), 2);
             $key = strtolower((string)array_shift($set));
             $value = trim((string)array_shift($set));
 
@@ -190,7 +191,7 @@ class Cookie implements ICookie
             return true;
         }
 
-        $current = ltrim($this->_domain, '.');
+        $current = ltrim((string)$this->_domain, '.');
 
         if (!$current || !strcasecmp($domain, $current)) {
             return true;
@@ -223,12 +224,12 @@ class Cookie implements ICookie
             return true;
         }
 
-        if (!strlen($this->_path)) {
+        if (!strlen((string)$this->_path)) {
             return true;
         }
 
-        $path = '/' . ltrim($path, '/');
-        $test = '/' . ltrim($this->_path, '/');
+        $path = '/' . ltrim((string)$path, '/');
+        $test = '/' . ltrim((string)$this->_path, '/');
 
         return 0 === stripos($path, $test);
     }

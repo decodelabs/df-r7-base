@@ -216,7 +216,7 @@ class Memcache implements core\cache\IBackend
     {
         $output = [];
         $allSlabs = $this->_connection->getExtendedStats('slabs');
-        $length = strlen($this->_prefix);
+        $length = strlen((string)$this->_prefix);
 
         foreach ($allSlabs as $server => $slabs) {
             foreach ($slabs as $slabId => $slabMeta) {

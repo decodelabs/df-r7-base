@@ -54,7 +54,7 @@ class Date implements IDate, Dumpable
         $date = substr($date, 0, 4) . '-' . substr($date, 4, 2) . '-' . substr($date, 6, 2);
         $timeEnabled = false;
 
-        if (strlen($string) == 14) {
+        if (strlen((string)$string) == 14) {
             $time = substr($string, 8);
             $time = substr($time, 0, 2) . ':' . substr($time, 2, 2) . ':' . substr($time, 4, 2);
             $date .= ' ' . $time;

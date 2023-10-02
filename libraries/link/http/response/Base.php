@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\http\response;
 
 use DecodeLabs\Atlas;
@@ -96,7 +97,7 @@ abstract class Base implements link\http\IResponse
     {
         $content = $this->getContent();
 
-        if (!strlen($content)) {
+        if (!strlen((string)$content)) {
             throw Exceptional::Runtime(
                 'Empty json response'
             );

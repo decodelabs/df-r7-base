@@ -355,7 +355,7 @@ trait TStringResponse
 
     public function getContentLength()
     {
-        return strlen($this->getContent());
+        return strlen((string)$this->getContent());
     }
 
     public function setLastModified(core\time\IDate $date)

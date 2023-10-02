@@ -153,7 +153,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Dumpab
             $value = (int)$value;
         }
 
-        $this->_bindings[ltrim($key, ':')] = $value;
+        $this->_bindings[ltrim((string)$key, ':')] = $value;
         return $this;
     }
 

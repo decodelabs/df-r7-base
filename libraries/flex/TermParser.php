@@ -31,7 +31,7 @@ class TermParser implements ITermParser
     public function parse($phrase, $natural = false)
     {
         $terms = [];
-        $phrase = strip_tags($phrase);
+        $phrase = strip_tags((string)$phrase);
         $length = strlen($phrase);
         $pos = 0;
         $letters = [];

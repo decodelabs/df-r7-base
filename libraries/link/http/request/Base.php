@@ -83,7 +83,7 @@ class Base implements link\http\IRequest, Dumpable
         foreach ($lines as $line) {
             $headers->set(
                 trim(
-                    (string)strtok(trim($line), ':')
+                    (string)strtok(trim((string)$line), ':')
                 ),
                 trim(
                     (string)strtok('')
@@ -674,7 +674,7 @@ class Base implements link\http\IRequest, Dumpable
                     $headers->set('Content-Type', Typify::detect($this->_bodyData->getPath()));
                 }
             } else {
-                $headers->set('Content-Length', strlen($this->_bodyData));
+                $headers->set('Content-Length', strlen((string)$this->_bodyData));
             }
         }
 

@@ -323,7 +323,7 @@ trait TUrl_PathContainer
             $output = $this->_path->toUrlEncodedString();
 
             if ($absolute) {
-                $output = '/' . ltrim($output, '/.');
+                $output = '/' . ltrim((string)$output, '/.');
             }
 
             return $output;
@@ -409,7 +409,7 @@ trait TUrl_QueryContainer
             return $default;
         }
 
-        $output = trim($this->_query[$key]);
+        $output = trim((string)$this->_query[$key]);
 
         if (empty($output)) {
             return $default;

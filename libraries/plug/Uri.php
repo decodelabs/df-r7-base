@@ -275,7 +275,7 @@ class Uri implements arch\IDirectoryHelper
 
     public function themeDependencyRequest($name, $themeId = null)
     {
-        $name = rtrim($name, '/');
+        $name = rtrim((string)$name, '/');
         $themeId = $this->_normalizeTheme($themeId, $name);
         $theme = aura\theme\Base::factory($themeId);
         $manager = fuse\Manager::getInstance();

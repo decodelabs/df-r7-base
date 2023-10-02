@@ -3,10 +3,10 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\validate\field;
 
 use DecodeLabs\Tagged as Html;
-
 use DecodeLabs\Tagged\Embed;
 use df\core;
 
@@ -15,7 +15,7 @@ class AudioEmbed extends Base implements core\validate\IAudioEmbedField
     public function validate()
     {
         // Sanitize
-        $value = trim($this->data->getValue());
+        $value = trim((string)$this->data->getValue());
         $value = $this->_sanitizeValue($value);
 
         if (!$length = $this->_checkRequired($value)) {
