@@ -92,13 +92,13 @@ class ContentPart implements IContentPart, Dumpable
             );
         }
 
-        if (preg_match('/boundary=".*"/i', $type)) {
+        if (preg_match('/boundary=".*"/i', (string)$type)) {
             throw Exceptional::InvalidArgument(
                 'Please use newMultiPart() for multipart types, invalid boundary definition detected'
             );
         }
 
-        if (substr($type, 0, 5) == 'text/' && !preg_match('/charset=".*"/i', $type)) {
+        if (substr($type, 0, 5) == 'text/' && !preg_match('/charset=".*"/i', (string)$type)) {
             $type .= '; charset="utf-8"';
         }
 

@@ -269,7 +269,7 @@ class HeaderMap implements IHeaderMap, Dumpable
             return false;
         }
 
-        return (bool)preg_match('/\;\W*' . preg_quote($name) . '=/i', $value);
+        return (bool)preg_match('/\;\W*' . preg_quote((string)$name) . '=/i', $value);
     }
 
     public function has(...$keys)

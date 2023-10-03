@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\plug;
 
 use df\core;
@@ -123,7 +124,7 @@ class Date implements core\ISharedHelper
             ->getModule('numbers', $locale)
             ->formatDuration($number);
 
-        if (preg_match('/([0-9]+) sec./', $output, $matches)) {
+        if (preg_match('/([0-9]+) sec./', (string)$output, $matches)) {
             $output = '0:' . $matches[1];
         }
 

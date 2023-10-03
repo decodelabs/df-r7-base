@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\models\media;
 
 use DecodeLabs\Dictum;
@@ -490,7 +491,7 @@ class Model extends axis\Model
             $fileId = str_replace('|', '-', $fileId);
         }
 
-        if (preg_match('/^([0-9]+)([-|](\[.*\]))?$/', $fileId, $matches)) {
+        if (preg_match('/^([0-9]+)([-|](\[.*\]))?$/', (string)$fileId, $matches)) {
             $fileId = $matches[1];
 
             if (isset($matches[3])) {

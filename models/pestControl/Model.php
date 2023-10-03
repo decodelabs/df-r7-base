@@ -132,7 +132,7 @@ class Model extends axis\Model
         }
 
         if ($mode == 'Http') {
-            if ((is_string($request) && preg_match('/^[a-z]+\:\/\//i', $request))
+            if ((is_string($request) && preg_match('/^[a-z]+\:\/\//i', (string)$request))
             || $request instanceof arch\IRequest) {
                 $request = $this->context->uri($request);
             }

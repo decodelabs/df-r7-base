@@ -186,7 +186,7 @@ class CreditCard implements ICreditCard, Dumpable
     {
         if ($this->_brand === false) {
             foreach (self::BRANDS as $brand => $regex) {
-                if (preg_match($regex, $this->_number)) {
+                if (preg_match($regex, (string)$this->_number)) {
                     $this->_brand = $brand;
                     break;
                 }

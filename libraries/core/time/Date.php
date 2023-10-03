@@ -776,7 +776,7 @@ class Date implements IDate, Dumpable
             } elseif ((int)$interval == $interval) {
                 $seconds = (int)$interval;
             }
-        } elseif (preg_match('/^(([0-9]+)\:)?([0-9]{1,2})\:([0-9.]+)$/', $interval)) {
+        } elseif (preg_match('/^(([0-9]+)\:)?([0-9]{1,2})\:([0-9.]+)$/', (string)$interval)) {
             $parts = explode(':', $interval);
             $i = 1;
             $seconds = 0;

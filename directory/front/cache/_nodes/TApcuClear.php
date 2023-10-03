@@ -91,7 +91,7 @@ trait TApcuClear
 
             foreach (core\cache\backend\Apcu::getCacheList() as $set) {
                 if (0 === strpos($set['info'], (string)$prefix)
-                && preg_match($regex, substr($set['info'], $prefixLength))) {
+                && preg_match($regex, substr((string)$set['info'], $prefixLength))) {
                     apcu_delete($set['info']);
                     $count++;
                 }

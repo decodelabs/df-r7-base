@@ -548,7 +548,7 @@ trait TForm
         $ref = new \ReflectionClass($this);
 
         foreach ($ref->getMethods() as $method) {
-            if (preg_match('/^on([A-Z\_][a-zA-Z0-9_]*)Event$/', $method->getName(), $matches)) {
+            if (preg_match('/^on([A-Z\_][a-zA-Z0-9_]*)Event$/', (string)$method->getName(), $matches)) {
                 $output[] = $this->eventName(lcfirst($matches[1]));
             }
         }

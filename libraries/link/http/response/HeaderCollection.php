@@ -143,7 +143,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         $output = new self();
         $http = array_shift($lines);
 
-        if (!preg_match("|^HTTP/([\d\.x]+) (\d+)( ([^\r\n]+))?|", $http, $matches)) {
+        if (!preg_match("|^HTTP/([\d\.x]+) (\d+)( ([^\r\n]+))?|", (string)$http, $matches)) {
             throw Exceptional::UnexpectedValue(
                 'Headers do not appear to be valid HTTP format'
             );

@@ -68,7 +68,7 @@ abstract class Model implements IModel, Dumpable
     // Units
     public function getUnit($name)
     {
-        $lookupName = lcfirst($name);
+        $lookupName = lcfirst((string)$name);
 
         if (isset($this->_units[$lookupName])) {
             return $this->_units[$lookupName];
@@ -82,7 +82,7 @@ abstract class Model implements IModel, Dumpable
         $class = 'df\\apex\\models\\' . $this->getModelName() . '\\' . $lookupName . '\\Unit';
 
         if (!class_exists($class)) {
-            if (preg_match('/^([a-z0-9_.]+)\(([a-zA-Z0-9_.\, \/]*)\)$/i', $name, $matches)) {
+            if (preg_match('/^([a-z0-9_.]+)\(([a-zA-Z0-9_.\, \/]*)\)$/i', (string)$name, $matches)) {
                 $className = $matches[1];
 
                 // Fix legacy

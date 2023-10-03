@@ -60,7 +60,7 @@ class Dsn implements IDsn, Dumpable
         $regex = "!^(([a-z0-9-_]+)(\(([^()]+)\))?)(://((((([^@/:]+)(:([^@/]+))?)@)?((([a-z]+)\((([^?():]+)(:([^()?]+))?)\))|((([^/?:]+)(:([^/?]+))?))))/?)?([^?]+)?(\?(.+))?)?$!i";
         $matches = [];
 
-        if (!preg_match($regex, $dsn, $matches)) {
+        if (!preg_match($regex, (string)$dsn, $matches)) {
             throw Exceptional::InvalidArgument(
                 'Invalid dsn string: ' . $dsn
             );

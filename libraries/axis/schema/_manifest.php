@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\schema;
 
 use DecodeLabs\Exceptional;
@@ -743,7 +744,7 @@ trait TBridgedRelationField
         $this->_bridgeTargetFieldName = $data['btf'];
 
         // Fix legacy
-        if (preg_match('|^([a-zA-Z0-9_]+)/table.Bridge\(|i', $this->_bridgeUnitId)) {
+        if (preg_match('|^([a-zA-Z0-9_]+)/table.Bridge\(|i', (string)$this->_bridgeUnitId)) {
             list($model, $unit) = explode('/', $this->_bridgeUnitId, 2);
             $this->_bridgeUnitId = $model . '/BridgeTable' . substr($unit, 12);
         }

@@ -470,7 +470,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
     // Win
     public function hasWinDrive()
     {
-        return isset($this->_collection[0]) && preg_match('/^[a-zA-Z]\:$/', $this->_collection[0]);
+        return isset($this->_collection[0]) && preg_match('/^[a-zA-Z]\:$/', (string)$this->_collection[0]);
     }
 
     public function getWinDriveLetter()
@@ -479,7 +479,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Dumpable
             return null;
         }
 
-        if (!preg_match('/^([a-zA-Z])\:$/', $this->_collection[0], $matches)) {
+        if (!preg_match('/^([a-zA-Z])\:$/', (string)$this->_collection[0], $matches)) {
             return null;
         }
 

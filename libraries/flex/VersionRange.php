@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flex;
 
 use DecodeLabs\Glitch\Dumpable;
@@ -113,7 +114,7 @@ class VersionRange implements core\IStringProvider, Dumpable
             }
         }
 
-        if (preg_match('/^([\<\>\=]+)(.+)/i', $expression, $matches)) {
+        if (preg_match('/^([\<\>\=]+)(.+)/i', (string)$expression, $matches)) {
             $group[] = new Version_Comparator($matches[1], $matches[2]);
             return;
         }

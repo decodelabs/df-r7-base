@@ -61,7 +61,7 @@ class Commit implements ICommit, Dumpable
 
     protected static function _parseUser($value)
     {
-        if (preg_match('/^(.+) (\d+) .*$/', $value, $matches)) {
+        if (preg_match('/^(.+) (\d+) .*$/', (string)$value, $matches)) {
             return [$matches[1], $matches[2]];
         }
 

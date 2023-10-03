@@ -206,7 +206,7 @@ class SourceManager implements ISourceManager, Dumpable
     {
         $fieldAlias = null;
 
-        if (preg_match('/(.+) as ([^ ]+)$/', $name, $matches)) {
+        if (preg_match('/(.+) as ([^ ]+)$/', (string)$name, $matches)) {
             $name = $matches[1];
             $fieldAlias = $matches[2];
         }
@@ -219,12 +219,12 @@ class SourceManager implements ISourceManager, Dumpable
         $alias = $name;
         $sourceAlias = null;
 
-        if (preg_match('/(.+) as ([^ ]+)$/', $name, $matches)) {
+        if (preg_match('/(.+) as ([^ ]+)$/', (string)$name, $matches)) {
             $name = $matches[1];
             $alias = $matches[2];
         }
 
-        if (preg_match('/(.+)\.(.+)$/', $name, $matches)) {
+        if (preg_match('/(.+)\.(.+)$/', (string)$name, $matches)) {
             $sourceAlias = $matches[1];
             $name = $matches[2];
         }
@@ -290,7 +290,7 @@ class SourceManager implements ISourceManager, Dumpable
 
         $passedSourceAlias = $source->getAlias();
 
-        if (preg_match('/^([a-zA-Z_]+)\((distinct )?(.+)\)$/i', $name, $matches)) {
+        if (preg_match('/^([a-zA-Z_]+)\((distinct )?(.+)\)$/i', (string)$name, $matches)) {
             // aggregate
             if (!$allowAggregate) {
                 throw Exceptional::InvalidArgument(

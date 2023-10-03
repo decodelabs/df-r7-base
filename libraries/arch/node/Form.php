@@ -480,7 +480,7 @@ abstract class Form extends Base implements IFormNode
 
         $matches = [];
 
-        if (preg_match('/^\<[a-z]+ .*data\-button\-event\=\"([^"]+)\"/i', $event, $matches)) {
+        if (preg_match('/^\<[a-z]+ .*data\-button\-event\=\"([^"]+)\"/i', (string)$event, $matches)) {
             $event = $matches[1];
         }
 

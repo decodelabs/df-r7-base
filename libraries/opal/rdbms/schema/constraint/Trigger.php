@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms\schema\constraint;
 
 use DecodeLabs\Glitch\Dumpable;
@@ -30,7 +31,7 @@ class Trigger implements opal\rdbms\schema\ITrigger, Dumpable
         $regex = '/(OLD|NEW)?\.(' . implode('|', $fields) . ')/i';
 
         foreach ($this->_statements as $statement) {
-            if (preg_match($regex, $statement)) {
+            if (preg_match($regex, (string)$statement)) {
                 return true;
             }
         }

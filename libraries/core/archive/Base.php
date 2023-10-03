@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\archive;
 
 use DecodeLabs\Atlas;
@@ -12,6 +13,8 @@ abstract class Base implements IArchive
 {
     public static function extract($file, $destination = null, $flattenRoot = false)
     {
+        $file = (string)$file;
+
         if (preg_match('/\.zip$/i', $file)) {
             $type = 'Zip';
         } elseif (preg_match('/\.tar(\.(gz|bz2))?$/i', $file)) {

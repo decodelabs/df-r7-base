@@ -737,7 +737,7 @@ trait TWidget_GroupedSelectionInput
             $this->addGroupOptions($key, $set, $labelsAsValues);
             $label = $key;
 
-            if (preg_match('/^[a-z][a-zA-Z0-9]+$/', $key)) {
+            if (preg_match('/^[a-z][a-zA-Z0-9]+$/', (string)$key)) {
                 $label = Dictum::label($key);
             }
 

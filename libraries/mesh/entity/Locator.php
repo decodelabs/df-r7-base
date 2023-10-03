@@ -118,7 +118,7 @@ class Locator implements ILocator, Dumpable
                         ];
 
                         $mode = 0; // Location
-                    } elseif (preg_match('/[a-zA-Z0-9-_]/', $char)) {
+                    } elseif (preg_match('/[a-zA-Z0-9-_]/', (string)$char)) {
                         $part .= $char;
                     } else {
                         throw Exceptional::InvalidArgument(

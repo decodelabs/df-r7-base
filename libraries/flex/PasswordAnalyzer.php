@@ -114,6 +114,7 @@ class PasswordAnalyzer implements IPasswordAnalyzer
     protected function _getCharsetSize($password)
     {
         $output = 0;
+        $password = (string)$password;
 
         if (preg_match('/[a-z]/', $password)) {
             $output += 26;

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms\variant\sqlite;
 
 use DecodeLabs\Exceptional;
@@ -78,7 +79,7 @@ class Server implements opal\rdbms\IServer
         switch ($number) {
             // Query error
             case 1:
-                if (preg_match('/no such table\: ([a-zA-Z0-9_]+)/i', $message, $matches)) {
+                if (preg_match('/no such table\: ([a-zA-Z0-9_]+)/i', (string)$message, $matches)) {
                     return Exceptional::{'df/opal/rdbms/TableNotFound,NotFound'}($message, [
                         'code' => $number,
                         'data' => [

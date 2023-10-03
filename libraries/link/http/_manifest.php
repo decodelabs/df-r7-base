@@ -164,7 +164,7 @@ trait THeaderCollection
 
     public function setHttpVersion($version)
     {
-        if (!preg_match('|^\d\.\d$|', $version)) {
+        if (!preg_match('|^\d\.\d$|', (string)$version)) {
             throw Exceptional::UnexpectedValue(
                 $version . ' is not a valid http version'
             );

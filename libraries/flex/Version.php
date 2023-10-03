@@ -35,7 +35,7 @@ class Version implements core\IStringProvider, Dumpable
 
     public static function matchString($version)
     {
-        if (!preg_match(self::REGEX, $version, $matches)) {
+        if (!preg_match(self::REGEX, (string)$version, $matches)) {
             throw Exceptional::Runtime('Invalid version: ' . $version);
         }
 

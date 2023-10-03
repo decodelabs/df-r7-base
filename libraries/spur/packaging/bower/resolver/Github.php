@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\packaging\bower\resolver;
 
 use DecodeLabs\Atlas;
@@ -71,7 +72,7 @@ class Github implements spur\packaging\bower\IResolver
 
     protected function _extractRepoName(spur\packaging\bower\Package $package)
     {
-        if (!preg_match('/(?:@|:\/\/)github.com[:\/]([^\/\s]+?)\/([^\/\s]+?)(?:\.git)?\/?$/i', $package->url, $matches)) {
+        if (!preg_match('/(?:@|:\/\/)github.com[:\/]([^\/\s]+?)\/([^\/\s]+?)(?:\.git)?\/?$/i', (string)$package->url, $matches)) {
             throw Exceptional::Runtime(
                 'Unable to extract repo name from url: ' . $package->url
             );

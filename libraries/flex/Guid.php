@@ -207,7 +207,7 @@ class Guid implements IGuid, Dumpable
             return true;
         }
 
-        return preg_match('/^[a-f0-9]{32}|[a-f0-9\-]{36}$/i', $uuid);
+        return preg_match('/^[a-f0-9]{32}|[a-f0-9\-]{36}$/i', (string)$uuid);
     }
 
 

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\validate\field;
 
 use df\core;
@@ -38,7 +39,7 @@ class Url extends Base implements core\validate\IUrlField
 
         // Validate
         if (!$this->_allowInternal) {
-            if (!preg_match('/^[a-zA-Z0-9]+\:/', $value)) {
+            if (!preg_match('/^[a-zA-Z0-9]+\:/', (string)$value)) {
                 $value = 'http://' . $value;
             }
 

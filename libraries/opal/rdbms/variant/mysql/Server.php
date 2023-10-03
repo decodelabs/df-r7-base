@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms\variant\mysql;
 
 use DecodeLabs\Exceptional;
@@ -111,7 +112,7 @@ class Server implements opal\rdbms\IServer
             case 1050:
                 $database = $table = null;
 
-                if (preg_match('/Table ([a-zA-Z0-9_]+)/', $message, $matches)) {
+                if (preg_match('/Table ([a-zA-Z0-9_]+)/', (string)$message, $matches)) {
                     $table = $matches[1];
                     $database = $adapter->getDsn()->getDatabase();
                 }
@@ -130,7 +131,7 @@ class Server implements opal\rdbms\IServer
             case 1146:
                 $database = $table = null;
 
-                if (preg_match('/Table \'([^\s\.]+)\.([^\s\.]+)\'/', $message, $matches)) {
+                if (preg_match('/Table \'([^\s\.]+)\.([^\s\.]+)\'/', (string)$message, $matches)) {
                     $database = $matches[1];
                     $table = $matches[2];
                 }

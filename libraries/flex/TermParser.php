@@ -90,7 +90,7 @@ class TermParser implements ITermParser
 
     protected function _testChar($char)
     {
-        return preg_match("/^[\p{L}|\p{N}\'\.@]$/u", $char);
+        return preg_match("/^[\p{L}|\p{N}\'\.@]$/u", (string)$char);
     }
 
     protected function _normalizeTerm($term, $natural = false)

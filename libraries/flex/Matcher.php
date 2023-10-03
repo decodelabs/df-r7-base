@@ -3,13 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flex;
 
 class Matcher implements IMatcher
 {
     public static function isLike($pattern, $string, $char = '?', $wildcard = '*')
     {
-        return (bool)preg_match('/' . self::generateLikeRegex($pattern, $char, $wildcard) . '/i', $string);
+        return (bool)preg_match('/' . self::generateLikeRegex($pattern, $char, $wildcard) . '/i', (string)$string);
     }
 
     public static function generateLikeRegex($pattern, $char = '?', $wildcard = '*', $delimiter = '/')
@@ -43,7 +44,7 @@ class Matcher implements IMatcher
             return false;
         }
 
-        return (bool)preg_match('/' . preg_quote($pattern, '/') . '/i', $string);
+        return (bool)preg_match('/' . preg_quote((string)$pattern, '/') . '/i', $string);
     }
 
     public static function begins($pattern, $string)
@@ -58,7 +59,7 @@ class Matcher implements IMatcher
             return false;
         }
 
-        return (bool)preg_match('/^' . preg_quote($pattern, '/') . '/i', $string);
+        return (bool)preg_match('/^' . preg_quote((string)$pattern, '/') . '/i', $string);
     }
 
     public static function ends($pattern, $string)
@@ -73,6 +74,6 @@ class Matcher implements IMatcher
             return false;
         }
 
-        return (bool)preg_match('/' . preg_quote($pattern, '/') . '$/i', $string);
+        return (bool)preg_match('/' . preg_quote((string)$pattern, '/') . '$/i', $string);
     }
 }

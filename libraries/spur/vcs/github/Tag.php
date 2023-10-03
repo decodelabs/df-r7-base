@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\vcs\github;
 
 use DecodeLabs\Glitch\Dumpable;
@@ -34,7 +35,7 @@ class Tag implements ITag, Dumpable
     public function getVersion()
     {
         if ($this->_version === null) {
-            $name = $this->_name;
+            $name = (string)$this->_name;
 
             if (preg_match('/^[a-zA-Z][0-9]/', $name)) {
                 $name = substr($name, 1);

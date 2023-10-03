@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms\variant\mysql;
 
 use DecodeLabs\Exceptional;
@@ -86,7 +87,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
         $res = $this->_adapter->prepare($sql)->executeRead();
 
         foreach ($res as $row) {
-            if (!preg_match('/^([a-zA-Z_]+)(\((.*)\))?( binary)?( unsigned)?( zerofill)?( character set ([a-z0-9_]+))?$/i', $row['Type'], $matches)) {
+            if (!preg_match('/^([a-zA-Z_]+)(\((.*)\))?( binary)?( unsigned)?( zerofill)?( character set ([a-z0-9_]+))?$/i', (string)$row['Type'], $matches)) {
                 Glitch::incomplete(['Unmatched type', $row]);
             }
 

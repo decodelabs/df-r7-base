@@ -182,7 +182,7 @@ trait TQuery
 
     public function importBlock($name, ...$args)
     {
-        if (preg_match('/(.+)\.(.+)$/', $name, $matches)) {
+        if (preg_match('/(.+)\.(.+)$/', (string)$name, $matches)) {
             $source = $this->getSourceManager()->getSourceByAlias($matches[1]);
 
             if (!$source) {
@@ -212,7 +212,7 @@ trait TQuery
     {
         $field = $this->_lookupRelationField($relationField, $queryField);
 
-        if (preg_match('/(.+)\.(.+)$/', $name, $matches)) {
+        if (preg_match('/(.+)\.(.+)$/', (string)$name, $matches)) {
             $source = $this->getSourceManager()->getSourceByAlias($matches[1]);
 
             if (!$source) {
@@ -260,7 +260,7 @@ trait TQuery
             $fieldName = $fieldName->getQualifiedName();
         }
 
-        if (preg_match('/(.+) as ([^ ]+)$/', $fieldName, $matches)) {
+        if (preg_match('/(.+) as ([^ ]+)$/', (string)$fieldName, $matches)) {
             $fieldName = $matches[1];
             $sourceAlias = $matches[2];
         } else {

@@ -202,7 +202,7 @@ class Cookie implements ICookie
         }
 
         return (bool)preg_match(
-            '/\.' . preg_quote($current) . '$/i',
+            '/\.' . preg_quote((string)$current) . '$/i',
             $domain
         );
     }

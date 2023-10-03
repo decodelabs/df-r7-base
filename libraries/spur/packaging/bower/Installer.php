@@ -327,22 +327,24 @@ class Installer implements IInstaller
             list($package->source, $package->version) = explode('#', $package->source, 2);
         }
 
-        if (preg_match('/^([^\/\@#\:]+)\/([^\/\@#\:]+)$/', $package->source)) {
+        if (preg_match('/^([^\/\@#\:]+)\/([^\/\@#\:]+)$/', (string)$package->source)) {
             $package->source = 'git://github.com/' . $package->source . '.git';
         }
 
 
         // Git
-        if (preg_match('/^git(\+(ssh|https?))?:\/\//i', $package->source)
-        || preg_match('/\.git\/?$/i', $package->source)
-        || preg_match('/^git@/i', $package->source)) {
-            $package->url = str_replace('/^git\+/', '', $package->source);
+        if (
+            preg_match('/^git(\+(ssh|https?))?:\/\//i', (string)$package->source) ||
+            preg_match('/\.git\/?$/i', (string)$package->source) ||
+            preg_match('/^git@/i', (string)$package->source)
+        ) {
+            $package->url = str_replace('/^git\+/', '', (string)$package->source);
 
             if (!$package->name) {
                 $package->name = basename($package->url, '.git');
             }
 
-            if (preg_match('/(?:@|:\/\/)github.com/', $package->url)) {
+            if (preg_match('/(?:@|:\/\/)github.com/', (string)$package->url)) {
                 $package->resolver = 'Github';
             } else {
                 $package->resolver = 'Git';
@@ -350,7 +352,7 @@ class Installer implements IInstaller
         }
 
         // SVN
-        elseif (preg_match('/^svn(\+(ssh|https?|file))?:\/\//i', $package->source)) {
+        elseif (preg_match('/^svn(\+(ssh|https?|file))?:\/\//i', (string)$package->source)) {
             $package->url = $package->source;
 
             if (!$package->name) {
@@ -361,7 +363,7 @@ class Installer implements IInstaller
         }
 
         // HTTP
-        elseif (preg_match('/^https?:\/\//i', $package->source)) {
+        elseif (preg_match('/^https?:\/\//i', (string)$package->source)) {
             $package->url = $package->source;
 
             if (!$package->name) {
@@ -372,8 +374,10 @@ class Installer implements IInstaller
         }
 
         // Local
-        elseif (preg_match('/^\.\.?[\/\\\\]/', $package->source)
-        || preg_match('/^~?\//', $package->source)) {
+        elseif (
+            preg_match('/^\.\.?[\/\\\\]/', (string)$package->source) ||
+            preg_match('/^~?\//', (string)$package->source)
+        ) {
             $package->url = rtrim((string)$package->source, '/');
 
             if (!$package->name) {

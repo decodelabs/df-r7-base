@@ -64,7 +64,7 @@ class En extends Base
             self::_replace($word, 'ies', 'i');//   ||
             //self::_replace($word, 'ss', 'ss');
 
-            if (strlen((string)$word) > 4 || preg_match("#$v+#", substr($word, 0, 1))) {
+            if (strlen((string)$word) > 4 || preg_match("#$v+#", substr((string)$word, 0, 1))) {
                 self::_replace($word, 's', '');
             }
         }
@@ -194,7 +194,7 @@ class En extends Base
         switch (substr($word, -2, 1)) {
             case 'a':
                 $v = self::VOWELS;
-                if (!preg_match("#$v+#", substr($word, 0, -3))) {
+                if (!preg_match("#$v+#", substr((string)$word, 0, -3))) {
                     self::_replace($word, 'al', '', 1);
                 }
                 break;
@@ -318,7 +318,7 @@ class En extends Base
     protected static function _doubleConsonant($str)
     {
         $c = self::CONSONANTS;
-        return preg_match("#$c{2}$#", $str, $matches) && $matches[0][0] == $matches[0][1];
+        return preg_match("#$c{2}$#", (string)$str, $matches) && $matches[0][0] == $matches[0][1];
     }
 
     protected static function _cvc($str)
@@ -326,7 +326,7 @@ class En extends Base
         $c = self::CONSONANTS;
         $v = self::VOWELS;
 
-        return preg_match("#($c$v$c)$#", $str, $matches)
+        return preg_match("#($c$v$c)$#", (string)$str, $matches)
             && strlen($matches[1]) == 3
             && $matches[1][2] != 'w'
             && $matches[1][2] != 'x'

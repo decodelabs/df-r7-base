@@ -42,7 +42,7 @@ trait TSingleValueUnit
 
     public function parse($value, $unit = null, $allowPlainNumbers = false)
     {
-        if (preg_match('/^([0-9.\-+e]+) *([^0-9.\-+]+)$/i', $value, $matches)) {
+        if (preg_match('/^([0-9.\-+e]+) *([^0-9.\-+]+)$/i', (string)$value, $matches)) {
             $value = $matches[1];
             $unit = $matches[2];
         }
