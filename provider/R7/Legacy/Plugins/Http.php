@@ -479,6 +479,26 @@ class Http
     }
 
 
+    /**
+     * Apply redirect with active request
+     */
+    public function defaultRedirectNow(
+        ?string $default = null,
+        bool $success = true,
+        ?string $sectionReferrer = null,
+        ?string $fallback = null
+    ): Throwable {
+        return $this->helper->getContext()->forceResponse(
+            $this->defaultRedirect(
+                $default,
+                $success,
+                $sectionReferrer,
+                $fallback
+            )
+        );
+    }
+
+
 
     /**
      * Create a generator response
