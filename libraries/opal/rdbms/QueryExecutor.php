@@ -889,7 +889,7 @@ abstract class QueryExecutor implements IQueryExecutor
             $defineAlias = false;
 
 
-        // Aggregate
+            // Aggregate
         } elseif ($field instanceof opal\query\IAggregateField) {
             $targetField = $field->getTargetField();
 
@@ -914,7 +914,7 @@ abstract class QueryExecutor implements IQueryExecutor
             }
 
 
-        // Expression
+            // Expression
         } elseif ($field instanceof opal\query\IExpressionField) {
             $expression = $field->getExpression();
 
@@ -925,7 +925,7 @@ abstract class QueryExecutor implements IQueryExecutor
             }
 
 
-        // Intrinsic
+            // Intrinsic
         } elseif ($field instanceof opal\query\IIntrinsicField) {
             // Intrinsic
             $output =
@@ -933,7 +933,7 @@ abstract class QueryExecutor implements IQueryExecutor
                 $this->_adapter->quoteFieldAliasReference($field->getName());
 
 
-        // Virtual
+            // Virtual
         } elseif ($field instanceof opal\query\IVirtualField) {
             $deref = $field->dereference();
 
@@ -946,18 +946,18 @@ abstract class QueryExecutor implements IQueryExecutor
             );
 
 
-        // Raw
+            // Raw
         } elseif ($field instanceof opal\query\IRawField) {
             $output = $field->getExpression();
 
-        // Correlation
+            // Correlation
         } elseif ($field instanceof opal\query\ICorrelationField) {
             $exec = self::factory($this->_adapter, $field->getCorrelationQuery());
             $sql = $exec->buildCorrelation($this->_stmt);
             $output = '(' . "\n" . '    ' . str_replace("\n", "\n    ", $sql) . "\n" . '  )';
 
 
-        // Search
+            // Search
         } elseif ($field instanceof opal\query\ISearchController) {
             $output = [];
 

@@ -22,11 +22,10 @@ class TaskMedia extends arch\node\Task
 
     public function prepareArguments(): array
     {
-        Cli::getCommandDefinition()
+        return Cli::$command
             ->addArgument('?url', 'URL of remote site')
-            ->addArgument('?bucket', 'Bucket to transfer');
-
-        return Cli::prepareArguments();
+            ->addArgument('?bucket', 'Bucket to transfer')
+            ->toArray();
     }
 
     public function execute(): void

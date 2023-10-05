@@ -35,7 +35,7 @@ class Introspector
     }
 
 
-// Primary fields
+    // Primary fields
     public static function getPrimaryFields(opal\query\IAdapter $adapter = null)
     {
         if ($adapter === null) {
@@ -65,7 +65,7 @@ class Introspector
         return self::$_primaryFields[$id] === false ? null : self::$_primaryFields[$id];
     }
 
-// Field processors
+    // Field processors
     public static function getFieldProcessors(opal\query\IAdapter $adapter = null, array $filter = null)
     {
         if ($adapter === null) {

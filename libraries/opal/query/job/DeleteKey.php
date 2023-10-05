@@ -24,7 +24,7 @@ class DeleteKey extends mesh\job\Base implements opal\query\IKeyBasedJob, opal\q
     }
 
 
-// Keys
+    // Keys
     public function setKeys(array $keys)
     {
         $this->_keys = [];
@@ -52,7 +52,7 @@ class DeleteKey extends mesh\job\Base implements opal\query\IKeyBasedJob, opal\q
     }
 
 
-// Filter keys
+    // Filter keys
     public function setFilterKeys(array $filterKeys)
     {
         $this->_filterKeys = [];

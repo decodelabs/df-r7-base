@@ -272,9 +272,9 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Dumpable
     }
 
 
-    public function __set($key, $value)
+    public function __set($key, $value): void
     {
-        return $this->_set($key, $value, false);
+        $this->_set($key, $value, false);
     }
 
     public function _set($key, $value, $extractArray = false)

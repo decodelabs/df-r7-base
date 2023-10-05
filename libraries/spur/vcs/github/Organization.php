@@ -31,7 +31,7 @@ class Organization implements IOrganization
     }
 
 
-// Ext
+    // Ext
     public function getRepositories()
     {
         return $this->_mediator->getOrganizationRepositories($this->_name);

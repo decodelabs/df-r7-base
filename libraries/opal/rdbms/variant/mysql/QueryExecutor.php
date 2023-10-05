@@ -21,7 +21,7 @@ class QueryExecutor extends opal\rdbms\QueryExecutor
     }
 
 
-// Limit
+    // Limit
     public function defineLimit($limit, $offset = null)
     {
         $limit = (int)$limit;

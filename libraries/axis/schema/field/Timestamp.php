@@ -61,7 +61,7 @@ class Timestamp extends Base implements opal\schema\IAutoTimestampField
         return (string)$value1 === (string)$value2;
     }
 
-// Primitive
+    // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
     {
         $output = new opal\schema\Primitive_Timestamp($this);
@@ -71,7 +71,7 @@ class Timestamp extends Base implements opal\schema\IAutoTimestampField
         return $output;
     }
 
-// Ext. serialize
+    // Ext. serialize
     protected function _importStorageArray(array $data)
     {
         $this->_setBaseStorageArray($data);

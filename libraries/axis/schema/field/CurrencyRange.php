@@ -52,7 +52,7 @@ class CurrencyRange extends Base implements opal\schema\IMultiPrimitiveField
     }
 
 
-// Values
+    // Values
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord = null)
     {
         if (isset($row[$key . '_lo'])) {
@@ -80,7 +80,7 @@ class CurrencyRange extends Base implements opal\schema\IMultiPrimitiveField
     }
 
 
-// Primitive
+    // Primitive
     public function getPrimitiveFieldNames()
     {
         return [
@@ -99,7 +99,7 @@ class CurrencyRange extends Base implements opal\schema\IMultiPrimitiveField
         ]);
     }
 
-// Ext. serialize
+    // Ext. serialize
     protected function _importStorageArray(array $data)
     {
         $this->_setBaseStorageArray($data);

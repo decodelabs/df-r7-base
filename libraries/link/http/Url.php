@@ -274,26 +274,32 @@ class Url extends core\uri\Url implements IUrl
         }
     }
 
-    public function __set($member, $value)
+    public function __set($member, $value): void
     {
         switch ($member) {
             case 'username':
-                return $this->setUsername($value);
+                $this->setUsername($value);
+                return;
 
             case 'password':
-                return $this->setPassword($value);
+                $this->setPassword($value);
+                return;
 
             case 'domain':
-                return $this->setDomain($value);
+                $this->setDomain($value);
+                return;
 
             case 'port':
-                return $this->setPort($value);
+                $this->setPort($value);
+                return;
 
             case 'path':
-                return $this->setPath($value);
+                $this->setPath($value);
+                return;
 
             case 'query':
-                return $this->setQuery($value);
+                $this->setQuery($value);
+                return;
         }
     }
 

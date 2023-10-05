@@ -340,6 +340,7 @@ class Version implements core\IStringProvider, Dumpable
                     return false;
                 } elseif ($rightGreek && !$leftGreek) {
                     return true;
+                    /** @phpstan-ignore-next-line */
                 } elseif ($leftGreek && $rightGreek) {
                     $leftScore = array_search($left, self::GREEK);
                     $rightScore = array_search($right, self::GREEK);

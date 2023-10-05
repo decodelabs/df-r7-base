@@ -24,7 +24,7 @@ class Bit extends Base implements opal\schema\ILengthRestrictedField
         return 1;
     }
 
-// String
+    // String
     public function toString(): string
     {
         $output = $this->_name . ' ' . strtoupper($this->_type);
@@ -50,7 +50,7 @@ class Bit extends Base implements opal\schema\ILengthRestrictedField
         return $output;
     }
 
-// Ext. serialize
+    // Ext. serialize
     public function toStorageArray()
     {
         return array_merge(

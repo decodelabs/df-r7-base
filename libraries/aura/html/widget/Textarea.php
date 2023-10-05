@@ -64,7 +64,7 @@ class Textarea extends Base implements ITextareaWidget
     }
 
 
-// Columns
+    // Columns
     public function setColumns($columns)
     {
         $this->_columns = $columns;
@@ -77,7 +77,7 @@ class Textarea extends Base implements ITextareaWidget
     }
 
 
-// Rows
+    // Rows
     public function setRows($rows)
     {
         $this->_rows = $rows;
@@ -90,7 +90,7 @@ class Textarea extends Base implements ITextareaWidget
     }
 
 
-// Direction
+    // Direction
     public function setDirectionInputName($id)
     {
         $this->_directionInputName = $id;
@@ -103,7 +103,7 @@ class Textarea extends Base implements ITextareaWidget
     }
 
 
-// Wrap
+    // Wrap
     public function setWrap($wrap)
     {
         if (!$wrap) {

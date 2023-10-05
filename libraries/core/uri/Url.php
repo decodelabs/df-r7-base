@@ -116,20 +116,24 @@ class Url implements IGenericUrl, Dumpable
         }
     }
 
-    public function __set($member, $value)
+    public function __set($member, $value): void
     {
         switch ($member) {
             case 'scheme':
-                return $this->setScheme($value);
+                $this->setScheme($value);
+                return;
 
             case 'path':
-                return $this->setPath($value);
+                $this->setPath($value);
+                return;
 
             case 'query':
-                return $this->setQuery($value);
+                $this->setQuery($value);
+                return;
 
             case 'fragment':
-                return $this->setFragment($value);
+                $this->setFragment($value);
+                return;
         }
     }
 

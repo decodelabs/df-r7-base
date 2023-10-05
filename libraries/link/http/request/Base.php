@@ -247,14 +247,16 @@ class Base implements link\http\IRequest, Dumpable
         }
     }
 
-    public function __set($member, $value)
+    public function __set($member, $value): void
     {
         switch ($member) {
             case 'post':
-                return $this->setPostData($value);
+                $this->setPostData($value);
+                return;
 
             case 'ip':
-                return $this->setIp($value);
+                $this->setIp($value);
+                return;
         }
     }
 

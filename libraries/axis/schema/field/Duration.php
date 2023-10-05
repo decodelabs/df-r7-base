@@ -28,7 +28,7 @@ class Duration extends Base implements opal\schema\ISignedField
         return core\time\Duration::factory($value1)->getSeconds() == core\time\Duration::factory($value2)->getSeconds();
     }
 
-// Values
+    // Values
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord = null)
     {
         if (isset($row[$key])) {
@@ -73,7 +73,7 @@ class Duration extends Base implements opal\schema\ISignedField
     }
 
 
-// Primitive
+    // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
     {
         $output = new opal\schema\Primitive_Float($this, null, null);
@@ -85,7 +85,7 @@ class Duration extends Base implements opal\schema\ISignedField
         return $output;
     }
 
-// Ext. serialize
+    // Ext. serialize
     protected function _importStorageArray(array $data)
     {
         $this->_setBaseStorageArray($data);

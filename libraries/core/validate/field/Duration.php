@@ -55,7 +55,7 @@ class Duration extends Base implements core\validate\IDurationField
 
 
 
-// Validate
+    // Validate
     public function validate()
     {
         $value = $this->data->getValue();
@@ -128,7 +128,7 @@ class Duration extends Base implements core\validate\IDurationField
     }
 
 
-// Apply
+    // Apply
     public function applyValueTo(&$record, $value)
     {
         if ($value !== null) {

@@ -57,7 +57,7 @@ class Pdo extends Base
         return $this->_stmt;
     }
 
-// Result
+    // Result
     protected function _fetchRow()
     {
         if ($this->_cache !== null) {

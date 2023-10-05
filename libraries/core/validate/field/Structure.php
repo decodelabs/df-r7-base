@@ -26,7 +26,7 @@ class Structure extends Base implements core\validate\IStructureField
 
 
 
-// Validate
+    // Validate
     public function validate()
     {
         // Sanitize

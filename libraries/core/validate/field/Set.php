@@ -34,7 +34,7 @@ class Set extends Base implements core\validate\IEnumField
 
 
 
-// Validate
+    // Validate
     public function validate()
     {
         // Sanitize

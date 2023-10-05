@@ -15,21 +15,20 @@ class TaskTheme extends arch\node\Task
 {
     public function execute(): void
     {
-        Cli::getCommandDefinition()
+        Cli::$command
             ->addArgument('theme', 'Theme name')
             ->addArgument('command=dev', 'Target command');
 
-        Cli::prepareArguments();
         $appPath = Genesis::$hub->getApplicationPath();
-        $parts = explode(':', Cli::getArgument('theme'));
+        $parts = explode(':', Cli::$command['theme']);
         $theme = array_shift($parts);
         $config = array_shift($parts) ?? 'vite';
 
         Systemic::command([
                 $appPath . '/vendor/bin/zest',
-                Cli::getArgument('command'),
+                Cli::$command['command'],
                 '--config=' . $config,
-                ...Cli::getPassthroughArguments(
+                ...Cli::$command->passthrough(
                     'task',
                     'theme',
                     'command',

@@ -31,7 +31,7 @@ class User implements IUser
         return $this->_isSiteAdmin;
     }
 
-// Ext
+    // Ext
     public function getOrganizations()
     {
         return $this->_mediator->getUserOrganizations($this->_username);

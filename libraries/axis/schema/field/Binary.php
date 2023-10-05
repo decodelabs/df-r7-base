@@ -34,7 +34,7 @@ class Binary extends Base implements
         return 'string';
     }
 
-// Primitive
+    // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
     {
         if ($this->_exponentSize !== null) {
@@ -46,7 +46,7 @@ class Binary extends Base implements
         }
     }
 
-// Ext. serialize
+    // Ext. serialize
     protected function _importStorageArray(array $data)
     {
         $this->_setBaseStorageArray($data);

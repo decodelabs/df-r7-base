@@ -254,6 +254,7 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
             $id = $this->getRecordId();
         }
 
+        /** @phpstan-ignore-next-line */
         if (!$this->record || $id === null) {
             $message = $this->missingMessage;
 

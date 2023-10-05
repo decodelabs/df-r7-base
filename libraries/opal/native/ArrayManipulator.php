@@ -589,7 +589,8 @@ class ArrayManipulator implements IArrayManipulator
                             break;
 
                         case opal\query\field\Aggregate::TYPE_HAS:
-                            $row[$qName] = !empty((array)$rowAggregateData);
+                            /** @var array $rowAggregateData */
+                            $row[$qName] = !empty($rowAggregateData);
                             break;
                     }
                 }
@@ -1211,7 +1212,7 @@ class ArrayManipulator implements IArrayManipulator
                     $current = null;
                 }
 
-            // Entity object
+                // Entity object
             } elseif ($fetchObject) {
                 if (isset($row[$objectKey])) {
                     $current = $row[$objectKey];
@@ -1220,7 +1221,7 @@ class ArrayManipulator implements IArrayManipulator
                 }
 
 
-            // Normal row
+                // Normal row
             } else {
                 $current = [];
 

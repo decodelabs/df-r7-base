@@ -21,7 +21,7 @@ class Set extends Base implements
     }
 
 
-// String
+    // String
     public function toString(): string
     {
         $output = $this->_name . ' ' . strtoupper($this->_type) . '(' . flex\Delimited::implode($this->_options) . ')';
@@ -47,7 +47,7 @@ class Set extends Base implements
         return $output;
     }
 
-// Ext. serialize
+    // Ext. serialize
     public function toStorageArray()
     {
         return array_merge(

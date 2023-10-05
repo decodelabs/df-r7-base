@@ -35,7 +35,7 @@ class Event implements IEvent
     }
 
 
-// Entity
+    // Entity
     public function setEntity(mesh\entity\ILocatorProvider $entity)
     {
         if ($entity instanceof mesh\entity\IEntity) {
@@ -86,7 +86,7 @@ class Event implements IEvent
     }
 
 
-// Action
+    // Action
     public function setAction($action)
     {
         $this->_action = lcfirst($action);
@@ -99,7 +99,7 @@ class Event implements IEvent
     }
 
 
-// Job
+    // Job
     public function setJobQueue(mesh\job\IQueue $queue = null)
     {
         $this->_jobQueue = $queue;

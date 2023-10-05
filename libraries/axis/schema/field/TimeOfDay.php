@@ -54,13 +54,13 @@ class TimeOfDay extends Base
     }
 
 
-// Primitive
+    // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
     {
         return new opal\schema\Primitive_Time($this);
     }
 
-// Ext. serialize
+    // Ext. serialize
     protected function _importStorageArray(array $data)
     {
         $this->_setBaseStorageArray($data);

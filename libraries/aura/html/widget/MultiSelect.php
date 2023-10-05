@@ -78,7 +78,7 @@ class MultiSelect extends Select implements IMultiSelectWidget
         return implode(', ', $this->getValue()->toArray());
     }
 
-// Size
+    // Size
     public function setSize($size)
     {
         if ($size === true) {

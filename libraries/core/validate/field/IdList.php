@@ -25,7 +25,7 @@ class IdList extends Base implements core\validate\IIdListField
 
 
 
-// Validate
+    // Validate
     public function validate()
     {
         // Sanitize
@@ -76,7 +76,7 @@ class IdList extends Base implements core\validate\IIdListField
     }
 
 
-// Apply
+    // Apply
     public function applyValueTo(&$record, $value)
     {
         if (!is_array($value)) {

@@ -260,9 +260,9 @@ class Bucket implements user\session\IBucket, Dumpable
         return $this;
     }
 
-    public function __set($key, $value)
+    public function __set($key, $value): void
     {
-        return $this->set($key, $value);
+        $this->set($key, $value);
     }
 
     public function __get($key)

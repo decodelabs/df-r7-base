@@ -813,10 +813,9 @@ class Base implements IRecord, \Serializable, Dumpable
 
 
     // Access
-    public function __set($key, $value)
+    public function __set($key, $value): void
     {
         $this->offsetSet($key, $value);
-        return $this;
     }
 
     public function __get($key)

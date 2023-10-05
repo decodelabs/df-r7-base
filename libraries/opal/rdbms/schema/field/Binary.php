@@ -27,7 +27,7 @@ class Binary extends Base implements opal\schema\ILengthRestrictedField
         }
     }
 
-// String
+    // String
     public function toString(): string
     {
         $output = $this->_name . ' ' . strtoupper($this->_type);
@@ -54,7 +54,7 @@ class Binary extends Base implements opal\schema\ILengthRestrictedField
     }
 
 
-// Ext. serialize
+    // Ext. serialize
     public function toStorageArray()
     {
         return array_merge(

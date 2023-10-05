@@ -30,7 +30,7 @@ class Task implements Kernel
      */
     public function initialize(): void
     {
-        $def = Terminus::getCommandDefinition();
+        $def = Terminus::getCommand();
 
         if (strtolower((string)($_SERVER['argv'][1] ?? '')) === 'task') {
             $def->addArgument('initiator', 'Initiator');
@@ -60,7 +60,7 @@ class Task implements Kernel
     {
         set_time_limit(0);
 
-        $args = Terminus::prepareArguments();
+        $args = Terminus::getCommand();
 
         /** @var Request $request */
         $request = Request::factory($args['task']);

@@ -32,7 +32,7 @@ class Date extends Base implements axis\schema\IDateField
         return $this->_includeTime;
     }
 
-// Values
+    // Values
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord = null)
     {
         if (isset($row[$key])) {
@@ -92,7 +92,7 @@ class Date extends Base implements axis\schema\IDateField
     }
 
 
-// Primitive
+    // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
     {
         if ($this->_includeTime) {
@@ -102,7 +102,7 @@ class Date extends Base implements axis\schema\IDateField
         }
     }
 
-// Ext. serialize
+    // Ext. serialize
     protected function _importStorageArray(array $data)
     {
         $this->_setBaseStorageArray($data);

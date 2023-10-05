@@ -7,7 +7,6 @@
 namespace df\apex\directory\front\app\_nodes;
 
 use DecodeLabs\Genesis;
-
 use DecodeLabs\Terminus as Cli;
 use df\arch;
 
@@ -20,18 +19,16 @@ class TaskBuild extends arch\node\Task
 
 
         // Prepare arguments
-        Cli::getCommandDefinition()
+        Cli::$command
             ->addArgument('-force|f', 'Force compilation')
             ->addArgument('-dev|d', 'Build without compilation');
-        Cli::prepareArguments();
-
 
         // Setup controller
         $handler = Genesis::$build->getHandler();
 
-        if (Cli::getArgument('dev')) {
+        if (Cli::$command['dev']) {
             $handler->setCompile(false);
-        } elseif (Cli::getArgument('force')) {
+        } elseif (Cli::$command['force']) {
             $handler->setCompile(true);
         }
 

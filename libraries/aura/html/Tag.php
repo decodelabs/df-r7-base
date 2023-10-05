@@ -146,14 +146,16 @@ class Tag implements ITag, Dumpable
         return null;
     }
 
-    public function __set($member, $value)
+    public function __set($member, $value): void
     {
         switch ($member) {
             case 'class':
-                return $this->setClasses($value);
+                $this->setClasses($value);
+                return;
 
             case 'style':
-                return $this->setStyles($value);
+                $this->setStyles($value);
+                return;
         }
     }
 

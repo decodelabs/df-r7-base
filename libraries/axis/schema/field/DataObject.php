@@ -24,7 +24,7 @@ class DataObject extends Base implements opal\schema\ILargeByteSizeRestrictedFie
     }
 
 
-// Values
+    // Values
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord = null)
     {
         $value = null;
@@ -68,17 +68,17 @@ class DataObject extends Base implements opal\schema\ILargeByteSizeRestrictedFie
 
 
 
-// TODO: validate default value
+    // TODO: validate default value
 
 
-// Primitive
+    // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
     {
         return new opal\schema\Primitive_Blob($this, $this->_exponentSize);
     }
 
 
-// Ext. serialize
+    // Ext. serialize
     protected function _importStorageArray(array $data)
     {
         $this->_setBaseStorageArray($data);

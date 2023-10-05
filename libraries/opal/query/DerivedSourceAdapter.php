@@ -182,7 +182,7 @@ class DerivedSourceAdapter implements IDerivedSourceAdapter
     }
 
 
-// Access
+    // Access
     public function getAccessLockDomain()
     {
         return $this->_adapter->getAccessLockDomain();

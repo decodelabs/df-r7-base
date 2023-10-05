@@ -8,7 +8,6 @@ namespace df\apex\directory\front\axis\_nodes;
 
 use DecodeLabs\Terminus as Cli;
 use df\arch;
-
 use df\axis;
 
 class TaskFortify extends arch\node\Task
@@ -18,11 +17,10 @@ class TaskFortify extends arch\node\Task
 
     public function prepareArguments(): array
     {
-        Cli::getCommandDefinition()
+        return Cli::$command
             ->addArgument('?unit', 'Unit name')
-            ->addArgument('?fortify', 'Fortify task');
-
-        return Cli::prepareArguments();
+            ->addArgument('?fortify', 'Fortify task')
+            ->toArray();
     }
 
     public function execute(): void

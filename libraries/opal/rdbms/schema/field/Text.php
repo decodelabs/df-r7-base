@@ -44,7 +44,7 @@ class Text extends Base implements
         return $output;
     }
 
-// Ext. serialize
+    // Ext. serialize
     public function toStorageArray()
     {
         return array_merge(

@@ -16,10 +16,9 @@ class TaskPurgeTableBackups extends arch\node\Task
 {
     public function prepareArguments(): array
     {
-        Cli::getCommandDefinition()
-            ->addArgument('?unit', 'Unit to purge');
-
-        return Cli::prepareArguments();
+        return Cli::$command
+            ->addArgument('?unit', 'Unit to purge')
+            ->toArray();
     }
 
     public function execute(): void

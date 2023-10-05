@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Genesis\Kernel;
 
+use DecodeLabs\Coercion;
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis\Kernel;
@@ -37,7 +38,7 @@ class Daemon implements Kernel
      */
     public function initialize(): void
     {
-        Cli::getCommandDefinition()
+        Cli::$command
             ->addArgument('initiator', 'Daemon initiator')
             ->addArgument('daemon', 'Daemon name')
             ->addArgument('?command', 'Command to call');
@@ -68,7 +69,7 @@ class Daemon implements Kernel
 
 
         // Load daemon
-        $args = Cli::prepareArguments();
+        $args = Cli::getCommand();
 
         try {
             $daemon = DaemonBase::factory($args['daemon']);
@@ -119,7 +120,7 @@ class Daemon implements Kernel
         $remote = Remote::factory($daemon);
         $process = $remote->getProcess();
         $name = $daemon->getName();
-        $command = $args['command'] ?? 'restart';
+        $command = Coercion::toString($args['command'] ?? 'restart');
 
         switch ($command) {
             case '__spawn':
@@ -159,7 +160,7 @@ class Daemon implements Kernel
                 return;
 
             default:
-                Cli::error('Unknown commend ' . $command);
+                Cli::error('Unknown command ' . $command);
                 Cli::error('Use: start, stop, pause, resume, status, nudge');
                 return;
         }

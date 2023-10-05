@@ -167,6 +167,7 @@ class Descriptor implements IDescriptor
 
             $file = $fileStore->get($key);
 
+            /** @phpstan-ignore-next-line */
             if (!$this->_isSourceLocal && $download) {
                 $download->delete();
             }

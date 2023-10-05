@@ -8,7 +8,6 @@ namespace df\apex\directory\front\daemons\_nodes;
 
 use DecodeLabs\Terminus as Cli;
 use df\arch;
-
 use df\halo;
 
 class TaskRemote extends arch\node\Task
@@ -17,11 +16,10 @@ class TaskRemote extends arch\node\Task
 
     public function prepareArguments(): array
     {
-        Cli::getCommandDefinition()
+        return Cli::$command
             ->addArgument('?daemon', 'Daemon name')
-            ->addArgument('?command', 'Command to call');
-
-        return Cli::prepareArguments();
+            ->addArgument('?command', 'Command to call')
+            ->toArray();
     }
 
     public function execute(): void

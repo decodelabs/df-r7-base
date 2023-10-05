@@ -56,7 +56,7 @@ class Currency extends Base implements core\validate\ICurrencyField
 
 
 
-// Validate
+    // Validate
     public function validate()
     {
         // Sanitize
@@ -91,7 +91,7 @@ class Currency extends Base implements core\validate\ICurrencyField
     }
 
 
-// Apply
+    // Apply
     public function applyValueTo(&$record, $value)
     {
         $output = parent::applyValueTo($record, $value);
