@@ -8,7 +8,7 @@ namespace df\neon\raster;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Genesis;
-
+use DecodeLabs\Hydro;
 use DecodeLabs\Spectrum\Color;
 use DecodeLabs\Typify;
 use df\core;
@@ -125,7 +125,8 @@ class Descriptor implements IDescriptor
 
             if (!$this->_isSourceLocal) {
                 // Download file
-                $download = Atlas::$http->getTempFile($this->_sourceLocation, [
+                $download = Hydro::getTempFile([
+                    'url' => $this->_sourceLocation,
                     'verify' => false
                 ]);
 

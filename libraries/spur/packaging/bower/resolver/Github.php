@@ -8,6 +8,7 @@ namespace df\spur\packaging\bower\resolver;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Hydro;
 
 use df\flex;
 use df\spur;
@@ -55,7 +56,7 @@ class Github implements spur\packaging\bower\IResolver
             return true;
         }
 
-        Atlas::$http->getFile($url, $cachePath . '/packages/' . $package->cacheFileName);
+        Hydro::getFile($url, $cachePath . '/packages/' . $package->cacheFileName);
         return true;
     }
 

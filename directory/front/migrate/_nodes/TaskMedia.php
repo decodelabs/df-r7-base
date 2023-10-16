@@ -6,9 +6,9 @@
 
 namespace df\apex\directory\front\migrate\_nodes;
 
-use DecodeLabs\Atlas;
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Hydro;
 use DecodeLabs\Terminus as Cli;
 
 use df\arch;
@@ -115,7 +115,7 @@ class TaskMedia extends arch\node\Task
                         );
                     }
                 } else {
-                    $file = Atlas::$http->saveResponse($response, $path);
+                    $file = Hydro::responseToFile($response, $path);
                     Cli::success(Dictum::$number->fileSize($file->getSize()));
                 }
             }, function ($total, $downloaded) use ($progressBar) {

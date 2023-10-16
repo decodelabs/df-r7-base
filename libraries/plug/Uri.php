@@ -6,10 +6,10 @@
 
 namespace df\plug;
 
-use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\Hydro;
 use DecodeLabs\R7\Legacy;
 
 use df\arch;
@@ -399,8 +399,9 @@ class Uri implements arch\IDirectoryHelper
 
     public function fetch($url): File
     {
-        $response = $this->_getDataResponse($url);
-        return Atlas::$http->importResponse($response);
+        return Hydro::responseToMemoryFile(
+            $this->_getDataResponse($url)
+        );
     }
 
     protected function _getDataResponse($url): ResponseInterface
