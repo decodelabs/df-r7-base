@@ -23,6 +23,7 @@ use DecodeLabs\Glitch;
 use DecodeLabs\Integra\Context as IntegraContext;
 use DecodeLabs\Metamorph;
 use DecodeLabs\R7\Disciple\Adapter as DiscipleAdapter;
+use DecodeLabs\R7\Dovetail\Resolver as DovetailResolver;
 use DecodeLabs\R7\Genesis\Kernel as R7Kernel;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Terminus as Cli;
@@ -74,7 +75,7 @@ class Hub implements HubInterface
         $hasAppFile = file_exists($appDir . '/App.php');
 
         if (!$hasAppFile) {
-            $appDir = dirname(dirname(dirname(__DIR__))) . '/tests';
+            $appDir = dirname(dirname(__DIR__)) . '/tests';
         }
 
         $this->appPath = $appDir;
@@ -168,7 +169,7 @@ class Hub implements HubInterface
         ) {
             $buildPath = df\COMPILE_ROOT_PATH;
         } elseif ($this->analysis) {
-            $buildPath = dirname(dirname(dirname(__DIR__)));
+            $buildPath = dirname(dirname(__DIR__));
         } else {
             $buildPath = $this->appPath . '/vendor/df-r7/base';
         }
@@ -316,6 +317,9 @@ class Hub implements HubInterface
             Kernel::class,
             R7Kernel::class /** @phpstan-ignore-line */
         ));
+
+        // Dovetail
+        Archetype::register(new DovetailResolver());
 
 
         // Set Disciple adapter
