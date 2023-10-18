@@ -51,7 +51,7 @@ class MaxMindDb implements Adapter
         $settings = $config->getSettingsFor('MaxMindDb');
         $file = $settings['file'];
 
-        if (dirname($file) == '.') {
+        if (dirname((string)$file) == '.') {
             $file = Genesis::$hub->getLocalDataPath() . '/geoIp/' . $file;
         }
 
