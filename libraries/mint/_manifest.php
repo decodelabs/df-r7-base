@@ -408,15 +408,3 @@ interface IEvent extends mesh\entity\IEntity, core\collection\ITree
     public function getSource(): string;
     public function getAction(): string;
 }
-
-
-// Model
-interface IModelConfig extends core\IConfig
-{
-    public function isEnabled(bool $flag = null);
-    public function getPrimaryAccount(): ?string;
-    public function getPrimarySettings(): ?core\collection\ITree;
-    public function getSubscriptionAccount(): ?string;
-    public function getSubscriptionSettings(): ?core\collection\ITree;
-    public function getSettingsFor(string $account): ?core\collection\ITree;
-}

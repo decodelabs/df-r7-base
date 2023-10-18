@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\arch\navigation\menu;
 
 use DecodeLabs\Exceptional;
@@ -23,16 +24,6 @@ interface IMenu extends core\IContextAware, arch\navigation\IEntryListGenerator
     public function addDelegate(IMenu $menu);
     public function getDelegates();
 }
-
-
-interface IConfig extends core\IConfig
-{
-    public function createEntries(IMenu $menu, IEntryList $entryList);
-    public function setDelegatesFor($id, array $delegates);
-    public function setEntriesFor($id, array $entries);
-    public function getSettingsFor($id);
-}
-
 
 interface ISource
 {

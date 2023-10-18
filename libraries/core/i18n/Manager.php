@@ -50,28 +50,26 @@ class Manager implements IManager
 
     public function getDefaultLocale()
     {
-        $config = Config::getInstance();
         $default = null;
 
-        if (
-            $config->shouldDetectClientLocale() &&
-            Genesis::$kernel->getMode() === 'Http'
-        ) {
+        /*
+        // Detect locale
+        if (Genesis::$kernel->getMode() === 'Http') {
             $request = Legacy::$http->getRequest();
 
             if (isset($request->headers['accept-language'])) {
                 $default = \Locale::acceptFromHttp($request->headers['accept-language']);
             }
         }
+        */
 
-        if (!$default) {
-            $default = $config->getDefaultLocale();
-        }
-
+        /*
         if (!$default) {
             $default = \Locale::getDefault();
         }
+        */
 
+        /** @phpstan-ignore-next-line */
         if (!$default) {
             $default = 'en_GB';
         }

@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\neon\mediaHandler;
 
 use df\core;
@@ -31,15 +32,4 @@ interface IMediaHandler extends core\IManager
 interface ILocalDataHandler extends IMediaHandler
 {
     public function getFilePath($fileId, $versionId);
-}
-
-interface IConfig extends core\IConfig
-{
-    public function setDefaultHandler($handler);
-    public function getDefaultHandler();
-
-    public function setSettingsFor($handler, array $settings);
-    public function getSettingsFor($handler);
-
-    public function getEnabledHandlers();
 }

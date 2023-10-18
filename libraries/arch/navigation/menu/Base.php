@@ -270,9 +270,6 @@ class Base implements IMenu, \Serializable
 
         $this->createEntries($entryList);
 
-        $config = Config::getInstance();
-        $config->createEntries($this, $entryList);
-
         foreach ($this->_delegates as $delegate) {
             if (!$delegate instanceof IMenu) {
                 $this->clearCache($this->context);

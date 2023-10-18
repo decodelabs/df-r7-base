@@ -19,7 +19,6 @@ class Session extends Base implements user\session\IController
     protected static $_transitionProbability = 10;
     protected static $_transitionLifeTime = 30;
     protected static $_transitionCooloff = 20;
-    private static $_configSet = false;
 
     public $descriptor;
     public $perpetuator;
@@ -38,16 +37,6 @@ class Session extends Base implements user\session\IController
 
     protected function _open()
     {
-        if (!self::$_configSet) {
-            $config = user\session\Config::getInstance();
-            self::$_gcProbability = $config->getGcProbability();
-            self::$_transitionsEnabled = $config->transitionsEnabled();
-            self::$_transitionLifeTime = $config->getTransitionLifeTime();
-            self::$_transitionCooloff = $config->getTransitionCooloff();
-            self::$_configSet = true;
-        }
-
-
         $this->_isOpen = true;
 
         $this->cache = user\session\Cache::getInstance();

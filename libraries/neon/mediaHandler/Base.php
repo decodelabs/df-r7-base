@@ -15,7 +15,9 @@ use df\opal;
 abstract class Base implements IMediaHandler
 {
     use core\TManager;
+
     public const REGISTRY_PREFIX = 'manager://mediaHandler';
+    public const DEFAULT_HANDLER = 'Local';
 
     public static function factory($name)
     {
@@ -40,26 +42,14 @@ abstract class Base implements IMediaHandler
 
     protected static function _getDefaultInstance()
     {
-        $config = Config::getInstance();
-        return self::factory($config->getDefaultHandler());
+        return self::factory(static::DEFAULT_HANDLER);
     }
 
     public static function getEnabledHandlerList()
     {
-        $config = Config::getInstance();
-        $output = [];
-
-        foreach ($config->getEnabledHandlers() as $name) {
-            $class = 'df\\neon\\mediaHandler\\' . ucfirst($name);
-
-            if (!class_exists($class)) {
-                continue;
-            }
-
-            $output[$name] = $class::getDisplayName();
-        }
-
-        return $output;
+        return [
+            'Local' => 'Local file system'
+        ];
     }
 
     public function getName(): string
@@ -107,11 +97,6 @@ abstract class Base implements IMediaHandler
     public static function getDefaultConfig()
     {
         return [];
-    }
-
-    protected function _getSettings()
-    {
-        return Config::getInstance()->getSettingsFor($this);
     }
 
     protected function _normalizeId($id)
