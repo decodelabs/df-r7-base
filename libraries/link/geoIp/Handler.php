@@ -8,6 +8,7 @@ namespace df\link\geoIp;
 
 use DecodeLabs\Compass\Ip;
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Config\GeoIp as GeoIpConfig;
 use DecodeLabs\R7\Legacy;
 
 class Handler
@@ -17,7 +18,7 @@ class Handler
     public static function factory($adapter = null): Handler
     {
         if (!$adapter instanceof Adapter) {
-            $config = Config::getInstance();
+            $config = GeoIpConfig::load();
 
             if (!$config->isEnabled()) {
                 return new self();

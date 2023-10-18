@@ -9,9 +9,8 @@ namespace df\link\geoIp\Adapter;
 use DecodeLabs\Compass\Ip;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Config\GeoIp as GeoIpConfig;
 use df\link\geoIp\Adapter;
-use df\link\geoIp\Config;
-
 use df\link\geoIp\Result;
 use df\opal\mmdb\IReader;
 use df\opal\mmdb\Reader;
@@ -47,7 +46,7 @@ class MaxMindDb implements Adapter
 
     protected static function getFileFromConfig(): ?string
     {
-        $config = Config::getInstance();
+        $config = GeoIpConfig::load();
         $settings = $config->getSettingsFor('MaxMindDb');
         $file = $settings['file'];
 
