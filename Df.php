@@ -11,7 +11,7 @@ if (array_pop($parts) != 'entry') {
 $appPath = implode('/', $parts);
 
 // Load Genesis bootstrap
-require_once $appPath.'/vendor/decodelabs/genesis/src/bootstrap.php';
+require_once $appPath.'/vendor/decodelabs/genesis/src/Bootstrap.php';
 require_once __DIR__.'/provider/Genesis/Bootstrap.php';
 
 (new DecodeLabs\R7\Genesis\Bootstrap(__DIR__, $appPath))->run();

@@ -26,7 +26,7 @@
         "decodelabs/exceptional": "^0.4.3",
         "decodelabs/exemplar": "^0.3.4",
         "decodelabs/fluidity": "^0.3.3",
-        "decodelabs/genesis": "^0.7.1",
+        "decodelabs/genesis": "^0.8",
         "decodelabs/glitch": "^0.18.8",
         "decodelabs/hydro": "^0.1",
         "decodelabs/idiom": "^0.2.1",
