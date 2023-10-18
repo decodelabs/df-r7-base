@@ -33,7 +33,7 @@ class BuildManifest implements Manifest
     ];
 
     public const PACKAGE_IGNORE = [
-        'vendor'
+        'provider', 'vendor'
     ];
 
     public const APP_FILES = [
