@@ -7,6 +7,8 @@
             "name": "Tom Wright",
             "email": "tom@inflatablecookie.com"
         } ],
+    "repositories": {
+    },
     "require": {
         "php": "^8.0",
         "symfony/polyfill-mbstring": "~1.7",

@@ -50,6 +50,7 @@ interface IManager extends core\IManager, mesh\event\IEmitter
 
     // Helpers
     public function getHelper(string $name);
+    public function getUserModel(): IUserModel;
 }
 
 interface IUserModel

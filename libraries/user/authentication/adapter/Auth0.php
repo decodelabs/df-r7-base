@@ -8,10 +8,9 @@ namespace df\user\authentication\adapter;
 
 use Auth0\SDK\Auth0 as Auth0Conn;
 use DecodeLabs\Exceptional;
-
+use DecodeLabs\R7\Config\Authentication as AuthConfig;
 use DecodeLabs\R7\Legacy;
 use df\core;
-
 use df\user;
 
 class Auth0 implements user\authentication\IAdapter
@@ -39,7 +38,7 @@ class Auth0 implements user\authentication\IAdapter
 
     public static function newConnection(string $redirect = null)
     {
-        $config = user\authentication\Config::getInstance();
+        $config = AuthConfig::load();
         $options = $config->getOptionsFor('Auth0');
 
         if (null === ($domain = $options['domain'])) {
@@ -107,7 +106,7 @@ class Auth0 implements user\authentication\IAdapter
                     return $this;
                 }
 
-                $config = user\authentication\Config::getInstance();
+                $config = AuthConfig::load();
                 $options = $config->getOptionsFor('Auth0');
 
                 if (!$options->autoRegister['enabled']) {

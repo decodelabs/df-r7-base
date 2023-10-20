@@ -3,11 +3,12 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\user\helper;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Config\Authentication as AuthConfig;
 use df\core;
-
 use df\user;
 
 class Auth extends Base
@@ -44,7 +45,7 @@ class Auth extends Base
         $name = $request->getAdapterName();
         $adapter = $this->loadAdapter($name);
 
-        $config = user\authentication\Config::getInstance();
+        $config = AuthConfig::load();
 
         if (!$config->isAdapterEnabled($name)) {
             throw Exceptional::{'df/user/Authentication'}(
@@ -203,7 +204,7 @@ class Auth extends Base
         $canRecall = $this->manager->session->perpetuator->canRecallIdentity();
 
         if ($canRecall) {
-            $config = user\authentication\Config::getInstance();
+            $config = AuthConfig::load();
 
             foreach ($config->getEnabledAdapters() as $name => $options) {
                 try {

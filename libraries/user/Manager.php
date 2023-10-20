@@ -261,7 +261,7 @@ class Manager implements IManager, core\IShutdownAware
         return $this->{$name};
     }
 
-    public function getUserModel()
+    public function getUserModel(): IUserModel
     {
         $model = axis\Model::factory('user');
 

@@ -8,3 +8,5 @@ Thumbs.db
 setup/*
 vendor/
 composer.lock
+
+effigy.json
