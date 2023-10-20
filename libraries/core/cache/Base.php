@@ -6,11 +6,11 @@
 
 namespace df\core\cache;
 
+use DecodeLabs\Dovetail\Repository;
 use DecodeLabs\Exceptional;
-
+use DecodeLabs\R7\Config\Cache as CacheConfig;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Terminus\Session;
-use df\core;
 
 abstract class Base implements ICache
 {
@@ -29,7 +29,7 @@ abstract class Base implements ICache
             opcache_reset();
         }
 
-        $config = Config::getInstance();
+        $config = CacheConfig::load();
 
         foreach (Legacy::getLoader()->lookupClassList('core/cache/backend') as $name => $class) {
             $options = $config->getBackendOptions($name);
@@ -43,7 +43,7 @@ abstract class Base implements ICache
             opcache_reset();
         }
 
-        $config = Config::getInstance();
+        $config = CacheConfig::load();
 
         foreach (Legacy::getLoader()->lookupClassList('core/cache/backend') as $name => $class) {
             $options = $config->getBackendOptions($name);
@@ -60,7 +60,7 @@ abstract class Base implements ICache
 
     protected function _loadBackend(): IBackend
     {
-        $config = Config::getInstance();
+        $config = CacheConfig::load();
 
         $options = $config->getOptionsFor($this);
         $backendName = null;
@@ -80,8 +80,12 @@ abstract class Base implements ICache
         return $output;
     }
 
-    public static function backendFactory(ICache $cache, $name, core\collection\ITree $options, $lifeTime = 0): IBackend
-    {
+    public static function backendFactory(
+        ICache $cache,
+        string $name,
+        Repository $options,
+        int $lifeTime = 0
+    ): IBackend {
         $class = 'df\\core\\cache\\backend\\' . $name;
 
         if (isset($options->lifeTime)) {
@@ -158,7 +162,7 @@ abstract class Base implements ICache
 
     public function clearAll()
     {
-        $config = Config::getInstance();
+        $config = CacheConfig::load();
 
         foreach (Legacy::getLoader()->lookupClassList('core/cache/backend') as $name => $class) {
             $options = $config->getBackendOptions($name);

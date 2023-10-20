@@ -7,8 +7,8 @@
 namespace df\core\cache\backend;
 
 use DecodeLabs\Atlas;
-
 use DecodeLabs\Dictum;
+use DecodeLabs\Dovetail\Repository;
 use DecodeLabs\Genesis;
 use DecodeLabs\Glitch;
 use DecodeLabs\Terminus\Session;
@@ -24,13 +24,17 @@ class LocalFile implements core\cache\IBackend
     protected $_cache;
     protected $_dir;
 
-    public static function purgeApp(core\collection\ITree $options, ?Session $session = null)
-    {
+    public static function purgeApp(
+        Repository $options,
+        ?Session $session = null
+    ) {
         self::purgeAll($options);
     }
 
-    public static function purgeAll(core\collection\ITree $options, ?Session $session = null)
-    {
+    public static function purgeAll(
+        Repository $options,
+        ?Session $session = null
+    ) {
         if (!self::isLoadable()) {
             return;
         }
@@ -42,7 +46,7 @@ class LocalFile implements core\cache\IBackend
         Atlas::emptyOut($path2);
     }
 
-    public static function prune(core\collection\ITree $options)
+    public static function prune(Repository $options)
     {
         $paths = [
             Genesis::$hub->getSharedDataPath() . '/cache',
@@ -69,8 +73,10 @@ class LocalFile implements core\cache\IBackend
         return $output;
     }
 
-    public static function clearFor(core\collection\ITree $options, core\cache\ICache $cache)
-    {
+    public static function clearFor(
+        Repository $options,
+        core\cache\ICache $cache
+    ) {
         (new self($cache, 0, $options))->clear();
     }
 
@@ -79,8 +85,11 @@ class LocalFile implements core\cache\IBackend
         return true;
     }
 
-    public function __construct(core\cache\ICache $cache, int $lifeTime, core\collection\ITree $options)
-    {
+    public function __construct(
+        core\cache\ICache $cache,
+        int $lifeTime,
+        Repository $options
+    ) {
         $this->_cache = $cache;
         $this->_lifeTime = $lifeTime;
 

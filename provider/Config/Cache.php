@@ -4,16 +4,19 @@
  * @license http://opensource.org/licenses/MIT
  */
 
-namespace df\core\cache;
+namespace DecodeLabs\R7\Config;
 
-use df\core;
+use DecodeLabs\Dovetail\Config;
+use DecodeLabs\Dovetail\ConfigTrait;
+use DecodeLabs\Dovetail\Repository;
+use df\core\cache\ICache;
 
-class Config extends core\Config
+class Cache implements Config
 {
-    public const ID = 'Cache';
-    public const STORE_IN_MEMORY = true;
+    use ConfigTrait;
 
-    public function getDefaultValues(): array
+
+    public static function getDefaultValues(): array
     {
         return [
             'caches' => [],
@@ -27,25 +30,32 @@ class Config extends core\Config
         ];
     }
 
-    public function getOptionsFor(ICache $cache, $mergeDefaults = true)
-    {
+    public function getOptionsFor(
+        ICache $cache,
+        bool $mergeDefaults = true
+    ): Repository {
         $id = $cache->getCacheId();
 
-        if (isset($this->values->caches->{$id})) {
-            $output = clone $this->values->caches->{$id};
+        if (isset($this->data->caches->{$id})) {
+            /** @var Repository $output */
+            $output = clone $this->data->caches->{$id};
             $default = false;
         } else {
-            $output = clone $this->values->caches->default;
+            /** @var Repository $output */
+            $output = clone $this->data->caches->default;
             $default = true;
         }
 
         if (is_string($output->getValue())) {
-            $output = new core\collection\Tree(['backend' => $output->getValue()]);
+            $output = new Repository(['backend' => $output->getValue()]);
         }
 
         $list = [];
 
-        if (!$default && isset($output->backend)) {
+        if (
+            !$default &&
+            isset($output->backend)
+        ) {
             $list[] = $output['backend'];
         } elseif ($mergeDefaults) {
             if ($cache->isCacheDistributed()) {
@@ -55,19 +65,25 @@ class Config extends core\Config
             }
         }
 
-        if ($default && in_array($output['backend'], $list)) {
+        if (
+            $default &&
+            in_array($output['backend'], $list)
+        ) {
             $list = array_merge([$output['backend']], $list);
         }
 
         foreach ($list as $name) {
             $class = 'df\\core\\cache\\backend\\' . $name;
 
-            if (!class_exists($class) || !$class::isLoadable()) {
+            if (
+                !class_exists($class) ||
+                !$class::isLoadable()
+            ) {
                 continue;
             }
 
             $output['backend'] = $name;
-            $output->import($this->values->backends->{$output['backend']});
+            $output->merge($this->data->backends->{$output['backend']});
 
             break;
         }
@@ -75,8 +91,8 @@ class Config extends core\Config
         return $output;
     }
 
-    public function getBackendOptions($backend)
+    public function getBackendOptions(string $backend): Repository
     {
-        return $this->values->backends->{$backend};
+        return $this->data->backends->{$backend};
     }
 }

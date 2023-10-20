@@ -6,11 +6,11 @@
 
 namespace df\apex\directory\front\cache\_nodes;
 
+use DecodeLabs\R7\Config\Cache as CacheConfig;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Terminus as Cli;
 
 use df\arch;
-use df\core;
 
 class TaskPurge extends arch\node\Task
 {
@@ -21,7 +21,7 @@ class TaskPurge extends arch\node\Task
             opcache_reset();
         }
 
-        $config = core\cache\Config::getInstance();
+        $config = CacheConfig::load();
         $isAll = isset($this->request['all']);
 
         foreach (Legacy::getLoader()->lookupClassList('core/cache/backend') as $name => $class) {

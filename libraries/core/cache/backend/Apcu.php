@@ -6,6 +6,7 @@
 
 namespace df\core\cache\backend;
 
+use DecodeLabs\Dovetail\Repository;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Terminus\Session;
 
@@ -21,8 +22,10 @@ class Apcu implements core\cache\IBackend
     protected $_cache;
     protected $_isCli = false;
 
-    public static function purgeApp(core\collection\ITree $options, ?Session $session = null)
-    {
+    public static function purgeApp(
+        Repository $options,
+        ?Session $session = null
+    ) {
         if (extension_loaded('apcu') && !(php_sapi_name() == 'cli' && !ini_get('apc.enable_cli'))) {
             $prefix = Legacy::getUniquePrefix() . '-';
             $list = self::getCacheList();
@@ -39,8 +42,10 @@ class Apcu implements core\cache\IBackend
         $session ? Legacy::runTask($request) : Legacy::launchTask($request);
     }
 
-    public static function purgeAll(core\collection\ITree $options, ?Session $session = null)
-    {
+    public static function purgeAll(
+        Repository $options,
+        ?Session $session = null
+    ) {
         if (extension_loaded('apcu')) {
             apcu_clear_cache();
         }
@@ -50,13 +55,15 @@ class Apcu implements core\cache\IBackend
         $session ? Legacy::runTask($request) : Legacy::launchTask($request);
     }
 
-    public static function prune(core\collection\ITree $options)
+    public static function prune(Repository $options)
     {
         // pruning is automatic :)
     }
 
-    public static function clearFor(core\collection\ITree $options, core\cache\ICache $cache)
-    {
+    public static function clearFor(
+        Repository $options,
+        core\cache\ICache $cache
+    ) {
         if (!extension_loaded('apcu')) {
             return;
         }
@@ -75,8 +82,11 @@ class Apcu implements core\cache\IBackend
         return $output;
     }
 
-    public function __construct(core\cache\ICache $cache, int $lifeTime, core\collection\ITree $options)
-    {
+    public function __construct(
+        core\cache\ICache $cache,
+        int $lifeTime,
+        Repository $options
+    ) {
         $this->_cache = $cache;
         $this->_lifeTime = $lifeTime;
         $this->_prefix = Legacy::getUniquePrefix() . '-' . $cache->getCacheId() . ':';

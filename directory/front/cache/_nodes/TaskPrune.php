@@ -6,6 +6,7 @@
 
 namespace df\apex\directory\front\cache\_nodes;
 
+use DecodeLabs\R7\Config\Cache as CacheConfig;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Terminus as Cli;
 
@@ -19,7 +20,7 @@ class TaskPrune extends arch\node\Task
 
     public function execute(): void
     {
-        $config = core\cache\Config::getInstance();
+        $config = CacheConfig::load();
 
         foreach (Legacy::getLoader()->lookupClassList('core/cache/backend') as $name => $class) {
             Cli::{'yellow'}($name . ': ');

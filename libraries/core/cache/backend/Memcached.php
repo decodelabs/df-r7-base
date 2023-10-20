@@ -6,8 +6,8 @@
 
 namespace df\core\cache\backend;
 
+use DecodeLabs\Dovetail\Repository;
 use DecodeLabs\R7\Legacy;
-
 use DecodeLabs\Terminus\Session;
 use df\core;
 
@@ -20,13 +20,17 @@ class Memcached implements core\cache\IBackend
     protected $_lifeTime;
     protected $_cache;
 
-    public static function purgeApp(core\collection\ITree $options, ?Session $session = null)
-    {
+    public static function purgeApp(
+        Repository $options,
+        ?Session $session = null
+    ) {
         self::purgeAll($options);
     }
 
-    public static function purgeAll(core\collection\ITree $options, ?Session $session = null)
-    {
+    public static function purgeAll(
+        Repository $options,
+        ?Session $session = null
+    ) {
         if (!self::isLoadable()) {
             return;
         }
@@ -35,7 +39,7 @@ class Memcached implements core\cache\IBackend
         $connection->flush();
     }
 
-    public static function prune(core\collection\ITree $options)
+    public static function prune(Repository $options)
     {
         // pruning is automatic :)
     }
@@ -45,7 +49,7 @@ class Memcached implements core\cache\IBackend
         return extension_loaded('memcached');
     }
 
-    protected static function _loadConnection(core\collection\ITree $options)
+    protected static function _loadConnection(Repository $options)
     {
         $output = new \Memcached();
 
@@ -57,24 +61,29 @@ class Memcached implements core\cache\IBackend
 
         foreach ($serverList as $serverOptions) {
             $output->addServer(
-                $serverOptions->get('host', '127.0.0.1'),
-                $serverOptions->get('port', 11211),
-                (int)$serverOptions->get('weight', 999)
+                $serverOptions->get('host') ?? '127.0.0.1',
+                $serverOptions->get('port') ?? 11211,
+                (int)($serverOptions->get('weight') ?? 999)
             );
         }
 
         return $output;
     }
 
-    public static function clearFor(core\collection\ITree $options, core\cache\ICache $cache)
-    {
+    public static function clearFor(
+        Repository $options,
+        core\cache\ICache $cache
+    ) {
         if (self::isLoadable()) {
             (new self($cache, 0, $options))->clear();
         }
     }
 
-    public function __construct(core\cache\ICache $cache, int $lifeTime, core\collection\ITree $options)
-    {
+    public function __construct(
+        core\cache\ICache $cache,
+        int $lifeTime,
+        Repository $options
+    ) {
         $this->_cache = $cache;
         $this->_lifeTime = $lifeTime;
         $this->_prefix = Legacy::getUniquePrefix() . '-' . $cache->getCacheId() . ':';

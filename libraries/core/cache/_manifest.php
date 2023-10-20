@@ -3,8 +3,10 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\cache;
 
+use DecodeLabs\Dovetail\Repository;
 use DecodeLabs\Terminus\Session;
 
 use df\core;
@@ -42,10 +44,10 @@ interface IFileStore extends IStore
 
 interface IBackend extends \Countable
 {
-    public static function purgeApp(core\collection\ITree $options, ?Session $session = null);
-    public static function purgeAll(core\collection\ITree $options, ?Session $session = null);
-    public static function prune(core\collection\ITree $options);
-    public static function clearFor(core\collection\ITree $options, ICache $cache);
+    public static function purgeApp(Repository $options, ?Session $session = null);
+    public static function purgeAll(Repository $options, ?Session $session = null);
+    public static function prune(Repository $options);
+    public static function clearFor(Repository $options, ICache $cache);
     public static function isLoadable(): bool;
     public function getConnectionDescription(): string;
     public function getStats(): array;
