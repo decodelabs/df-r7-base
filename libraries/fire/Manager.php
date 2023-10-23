@@ -7,7 +7,7 @@
 namespace df\fire;
 
 use DecodeLabs\Archetype;
-
+use DecodeLabs\R7\Config\Nightfire as NightfireConfig;
 use DecodeLabs\R7\Nightfire\Block;
 use DecodeLabs\R7\Nightfire\BlockAbstract;
 use DecodeLabs\R7\Nightfire\Category;
@@ -23,9 +23,9 @@ class Manager implements IManager
     protected $_categories = null;
     protected $_blocks = null;
 
-    public function getConfig(): Config
+    public function getConfig(): NightfireConfig
     {
-        return Config::getInstance();
+        return NightfireConfig::load();
     }
 
     public function getCategories(): array

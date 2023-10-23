@@ -7,18 +7,18 @@
 namespace df\fire;
 
 use DecodeLabs\Exemplar\Serializable as XmlSerializable;
+use DecodeLabs\R7\Config\Nightfire as NightfireConfig;
 use DecodeLabs\R7\Nightfire\Block;
 use DecodeLabs\R7\Nightfire\Category;
 
 use df\arch;
-
 use df\aura;
 use df\core;
 
 // Manager
 interface IManager extends core\IManager
 {
-    public function getConfig(): Config;
+    public function getConfig(): NightfireConfig;
 
     public function getCategories(): array;
     public function getCategory(?string $name): ?Category;
@@ -94,19 +94,7 @@ interface ISlotContent extends
 
 
 
-// Layout
-interface ILayoutConfig extends core\IConfig
-{
-    public function getLayoutList(string $area = null): array;
-    public function getLayoutDefinition(string $id): ILayoutDefinition;
-    public function isStaticLayout(string $id): bool;
-    public function getStaticLayoutDefinition(string $id): ILayoutDefinition;
-    public function getAllLayoutDefinitions(): array;
-    public function setLayoutDefinition(ILayoutDefinition $definition);
-    public function removeLayoutDefinition(string $id);
-}
-
-
+// Layouts
 interface ILayoutDefinition
 {
     public function setId(?string $id);
