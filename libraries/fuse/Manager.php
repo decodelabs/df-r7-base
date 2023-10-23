@@ -9,8 +9,8 @@ namespace df\fuse;
 use DecodeLabs\Atlas;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Config\Fuse as FuseConfig;
 use DecodeLabs\R7\Legacy;
-
 use DecodeLabs\Terminus\Session;
 use df\aura;
 use df\core;
@@ -259,7 +259,7 @@ class Manager implements IManager
     {
         $output = [];
 
-        foreach ($this->_normalizeDependencies(Config::getInstance()->getDependencies()) as $id => $dependency) {
+        foreach ($this->_normalizeDependencies(FuseConfig::load()->getDependencies()) as $id => $dependency) {
             $output[$dependency->id] = $dependency;
         }
 
