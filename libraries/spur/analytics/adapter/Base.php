@@ -7,6 +7,7 @@
 namespace df\spur\analytics\adapter;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Config\Analytics as AnalyticsConfig;
 use DecodeLabs\R7\Legacy;
 
 use df\core;
@@ -19,11 +20,14 @@ abstract class Base implements spur\analytics\IAdapter
 
     public static function loadAllFromConfig($enabled = true)
     {
-        $config = spur\analytics\Config::getInstance();
+        $config = AnalyticsConfig::load();
         $output = [];
 
         foreach ($config->getAdapters() as $name => $info) {
-            if ($enabled && !$info->get('enabled', true)) {
+            if (
+                $enabled &&
+                !($info->get('enabled') ?? true)
+            ) {
                 continue;
             }
 
@@ -45,7 +49,7 @@ abstract class Base implements spur\analytics\IAdapter
 
     public static function loadFromConfig($name)
     {
-        $config = spur\analytics\Config::getInstance();
+        $config = AnalyticsConfig::load();
 
         if (null === ($info = $config->getAdapter($name))) {
             throw Exceptional::NotFound(
