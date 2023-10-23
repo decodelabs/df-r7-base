@@ -8,7 +8,7 @@ namespace df\core\validate\field;
 
 use DecodeLabs\Disciple;
 use DecodeLabs\Genesis;
-
+use DecodeLabs\R7\Config\Recaptcha as RecaptchaConfig;
 use DecodeLabs\R7\Legacy;
 use df\core;
 use df\spur;
@@ -59,13 +59,13 @@ class Recaptcha extends Base implements core\validate\IRecaptchaField
         if ($this->_secret !== null) {
             $secret = $this->_secret;
         } else {
-            $config = spur\auth\recaptcha\Config::getInstance();
+            $config = RecaptchaConfig::load();
 
             if (!$config->isEnabled()) {
                 return $value;
             }
 
-            $secret = $config->getSecret();
+            $secret = (string)$config->getSecret();
         }
 
         if (empty($value)) {

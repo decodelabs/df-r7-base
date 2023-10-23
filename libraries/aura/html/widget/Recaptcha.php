@@ -6,10 +6,11 @@
 
 namespace df\aura\html\widget;
 
+use DecodeLabs\R7\Config\Recaptcha as RecaptchaConfig;
+
 use df\arch;
 use df\aura;
 use df\aura\view\IHtmlView as View;
-use df\spur;
 
 class Recaptcha extends Base
 {
@@ -51,13 +52,13 @@ class Recaptcha extends Base
         if ($this->_siteKey !== null) {
             $key = $this->_siteKey;
         } else {
-            $config = spur\auth\recaptcha\Config::getInstance();
+            $config = RecaptchaConfig::load();
 
             if (!$config->isEnabled()) {
                 return '';
             }
 
-            $key = $config->getSiteKey();
+            $key = (string)$config->getSiteKey();
         }
 
         $tag = $this->getTag()
