@@ -15,10 +15,17 @@ trait EnvNameTrait
         getRepositoryName as getRepositoryNameParent;
     }
 
+    protected static ?string $envId = null;
+
+    public static function setEnvId(string $id): void
+    {
+        static::$envId = $id;
+    }
+
     public static function getRepositoryName(): string
     {
         $output = static::getRepositoryNameParent();
-        $name = Genesis::$environment->getName();
+        $name = static::$envId ?? Genesis::$environment->getName();
         return $output . '#' . $name;
     }
 }

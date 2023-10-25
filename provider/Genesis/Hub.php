@@ -252,6 +252,17 @@ class Hub implements HubInterface
 
         // Veneer bindings
         Veneer::register(Legacy\Helper::class, Legacy::class);
+
+        // Dovetail
+        Archetype::register(new DovetailResolver());
+
+        /*
+        if($this->context->build->isCompiled()) {
+            Dovetail::setFinder(new DovetailFinder(
+                $this->context->build->path.'/apex'
+            ));
+        }
+        */
     }
 
 
@@ -276,6 +287,8 @@ class Hub implements HubInterface
         if ($this->analysis) {
             return new EnvConfig\Development($this->envId);
         }
+
+        EnvironmentConfig::setEnvId($this->envId);
 
         /** @phpstan-ignore-next-line */
         $name = ucfirst(df\COMPILE_ENV_MODE ?? EnvironmentConfig::load()->getMode());
@@ -315,17 +328,6 @@ class Hub implements HubInterface
             Kernel::class,
             R7Kernel::class /** @phpstan-ignore-line */
         ));
-
-        // Dovetail
-        Archetype::register(new DovetailResolver());
-
-        /*
-        if($this->context->build->isCompiled()) {
-            Dovetail::setFinder(new DovetailFinder(
-                $this->context->build->path.'/apex'
-            ));
-        }
-        */
 
 
         // Set Disciple adapter
