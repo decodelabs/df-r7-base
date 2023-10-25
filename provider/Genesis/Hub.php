@@ -321,6 +321,14 @@ class Hub implements HubInterface
         // Dovetail
         Archetype::register(new DovetailResolver());
 
+        /*
+        if($this->context->build->isCompiled()) {
+            Dovetail::setFinder(new DovetailFinder(
+                $this->context->build->path.'/apex'
+            ));
+        }
+        */
+
 
         // Set Disciple adapter
         Disciple::setAdapter(new DiscipleAdapter());
