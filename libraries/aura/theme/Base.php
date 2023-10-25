@@ -10,7 +10,6 @@ use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\R7\Legacy;
-
 use DecodeLabs\Spectrum\Color;
 use df\arch;
 use df\aura;

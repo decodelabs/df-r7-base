@@ -14,9 +14,10 @@ use DateTime;
 
 use DecodeLabs\Deliverance;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Config\Theme as ThemeConfig;
 use DecodeLabs\R7\Legacy\Plugins\Http as HttpPlugin;
 use DecodeLabs\R7\Nightfire\Block;
-use DecodeLabs\R7\Theme\Config as ThemeConfig;
+use DecodeLabs\R7\Theme\Config as ThemeConfigInterface;
 use DecodeLabs\Systemic;
 use DecodeLabs\Systemic\Command;
 use DecodeLabs\Systemic\Process;
@@ -28,7 +29,6 @@ use DecodeLabs\Veneer\Plugin;
 use df\arch\Context;
 use df\arch\mail\Base as ArchMail;
 use df\arch\Request;
-use df\aura\theme\Config as StaticThemeConfig;
 use df\aura\view\content\Template;
 use df\aura\view\IHtmlView as View;
 use df\axis\IUnit as Unit;
@@ -242,16 +242,15 @@ class Helper
     /**
      * Get theme config
      */
-    protected function getThemeConfig(): ThemeConfig
+    protected function getThemeConfig(): ThemeConfigInterface
     {
         static $output;
 
         if (!isset($output)) {
-            if (Genesis::$container->has(ThemeConfig::class)) {
-                $output = Genesis::$container[ThemeConfig::class];
+            if (Genesis::$container->has(ThemeConfigInterface::class)) {
+                $output = Genesis::$container[ThemeConfigInterface::class];
             } else {
-                /** @var StaticThemeConfig $output */
-                $output = StaticThemeConfig::getInstance();
+                $output = ThemeConfig::load();
             }
         }
 
