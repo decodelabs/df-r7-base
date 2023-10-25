@@ -3,11 +3,12 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\models\user\client\procedures;
 
 use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
-
+use DecodeLabs\R7\Config\Users as UserConfig;
 use df\axis;
 use df\opal;
 
@@ -26,7 +27,7 @@ class RegisterLocal extends axis\procedure\Record
 
     protected function _execute($invite = null)
     {
-        $userConfig = $this->_model->config;
+        $userConfig = UserConfig::load();
 
         $this->validator
 

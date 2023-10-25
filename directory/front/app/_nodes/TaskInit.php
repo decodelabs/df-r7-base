@@ -16,9 +16,6 @@ class TaskInit extends arch\node\Task
     {
         $this->ensureDfSource();
 
-        $this->runChild('config/init');
-        Cli::newLine();
-
         $this->runChild('axis/set-master?check=false');
         Cli::newLine();
 

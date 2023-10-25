@@ -3,11 +3,12 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\models\user\client\procedures;
 
 use DecodeLabs\Disciple;
-
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Config\Users as UserConfig;
 use df\axis;
 
 class Update extends axis\procedure\Record
@@ -50,7 +51,7 @@ class Update extends axis\procedure\Record
                 ]);
             }
 
-            $userConfig = $this->_model->config;
+            $userConfig = UserConfig::load();
             $applyPassword = true;
 
             $this->validator
