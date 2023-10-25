@@ -10,14 +10,13 @@ use DecodeLabs\Atlas\File;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\Hydro;
+use DecodeLabs\R7\Config\Http as HttpConfig;
 use DecodeLabs\R7\Legacy;
-
 use df\arch;
 use df\aura;
 use df\core;
 use df\fuse;
 use df\link;
-
 use GuzzleHttp\Client as HttpClient;
 use Psr\Http\Message\ResponseInterface;
 
@@ -411,7 +410,7 @@ class Uri implements arch\IDirectoryHelper
 
         if ($url instanceof arch\IRequest) {
             $url = $this->__invoke($url);
-            $config = core\app\http\Config::getInstance();
+            $config = HttpConfig::load();
             $credentials = $config->getCredentials(Genesis::$environment->getMode());
 
             $options = [

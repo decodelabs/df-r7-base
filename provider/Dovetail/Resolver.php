@@ -33,6 +33,8 @@ class Resolver implements ArchetypeResolve
      */
     public function resolve(string $name): ?string
     {
+        $parts = explode('#', $name);
+        $name = array_shift($parts);
         /** @phpstan-ignore-next-line */
         return R7Config::class . '\\' . $name;
     }

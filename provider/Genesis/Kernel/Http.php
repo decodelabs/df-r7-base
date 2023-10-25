@@ -15,6 +15,7 @@ use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\Genesis\Kernel;
 use DecodeLabs\Glitch;
+use DecodeLabs\R7\Config\Http as HttpConfig;
 use DecodeLabs\R7\Genesis\KernelTrait;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Typify;
@@ -25,8 +26,6 @@ use df\arch\IProxyResponse;
 use df\arch\node\Base as NodeBase;
 use df\arch\node\NotFoundException as NodeNotFoundException;
 use df\arch\Request;
-use df\core\app\http\Config as HttpConfig;
-
 use df\core\app\http\Router as HttpRouter;
 use df\core\IDispatchAware;
 use df\core\lang\ICallback;
@@ -192,7 +191,7 @@ class Http implements Kernel
      */
     protected function enforceCredentials(Ip $ip): bool
     {
-        $config = HttpConfig::getInstance();
+        $config = HttpConfig::load();
         $credentials = $config->getCredentials();
 
         // Check for credentials or loopback
@@ -231,8 +230,8 @@ class Http implements Kernel
         Request $request
     ): void {
         // Get ranges from config
-        $config = HttpConfig::getInstance();
-        $ranges = $config->getIpRangesForArea($request->getArea());
+        $config = HttpConfig::load();
+        $ranges = $config->getIpRanges();
 
         if (empty($ranges)) {
             return;
@@ -607,7 +606,7 @@ class Http implements Kernel
 
     protected function initializeSendFile(): ?string
     {
-        $config = HttpConfig::getInstance();
+        $config = HttpConfig::load();
         $sendFileHeader = $config->getSendFileHeader();
 
         if (isset($_SERVER['HTTP_X_SENDFILE_TYPE'])) {

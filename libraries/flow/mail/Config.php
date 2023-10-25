@@ -7,9 +7,9 @@
 namespace df\flow\mail;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Config\Http as HttpConfig;
 use DecodeLabs\Systemic;
 use df\core;
-
 use df\flow;
 use df\link;
 
@@ -147,7 +147,7 @@ class Config extends core\Config
     protected function _getDefaultAdminAddress()
     {
         $name = Systemic::getCurrentProcess()->getOwnerName();
-        $rootUrl = core\app\http\Config::getInstance()->getRootUrl();
+        $rootUrl = HttpConfig::load()->getRootUrl();
 
         if ($rootUrl) {
             $domain = (new link\http\Url($rootUrl))->getDomain();

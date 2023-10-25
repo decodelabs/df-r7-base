@@ -8,12 +8,11 @@ namespace df\core\app\http;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Config\Http as HttpConfig;
 use DecodeLabs\R7\Legacy;
-
 use df\arch;
 use df\arch\ForcedResponse;
 use df\arch\Request;
-
 use df\core;
 use df\link;
 use df\link\http\IRequest as HttpRequest;
@@ -39,7 +38,7 @@ class Router implements core\IRegistryObject
 
     public function __construct(link\http\IUrl $rootUrl = null)
     {
-        $config = Config::getInstance();
+        $config = HttpConfig::load();
 
         if ($rootUrl !== null) {
             $map = ['*' => $rootUrl->getDomain() . '/' . ltrim($rootUrl->getPathString())];

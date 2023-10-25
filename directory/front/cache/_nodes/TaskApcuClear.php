@@ -7,11 +7,10 @@
 namespace df\apex\directory\front\cache\_nodes;
 
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Config\Http as HttpConfig;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Terminus as Cli;
-
 use df\arch;
-use df\core;
 use df\flex;
 
 use GuzzleHttp\Client as HttpClient;
@@ -54,7 +53,7 @@ class TaskApcuClear extends arch\node\Task
             $url->path->push('/cache/apcu-clear.json');
             $url->query->import($this->request->query);
 
-            $config = core\app\http\Config::getInstance();
+            $config = HttpConfig::load();
             $credentials = $config->getCredentials(Genesis::$environment->getMode());
 
             //Cli::info($url);

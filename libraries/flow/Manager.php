@@ -8,11 +8,11 @@ namespace df\flow;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Config\Http as HttpConfig;
 use DecodeLabs\R7\Legacy;
 use df;
 use df\axis;
 use df\core;
-
 use df\flex;
 use df\flow;
 use df\user;
@@ -145,7 +145,7 @@ class Manager implements IManager, core\IShutdownAware
             if (isset($_SERVER['SERVER_NAME'])) {
                 $domain = $_SERVER['SERVER_NAME'];
             } else {
-                if ($url = core\app\http\Config::getInstance()->getRootUrl()) {
+                if ($url = HttpConfig::load()->getRootUrl()) {
                     $domain = df\link\http\Url::factory($url)->getDomain();
                 }
             }
