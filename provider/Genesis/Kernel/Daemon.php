@@ -11,12 +11,11 @@ use DecodeLabs\Coercion;
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis\Kernel;
+use DecodeLabs\R7\Config\Environment as EnvironmentConfig;
 use DecodeLabs\R7\Genesis\KernelTrait;
 use DecodeLabs\Systemic;
 use DecodeLabs\Systemic\Process;
-
 use DecodeLabs\Terminus as Cli;
-use df\core\environment\Config as EnvConfig;
 use df\core\SharedContext;
 use df\core\time\Date;
 use df\halo\daemon\Base as DaemonBase;
@@ -60,7 +59,7 @@ class Daemon implements Kernel
         $this->checkEnvironment();
 
         // Check daemons enabled
-        $env = EnvConfig::getInstance();
+        $env = EnvironmentConfig::load();
 
         if (!$env->canUseDaemons()) {
             Cli::error('Daemons are not enabled in config');

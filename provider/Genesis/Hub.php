@@ -22,6 +22,7 @@ use DecodeLabs\Genesis\Loader\Stack as StackLoader;
 use DecodeLabs\Glitch;
 use DecodeLabs\Integra\Context as IntegraContext;
 use DecodeLabs\Metamorph;
+use DecodeLabs\R7\Config\Environment as EnvironmentConfig;
 use DecodeLabs\R7\Disciple\Adapter as DiscipleAdapter;
 use DecodeLabs\R7\Dovetail\Resolver as DovetailResolver;
 use DecodeLabs\R7\Genesis\Kernel as R7Kernel;
@@ -33,7 +34,6 @@ use df;
 use df\core;
 use df\core\app\Base as AppBase;
 use df\core\Config as ConfigBase;
-use df\core\environment\Config as CoreEnvConfig;
 use df\core\loader\Base as LoaderBase;
 
 use Throwable;
@@ -277,10 +277,8 @@ class Hub implements HubInterface
             return new EnvConfig\Development($this->envId);
         }
 
-        $conf = CoreEnvConfig::getInstance();
-
         /** @phpstan-ignore-next-line */
-        $name = ucfirst(df\COMPILE_ENV_MODE ?? $conf->getMode());
+        $name = ucfirst(df\COMPILE_ENV_MODE ?? EnvironmentConfig::load()->getMode());
 
         /** @var class-string<EnvConfig\Development|EnvConfig\Testing|EnvConfig\Production> */
         $class = EnvConfig::class . '\\' . $name;

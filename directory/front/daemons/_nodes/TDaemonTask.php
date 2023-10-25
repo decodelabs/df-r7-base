@@ -6,16 +6,16 @@
 
 namespace df\apex\directory\front\daemons\_nodes;
 
+use DecodeLabs\R7\Config\Environment as EnvironmentConfig;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Systemic;
 use DecodeLabs\Terminus as Cli;
-use df\core;
 
 trait TDaemonTask
 {
     protected function _ensurePrivileges()
     {
-        $env = core\environment\Config::getInstance();
+        $env = EnvironmentConfig::load();
 
         if (!$env->canUseDaemons()) {
             Cli::warning('Daemons are currently disabled in config');

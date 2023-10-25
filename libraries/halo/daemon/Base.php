@@ -8,13 +8,13 @@ namespace df\halo\daemon;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Deliverance;
-
 use DecodeLabs\Dictum;
 use DecodeLabs\Eventful\Dispatcher as EventDispatcher;
 use DecodeLabs\Eventful\Dispatcher\Select as SelectDispatcher;
 use DecodeLabs\Eventful\Factory as EventFactory;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Config\Environment as EnvironmentConfig;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Systemic;
 use DecodeLabs\Terminus as Cli;
@@ -52,7 +52,7 @@ abstract class Base implements IDaemon
     public static function launch($name, $user = null)
     {
         if ($user === null) {
-            $user = core\environment\Config::getInstance()->getDaemonUser();
+            $user = EnvironmentConfig::load()->getDaemonUser();
         }
 
         return Systemic::scriptCommand([
@@ -115,7 +115,7 @@ abstract class Base implements IDaemon
     public function getUser()
     {
         if (!$this->_user) {
-            $this->_user = core\environment\Config::getInstance()->getDaemonUser();
+            $this->_user = EnvironmentConfig::load()->getDaemonUser();
         }
 
         return $this->_user;
@@ -130,7 +130,7 @@ abstract class Base implements IDaemon
     public function getGroup()
     {
         if (!$this->_group) {
-            $this->_group = core\environment\Config::getInstance()->getDaemonGroup();
+            $this->_group = EnvironmentConfig::load()->getDaemonGroup();
         }
 
         return $this->_group;

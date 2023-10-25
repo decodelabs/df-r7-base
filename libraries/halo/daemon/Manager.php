@@ -9,6 +9,7 @@ namespace df\halo\daemon;
 use DecodeLabs\Atlas;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Config\Environment as EnvironmentConfig;
 use DecodeLabs\R7\Legacy;
 
 use df\core;
@@ -24,7 +25,7 @@ class Manager implements IManager
     public function isEnabled()
     {
         if ($this->_isEnabled === null) {
-            $this->_isEnabled = core\environment\Config::getInstance()->canUseDaemons();
+            $this->_isEnabled = EnvironmentConfig::load()->canUseDaemons();
         }
 
         return $this->_isEnabled;
