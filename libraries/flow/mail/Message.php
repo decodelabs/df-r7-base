@@ -3,12 +3,12 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flow\mail;
 
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Exceptional;
 use df\core;
-
 use df\flow;
 use df\user;
 

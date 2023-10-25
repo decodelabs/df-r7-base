@@ -9,6 +9,7 @@ namespace df\flow;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use DecodeLabs\R7\Config\Http as HttpConfig;
+use DecodeLabs\R7\Config\Mail as MailConfig;
 use DecodeLabs\R7\Legacy;
 use df;
 use df\axis;
@@ -62,8 +63,7 @@ class Manager implements IManager, core\IShutdownAware
             $to = $message->getToAddresses();
             $userList = $message->getToUsers();
             $keys = [];
-            $isJustToAdmins = false;
-            $config = flow\mail\Config::getInstance();
+            $config = MailConfig::load();
 
             // Admins
             if ($message->shouldSendToAdmin()) {
@@ -108,11 +108,7 @@ class Manager implements IManager, core\IShutdownAware
 
             // From
             if (!$from = $message->getFromAddress()) {
-                if (!$from = flow\mail\Address::factory($config->getDefaultAddress())) {
-                    throw Exceptional::UnexpectedValue(
-                        'Unable to provide valid default address'
-                    );
-                }
+                $from = flow\mail\Address::factory($config->getDefaultAddress());
 
                 if (!$from->getName()) {
                     $from->setName(Genesis::$hub->getApplicationName());
@@ -283,7 +279,7 @@ class Manager implements IManager, core\IShutdownAware
             return 'Capture';
         }
 
-        $config = flow\mail\Config::getInstance();
+        $config = MailConfig::load();
 
         if (
             Genesis::$environment->isTesting() &&
@@ -319,7 +315,7 @@ class Manager implements IManager, core\IShutdownAware
     ## LISTS
     public function getListSources(): array
     {
-        $config = flow\mail\Config::getInstance();
+        $config = MailConfig::load();
         $output = [];
 
         foreach ($config->getListSources() as $id => $options) {
@@ -342,7 +338,7 @@ class Manager implements IManager, core\IShutdownAware
             return $id;
         }
 
-        $config = flow\mail\Config::getInstance();
+        $config = MailConfig::load();
         $options = $config->getListSource($id);
 
         try {
@@ -354,7 +350,7 @@ class Manager implements IManager, core\IShutdownAware
 
     public function hasListSource(string $id): bool
     {
-        $config = flow\mail\Config::getInstance();
+        $config = MailConfig::load();
         $options = $config->getListSource($id);
 
         return isset($options->adapter);

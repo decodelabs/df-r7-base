@@ -7,7 +7,6 @@
 namespace df\flow\mail;
 
 use DecodeLabs\Exceptional;
-
 use DecodeLabs\Glitch\Dumpable;
 use df\core;
 
@@ -19,11 +18,14 @@ class Address implements IAddress, Dumpable
     protected $_address;
     protected $_isValid = null;
 
-    public static function factory($address, $name = null): ?IAddress
+    /**
+     * @return ($address is null ? null : self)
+     */
+    public static function factory($address, $name = null): ?self
     {
         if ($address === null) {
             return null;
-        } elseif ($address instanceof IAddress) {
+        } elseif ($address instanceof Address) {
             return $address;
         } elseif ($name !== null) {
             return new self($address, $name);
@@ -36,7 +38,7 @@ class Address implements IAddress, Dumpable
         }
     }
 
-    public static function fromString(string $string): IAddress
+    public static function fromString(string $string): Address
     {
         $parts = explode('<', $string, 2);
 

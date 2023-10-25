@@ -3,9 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flow\mail\transport;
 
-use df\core;
+use DecodeLabs\Dovetail\Repository;
+use DecodeLabs\R7\Config\Mail as MailConfig;
 use df\flow;
 use df\spur;
 
@@ -27,7 +29,7 @@ class AmazonSes extends Base
         ];
     }
 
-    public function __construct(core\collection\ITree $settings = null)
+    public function __construct(Repository $settings = null)
     {
         if ($settings !== null) {
             $this->connect($settings['url'], $settings['accessKey'], $settings['secretKey']);
@@ -43,7 +45,7 @@ class AmazonSes extends Base
     public function send(flow\mail\IMessage $message, flow\mime\IMultiPart $mime)
     {
         if (!$this->_mediator) {
-            $config = flow\mail\Config::getInstance();
+            $config = MailConfig::load();
             $settings = $config->getTransportSettings('AmazonSes');
             $this->__construct($settings);
         }

@@ -177,11 +177,7 @@ class Html implements arch\IDirectoryHelper
             return $body;
         }
 
-        if (!$address = flow\mail\Address::factory($address)) {
-            throw Exceptional::InvalidArgument(
-                'Invalid email address'
-            );
-        }
+        $address = flow\mail\Address::factory($address);
 
         if ($body === null) {
             $body = $address->getName();

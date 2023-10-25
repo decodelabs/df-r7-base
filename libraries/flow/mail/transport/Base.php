@@ -7,7 +7,7 @@
 namespace df\flow\mail\transport;
 
 use DecodeLabs\Exceptional;
-
+use DecodeLabs\R7\Config\Mail as MailConfig;
 use DecodeLabs\R7\Legacy;
 use df\flow;
 
@@ -37,7 +37,7 @@ abstract class Base implements flow\mail\ITransport
             );
         }
 
-        $config = flow\mail\Config::getInstance();
+        $config = MailConfig::load();
         $settings = $config->getTransportSettings($name);
 
         return new $class($settings);
