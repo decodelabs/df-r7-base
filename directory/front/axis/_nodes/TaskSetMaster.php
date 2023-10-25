@@ -8,24 +8,24 @@ namespace df\apex\directory\front\axis\_nodes;
 
 use DecodeLabs\Dictum;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Config\DataConnections as AxisConfig;
 use DecodeLabs\Terminus as Cli;
-
 use df\arch;
-use df\axis;
 use df\opal;
 
 class TaskSetMaster extends arch\node\Task
 {
     public function execute(): void
     {
-        $config = axis\Config::getInstance();
+        $config = AxisConfig::load();
+        $repository = $config->getConfigRepository();
 
-        if ($config->values->connections->master['adapter'] !== 'Rdbms') {
+        if ($repository->connections->master['adapter'] !== 'Rdbms') {
             Cli::error('Master is not using Rdbms adapter');
             return;
         }
 
-        $current = $config->values->connections->master['dsn'];
+        $current = $repository->connections->master['dsn'];
 
         if ($current === $config::DEFAULT_DSN) {
             $current = null;
@@ -33,7 +33,13 @@ class TaskSetMaster extends arch\node\Task
 
         $check = Dictum::toBoolean($this->request['check']);
 
-        if ($current && (!$check || Cli::confirm('Use current: ' . opal\rdbms\Dsn::factory($current)->getDisplayString(true), true))) {
+        if (
+            $current &&
+            (
+                !$check ||
+                Cli::confirm('Use current: ' . opal\rdbms\Dsn::factory($current)->getDisplayString(true), true)
+            )
+        ) {
             if (!$check) {
                 Cli::info('Sticking with current: ' . opal\rdbms\Dsn::factory($current)->getDisplayString(true));
             }
@@ -93,7 +99,7 @@ class TaskSetMaster extends arch\node\Task
             break;
         } while (true);
 
-        $config->values->connections->master->dsn = (string)$dsn;
-        $config->save();
+        $repository->connections->master->set('dsn', (string)$dsn);
+        //$config->save();
     }
 }

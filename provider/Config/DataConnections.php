@@ -7,13 +7,18 @@
 namespace DecodeLabs\R7\Config;
 
 use DecodeLabs\Dovetail\Config;
-use DecodeLabs\Dovetail\ConfigTrait;
+use DecodeLabs\Dovetail\Repository;
+use DecodeLabs\Exceptional;
+use df\axis\IUnit;
+use Throwable;
 
 class DataConnections implements Config
 {
-    use ConfigTrait;
+    use EnvNameTrait;
 
     public const DEFAULT_DSN = 'mysql://user:pass@localhost/database';
+
+    protected ?bool $isSetup = null;
 
     public static function getDefaultValues(): array
     {
@@ -32,5 +37,115 @@ class DataConnections implements Config
                 '@search' => 'search'
             ]
         ];
+    }
+
+    public function isSetup(): bool
+    {
+        if ($this->isSetup === null) {
+            if (!isset($this->data->connections->master)) {
+                $this->isSetup = false;
+            } else {
+                $node = $this->data->connections->master;
+
+                if (
+                    $node->adapter->hasValue() &&
+                    $node['adapter'] !== 'Rdbms'
+                ) {
+                    $this->isSetup = true;
+                } elseif (
+                    $node->dsn->hasValue() &&
+                    $node['dsn'] !== self::DEFAULT_DSN
+                ) {
+                    $this->isSetup = true;
+                } else {
+                    $this->isSetup = false;
+                }
+            }
+        }
+
+        return $this->isSetup;
+    }
+
+    public function getAdapterIdFor(IUnit $unit): string
+    {
+        return $this->getSettingsFor($unit)->adapter->as('string', [
+            'default' => 'Rdbms'
+        ]);
+    }
+
+    public function getSettingsFor(IUnit $unit): Repository
+    {
+        $connectionId = $this->getConnectionIdFor($unit);
+
+        if (!isset($this->data->connections->{$connectionId})) {
+            throw Exceptional::Runtime(
+                'There are no connections for ' . $unit->getUnitId() . ', with connection id ' . $connectionId
+            );
+        }
+
+        if (
+            $connectionId === 'master' &&
+            !$this->isSetup()
+        ) {
+            return new Repository([
+                'adapter' => 'Rdbms',
+                'dsn' => 'sqlite://default'
+            ]);
+        }
+
+        return $this->data->connections->{$connectionId};
+    }
+
+    public function getConnectionIdFor(IUnit $unit): string
+    {
+        $unitId = $unit->getUnitId();
+
+        if (!isset($this->data->units[$unitId])) {
+            $originalId = $unitId;
+
+            $parts = explode('/', $unitId);
+            $unitId = array_shift($parts);
+
+            if (!isset($this->data->units[$unitId])) {
+                try {
+                    $unitId = '@' . $unit->getUnitType();
+                } catch (Throwable $e) {
+                    $unitId = null;
+                }
+
+                if (
+                    $unitId === null ||
+                    !isset($this->data->units->{$unitId})
+                ) {
+                    $unitId = 'default';
+
+                    if (!isset($this->data->units[$unitId])) {
+                        throw Exceptional::Runtime(
+                            'There are no connections matching ' . $originalId
+                        );
+                    }
+                }
+            }
+        }
+
+        return $this->data->units->{$unitId}->as('string');
+    }
+
+
+    /**
+     * @return array<string>
+     */
+    public function getDefinedUnits(): array
+    {
+        if (!isset($this->data->units)) {
+            return [];
+        }
+
+        $output = $this->data->units->toArray();
+        unset($output['default'], $output['@search']);
+
+        /** @var array<string> $output */
+        $output = array_keys($output);
+        return $output;
     }
 }

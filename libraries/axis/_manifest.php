@@ -10,8 +10,8 @@ use DecodeLabs\Exceptional;
 use DecodeLabs\Fluidity\Cast;
 use DecodeLabs\Fluidity\CastTrait;
 use DecodeLabs\Glitch;
+use DecodeLabs\R7\Config\DataConnections as AxisConfig;
 use df\axis;
-
 use df\core;
 use df\mesh;
 use df\opal;
@@ -105,7 +105,7 @@ trait TUnit
     public function getUnitSettings()
     {
         if ($this->_unitSettings === null) {
-            $config = axis\Config::getInstance();
+            $config = AxisConfig::load();
             $this->_unitSettings = $config->getSettingsFor($this);
         }
 
@@ -281,7 +281,7 @@ trait TAdapterBasedStorageUnit
 
     protected function _loadAdapter()
     {
-        $config = axis\Config::getInstance();
+        $config = AxisConfig::load();
         $adapterId = $config->getAdapterIdFor($this);
         $unitType = $this->getUnitType();
 

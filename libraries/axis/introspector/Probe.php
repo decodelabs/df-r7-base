@@ -6,8 +6,8 @@
 
 namespace df\axis\introspector;
 
+use DecodeLabs\R7\Config\DataConnections as AxisConfig;
 use DecodeLabs\R7\Legacy;
-
 use df\axis;
 
 class Probe implements IProbe
@@ -51,7 +51,7 @@ class Probe implements IProbe
 
     public function probeUnits()
     {
-        $config = axis\Config::getInstance();
+        $config = AxisConfig::load();
 
         $unitList = array_merge(
             $this->getDefinedUnitList(),
