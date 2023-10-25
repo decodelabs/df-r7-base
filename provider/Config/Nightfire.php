@@ -94,7 +94,6 @@ class Nightfire implements Config
 
     public function getLayoutDefinition(string $id): ILayoutDefinition
     {
-        /** @var Repository $data */
         $data = $this->data->layouts->{$id};
 
         if (isset(self::STATIC_LAYOUTS[$id])) {
@@ -109,7 +108,6 @@ class Nightfire implements Config
         }
 
         if ($data->slots->isEmpty()) {
-            /** @phpstan-ignore-next-line */
             $data->slots = self::STATIC_LAYOUTS['Default']['slots'];
         }
 
@@ -144,7 +142,6 @@ class Nightfire implements Config
             true
         );
 
-        /** @var Repository $slotData */
         foreach ($data->slots as $slotId => $slotData) {
             $output->addSlot(
                 (new SlotDefinition((string)$slotId, $slotData->name->as('string', ['default' => $slotId])))
