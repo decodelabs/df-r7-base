@@ -6,18 +6,34 @@
 
 namespace DecodeLabs\R7\Dovetail;
 
-use DecodeLabs\Archetype\Resolver as ArchetypeResolve;
+use DecodeLabs\Archetype\Resolver as ArchetypeResolver;
 use DecodeLabs\Dovetail\Config;
 use DecodeLabs\R7\Config as R7Config;
 
-class Resolver implements ArchetypeResolve
+class Resolver implements ArchetypeResolver
 {
+    /**
+     * @var array<string>
+     */
+    protected static array $namespaces = [
+        /** @phpstan-ignore-next-line */
+        R7Config::class
+    ];
+
     /**
      * Get mapped interface
      */
     public function getInterface(): string
     {
         return Config::class;
+    }
+
+    /**
+     * Add namespace
+     */
+    public static function addNamespace(string $namespace): void
+    {
+        static::$namespaces[] = $namespace;
     }
 
     /**
@@ -35,7 +51,15 @@ class Resolver implements ArchetypeResolve
     {
         $parts = explode('#', $name);
         $name = array_shift($parts);
-        /** @phpstan-ignore-next-line */
-        return R7Config::class . '\\' . $name;
+
+        foreach (static::$namespaces as $namespace) {
+            $class = $namespace . '\\' . $name;
+
+            if (class_exists($class)) {
+                return $class;
+            }
+        }
+
+        return null;
     }
 }
