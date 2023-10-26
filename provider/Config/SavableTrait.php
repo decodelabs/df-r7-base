@@ -14,5 +14,10 @@ trait SavableTrait
     {
         $loader = Dovetail::getLoaderFor($this->manifest);
         $loader->saveConfig($this->manifest, $this->data->toArray());
+        $this->onSave();
+    }
+
+    protected function onSave(): void
+    {
     }
 }
