@@ -34,7 +34,6 @@ use df\aura\view\IHtmlView as View;
 use df\axis\IUnit as Unit;
 use df\axis\Model;
 use df\axis\unit\Cache as CacheUnit;
-use df\axis\unit\Config as ConfigUnit;
 use df\axis\unit\Enum as EnumUnit;
 use df\axis\unit\Table as TableUnit;
 use df\core\app\Base as AppBase;
@@ -551,16 +550,6 @@ class Helper
         return Model::loadUnitFromId($id);
     }
 
-    /**
-     * Load config unit from ID
-     */
-    public function getConfig(string $id): ConfigUnit
-    {
-        /**
-         * @var ConfigUnit
-         */
-        return Model::loadUnitFromId($id);
-    }
 
 
     /**
