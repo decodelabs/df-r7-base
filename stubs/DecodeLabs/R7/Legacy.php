@@ -34,18 +34,17 @@ use df\flex\Guid as Ref20;
 use df\axis\unit\Table as Ref21;
 use df\axis\unit\Enum as Ref22;
 use df\axis\unit\Cache as Ref23;
-use df\axis\unit\Config as Ref24;
-use df\opal\record\IRecord as Ref25;
-use df\opal\record\IPartial as Ref26;
-use df\axis\IUnit as Ref27;
-use df\opal\query\ISelectQuery as Ref28;
-use DecodeLabs\R7\Nightfire\Block as Ref29;
-use df\fire\ISlotContent as Ref30;
-use df\arch\mail\Base as Ref31;
-use DecodeLabs\Systemic\Command as Ref32;
-use DecodeLabs\Systemic\Result as Ref33;
-use DecodeLabs\Systemic\Process as Ref34;
-use df\core\IRegistryObject as Ref35;
+use df\opal\record\IRecord as Ref24;
+use df\opal\record\IPartial as Ref25;
+use df\axis\IUnit as Ref26;
+use df\opal\query\ISelectQuery as Ref27;
+use DecodeLabs\R7\Nightfire\Block as Ref28;
+use df\fire\ISlotContent as Ref29;
+use df\arch\mail\Base as Ref30;
+use DecodeLabs\Systemic\Command as Ref31;
+use DecodeLabs\Systemic\Result as Ref32;
+use DecodeLabs\Systemic\Process as Ref33;
+use df\core\IRegistryObject as Ref34;
 
 class Legacy implements Proxy
 {
@@ -166,35 +165,32 @@ class Legacy implements Proxy
     public static function getCache(string $id): Ref23 {
         return static::$instance->getCache(...func_get_args());
     }
-    public static function getConfig(string $id): Ref24 {
-        return static::$instance->getConfig(...func_get_args());
-    }
-    public static function getRelationId(Ref25|Ref26|array|null $record, string $field, ?string $idField = NULL): ?string {
+    public static function getRelationId(Ref24|Ref25|array|null $record, string $field, ?string $idField = NULL): ?string {
         return static::$instance->getRelationId(...func_get_args());
     }
-    public static function selectForAction(Ref27|string $source, array|string $fields, mixed $primary = NULL, ?callable $queryChain = NULL): array {
+    public static function selectForAction(Ref26|string $source, array|string $fields, mixed $primary = NULL, ?callable $queryChain = NULL): array {
         return static::$instance->selectForAction(...func_get_args());
     }
-    public static function queryForAction(Ref28 $query, ?callable $chain = NULL): array {
+    public static function queryForAction(Ref27 $query, ?callable $chain = NULL): array {
         return static::$instance->queryForAction(...func_get_args());
     }
-    public static function queryByPrimaryForAction(Ref28 $query, mixed $primary, ?callable $chain = NULL): array {
+    public static function queryByPrimaryForAction(Ref27 $query, mixed $primary, ?callable $chain = NULL): array {
         return static::$instance->queryByPrimaryForAction(...func_get_args());
     }
-    public static function normalizeBlock(mixed $block): ?Ref29 {
+    public static function normalizeBlock(mixed $block): ?Ref28 {
         return static::$instance->normalizeBlock(...func_get_args());
     }
-    public static function normalizeSlot(mixed $slot): ?Ref30 {
+    public static function normalizeSlot(mixed $slot): ?Ref29 {
         return static::$instance->normalizeSlot(...func_get_args());
     }
     public static function sendPreparedMail(string $path, ?array $slots = NULL, bool $forceSend = false): void {}
-    public static function prepareMail(string $path, ?array $slots = NULL, bool $forceSend = false): Ref31 {
+    public static function prepareMail(string $path, ?array $slots = NULL, bool $forceSend = false): Ref30 {
         return static::$instance->prepareMail(...func_get_args());
     }
     public static function renderMail(string $path, ?array $slots = NULL, bool $forceSend = false): string {
         return static::$instance->renderMail(...func_get_args());
     }
-    public static function taskCommand(Ref4|string $request, bool $dfSource = false): Ref32 {
+    public static function taskCommand(Ref4|string $request, bool $dfSource = false): Ref31 {
         return static::$instance->taskCommand(...func_get_args());
     }
     public static function getEntryFile(): string {
@@ -204,17 +200,17 @@ class Legacy implements Proxy
         return static::$instance->runTask(...func_get_args());
     }
     public static function runTaskQuietly(Ref4|string $request, bool $dfSource = false): void {}
-    public static function captureTask(Ref4|string $request, bool $dfSource = false): Ref33 {
+    public static function captureTask(Ref4|string $request, bool $dfSource = false): Ref32 {
         return static::$instance->captureTask(...func_get_args());
     }
-    public static function launchTask(Ref4|string $request, bool $dfSource = false): Ref34 {
+    public static function launchTask(Ref4|string $request, bool $dfSource = false): Ref33 {
         return static::$instance->launchTask(...func_get_args());
     }
     public static function getCurrencyNames(): array {
         return static::$instance->getCurrencyNames();
     }
-    public static function setRegistryObject(Ref35 $object): void {}
-    public static function getRegistryObject(string $key): ?Ref35 {
+    public static function setRegistryObject(Ref34 $object): void {}
+    public static function getRegistryObject(string $key): ?Ref34 {
         return static::$instance->getRegistryObject(...func_get_args());
     }
     public static function hasRegistryObject(string $key): bool {

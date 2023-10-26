@@ -6,11 +6,11 @@
 
 namespace df\flow\mailingList;
 
+use DecodeLabs\Dovetail\Repository;
 use DecodeLabs\Exceptional;
 use df\axis;
 use df\core;
 use df\flow;
-
 use df\user;
 
 class Source implements ISource
@@ -25,6 +25,10 @@ class Source implements ISource
 
     public function __construct(string $id, $options)
     {
+        if ($options instanceof Repository) {
+            $options = $options->toArray();
+        }
+
         $options = core\collection\Tree::factory($options);
 
         $this->_id = $id;
