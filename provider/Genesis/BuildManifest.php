@@ -20,7 +20,6 @@ use DecodeLabs\R7\Legacy;
 use DecodeLabs\Terminus\Session;
 use df\arch\node\IBuildTaskNode as BuildTaskNode;
 use df\arch\Request as ArchRequest;
-use df\core\Config as CoreConfig;
 use df\flex\Guid;
 use Generator;
 use ReflectionClass;
@@ -120,16 +119,6 @@ class BuildManifest implements Manifest
                 }
             );
         }
-
-        // Clear config live cache
-        yield new GenericTask(
-            'Clearing core Config live cache',
-            function (Session $session) {
-                foreach (CoreConfig::clearLiveCache() as $key) {
-                    $session->{'.magenta'}($key);
-                }
-            }
-        );
     }
 
 

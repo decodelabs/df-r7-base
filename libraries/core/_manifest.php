@@ -656,22 +656,6 @@ trait TSharedHelper
 
 
 
-// Config
-interface IConfig extends IRegistryObject, IValueMap, \ArrayAccess
-{
-    public function getDefaultValues(): array;
-    public function getConfigId(): string;
-    public function getConfigValues(): array;
-    public function tidyConfigValues(): void;
-
-    /**
-     * @return $this
-     */
-    public function reset(): static;
-}
-
-
-
 // Debug
 function logException(\Throwable $exception, $request = null)
 {

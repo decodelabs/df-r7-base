@@ -33,7 +33,6 @@ use DecodeLabs\Veneer;
 use df;
 use df\core;
 use df\core\app\Base as AppBase;
-use df\core\Config as ConfigBase;
 use df\core\loader\Base as LoaderBase;
 
 use Throwable;
@@ -211,12 +210,7 @@ class Hub implements HubInterface
         $loader->initRootPackages($rootPath, $this->appPath);
 
 
-        // Set envId in config
-        ConfigBase::$envId = $this->envId;
-
-
         // Load app
-
         /** @var AppBase $app */
         $app = AppBase::factory();
 
