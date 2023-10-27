@@ -27,7 +27,7 @@ use ReflectionClass;
 class BuildManifest implements Manifest
 {
     public const APP_EXPORT = [
-        'libraries', 'assets', 'daemons', 'directory', 'helpers',
+        'config', 'libraries', 'assets', 'daemons', 'directory', 'helpers',
         'hooks', 'models', 'provider', 'themes', 'tests', 'vendor'
     ];
 
@@ -36,7 +36,7 @@ class BuildManifest implements Manifest
     ];
 
     public const APP_FILES = [
-        'composer.json', 'composer.lock'
+        '.env', 'composer.json', 'composer.lock'
     ];
 
 
