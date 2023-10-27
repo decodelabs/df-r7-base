@@ -54,7 +54,7 @@ class DataConnections implements Config
             );
         }
 
-        return $this->data->connections->{$connectionId};
+        return clone $this->data->connections->{$connectionId};
     }
 
     public function getConnectionIdFor(IUnit $unit): string
