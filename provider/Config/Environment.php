@@ -17,7 +17,6 @@ class Environment implements Config
     {
         return [
             'mode' => 'development',
-            'binaryPaths' => [],
             'daemonsEnabled' => false,
             'daemonUser' => static::extrapolateDaemonUser(),
             'daemonGroup' => static::extrapolateDaemonGroup()
@@ -32,16 +31,6 @@ class Environment implements Config
             'default' => 'testing'
         ]);
     }
-
-
-
-    public function getBinaryPath(string $id): string
-    {
-        return $this->data->binaryPaths->{$id}->as('string', [
-            'default' => $id
-        ]);
-    }
-
 
 
     public function canUseDaemons(): bool
