@@ -7,11 +7,12 @@
 namespace DecodeLabs\R7\Config;
 
 use DecodeLabs\Dovetail\Config;
+use DecodeLabs\Dovetail\ConfigTrait;
 use DecodeLabs\Systemic;
 
 class Environment implements Config
 {
-    use EnvNameTrait;
+    use ConfigTrait;
 
     public static function getDefaultValues(): array
     {

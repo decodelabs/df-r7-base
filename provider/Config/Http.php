@@ -8,6 +8,7 @@ namespace DecodeLabs\R7\Config;
 
 use DecodeLabs\Compass\Range;
 use DecodeLabs\Dovetail\Config;
+use DecodeLabs\Dovetail\ConfigTrait;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
 use df\link\http\request\Base as RequestBase;
@@ -15,7 +16,7 @@ use df\link\http\Url;
 
 class Http implements Config
 {
-    use EnvNameTrait;
+    use ConfigTrait;
 
 
     public static function getDefaultValues(): array

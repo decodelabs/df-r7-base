@@ -286,9 +286,6 @@ class Hub implements HubInterface
             return new EnvConfig\Development($this->envId);
         }
 
-        EnvironmentConfig::setEnvId($this->envId);
-        EnvironmentConfig::setAppPath($this->appPath);
-
         /** @phpstan-ignore-next-line */
         $name = ucfirst(df\COMPILE_ENV_MODE ?? EnvironmentConfig::load()->getMode());
 

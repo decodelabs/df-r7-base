@@ -7,6 +7,7 @@
 namespace DecodeLabs\R7\Config;
 
 use DecodeLabs\Dovetail\Config;
+use DecodeLabs\Dovetail\ConfigTrait;
 use DecodeLabs\Dovetail\Repository;
 use DecodeLabs\Exceptional;
 use df\axis\IUnit;
@@ -14,7 +15,7 @@ use Throwable;
 
 class DataConnections implements Config
 {
-    use EnvNameTrait;
+    use ConfigTrait;
 
     public const DEFAULT_DSN = 'mysql://user:pass@localhost/database';
 
