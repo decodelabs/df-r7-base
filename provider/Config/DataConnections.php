@@ -18,8 +18,6 @@ class DataConnections implements Config
 
     public const DEFAULT_DSN = 'mysql://user:pass@localhost/database';
 
-    protected ?bool $isSetup = null;
-
     public static function getDefaultValues(): array
     {
         return [
@@ -39,33 +37,6 @@ class DataConnections implements Config
         ];
     }
 
-    public function isSetup(): bool
-    {
-        if ($this->isSetup === null) {
-            if (!isset($this->data->connections->master)) {
-                $this->isSetup = false;
-            } else {
-                $node = $this->data->connections->master;
-
-                if (
-                    $node->adapter->hasValue() &&
-                    $node['adapter'] !== 'Rdbms'
-                ) {
-                    $this->isSetup = true;
-                } elseif (
-                    $node->dsn->hasValue() &&
-                    $node['dsn'] !== self::DEFAULT_DSN
-                ) {
-                    $this->isSetup = true;
-                } else {
-                    $this->isSetup = false;
-                }
-            }
-        }
-
-        return $this->isSetup;
-    }
-
     public function getAdapterIdFor(IUnit $unit): string
     {
         return $this->getSettingsFor($unit)->adapter->as('string', [
@@ -81,16 +52,6 @@ class DataConnections implements Config
             throw Exceptional::Runtime(
                 'There are no connections for ' . $unit->getUnitId() . ', with connection id ' . $connectionId
             );
-        }
-
-        if (
-            $connectionId === 'master' &&
-            !$this->isSetup()
-        ) {
-            return new Repository([
-                'adapter' => 'Rdbms',
-                'dsn' => 'sqlite://default'
-            ]);
         }
 
         return $this->data->connections->{$connectionId};
