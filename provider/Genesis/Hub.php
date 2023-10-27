@@ -252,7 +252,6 @@ class Hub implements HubInterface
         Dovetail::setEnvPath($this->appPath);
         Archetype::register(new DovetailResolver());
 
-        /*
         if($this->context->build->isCompiled()) {
             Dovetail::setEnvPath($this->context->build->path.'/apex');
 
@@ -260,7 +259,6 @@ class Hub implements HubInterface
                 $this->context->build->path.'/apex'
             ));
         }
-        */
     }
 
 
