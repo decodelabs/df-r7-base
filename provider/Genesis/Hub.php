@@ -12,6 +12,7 @@ use DecodeLabs\Archetype\Resolver\Extension as ArchetypeExtension;
 use DecodeLabs\Atlas;
 use DecodeLabs\Disciple;
 use DecodeLabs\Dovetail;
+use DecodeLabs\Dovetail\Finder\Generic as DovetailFinder;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Fluidity\CastTrait;
 use DecodeLabs\Genesis\Build;
@@ -201,7 +202,6 @@ class Hub implements HubInterface
             $loader = new core\loader\Base();
         } else {
             $this->loadBaseClass('core/loader/Development');
-
             $loader = new core\loader\Development();
         }
 
@@ -248,17 +248,19 @@ class Hub implements HubInterface
         // Veneer bindings
         Veneer::register(Legacy\Helper::class, Legacy::class);
 
-        // Dovetail
-        Dovetail::setEnvPath($this->appPath);
-        Archetype::register(new DovetailResolver());
 
+        // Dovetail
         if($this->context->build->isCompiled()) {
             Dovetail::setEnvPath($this->context->build->path.'/apex');
 
             Dovetail::setFinder(new DovetailFinder(
                 $this->context->build->path.'/apex'
             ));
+        } else {
+            Dovetail::setEnvPath($this->appPath);
         }
+
+        Archetype::register(new DovetailResolver());
     }
 
 
