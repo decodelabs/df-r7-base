@@ -3,12 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\plug;
 
 use DecodeLabs\Dictum;
+use DecodeLabs\R7\Legacy;
 use df\arch;
 use df\flex;
-
 use df\opal;
 
 class Account extends arch\Helper
@@ -44,7 +45,7 @@ class Account extends arch\Helper
                 ->where('adapter', '=', 'Local')
                 ->toRow();
 
-            if ($auth && $auth['password'] == $this->data->hash($password)) {
+            if ($auth && $auth['password'] == Legacy::hash($password)) {
                 $outPass = $password;
             }
         }
@@ -73,7 +74,7 @@ class Account extends arch\Helper
             'user' => $client,
             'adapter' => 'Local',
             'identity' => $client['email'],
-            'password' => $this->user->password->hash($password),
+            'password' => Legacy::hash($password),
             'bindDate' => 'now'
         ]);
 

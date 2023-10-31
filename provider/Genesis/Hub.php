@@ -28,6 +28,7 @@ use DecodeLabs\R7\Config\Environment as EnvironmentConfig;
 use DecodeLabs\R7\Disciple\Adapter as DiscipleAdapter;
 use DecodeLabs\R7\Dovetail\Resolver as DovetailResolver;
 use DecodeLabs\R7\Genesis\Kernel as R7Kernel;
+use DecodeLabs\R7\Harvest\Middleware as HttpMiddlewareNamespace;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Veneer;
@@ -36,6 +37,8 @@ use df;
 use df\core;
 use df\core\app\Base as AppBase;
 use df\core\loader\Base as LoaderBase;
+
+use Psr\Http\Server\MiddlewareInterface as HttpMiddleware;
 
 use Throwable;
 
@@ -250,11 +253,11 @@ class Hub implements HubInterface
 
 
         // Dovetail
-        if($this->context->build->isCompiled()) {
-            Dovetail::setEnvPath($this->context->build->path.'/apex');
+        if ($this->context->build->isCompiled()) {
+            Dovetail::setEnvPath($this->context->build->path . '/apex');
 
             Dovetail::setFinder(new DovetailFinder(
-                $this->context->build->path.'/apex'
+                $this->context->build->path . '/apex'
             ));
         } else {
             Dovetail::setEnvPath($this->appPath);
@@ -324,6 +327,13 @@ class Hub implements HubInterface
             Kernel::class,
             R7Kernel::class /** @phpstan-ignore-line */
         ));
+
+
+        // Harvest spaces
+        Archetype::extend(
+            HttpMiddleware::class,
+            HttpMiddlewareNamespace::class /** @phpstan-ignore-line */
+        );
 
 
         // Set Disciple adapter

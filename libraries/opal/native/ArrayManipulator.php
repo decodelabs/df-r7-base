@@ -1212,7 +1212,7 @@ class ArrayManipulator implements IArrayManipulator
                     $current = null;
                 }
 
-                // Entity object
+            // Entity object
             } elseif ($fetchObject) {
                 if (isset($row[$objectKey])) {
                     $current = $row[$objectKey];
@@ -1221,7 +1221,7 @@ class ArrayManipulator implements IArrayManipulator
                 }
 
 
-                // Normal row
+            // Normal row
             } else {
                 $current = [];
 

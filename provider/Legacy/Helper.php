@@ -38,6 +38,7 @@ use df\axis\unit\Enum as EnumUnit;
 use df\axis\unit\Table as TableUnit;
 use df\core\app\Base as AppBase;
 use df\core\collection\Tree;
+use df\core\crypt\Util as CryptUtil;
 use df\core\IRegistryObject as RegistryObject;
 use df\core\loader\Base as LoaderBase;
 use df\core\time\Date;
@@ -311,6 +312,25 @@ class Helper
     public function getCommsManager(): CommsManager
     {
         return $this->getContext()->comms->getManager();
+    }
+
+
+    public function hash(
+        string $message,
+        ?string $salt = null
+    ): string {
+        if ($salt === null) {
+            $salt = $this->getPassKey();
+        }
+
+        return CryptUtil::passwordHash($message, $salt);
+    }
+
+    public function hexHash(
+        string $message,
+        ?string $salt = null
+    ): string {
+        return bin2hex($this->hash($message, $salt));
     }
 
 

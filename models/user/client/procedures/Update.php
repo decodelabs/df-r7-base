@@ -9,6 +9,7 @@ namespace df\apex\models\user\client\procedures;
 use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
 use DecodeLabs\R7\Config\Users as UserConfig;
+use DecodeLabs\R7\Legacy;
 use df\axis;
 
 class Update extends axis\procedure\Record
@@ -61,7 +62,7 @@ class Update extends axis\procedure\Record
                     $validator->addField('currentPassword', 'text')
                         ->isRequired(true)
                         ->extend(function ($value, $field) use ($auth) {
-                            $hash = $this->context->user->password->hash($value);
+                            $hash = Legacy::hash($value);
 
                             if ($hash != $auth['password']) {
                                 $field->addError('incorrect', $this->context->_(

@@ -263,7 +263,7 @@ class BridgedManyRelationValueContainer implements
                 $lookupKeySets[$id] = $ks;
             } elseif ($record instanceof opal\record\IPrimaryKeySetProvider) {
                 $id = opal\record\Base::extractRecordId($record);
-                //$lookupKeySets[$id] = $record->getPrimaryKeySet();
+            //$lookupKeySets[$id] = $record->getPrimaryKeySet();
             } elseif ($record instanceof opal\record\IPrimaryKeySet) {
                 $id = opal\record\Base::extractRecordId($record);
                 $lookupKeySets[$id] = $record;

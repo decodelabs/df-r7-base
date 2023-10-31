@@ -17,8 +17,8 @@ trait SavableTrait
         $loader = Dovetail::getLoaderFor($this->manifest);
         $loader->saveConfig($this->manifest, $this->data->toArray());
 
-        if(Genesis::$build->isCompiled()) {
-            $path = Genesis::$hub->getApplicationPath().'/config/'.$this->manifest->getName().'.php';
+        if (Genesis::$build->isCompiled()) {
+            $path = Genesis::$hub->getApplicationPath() . '/config/' . $this->manifest->getName() . '.php';
 
             $manifest = new Manifest(
                 $this->manifest->getName(),

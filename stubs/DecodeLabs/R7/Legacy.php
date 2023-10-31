@@ -116,6 +116,12 @@ class Legacy implements Proxy
     public static function getCommsManager(): Ref8 {
         return static::$instance->getCommsManager();
     }
+    public static function hash(string $message, ?string $salt = NULL): string {
+        return static::$instance->hash(...func_get_args());
+    }
+    public static function hexHash(string $message, ?string $salt = NULL): string {
+        return static::$instance->hexHash(...func_get_args());
+    }
     public static function loadTemplate(string $path, callable|array|null $slots = NULL): Ref9 {
         return static::$instance->loadTemplate(...func_get_args());
     }

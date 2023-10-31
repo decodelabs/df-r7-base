@@ -3,10 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\models\pestControl\stackTrace;
 
 use DecodeLabs\Glitch\Stack\Trace;
-
+use DecodeLabs\R7\Legacy;
 use df\axis;
 
 class Unit extends axis\unit\Table
@@ -47,7 +48,7 @@ class Unit extends axis\unit\Table
             $json = json_encode($json);
         }
 
-        $hash = $this->context->data->hash($json);
+        $hash = Legacy::hash($json);
 
         $output = $this->fetch()
             ->where('hash', '=', $hash)

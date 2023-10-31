@@ -8,7 +8,6 @@ namespace df\plug;
 
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Exceptional;
-use DecodeLabs\R7\Legacy;
 use df\axis;
 use df\core;
 
@@ -406,22 +405,6 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
     public function jsonFileToTree($path): core\collection\ITree
     {
         return flex\Json::fileToTree($path);
-    }
-
-
-    // Crypt
-    public function hash($message, $salt = null)
-    {
-        if ($salt === null) {
-            $salt = Legacy::getPassKey();
-        }
-
-        return core\crypt\Util::passwordHash($message, $salt);
-    }
-
-    public function hexHash($message, $salt = null)
-    {
-        return bin2hex($this->hash($message, $salt));
     }
 
 

@@ -325,10 +325,10 @@ class Queue implements IQueue
 
         if (is_scalar($object)) {
             return (string)$object;
-            /*
-            } else if($object instanceof mesh\entity\ILocatorProvider) {
-                return (string)$object->getEntityLocator();
-             */
+        /*
+        } else if($object instanceof mesh\entity\ILocatorProvider) {
+            return (string)$object->getEntityLocator();
+         */
         } else {
             return spl_object_hash($object);
         }

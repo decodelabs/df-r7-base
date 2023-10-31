@@ -33,7 +33,7 @@ class Handler implements IHandler
     {
         $this->_context = new core\SharedContext();
 
-        $this->_key = $this->_context->data->hexHash(
+        $this->_key = Legacy::hexHash(
             Legacy::getPassKey()
         );
 

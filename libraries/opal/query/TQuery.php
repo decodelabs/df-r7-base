@@ -657,17 +657,17 @@ trait TQuery_JoinProvider
         if ($field instanceof opal\schema\IBridgedRelationField) {
             // Field is bridged
             Glitch::incomplete($field);
-            /*
-            $bridgeAdapter = $field->getBridgeQueryAdapter();
-            $bridgeAlias = $fieldName.'Bridge';
-            $localAlias = $source->getAlias();
-            $localName = $field->getBridgeLocalFieldName();
-            $targetName = $field->getBridgeTargetFieldName();
+        /*
+        $bridgeAdapter = $field->getBridgeQueryAdapter();
+        $bridgeAlias = $fieldName.'Bridge';
+        $localAlias = $source->getAlias();
+        $localName = $field->getBridgeLocalFieldName();
+        $targetName = $field->getBridgeTargetFieldName();
 
-            $correlation = $this->correlate($aggregateType.'('.$bridgeAlias.'.'.$targetName.')', $alias)
-                ->from($bridgeAdapter, $bridgeAlias)
-                ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
-             */
+        $correlation = $this->correlate($aggregateType.'('.$bridgeAlias.'.'.$targetName.')', $alias)
+            ->from($bridgeAdapter, $bridgeAlias)
+            ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
+         */
         } elseif (
             $field instanceof opal\schema\IInverseRelationField &&
             (
