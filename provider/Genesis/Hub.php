@@ -37,6 +37,7 @@ use df;
 use df\core;
 use df\core\app\Base as AppBase;
 use df\core\loader\Base as LoaderBase;
+use df\core\log\Manager as LogManager;
 
 use Psr\Http\Server\MiddlewareInterface as HttpMiddleware;
 
@@ -318,7 +319,31 @@ class Hub implements HubInterface
             ])
             ->registerAsErrorHandler()
             ->setLogListener(function ($exception) {
-                core\logException($exception);
+                if ($exception instanceof Exceptional\Exception) {
+                    $code = $exception->getHttpStatus();
+                } else {
+                    $code = 500;
+                }
+
+                $manager = LogManager::getInstance();
+                $url = Legacy::$http->getUrl();
+
+                switch ($code) {
+                    case 401:
+                    case 403:
+                        $manager->logAccessError($code, $url, $exception->getMessage());
+                        break;
+
+                    case 404:
+                        $manager->logNotFound($url, $exception->getMessage());
+                        break;
+
+                    case 500:
+                    case 502:
+                    default:
+                        $manager->logException($exception, $url);
+                        break;
+                }
             });
 
 
