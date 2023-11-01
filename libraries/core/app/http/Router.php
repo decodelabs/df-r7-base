@@ -15,7 +15,7 @@ use df\arch\ForcedResponse;
 use df\arch\Request;
 use df\core;
 use df\link;
-use df\link\http\IRequest as HttpRequest;
+use Psr\Http\Message\RequestInterface as PsrRequest;
 
 class Router implements core\IRegistryObject
 {
@@ -407,15 +407,15 @@ class Router implements core\IRegistryObject
      * Prepare directory request
      */
     public function prepareDirectoryRequest(
-        HttpRequest $httpRequest
+        PsrRequest $httpRequest
     ): Request {
         $pathValid = $valid = true;
         $redirectPath = '/';
 
-        $url = $httpRequest->getUrl();
+        $url = new link\http\Url($httpRequest->getUri());
         $path = clone $url->getPath();
 
-        if (!$map = $this->lookupDomain($url->getDomain())) {
+        if (!$map = $this->lookupDomain($url->getHost())) {
             $tempMap = $this->getRootMap();
 
             if (!$tempMap->mapPath($path)) {
@@ -426,7 +426,7 @@ class Router implements core\IRegistryObject
         } else {
             if (
                 $map->mappedDomain !== null &&
-                $map->mappedDomain !== $url->getDomain()
+                $map->mappedDomain !== $url->getHost()
             ) {
                 $valid = false;
             }
@@ -536,8 +536,8 @@ class Router implements core\IRegistryObject
 
         $request->setFragment($url->getFragment());
 
-        if ($httpRequest->getHeaders()->has('x-ajax-request-type')) {
-            $request->setType($httpRequest->getHeaders()->get('x-ajax-request-type'));
+        if ($httpRequest->hasHeader('x-ajax-request-type')) {
+            $request->setType($httpRequest->getHeaderLine('x-ajax-request-type'));
         }
 
         $request = $this->routeIn($request);

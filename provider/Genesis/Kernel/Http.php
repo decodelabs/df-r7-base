@@ -15,6 +15,8 @@ use DecodeLabs\Harvest\Request;
 use DecodeLabs\Harvest\Request\Factory\Environment as RequestFactory;
 use DecodeLabs\R7\Genesis\KernelTrait;
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\Sanctum\Definition as SanctumDefinition;
+use Psr\Http\Message\ResponseInterface as Response;
 
 class Http implements Kernel
 {
@@ -35,16 +37,44 @@ class Http implements Kernel
 
         // Middleware
         $this->dispatcher->add(
+            // Generators
             'LegacyKernel',
+
+            // Outbound
+            'ResponseAugmentor',
+            'AccessControl',
+            'AjaxResponseUrl',
+            'ContentSecurityPolicy',
+            'ClientCache',
+
+            // Inbound
             'CheckIpRanges',
             'EnforceCredentials',
             'HttpMethod',
-            'EnsureHttps'
+            'EnsureHttps',
+
+            // Error
+            'ErrorHandler'
         );
 
         // Request
         $this->request = (new RequestFactory())->createServerRequest();
         $_SERVER = $this->request->getServerParams();
+
+
+        // Csp
+        $this->context->container->bindShared(
+            SanctumDefinition::class,
+            function (Response $response) {
+                $contentType = explode(';', $response->getHeaderLine('content-type'))[0];
+
+                if (empty($contentType)) {
+                    $contentType = 'text/html';
+                }
+
+                return Legacy::app()->getCsp($contentType);
+            }
+        );
 
 
         // Delete

@@ -9,13 +9,13 @@ namespace df\link\http;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Compass\Ip;
-
 use DecodeLabs\Deliverance\Channel;
 use DecodeLabs\Deliverance\DataReceiver;
 use DecodeLabs\Exceptional;
 use df\arch;
 use df\core;
 use df\link;
+use Psr\Http\Message\ResponseInterface as PsrResponse;
 
 interface IUrl extends
     core\uri\IGenericUrl,
@@ -225,6 +225,9 @@ interface IResponse extends
     public function isAttachment(bool $flag = null);
     public function setAttachmentFileName($fileName);
     public function getAttachmentFileName();
+
+    // Psr
+    public function toPsrResponse(): PsrResponse;
 }
 
 interface IStreamResponse extends IResponse
@@ -259,7 +262,6 @@ interface IGeneratorResponse extends IResponse, DataReceiver
 {
     public function setWriteCallback(callable $callback);
     public function generate(DataReceiver $channel);
-    public function writeBrowserKeepAlive();
     public function getChannel();
 }
 

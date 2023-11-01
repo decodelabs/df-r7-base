@@ -9,7 +9,6 @@ namespace df\link\http\response;
 use DecodeLabs\Atlas;
 use DecodeLabs\Exceptional;
 use df\core;
-
 use df\flex;
 use df\link;
 

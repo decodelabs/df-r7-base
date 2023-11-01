@@ -6,11 +6,13 @@
 
 namespace df\link\http\response;
 
+use Closure;
 use DecodeLabs\Deliverance\DataReceiver;
-
 use DecodeLabs\Deliverance\DataReceiverTrait;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Harvest;
 use df\link;
+use Psr\Http\Message\ResponseInterface as PsrResponse;
 
 class Generator extends Base implements link\http\IGeneratorResponse
 {
@@ -92,15 +94,20 @@ class Generator extends Base implements link\http\IGeneratorResponse
         return strlen($data);
     }
 
-    public function writeBrowserKeepAlive()
-    {
-        return $this->write(str_repeat(' ', 1024));
-    }
-
     public function getContent()
     {
         throw Exceptional::Runtime(
             'Streamed generator responses can only generate their content via a channel'
+        );
+    }
+
+
+    public function toPsrResponse(): PsrResponse
+    {
+        return Harvest::generator(
+            Closure::fromCallable($this->_sender),
+            $this->headers->getStatusCode(),
+            $this->headers->toArray()
         );
     }
 }

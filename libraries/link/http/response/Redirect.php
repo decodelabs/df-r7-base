@@ -7,8 +7,9 @@
 namespace df\link\http\response;
 
 use DecodeLabs\Exceptional;
-
+use DecodeLabs\Harvest;
 use df\link;
+use Psr\Http\Message\ResponseInterface as PsrResponse;
 
 class Redirect extends Base implements link\http\IRedirectResponse
 {
@@ -96,5 +97,20 @@ class Redirect extends Base implements link\http\IRedirectResponse
             '<html><head><title>Redirecting...</title></head><body>' .
             '<p>Redirecting to <a href="' . $url . '">' . $url . '</a></p>' .
             '</body></html>';
+    }
+
+
+
+    public function toPsrResponse(): PsrResponse
+    {
+        if ($this->hasCookies()) {
+            $this->getCookies()->applyTo($this->headers);
+        }
+
+        return Harvest::redirect(
+            $this->_url,
+            $this->headers->getStatusCode(),
+            $this->headers->toArray()
+        );
     }
 }

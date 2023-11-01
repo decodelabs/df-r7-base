@@ -8,6 +8,7 @@ namespace df\link\http\response;
 
 use df\core;
 use df\link;
+use Psr\Http\Message\ResponseInterface as PsrResponse;
 
 class Augmentor implements link\http\IResponseAugmentor
 {
@@ -100,6 +101,37 @@ class Augmentor implements link\http\IResponseAugmentor
 
         $response->getCookies()->import($this->_currentCookies);
         return $this;
+    }
+
+    public function applyPsr(
+        PsrResponse $response,
+    ): PsrResponse {
+        // Status
+        if ($this->_statusCode !== null) {
+            $response = $response->withStatus($this->_statusCode);
+        }
+
+        // Headers
+        foreach ($this->_currentHeaders as $set) {
+            switch ($set[0]) {
+                case '+':
+                    $response = $response->withAddedHeader($set[1], $set[2]);
+                    break;
+
+                case '*':
+                    $response = $response->withHeader($set[1], $set[2]);
+                    break;
+
+                case '-':
+                    $response = $response->withoutHeader($set[1]);
+                    break;
+            }
+        }
+
+        // Cookies
+        $response = $this->_currentCookies->applyToPsr($response);
+
+        return $response;
     }
 
 

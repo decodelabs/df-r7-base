@@ -517,9 +517,9 @@ class Http
         string $fileName,
         Closure $generator
     ): GeneratorResponse {
-        return $this->generator('text/csv', function ($response) use ($generator) {
+        return $this->generator('text/csv', function ($stream) use ($generator) {
             (new CsvBuilder($generator))
-                ->setDataReceiver($response)
+                ->setDataReceiver($stream)
                 ->sendData();
         })->setAttachmentFileName($fileName);
     }

@@ -3,11 +3,12 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\http;
 
 use DecodeLabs\Glitch\Dumpable;
-
 use df\core;
+use Psr\Http\Message\ResponseInterface as PsrResponse;
 
 class CookieCollection implements ICookieCollection, Dumpable
 {
@@ -200,6 +201,22 @@ class CookieCollection implements ICookieCollection, Dumpable
 
         $headers->set('Set-Cookie', array_unique($cookies));
         return $this;
+    }
+
+    public function applyToPsr(
+        PsrResponse $response
+    ): PsrResponse {
+        $cookies = $response->getHeader('set-cookie');
+
+        foreach ($this->_set as $cookie) {
+            $cookies[] = $cookie->toString();
+        }
+
+        foreach ($this->_remove as $cookie) {
+            $cookies[] = $cookie->toInvalidateString();
+        }
+
+        return $response->withHeader('set-cookie', array_unique($cookies));
     }
 
     public function sanitize(IRequest $request)

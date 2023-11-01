@@ -3,15 +3,17 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\http\response;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Mode;
-
 use DecodeLabs\Exceptional;
+use DecodeLabs\Harvest;
 use DecodeLabs\Typify;
 use df\core;
 use df\link;
+use Psr\Http\Message\ResponseInterface as PsrResponse;
 
 class File extends Base implements link\http\IFileResponse
 {
@@ -79,5 +81,19 @@ class File extends Base implements link\http\IFileResponse
     public function getContentFileStream()
     {
         return $this->_file->open(Mode::READ_ONLY);
+    }
+
+
+    public function toPsrResponse(): PsrResponse
+    {
+        if ($this->hasCookies()) {
+            $this->getCookies()->applyTo($this->headers);
+        }
+
+        return Harvest::stream(
+            $this->_file->open('r'),
+            $this->headers->getStatusCode(),
+            $this->headers->toArray()
+        );
     }
 }

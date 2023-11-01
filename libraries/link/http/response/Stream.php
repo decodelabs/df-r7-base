@@ -3,14 +3,16 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\link\http\response;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
-
 use DecodeLabs\Deliverance\Channel;
+use DecodeLabs\Harvest;
 use df\core;
 use df\link;
+use Psr\Http\Message\ResponseInterface as PsrResponse;
 
 class Stream extends Base implements link\http\IAdaptiveStreamResponse
 {
@@ -108,5 +110,20 @@ class Stream extends Base implements link\http\IAdaptiveStreamResponse
         }
 
         return $this;
+    }
+
+
+
+    public function toPsrResponse(): PsrResponse
+    {
+        if ($this->hasCookies()) {
+            $this->getCookies()->applyTo($this->headers);
+        }
+
+        return Harvest::stream(
+            $this->_content,
+            $this->headers->getStatusCode(),
+            $this->headers->toArray()
+        );
     }
 }

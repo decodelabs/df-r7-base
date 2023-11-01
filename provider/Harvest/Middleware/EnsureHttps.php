@@ -26,6 +26,7 @@ class EnsureHttps implements Middleware
     ): Response {
         $config = HttpConfig::load();
 
+        // Check for https
         if (
             $config->isSecure() &&
             $request->getUri()->getScheme() !== 'https' &&
@@ -38,6 +39,17 @@ class EnsureHttps implements Middleware
             return Harvest::redirect($url);
         }
 
-        return $next->handle($request);
+        // Continue
+        $response = $next->handle($request);
+
+        // HSTS
+        if ($config->isSecure()) {
+            $response = $response->withHeader(
+                'Strict-Transport-Security',
+                'max-age=31536000; includeSubDomains'
+            );
+        }
+
+        return $response;
     }
 }

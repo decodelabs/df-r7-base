@@ -8,12 +8,13 @@ namespace df\aura\view;
 
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Harvest;
 use DecodeLabs\Typify;
 use df\arch;
-
 use df\aura;
 use df\core;
 use df\link;
+use Psr\Http\Message\ResponseInterface as PsrResponse;
 
 trait TView_RenderTargetProvider
 {
@@ -396,6 +397,17 @@ trait TView_Response
     public function getContentType()
     {
         return Typify::detect($this->_type);
+    }
+
+    public function toPsrResponse(): PsrResponse
+    {
+        $headers = $this->getHeaders();
+
+        return Harvest::text(
+            $this->getContent(),
+            $headers->getStatusCode(),
+            $headers->toArray()
+        );
     }
 }
 

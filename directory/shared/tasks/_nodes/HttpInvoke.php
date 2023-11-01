@@ -24,25 +24,28 @@ class HttpInvoke extends arch\node\Base
 
     public function executeAsStream()
     {
-        return Legacy::$http->generator('text/plain; charset=UTF-8', function ($generator) {
-            $generator->headers->set('X-Accel-Buffering', 'no');
-
+        $response = Legacy::$http->generator('text/plain; charset=UTF-8', function ($stream) {
             $invoke = $this->data->task->invoke->authorize($this->request['token']);
-            $generator->writeBrowserKeepAlive();
+
+            // Browser keep alive
+            $stream->write(str_repeat(' ', 1024));
 
             if (!$invoke) {
-                $generator->write('Task invoke token is no longer valid - please try again!');
+                $stream->write('Task invoke token is no longer valid - please try again!');
                 return;
             }
 
             Legacy::taskCommand($invoke['request'])
-                ->start(function ($controller) use ($generator) {
+                ->start(function ($controller) use ($stream) {
                     /** @phpstan-ignore-next-line */
                     while (true) {
-                        $generator->write($controller->read());
+                        $stream->write($controller->read());
                         yield null;
                     }
                 });
         });
+
+        $response->headers->set('X-Accel-Buffering', 'no');
+        return $response;
     }
 }
