@@ -68,6 +68,7 @@ class LegacyKernel implements Middleware
     ): PsrResponse {
         if (($e = $psrRequest->getAttribute('error')) instanceof Throwable) {
             Legacy::$http->setDispatchException($e);
+            $directoryRequest->setArea('front');
         } else {
             Legacy::$http->setDispatchRequest(clone $directoryRequest);
         }
