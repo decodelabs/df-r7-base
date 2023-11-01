@@ -32,7 +32,6 @@ use Throwable;
 
 class LegacyKernel implements Middleware
 {
-    protected PsrRequest $psrRequest;
     protected HttpRouter $router;
 
     public function __construct()
@@ -49,11 +48,9 @@ class LegacyKernel implements Middleware
         PsrRequest $request,
         PsrHandler $next
     ): PsrResponse {
-        $this->psrRequest = $request;
-
         try {
             $directoryRequest = $this->router->prepareDirectoryRequest($request);
-            $response = $this->dispatchRequest($directoryRequest);
+            $response = $this->dispatchRequest($request, $directoryRequest);
         } catch (IForcedResponse $e) {
             $response = $this->normalizeResponse($e->getResponse());
         }
@@ -66,16 +63,17 @@ class LegacyKernel implements Middleware
      * Dispatch request
      */
     protected function dispatchRequest(
-        Request $request
+        PsrRequest $psrRequest,
+        Request $directoryRequest
     ): PsrResponse {
-        Legacy::$http->setDispatchRequest(clone $request);
-
-        if (($e = $this->psrRequest->getAttribute('error')) instanceof Throwable) {
+        if (($e = $psrRequest->getAttribute('error')) instanceof Throwable) {
             Legacy::$http->setDispatchException($e);
+        } else {
+            Legacy::$http->setDispatchRequest(clone $directoryRequest);
         }
 
         try {
-            $response = $this->dispatchNode($request);
+            $response = $this->dispatchNode($psrRequest, $directoryRequest);
             $response = $this->normalizeResponse($response);
         } catch (IForcedResponse $e) {
             $response = $this->normalizeResponse($e->getResponse());
@@ -88,18 +86,20 @@ class LegacyKernel implements Middleware
     /**
      * Dispatch node
      */
-    protected function dispatchNode(Request $request): mixed
-    {
+    protected function dispatchNode(
+        PsrRequest $psrRequest,
+        Request $directoryRequest
+    ): mixed {
         Legacy::$http->getResponseAugmentor()->resetCurrent();
 
         /** @var Context $context */
-        $context = Context::factory(clone $request);
+        $context = Context::factory(clone $directoryRequest);
         Legacy::setActiveContext($context);
 
         try {
             $node = NodeBase::factory($context);
         } catch (NodeNotFoundException $e) {
-            return $this->handleNotFound($context, $e);
+            return $this->handleNotFound($psrRequest, $context, $e);
         }
 
         foreach (Legacy::getRegistryObjects() as $object) {
@@ -120,11 +120,12 @@ class LegacyKernel implements Middleware
      * Attempt to find node with trailing slash
      */
     protected function handleNotFound(
+        PsrRequest $psrRequest,
         Context $context,
         NodeNotFoundException $e
     ): Response|PsrResponse {
         // See if the url just needs a /
-        $url = new Url((string)$this->psrRequest->getUri());
+        $url = new Url((string)$psrRequest->getUri());
         $testUrl = null;
 
         if (
