@@ -37,19 +37,19 @@ class Http implements Kernel
 
         // Middleware
         $this->dispatcher->add(
-            // Generators
-            'LegacyKernel',
-
-            // Outbound
-            'Headers',
-            'ContentSecurityPolicy',
+            // Error
+            'ErrorHandler',
 
             // Inbound
-            'Authorisation',
-            'Protocol',
+            'Protocol:5',
+            'Authorisation:5',
 
-            // Error
-            'ErrorHandler'
+            // Outbound
+            'ContentSecurityPolicy:10',
+            'Headers:10',
+
+            // Generators
+            'LegacyKernel'
         );
 
 

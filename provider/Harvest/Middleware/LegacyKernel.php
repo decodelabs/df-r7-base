@@ -10,6 +10,7 @@ namespace DecodeLabs\R7\Harvest\Middleware;
 use Closure;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
+use DecodeLabs\Harvest\PriorityProvider;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Typify;
 use df\arch\Context;
@@ -30,8 +31,18 @@ use Psr\Http\Server\MiddlewareInterface as Middleware;
 use Psr\Http\Server\RequestHandlerInterface as PsrHandler;
 use Throwable;
 
-class LegacyKernel implements Middleware
+class LegacyKernel implements
+    Middleware,
+    PriorityProvider
 {
+    /**
+     * Get priority
+     */
+    public function getPriority(): int
+    {
+        return 100;
+    }
+
     /**
      * Process middleware
      */
