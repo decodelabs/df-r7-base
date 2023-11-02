@@ -41,21 +41,17 @@ class Http implements Kernel
             'LegacyKernel',
 
             // Outbound
-            'ResponseAugmentor',
-            'AccessControl',
-            'AjaxResponseUrl',
+            'Headers',
             'ContentSecurityPolicy',
-            'ClientCache',
 
             // Inbound
-            'CheckIpRanges',
-            'EnforceCredentials',
-            'HttpMethod',
-            'EnsureHttps',
+            'Authorisation',
+            'Protocol',
 
             // Error
             'ErrorHandler'
         );
+
 
         // Request
         $this->request = (new RequestFactory())->createServerRequest();

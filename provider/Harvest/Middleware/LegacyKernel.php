@@ -16,9 +16,9 @@ use df\arch\Context;
 use df\arch\IForcedResponse;
 use df\arch\IProxyResponse;
 use df\arch\node\Base as NodeBase;
+use df\arch\node\INode;
 use df\arch\node\NotFoundException as NodeNotFoundException;
 use df\arch\Request;
-use df\core\app\http\Router as HttpRouter;
 use df\core\IDispatchAware;
 use df\core\lang\ICallback;
 use df\halo\daemon\Manager as DaemonManager;
@@ -32,15 +32,6 @@ use Throwable;
 
 class LegacyKernel implements Middleware
 {
-    protected HttpRouter $router;
-
-    public function __construct()
-    {
-        // Routing
-        $this->router = Legacy::$http->getRouter();
-    }
-
-
     /**
      * Process middleware
      */
@@ -49,71 +40,74 @@ class LegacyKernel implements Middleware
         PsrHandler $next
     ): PsrResponse {
         try {
-            $directoryRequest = $this->router->prepareDirectoryRequest($request);
-            $response = $this->dispatchRequest($request, $directoryRequest);
+            $router = Legacy::$http->getRouter();
+            $directoryRequest = $router->prepareDirectoryRequest($request);
+            $this->resetContext($request, $directoryRequest);
+
+            try {
+                $node = $this->loadNode($directoryRequest);
+            } catch (NodeNotFoundException $e) {
+                return $this->handleNotFound($request, $directoryRequest, $e);
+            }
+
+            $response = $node->dispatch();
         } catch (IForcedResponse $e) {
-            $response = $this->normalizeResponse($e->getResponse());
+            $response = $e->getResponse();
         }
 
+        $response = $this->normalizeResponse($response);
         return $response;
     }
 
 
     /**
-     * Dispatch request
+     * Reset context
      */
-    protected function dispatchRequest(
-        PsrRequest $psrRequest,
+    protected function resetContext(
+        PsrRequest $request,
         Request $directoryRequest
-    ): PsrResponse {
-        if (($e = $psrRequest->getAttribute('error')) instanceof Throwable) {
+    ): void {
+        Legacy::$http->getResponseAugmentor()->resetCurrent();
+
+        if (($e = $request->getAttribute('error')) instanceof Throwable) {
             Legacy::$http->setDispatchException($e);
             $directoryRequest->setArea('front');
         } else {
             Legacy::$http->setDispatchRequest(clone $directoryRequest);
         }
-
-        try {
-            $response = $this->dispatchNode($psrRequest, $directoryRequest);
-            $response = $this->normalizeResponse($response);
-        } catch (IForcedResponse $e) {
-            $response = $this->normalizeResponse($e->getResponse());
-        }
-
-        return $response;
     }
 
 
     /**
-     * Dispatch node
+     * Load node
      */
-    protected function dispatchNode(
-        PsrRequest $psrRequest,
+    protected function loadNode(
         Request $directoryRequest
-    ): mixed {
-        Legacy::$http->getResponseAugmentor()->resetCurrent();
-
+    ): INode {
+        // Create context
         /** @var Context $context */
         $context = Context::factory(clone $directoryRequest);
         Legacy::setActiveContext($context);
 
-        try {
-            $node = NodeBase::factory($context);
-        } catch (NodeNotFoundException $e) {
-            return $this->handleNotFound($psrRequest, $context, $e);
-        }
 
+        // Load node
+        $node = NodeBase::factory($context);
+
+
+        // Notify registry objects
         foreach (Legacy::getRegistryObjects() as $object) {
             if ($object instanceof IDispatchAware) {
                 $object->onAppDispatch($node);
             }
         }
 
+
+        // Ensure daemon activity
         if (!$node->shouldOptimize()) {
             DaemonManager::getInstance()->ensureActivity();
         }
 
-        return $node->dispatch();
+        return $node;
     }
 
 
@@ -122,9 +116,9 @@ class LegacyKernel implements Middleware
      */
     protected function handleNotFound(
         PsrRequest $psrRequest,
-        Context $context,
+        Request $directoryRequest,
         NodeNotFoundException $e
-    ): Response|PsrResponse {
+    ): PsrResponse {
         // See if the url just needs a /
         $url = new Url((string)$psrRequest->getUri());
         $testUrl = null;
@@ -141,11 +135,14 @@ class LegacyKernel implements Middleware
         }
 
         if ($testUrl) {
-            $context = clone $context;
-            $context->location = $context->request = $this->router->urlToRequest($testUrl);
+            $router = Legacy::$http->getRouter();
+
+            /** @var Context $context */
+            $context = Context::factory(clone $directoryRequest);
+            $context->location = $context->request = $router->urlToRequest($testUrl);
 
             if ($context->apex->nodeExists($context->request)) {
-                return Legacy::$http->redirect($context->request);
+                return Legacy::$http->redirect($context->request)->toPsrResponse();
             }
         }
 
