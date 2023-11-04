@@ -7,14 +7,12 @@ declare(strict_types=1);
 
 namespace DecodeLabs\R7\Genesis;
 
-use DecodeLabs\Genesis;
 use DecodeLabs\Genesis\Bootstrap as Base;
 
 class Bootstrap extends Base
 {
     protected string $rootPath;
     protected string $appPath;
-    protected string $vendorPath;
 
     /**
      * Init with root path of source Df.php and app path
@@ -58,10 +56,8 @@ class Bootstrap extends Base
     /**
      * Run found build location
      */
-    public function execute(string $vendorPath): void
-    {
-        $this->vendorPath = $vendorPath;
-        Genesis::run(Hub::class);
-        exit;
+    public function execute(
+        string $vendorPath
+    ): void {
     }
 }
