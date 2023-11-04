@@ -9,6 +9,8 @@ namespace DecodeLabs\R7\Genesis;
 
 use DecodeLabs\Genesis\Bootstrap as Base;
 
+require_once dirname(__DIR__, 3) . '/vendor/decodelabs/genesis/src/Bootstrap.php';
+
 class Bootstrap extends Base
 {
     protected string $rootPath;
