@@ -13,18 +13,31 @@ require_once dirname(__DIR__, 4) . '/decodelabs/genesis/src/Bootstrap.php';
 
 class Bootstrap extends Base
 {
-    protected string $rootPath;
     protected string $appPath;
 
     /**
      * Init with root path of source Df.php and app path
      */
     public function __construct(
-        string $rootPath,
-        string $appPath
+        ?string $appPath = null
     ) {
-        $this->rootPath = $rootPath;
-        $this->appPath = $appPath;
+        $this->appPath = $appPath ?? $this->getDefaultAppPath();
+    }
+
+    /**
+     * Get default app path
+     */
+    protected function getDefaultAppPath(): string
+    {
+        $entryPath = dirname(realpath($_SERVER['SCRIPT_FILENAME']));
+
+        if (!str_ends_with($entryPath, '/entry')) {
+            throw new Exception(
+                'Entry point does not appear to be valid'
+            );
+        }
+
+        return dirname($entryPath);
     }
 
     /**
