@@ -52,12 +52,4 @@ class Bootstrap extends Base
 
         return $paths;
     }
-
-    /**
-     * Run found build location
-     */
-    public function execute(
-        string $vendorPath
-    ): void {
-    }
 }
