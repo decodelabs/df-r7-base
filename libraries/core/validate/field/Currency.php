@@ -3,10 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\validate\field;
 
+use DecodeLabs\R7\Mint\Currency as MintCurrency;
 use df\core;
-use df\mint;
 
 class Currency extends Base implements core\validate\ICurrencyField
 {
@@ -21,7 +22,7 @@ class Currency extends Base implements core\validate\ICurrencyField
     public function setCurrency($code)
     {
         if ($code !== null) {
-            $code = mint\Currency::normalizeCode($code);
+            $code = MintCurrency::normalizeCode($code);
         }
 
         $this->_currency = $code;

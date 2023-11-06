@@ -3,17 +3,15 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\mint;
+declare(strict_types=1);
+
+namespace DecodeLabs\R7\Mint;
 
 use DecodeLabs\Exceptional;
-
 use DecodeLabs\Glitch\Dumpable;
-use df\core;
 
-class Currency implements ICurrency, Dumpable
+class Currency implements Dumpable
 {
-    use core\TStringProvider;
-
     public const CURRENCIES = [
         '784' => 'AED',
         '971' => 'AFN',
@@ -173,13 +171,26 @@ class Currency implements ICurrency, Dumpable
         'XPF' => 0
     ];
 
-    protected $_amount;
-    protected $_code;
+    protected float $amount;
+    protected string $code;
 
-    public static function factory($amount, $code = null): ICurrency
-    {
-        if ($amount instanceof ICurrency) {
+    /**
+     * @phpstan-param float|array{0: float, 1: string}|Currency $amount
+     */
+    public static function factory(
+        float|array|Currency|null $amount,
+        string $code = null
+    ): static {
+        if ($amount instanceof static) {
             return $amount;
+        }
+
+        if ($amount instanceof Currency) {
+            if ($code === null) {
+                $code = $amount->getCode();
+            }
+
+            $amount = $amount->getAmount();
         }
 
         if (is_array($amount)) {
@@ -197,12 +208,14 @@ class Currency implements ICurrency, Dumpable
             $amount = 0;
         }
 
-        return new self($amount, $code);
+        return new static($amount, $code);
     }
 
-    public static function fromIntegerAmount($amount, $code): ICurrency
-    {
-        $output = new self(0, $code);
+    public static function fromIntegerAmount(
+        int $amount,
+        string $code
+    ): static {
+        $output = new static(0, $code);
 
         if ($amount) {
             $output->setAmount($amount / $output->getDecimalFactor());
@@ -211,18 +224,29 @@ class Currency implements ICurrency, Dumpable
         return $output;
     }
 
-    public static function isRecognizedCode($code): bool
-    {
-        return isset(self::CURRENCIES[$code]) || in_array($code, self::CURRENCIES);
+    public static function isRecognizedCode(
+        string $code
+    ): bool {
+        return
+            isset(self::CURRENCIES[$code]) ||
+            in_array($code, self::CURRENCIES);
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function getRecognizedCodes(): array
     {
-        return self::CURRENCIES;
+        /** @var array<string, string> $output */
+        $output = self::CURRENCIES;
+
+        return $output;
     }
 
-    public function __construct($amount, $code)
-    {
+    final public function __construct(
+        float $amount,
+        ?string $code
+    ) {
         if (empty($code)) {
             $code = 'USD';
         }
@@ -231,29 +255,34 @@ class Currency implements ICurrency, Dumpable
         $this->setCode($code);
     }
 
-    public function setAmount(float $amount)
-    {
-        $this->_amount = $amount;
+    /**
+     * @return $this
+     */
+    public function setAmount(
+        float $amount
+    ): static {
+        $this->amount = $amount;
         return $this;
     }
 
     public function getAmount(): float
     {
-        return $this->_amount;
+        return $this->amount;
     }
 
     public function getIntegerAmount(): int
     {
-        return (int)round($this->_amount * $this->getDecimalFactor());
+        return (int)round($this->amount * $this->getDecimalFactor());
     }
 
     public function getFormattedAmount(): string
     {
-        return number_format($this->_amount, $this->getDecimalPlaces());
+        return number_format($this->amount, $this->getDecimalPlaces());
     }
 
-    public static function normalizeCode(string $code): string
-    {
+    public static function normalizeCode(
+        string $code
+    ): string {
         if (isset(self::CURRENCIES[$code])) {
             $code = self::CURRENCIES[$code];
         }
@@ -263,38 +292,52 @@ class Currency implements ICurrency, Dumpable
 
 
     // Code
-    public function setCode(string $code)
-    {
-        $this->_code = self::normalizeCode($code);
+
+    /**
+     * @return $this
+     */
+    public function setCode(
+        string $code
+    ): static {
+        $this->code = self::normalizeCode($code);
         return $this;
     }
 
     public function getCode(): string
     {
-        return $this->_code;
+        return $this->code;
     }
 
-    public function convert(string $code, float $origRate, float $newRate)
-    {
-        return $this->setAmount(($this->_amount / $origRate) * $newRate)
+    /**
+     * @return $this
+     */
+    public function convert(
+        string $code,
+        float $origRate,
+        float $newRate
+    ): static {
+        return $this->setAmount(($this->amount / $origRate) * $newRate)
             ->setCode($code);
     }
 
-    public function convertNew(string $code, float $origRate, float $newRate)
-    {
+    public function convertNew(
+        string $code,
+        float $origRate,
+        float $newRate
+    ): static {
         $output = clone $this;
         return $output->convert($code, $origRate, $newRate);
     }
 
     public function hasRecognizedCode(): bool
     {
-        return $this->isRecognizedCode($this->_code);
+        return $this->isRecognizedCode($this->code);
     }
 
     public function getDecimalPlaces(): int
     {
-        if (isset(self::DECIMALS[$this->_code])) {
-            return self::DECIMALS[$this->_code];
+        if (isset(self::DECIMALS[$this->code])) {
+            return self::DECIMALS[$this->code];
         }
 
         return 2;
@@ -307,10 +350,15 @@ class Currency implements ICurrency, Dumpable
 
 
     // Math
-    public function add($amount)
-    {
-        if ($amount instanceof ICurrency) {
-            if ($amount->getCode() != $this->_code) {
+
+    /**
+     * @return $this
+     */
+    public function add(
+        float|self $amount
+    ): static {
+        if ($amount instanceof self) {
+            if ($amount->getCode() != $this->code) {
                 throw Exceptional::{'Currency,InvalidArgument'}(
                     'Cannot combine different currency amounts'
                 );
@@ -319,20 +367,25 @@ class Currency implements ICurrency, Dumpable
             $amount = $amount->getAmount();
         }
 
-        $this->_amount += $amount;
+        $this->amount += $amount;
         return $this;
     }
 
-    public function addNew($amount): ICurrency
-    {
+    public function addNew(
+        float|self $amount
+    ): static {
         $output = clone $this;
         return $output->add($amount);
     }
 
-    public function subtract($amount)
-    {
-        if ($amount instanceof ICurrency) {
-            if ($amount->getCode() != $this->_code) {
+    /**
+     * @return $this
+     */
+    public function subtract(
+        float|self $amount
+    ): static {
+        if ($amount instanceof self) {
+            if ($amount->getCode() != $this->code) {
                 throw Exceptional::{'Currency,InvalidArgument'}(
                     'Cannot combine different currency amounts'
                 );
@@ -341,36 +394,46 @@ class Currency implements ICurrency, Dumpable
             $amount = $amount->getAmount();
         }
 
-        $this->_amount -= $amount;
+        $this->amount -= $amount;
         return $this;
     }
 
-    public function subtractNew($amount): ICurrency
-    {
+    public function subtractNew(
+        float|self $amount
+    ): static {
         $output = clone $this;
         return $output->subtract($amount);
     }
 
+    /**
+     * @return $this
+     */
     public function multiply(float $factor)
     {
-        $this->_amount *= $factor;
+        $this->amount *= $factor;
         return $this;
     }
 
-    public function multiplyNew(float $factor): ICurrency
-    {
+    public function multiplyNew(
+        float $factor
+    ): static {
         $output = clone $this;
         return $output->multiply($factor);
     }
 
-    public function divide(float $factor)
-    {
-        $this->_amount /= $factor;
+    /**
+     * @return $this
+     */
+    public function divide(
+        float $factor
+    ) {
+        $this->amount /= $factor;
         return $this;
     }
 
-    public function divideNew(float $factor): ICurrency
-    {
+    public function divideNew(
+        float $factor
+    ): static {
         $output = clone $this;
         return $output->divide($factor);
     }
@@ -378,9 +441,9 @@ class Currency implements ICurrency, Dumpable
 
 
     // String
-    public function toString(): string
+    public function __toString(): string
     {
-        return $this->getFormattedAmount() . ' ' . $this->_code;
+        return $this->getFormattedAmount() . ' ' . $this->code;
     }
 
     /**
@@ -388,6 +451,6 @@ class Currency implements ICurrency, Dumpable
      */
     public function glitchDump(): iterable
     {
-        yield 'text' => $this->toString();
+        yield 'text' => $this->__toString();
     }
 }

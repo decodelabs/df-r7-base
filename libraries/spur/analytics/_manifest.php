@@ -3,11 +3,12 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\analytics;
 
+use DecodeLabs\R7\Mint\Currency as MintCurrency;
 use df\aura;
 use df\core;
-use df\mint;
 
 interface IHandler
 {
@@ -40,7 +41,7 @@ interface IHandler
 
     public function setECommerceTransactions(array $transactions);
     public function addECommerceTransactions(array $transactions);
-    public function addECommerceTransaction($id, mint\ICurrency $amount = null, $affiliation = null, mint\ICurrency $shipping = null, mint\ICurrency $tax = null);
+    public function addECommerceTransaction($id, MintCurrency $amount = null, $affiliation = null, MintCurrency $shipping = null, MintCurrency $tax = null);
     public function getECommerceTransactions();
     public function clearECommerceTransactions();
 }
@@ -64,11 +65,11 @@ interface IECommerceTransaction extends core\collection\IAttributeContainer
     public function getId(): string;
     public function setAffiliation($affiliation);
     public function getAffiliation();
-    public function setAmount(mint\ICurrency $amount);
+    public function setAmount(MintCurrency $amount);
     public function getAmount();
-    public function setShippingAmount(mint\ICurrency $shipping = null);
+    public function setShippingAmount(MintCurrency $shipping = null);
     public function getShippingAmount();
-    public function setTaxAmount(mint\ICurrency $tax = null);
+    public function setTaxAmount(MintCurrency $tax = null);
     public function getTaxAmount();
 }
 

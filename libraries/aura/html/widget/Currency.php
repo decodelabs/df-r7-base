@@ -3,12 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\aura\html\widget;
 
+use DecodeLabs\R7\Mint\Currency as MintCurrency;
 use df\arch;
 use df\aura;
 use df\core;
-use df\mint;
 
 class Currency extends NumberTextbox
 {
@@ -24,7 +25,7 @@ class Currency extends NumberTextbox
         $this->_currencySelectable = (bool)$allowSelection;
 
         if ($inputCurrency !== null) {
-            $this->_inputCurrency = mint\Currency::normalizeCode($inputCurrency);
+            $this->_inputCurrency = MintCurrency::normalizeCode($inputCurrency);
         }
 
         $this->_precision = $precision;
@@ -36,7 +37,7 @@ class Currency extends NumberTextbox
     protected function _render()
     {
         $currencyFieldName = $this->getName() . '[currency]';
-        $selectValue = mint\Currency::normalizeCode($this->_inputCurrency);
+        $selectValue = MintCurrency::normalizeCode($this->_inputCurrency);
 
         $output = parent::_render();
 
@@ -44,7 +45,7 @@ class Currency extends NumberTextbox
             $value = $this->getValue();
             $output = $output->render();
             $list = $this->_context->i18n->numbers->getCurrencyList();
-            $options = array_intersect_key($list, array_flip(mint\Currency::getRecognizedCodes()));
+            $options = array_intersect_key($list, array_flip(MintCurrency::getRecognizedCodes()));
 
             $output = new aura\html\ElementContent([$output, ' ',
                 self::factory($this->_context, 'Select', [
@@ -98,7 +99,7 @@ class Currency extends NumberTextbox
     {
         if ($value instanceof core\IValueContainer) {
             if ($this->_currencySelectable && isset($value->currency)) {
-                $this->_inputCurrency = mint\Currency::normalizeCode($value['currency']);
+                $this->_inputCurrency = MintCurrency::normalizeCode($value['currency']);
             }
         }
 

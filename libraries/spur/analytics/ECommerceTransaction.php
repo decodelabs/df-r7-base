@@ -6,8 +6,8 @@
 
 namespace df\spur\analytics;
 
+use DecodeLabs\R7\Mint\Currency as MintCurrency;
 use df\core;
-use df\mint;
 
 class ECommerceTransaction implements IECommerceTransaction
 {
@@ -19,7 +19,7 @@ class ECommerceTransaction implements IECommerceTransaction
     protected $_shippingAmount;
     protected $_taxAmount;
 
-    public function __construct(string $id, mint\ICurrency $amount, $affiliation = null, mint\ICurrency $shipping = null, mint\ICurrency $tax = null)
+    public function __construct(string $id, MintCurrency $amount, $affiliation = null, MintCurrency $shipping = null, MintCurrency $tax = null)
     {
         $this->setId($id);
         $this->setAmount($amount);
@@ -54,7 +54,7 @@ class ECommerceTransaction implements IECommerceTransaction
         return $this->_affiliation;
     }
 
-    public function setAmount(mint\ICurrency $amount)
+    public function setAmount(MintCurrency $amount)
     {
         $this->_amount = $amount;
         return $this;
@@ -65,7 +65,7 @@ class ECommerceTransaction implements IECommerceTransaction
         return $this->_amount;
     }
 
-    public function setShippingAmount(mint\ICurrency $shipping = null)
+    public function setShippingAmount(MintCurrency $shipping = null)
     {
         $this->_shippingAmount = $shipping;
         return $this;
@@ -76,7 +76,7 @@ class ECommerceTransaction implements IECommerceTransaction
         return $this->_shippingAmount;
     }
 
-    public function setTaxAmount(mint\ICurrency $tax = null)
+    public function setTaxAmount(MintCurrency $tax = null)
     {
         $this->_taxAmount = $tax;
         return $this;

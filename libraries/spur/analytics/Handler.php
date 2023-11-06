@@ -3,15 +3,15 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\analytics;
 
 use DecodeLabs\Dictum;
 use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
+use DecodeLabs\R7\Mint\Currency as MintCurrency;
 use df\aura;
 use df\core;
-
-use df\mint;
 use df\spur;
 use df\user;
 
@@ -256,7 +256,7 @@ class Handler implements IHandler
         return $this;
     }
 
-    public function addECommerceTransaction($transaction, mint\ICurrency $amount = null, $affiliation = null, mint\ICurrency $shipping = null, mint\ICurrency $tax = null)
+    public function addECommerceTransaction($transaction, MintCurrency $amount = null, $affiliation = null, MintCurrency $shipping = null, MintCurrency $tax = null)
     {
         if (!$transaction instanceof IECommerceTransaction) {
             if (!$amount) {
