@@ -117,7 +117,6 @@ class Authorisation implements Middleware
         $cookies = $request->getCookieParams();
         $server = $request->getServerParams();
 
-
         // Test for passthrough requests
         if (str_starts_with(
             $url->getPath(),
@@ -126,12 +125,13 @@ class Authorisation implements Middleware
             return null;
         }
 
+
         // Authenticate
         if (
             isset($query['authenticate']) &&
             !isset($cookies['ipbypass'])
         ) {
-            setcookie('ipbypass', '1');
+            setcookie('ipbypass', '1', 0, '/');
         }
 
         if (
