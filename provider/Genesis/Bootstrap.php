@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace DecodeLabs\R7\Genesis;
 
 use DecodeLabs\Genesis\Bootstrap as Base;
+use Exception;
 
 require_once dirname(__DIR__, 4) . '/decodelabs/genesis/src/Bootstrap.php';
 
@@ -29,7 +30,13 @@ class Bootstrap extends Base
      */
     protected function getDefaultAppPath(): string
     {
-        $entryPath = dirname(realpath($_SERVER['SCRIPT_FILENAME']));
+        if (false === ($entryPath = realpath($_SERVER['SCRIPT_FILENAME']))) {
+            throw new Exception(
+                'Unable to determine entry point'
+            );
+        }
+
+        $entryPath = dirname($entryPath);
 
         if (!str_ends_with($entryPath, '/entry')) {
             throw new Exception(

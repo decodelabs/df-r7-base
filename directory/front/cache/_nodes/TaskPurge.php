@@ -8,6 +8,7 @@ namespace df\apex\directory\front\cache\_nodes;
 
 use DecodeLabs\R7\Config\Cache as CacheConfig;
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\Stash;
 use DecodeLabs\Terminus as Cli;
 
 use df\arch;
@@ -22,15 +23,13 @@ class TaskPurge extends arch\node\Task
         }
 
         $config = CacheConfig::load();
-        $isAll = isset($this->request['all']);
 
         foreach (Legacy::getLoader()->lookupClassList('core/cache/backend') as $name => $class) {
             Cli::{'.green'}($name);
             $options = $config->getBackendOptions($name);
-
-            $isAll ?
-                $class::purgeAll($options, Cli::getSession()) :
-                $class::purgeApp($options, Cli::getSession());
+            $class::purgeAll($options, Cli::getSession());
         }
+
+        Stash::purgeAll();
     }
 }

@@ -30,6 +30,7 @@ use DecodeLabs\R7\Dovetail\Resolver as DovetailResolver;
 use DecodeLabs\R7\Genesis\Kernel as R7Kernel;
 use DecodeLabs\R7\Harvest\Middleware as HttpMiddlewareNamespace;
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\Stash;
 use DecodeLabs\Terminus as Cli;
 use DecodeLabs\Veneer;
 
@@ -359,6 +360,10 @@ class Hub implements HubInterface
             HttpMiddleware::class,
             HttpMiddlewareNamespace::class /** @phpstan-ignore-line */
         );
+
+
+        // Stash
+        //Stash::setDefaultPrefix(Legacy::getUniquePrefix());
 
 
         // Set Disciple adapter

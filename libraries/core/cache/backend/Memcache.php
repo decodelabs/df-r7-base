@@ -20,13 +20,6 @@ class Memcache implements core\cache\IBackend
     protected $_lifeTime;
     protected $_cache;
 
-    public static function purgeApp(
-        Repository $options,
-        ?Session $session = null
-    ) {
-        self::purgeAll($options);
-    }
-
     public static function purgeAll(
         Repository $options,
         ?Session $session = null

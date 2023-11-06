@@ -54,7 +54,7 @@ class Session extends Base implements user\session\IController
                 break;
 
             default:
-                $this->perpetuator = new user\session\perpetuator\Shell();
+                $this->perpetuator = new user\session\perpetuator\BlackHole();
                 break;
         }
 

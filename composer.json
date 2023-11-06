@@ -40,6 +40,7 @@
         "decodelabs/pandora": "^0.2.11",
         "decodelabs/sanctum": "^0.1.4",
         "decodelabs/spectrum": "^0.2.1",
+        "decodelabs/stash": "^0.2",
         "decodelabs/systemic": "^0.11.9",
         "decodelabs/tagged": "^0.14.6",
         "decodelabs/terminus": "^0.10",
@@ -56,8 +57,8 @@
         "decodelabs/phpstan-decodelabs": "^0.6.6",
         "decodelabs/chirp": "^0.8",
 
-        "auth0/auth0-php": "^7.6",
-        "stripe/stripe-php": "^6.38",
+        "auth0/auth0-php": "^8",
+        "stripe/stripe-php": "^6",
         "xenolope/quahog": "^3"
     },
     "autoload": {
@@ -89,5 +90,10 @@
     "scripts": {
         "veneer-stub": "php tests/veneer-stub.php",
         "analyze-provider": "composer global exec phpstan analyze -- --configuration=phpstan.provider.neon"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     }
 }

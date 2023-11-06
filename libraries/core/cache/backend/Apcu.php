@@ -10,7 +10,6 @@ use DecodeLabs\Dovetail\Repository;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Terminus\Session;
 
-use df\arch;
 use df\core;
 
 class Apcu implements core\cache\IBackend
@@ -22,26 +21,6 @@ class Apcu implements core\cache\IBackend
     protected $_cache;
     protected $_isCli = false;
 
-    public static function purgeApp(
-        Repository $options,
-        ?Session $session = null
-    ) {
-        if (extension_loaded('apcu') && !(php_sapi_name() == 'cli' && !ini_get('apc.enable_cli'))) {
-            $prefix = Legacy::getUniquePrefix() . '-';
-            $list = self::getCacheList();
-
-            foreach ($list as $set) {
-                if (0 === strpos($set['info'], $prefix)) {
-                    @apcu_delete($set['info']);
-                }
-            }
-        }
-
-        $request = new arch\Request('cache/apcu-clear.json?purge=app');
-        $request->query->mode = (php_sapi_name() == 'cli' ? 'http' : 'cli');
-        $session ? Legacy::runTask($request) : Legacy::launchTask($request);
-    }
-
     public static function purgeAll(
         Repository $options,
         ?Session $session = null
@@ -49,10 +28,6 @@ class Apcu implements core\cache\IBackend
         if (extension_loaded('apcu')) {
             apcu_clear_cache();
         }
-
-        $request = new arch\Request('cache/apcu-clear.json?purge=all');
-        $request->query->mode = (php_sapi_name() == 'cli' ? 'http' : 'cli');
-        $session ? Legacy::runTask($request) : Legacy::launchTask($request);
     }
 
     public static function prune(Repository $options)
@@ -168,13 +143,7 @@ class Apcu implements core\cache\IBackend
     public function remove(...$keys)
     {
         foreach ($keys as $key) {
-            $output = @apcu_delete($this->_prefix . $key);
-
-            /*
-            if($this->_isCli) {
-                $this->_retrigger('remove', $key);
-            }
-             */
+            @apcu_delete($this->_prefix . $key);
         }
 
         return true;
@@ -190,7 +159,6 @@ class Apcu implements core\cache\IBackend
             }
         }
 
-        $this->_retrigger('clear');
         return $this;
     }
 
@@ -202,7 +170,6 @@ class Apcu implements core\cache\IBackend
             }
         }
 
-        $this->_retrigger('clearBegins', $key);
         return $this;
     }
 
@@ -217,7 +184,6 @@ class Apcu implements core\cache\IBackend
             }
         }
 
-        $this->_retrigger('clearMatches', $regex);
         return $this;
     }
 
@@ -280,19 +246,5 @@ class Apcu implements core\cache\IBackend
         }
 
         return $output;
-    }
-
-    protected function _retrigger($method, $arg = null)
-    {
-        $request = new arch\Request('cache/apcu-clear');
-        $request->query->cacheId = $this->_cache->getCacheId();
-        $request->query->mode = $this->_isCli ? 'http' : 'cli';
-        $request->query->{$method} = $arg;
-
-        try {
-            Legacy::runTaskQuietly($request);
-        } catch (\Throwable $e) {
-            core\log\Manager::getInstance()->logException($e);
-        }
     }
 }

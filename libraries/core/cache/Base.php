@@ -23,20 +23,6 @@ abstract class Base implements ICache
 
     private $_backend;
 
-    public static function purgeApp(Session $session = null): void
-    {
-        if (function_exists('opcache_reset')) {
-            opcache_reset();
-        }
-
-        $config = CacheConfig::load();
-
-        foreach (Legacy::getLoader()->lookupClassList('core/cache/backend') as $name => $class) {
-            $options = $config->getBackendOptions($name);
-            $class::purgeApp($options, $session);
-        }
-    }
-
     public static function purgeAll(?Session $session = null): void
     {
         if (function_exists('opcache_reset')) {

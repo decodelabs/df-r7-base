@@ -44,7 +44,6 @@ interface IFileStore extends IStore
 
 interface IBackend extends \Countable
 {
-    public static function purgeApp(Repository $options, ?Session $session = null);
     public static function purgeAll(Repository $options, ?Session $session = null);
     public static function prune(Repository $options);
     public static function clearFor(Repository $options, ICache $cache);
