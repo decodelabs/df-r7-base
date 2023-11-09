@@ -22,7 +22,7 @@ class Base implements ITheme, Dumpable
     public const APPLICATION_COLOR = 'white';
 
     public const FACETS = [];
-    public const DEFAULT_FACETS = ['analytics', 'touchIcons'];
+    public const DEFAULT_FACETS = ['touchIcons'];
 
     public const DEPENDENCIES = [];
     public const IMPORT_MAP = [];
