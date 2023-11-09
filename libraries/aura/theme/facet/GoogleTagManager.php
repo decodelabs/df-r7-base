@@ -89,7 +89,7 @@ class GoogleTagManager extends Base
         $view->addScript(
             'gtm',
             '(function(w,d,s,l,i){' . "\n" .
-            'var h=\'\';var n=d.querySelector(\'[nonce]\'); h=(n.nonce||n.getAttribute(\'nonce\'));' . "\n" .
+            'var h=\'\';var n=d.querySelector(\'[nonce]\'); h=(n&&(n.nonce||n.getAttribute(\'nonce\')));' . "\n" .
             'w[l]=w[l]||[];w[l].push({\'gtm.start\':' . "\n" .
             'new Date().getTime(),event:\'gtm.js\',nonce:h});var f=d.getElementsByTagName(s)[0],' . "\n" .
             'j=d.createElement(s),dl=l!=\'dataLayer\'?\'&l=\'+l:\'\';j.async=true;j.src=' . "\n" .
