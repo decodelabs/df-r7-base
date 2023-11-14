@@ -6,12 +6,11 @@
 
 namespace df\flex;
 
-use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
-
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Guidance;
+use DecodeLabs\Guidance\Format;
 use df\core;
-use df\flex;
 
 class Guid implements IGuid, Dumpable
 {
@@ -35,37 +34,15 @@ class Guid implements IGuid, Dumpable
 
     protected $_bytes;
 
-
     public static function shorten(string $id): string
     {
-        $bytes = static::factory($id)->getBytes();
-        $hex = bin2hex($bytes);
-        return Dictum::baseConvert($hex, 16, 62);
+        return Guidance::shorten($id, Format::GmpBase62);
     }
 
     public static function unshorten(string $id): string
     {
-        $length = strlen($id);
-
-        // Full
-        if ($length === 36) {
-            return $id;
-        }
-
-        // Short
-        if ($length >= 20 && $length <= 22) {
-            $hex = Dictum::baseConvert($id, 62, 16);
-            $hex = str_pad($hex, 32, '0', \STR_PAD_LEFT);
-            return (string)flex\Guid::factory($hex);
-        }
-
-        throw Exceptional::InvalidArgument(
-            'Unable to unshorten ID'
-        );
+        return (string)Guidance::fromShortString($id, Format::GmpBase62);
     }
-
-
-
 
 
 
