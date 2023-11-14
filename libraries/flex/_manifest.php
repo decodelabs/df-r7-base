@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flex;
 
 use DecodeLabs\Atlas\File;
@@ -162,14 +163,6 @@ interface IGenerator
     public static function random($minLength = 6, $maxLength = 14, $additionalChars = null);
     public static function passKey();
     public static function sessionId($raw = false);
-
-    public static function randomBytes($bytes);
-
-    public static function uuid1($node = null, $time = null);
-    public static function uuid3($name, $namespace = null);
-    public static function uuid4();
-    public static function uuid5($name, $namespace = null);
-    public static function combGuid();
 }
 
 interface IGuid extends core\IStringProvider

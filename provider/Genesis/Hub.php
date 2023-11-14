@@ -22,12 +22,14 @@ use DecodeLabs\Genesis\Hub as HubInterface;
 use DecodeLabs\Genesis\Kernel;
 use DecodeLabs\Genesis\Loader\Stack as StackLoader;
 use DecodeLabs\Glitch;
+use DecodeLabs\Guidance;
 use DecodeLabs\Integra\Context as IntegraContext;
 use DecodeLabs\Metamorph;
 use DecodeLabs\R7\Config\Environment as EnvironmentConfig;
 use DecodeLabs\R7\Disciple\Adapter as DiscipleAdapter;
 use DecodeLabs\R7\Dovetail\Resolver as DovetailResolver;
 use DecodeLabs\R7\Genesis\Kernel as R7Kernel;
+use DecodeLabs\R7\Guidance\Factory as GuidanceFactory;
 use DecodeLabs\R7\Harvest\Middleware as HttpMiddlewareNamespace;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Stash;
@@ -364,6 +366,11 @@ class Hub implements HubInterface
 
         // Stash
         //Stash::setDefaultPrefix(Legacy::getUniquePrefix());
+
+
+        // Guidance
+        Guidance::setDefaultShortFormat(Guidance\Format::GmpBase62);
+        Guidance::setFactory(new GuidanceFactory());
 
 
         // Set Disciple adapter

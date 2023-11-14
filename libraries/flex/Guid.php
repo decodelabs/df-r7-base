@@ -48,94 +48,37 @@ class Guid implements IGuid, Dumpable
 
     public static function uuid1($node = null, $time = null)
     {
-        if ($time === null) {
-            $time = self::_getMicrotime();
-        }
-
-        $time = substr(sprintf('%F', $time + self::INTERVAL), 0, -7);
-        $time = base_convert($time, 10, 16);
-        $time = pack('H*', str_pad($time, 16, '0', STR_PAD_LEFT));
-
-        $uuid = $time[4] . $time[5] . $time[6] . $time[7] . $time[2] . $time[3] . $time[0] . $time[1];
-        $uuid .= Generator::randomBytes(2);
-
-        $uuid[8] = chr(ord($uuid[8]) & self::CLEAR_VARIANT | self::VARIANT_RFC);
-        $uuid[6] = chr(ord($uuid[6]) & self::CLEAR_VERSION | self::VERSION_1);
-
-        if ($node !== null) {
-            $node = self::_makeBin($node, 6);
-        }
-
-        if (!$node) {
-            $node = Generator::randomBytes(6);
-            $node[0] = pack('C', ord($node[0]) | 1);
-        }
-
-        $uuid .= $node;
-        return new self($uuid);
+        return new self(
+            Guidance::createV1($node, $time)->getBytes()
+        );
     }
 
     public static function uuid3($name, $namespace = null)
     {
-        $namespace = self::_makeBin($namespace, 16);
-
-        if ($namespace === null) {
-            $namespace = self::uuid4();
-        }
-
-        $uuid = md5($namespace . $name, true);
-        $uuid[8] = chr(ord($uuid[8]) & self::CLEAR_VARIANT | self::VARIANT_RFC);
-        $uuid[6] = chr(ord($uuid[6]) & self::CLEAR_VERSION | self::VERSION_3);
-
-        return new self($uuid);
+        return new self(
+            Guidance::createV3($name, $namespace)->getBytes()
+        );
     }
 
     public static function uuid4()
     {
-        $uuid = Generator::randomBytes(16);
-        $uuid[8] = chr(ord($uuid[8]) & self::CLEAR_VARIANT | self::VARIANT_RFC);
-        $uuid[6] = chr(ord($uuid[6]) & self::CLEAR_VERSION | self::VERSION_4);
-
-        return new self($uuid);
+        return new self(
+            Guidance::createV4()->getBytes()
+        );
     }
 
     public static function uuid5($name, $namespace = null)
     {
-        $namespace = self::_makeBin($namespace, 16);
-
-        if ($namespace === null) {
-            $namespace = self::uuid4();
-        }
-
-        $uuid = md5($namespace . $name, true);
-        $uuid[8] = chr(ord($uuid[8]) & self::CLEAR_VARIANT | self::VARIANT_RFC);
-        $uuid[6] = chr(ord($uuid[6]) & self::CLEAR_VERSION | self::VERSION_5);
-
-        return new self($uuid);
+        return new self(
+            Guidance::createV5($name, $namespace)->getBytes()
+        );
     }
 
     public static function comb()
     {
-        $uuid = Generator::randomBytes(8);
-        $time = self::_getMicrotime();
-
-        $time = substr(sprintf('%F', $time + self::INTERVAL), 0, -7);
-        $time = base_convert($time, 10, 16);
-        $time = pack('H*', str_pad($time, 16, '0', STR_PAD_LEFT));
-
-        $uuid .= $time[1] . $time[0] . $time[7] . $time[6] . $time[5] . $time[4] . $time[3] . $time[2];
-
-        $uuid[8] = chr(ord($uuid[8]) & self::CLEAR_VARIANT | self::VARIANT_RESERVED);
-        $uuid[6] = chr(ord($uuid[6]) & self::CLEAR_VERSION | self::VERSION_COMB);
-
-        return new self($uuid);
-    }
-
-    private static function _getMicrotime()
-    {
-        $time = explode(' ', (string)microtime());
-        $time[0] = substr($time[0], 2);
-        return ((int)($time[1] . $time[0])) / 100;
+        return new self(
+            Guidance::createV4Comb()->getBytes()
+        );
     }
 
     private static function _makeBin($string, $length)
