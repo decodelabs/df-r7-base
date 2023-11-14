@@ -30,7 +30,7 @@
         "decodelabs/fluidity": "^0.3.3",
         "decodelabs/genesis": "^0.8.2",
         "decodelabs/glitch": "^0.18.8",
-        "decodelabs/guidance": "^0.1.0",
+        "decodelabs/guidance": "^0.1.1",
         "decodelabs/harvest": "^0.2.1",
         "decodelabs/hydro": "^0.1",
         "decodelabs/idiom": "^0.2.1",
