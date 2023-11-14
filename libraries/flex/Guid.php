@@ -41,6 +41,10 @@ class Guid implements IGuid, Dumpable
 
     public static function unshorten(string $id): string
     {
+        if(strlen($id) > 30) {
+            return (string)Guidance::fromString($id);
+        }
+
         return (string)Guidance::fromShortString($id, Format::GmpBase62);
     }
 
