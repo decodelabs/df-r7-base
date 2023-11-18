@@ -62,7 +62,7 @@ class GateKeeper implements GateKeeperInterface
     protected function storeAttempt(
         string $identity,
         string $ip,
-        string $agent,
+        ?string $agent,
         bool $success
     ): void {
         Legacy::getTable('user/login')->insert([
