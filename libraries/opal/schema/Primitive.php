@@ -3,12 +3,12 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\schema;
 
 use DecodeLabs\Exceptional;
+use DecodeLabs\Guidance;
 use df\core;
-
-use df\flex;
 
 abstract class Primitive implements IPrimitive
 {
@@ -276,7 +276,7 @@ class Primitive_Guid extends Primitive
             return $this->getDefaultValue();
         }
 
-        return flex\Guid::comb();
+        return Guidance::createV4Comb();
     }
 }
 

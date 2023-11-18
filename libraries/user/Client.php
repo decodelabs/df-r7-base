@@ -11,9 +11,8 @@ use DecodeLabs\Dictum;
 use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
-
+use DecodeLabs\Guidance;
 use df\core;
-use df\flex;
 use df\link;
 use df\mesh;
 use df\user;
@@ -344,7 +343,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity
         $this->_groupIds = [];
 
         foreach ($clientData->getGroupIds() as $groupId) {
-            $this->_groupIds[] = (string)flex\Guid::factory($groupId);
+            $this->_groupIds[] = (string)Guidance::from($groupId);
         }
 
         $this->_signifiers = $clientData->getSignifiers();

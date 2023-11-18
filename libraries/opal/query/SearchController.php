@@ -8,13 +8,14 @@ namespace df\opal\query;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch\Dumpable;
-
+use DecodeLabs\Guidance;
 use df\flex;
 use df\opal;
 
 class SearchController implements ISearchController, Dumpable
 {
     use opal\query\TField;
+
     public const MAX_THRESHOLD_RATIO = 0.95;
 
     protected $_phrase = null;
@@ -46,7 +47,7 @@ class SearchController implements ISearchController, Dumpable
             $this->_phrase = ltrim((string)$this->_phrase, '#');
             $this->_type = 'integer';
             $this->_terms = [];
-        } elseif (flex\Guid::isValidString($this->_phrase)) {
+        } elseif (Guidance::isValid($this->_phrase)) {
             $this->_type = 'guid';
             $this->_terms = [];
         } else {

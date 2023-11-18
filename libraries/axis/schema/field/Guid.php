@@ -3,8 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\axis\schema\field;
 
+use DecodeLabs\Guidance;
+use DecodeLabs\Guidance\Uuid;
 use df\axis;
 use df\flex;
 use df\opal;
@@ -79,10 +82,13 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField
 
 
     // Values
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord = null)
-    {
+    public function inflateValueFromRow(
+        $key,
+        array $row,
+        opal\record\IRecord $forRecord = null
+    ) {
         if (isset($row[$key]) && !empty($row[$key])) {
-            return flex\Guid::factory($row[$key]);
+            return Guidance::from($row[$key]);
         } else {
             return null;
         }
@@ -94,8 +100,8 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField
             return null;
         }
 
-        if (!$value instanceof flex\IGuid) {
-            $value = flex\Guid::factory($value);
+        if (!$value instanceof Uuid) {
+            $value = Guidance::from($value);
         }
 
         return $value->getBytes();
@@ -103,7 +109,7 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField
 
     public function sanitizeValue($value, opal\record\IRecord $forRecord = null)
     {
-        if (!$value instanceof flex\IGuid) {
+        if (!$value instanceof Uuid) {
             $value = (string)$value;
 
             if (!strlen($value)) {
@@ -113,9 +119,9 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField
 
         if ($value !== null) {
             try {
-                $value = flex\Guid::factory($value);
+                $value = Guidance::from($value);
             } catch (flex\Exception $e) {
-                $value = flex\Guid::void();
+                $value = Guidance::createVoid();
             }
         }
 
@@ -148,13 +154,13 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField
     {
         switch ($this->_generator) {
             case self::UUID1:
-                return flex\Guid::uuid1();
+                return Guidance::createV1();
 
             case self::UUID4:
-                return flex\Guid::uuid4();
+                return Guidance::createV4();
 
             case self::COMB:
-                return flex\Guid::comb();
+                return Guidance::createV4Comb();
         }
     }
 

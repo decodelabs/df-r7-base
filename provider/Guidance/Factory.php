@@ -8,13 +8,15 @@ declare(strict_types=1);
 namespace DecodeLabs\R7\Guidance;
 
 use COM;
+use DateTimeImmutable;
 use DateTimeInterface;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Guidance\Factory as FactoryInterface;
+use DecodeLabs\Guidance\Factory\Ramsey as RamseyFactory;
 use DecodeLabs\Guidance\FactoryTrait;
 use DecodeLabs\Guidance\Uuid;
 
-class Factory implements FactoryInterface
+class Factory extends RamseyFactory implements FactoryInterface
 {
     use FactoryTrait;
 
@@ -267,5 +269,33 @@ class Factory implements FactoryInterface
                     'Unable to generate random bytes'
                 );
         }
+    }
+
+    /**
+     * Extract timestamp from bytes if possible
+     */
+    protected function getDateTimeFromBytes(
+        string $bytes
+    ): ?DateTimeInterface {
+        if (ord($bytes[6]) >> 4 != 1) {
+            return null;
+        }
+
+        $time = bin2hex(
+            $bytes[6] .
+            $bytes[7] .
+            $bytes[4] .
+            $bytes[5] .
+            $bytes[0] .
+            $bytes[1] .
+            $bytes[2] .
+            $bytes[3]
+        );
+
+        $time[0] = '0';
+        $timestamp = (hexdec($time) - self::INTERVAL) / 1000000;
+
+        $output = new DateTimeImmutable();
+        return $output->setTimestamp((int)$timestamp);
     }
 }

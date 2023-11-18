@@ -30,7 +30,7 @@ use Carbon\CarbonInterval as Ref16;
 use DateInterval as Ref17;
 use df\user\Manager as Ref18;
 use df\user\IClientDataObject as Ref19;
-use df\flex\Guid as Ref20;
+use DecodeLabs\Guidance\Uuid as Ref20;
 use df\axis\unit\Table as Ref21;
 use df\axis\unit\Enum as Ref22;
 use df\axis\unit\Cache as Ref23;
@@ -150,7 +150,7 @@ class Legacy implements Proxy
     public static function getClient(): Ref19 {
         return static::$instance->getClient();
     }
-    public static function guid(Ref20|string|null $guid): Ref20 {
+    public static function guid(Ref20|string $guid): Ref20 {
         return static::$instance->guid(...func_get_args());
     }
     public static function newGuid(): Ref20 {

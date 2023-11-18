@@ -406,17 +406,4 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
     {
         return flex\Json::fileToTree($path);
     }
-
-
-
-    // Guid
-    public function shortenGuid(string $id): string
-    {
-        return flex\Guid::shorten($id);
-    }
-
-    public function unshortenGuid(string $id): string
-    {
-        return flex\Guid::unshorten($id);
-    }
 }

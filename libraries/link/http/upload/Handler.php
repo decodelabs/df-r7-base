@@ -11,9 +11,8 @@ use ArrayIterator;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Dir;
 use DecodeLabs\Genesis;
-
+use DecodeLabs\Guidance;
 use df\core;
-use df\flex;
 use df\link;
 
 class Handler implements link\http\IUploadHandler
@@ -32,7 +31,7 @@ class Handler implements link\http\IUploadHandler
     {
         if ($path === null) {
             $path = Genesis::$hub->getSharedDataPath();
-            $path .= '/upload/' . flex\Guid::uuid1();
+            $path .= '/upload/' . Guidance::createV1String();
         }
 
         return Atlas::createDir($path);
@@ -46,18 +45,18 @@ class Handler implements link\http\IUploadHandler
 
         foreach (Atlas::scanDirs($path) as $name => $dir) {
             try {
-                $guid = flex\Guid::factory($name);
+                $guid = Guidance::from($name);
             } catch (\Throwable $e) {
                 continue;
             }
 
-            $time = $guid->getTime();
+            $date = $guid->getDateTime();
 
-            if (!$time) {
+            if (!$date) {
                 continue;
             }
 
-            $date = core\time\Date::factory((int)$time);
+            $date = core\time\Date::factory($date->getTimestamp());
 
             if ($date->lt('-2 days')) {
                 $dir->delete();

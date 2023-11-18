@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\opal\rdbms\adapter;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Glitch\Dumpable;
+use DecodeLabs\Guidance\Uuid;
 use df\core;
-use df\flex;
-
 use df\mesh;
 use df\opal;
 
@@ -273,7 +273,7 @@ abstract class Base implements opal\rdbms\IAdapter, Dumpable
     {
         if ($value instanceof core\time\IDate) {
             $value = $this->_prepareDateValue($value);
-        } elseif ($value instanceof flex\IGuid) {
+        } elseif ($value instanceof Uuid) {
             return $value->getBytes();
         }
 

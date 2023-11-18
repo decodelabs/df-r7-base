@@ -8,10 +8,10 @@ namespace df\plug;
 
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Guidance;
+use DecodeLabs\Guidance\Uuid;
 use df\arch;
 use df\core;
-use df\flex;
-
 use df\flow;
 use df\link;
 
@@ -279,17 +279,19 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
         ]);
     }
 
-    public function guid($value, array $options = []): ?flex\IGuid
+    public function guid($value, array $options = []): ?Uuid
     {
         if (empty($value)) {
             $value = $options['default'] ?? null;
         }
 
-        try {
-            $value = flex\Guid::factory($value);
-        } catch (\Throwable $e) {
-            if (null !== ($value = ($options['default'] ?? null))) {
-                $value = flex\Guid::factory($value);
+        if ($value !== null) {
+            try {
+                $value = Guidance::from($value);
+            } catch (\Throwable $e) {
+                if (null !== ($value = ($options['default'] ?? null))) {
+                    $value = Guidance::from($value);
+                }
             }
         }
 

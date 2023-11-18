@@ -9,12 +9,12 @@ namespace df\apex\models\media;
 use DecodeLabs\Dictum;
 use DecodeLabs\Disciple;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Guidance;
+use DecodeLabs\Guidance\Uuid;
 use DecodeLabs\Typify;
 use df\apex;
 use df\axis;
-
 use df\core;
-use df\flex;
 use df\neon;
 use df\opal;
 
@@ -363,9 +363,13 @@ class Model extends axis\Model
         return $this->getMediaHandler()->getVersionImageUrl($this->_normalizeId($fileId), $this->_normalizeId($versionId), $isActive, $transformation);
     }
 
-    protected function _normalizeId($id)
+    protected function _normalizeId($id): ?string
     {
-        if ((is_array($id) || $id instanceof opal\record\IRecord) && isset($id['id'])) {
+        if (
+            (is_array($id) ||
+            $id instanceof opal\record\IRecord) &&
+            isset($id['id'])
+        ) {
             $id = $id['id'];
         }
 
@@ -373,7 +377,7 @@ class Model extends axis\Model
             return null;
         }
 
-        if ($id instanceof flex\IGuid) {
+        if ($id instanceof Uuid) {
             return (string)$id;
         }
 
@@ -382,7 +386,7 @@ class Model extends axis\Model
         }
 
         if (strlen($id) != 36) {
-            $id = (string)flex\Guid::factory($id);
+            $id = (string)Guidance::from($id);
         }
 
         return $id;

@@ -11,16 +11,15 @@ use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Dir;
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Dictum;
-
 use DecodeLabs\Genesis;
 use DecodeLabs\Genesis\Build\Manifest;
 use DecodeLabs\Genesis\Build\Package;
 use DecodeLabs\Genesis\Build\Task\Generic as GenericTask;
+use DecodeLabs\Guidance;
 use DecodeLabs\R7\Legacy;
 use DecodeLabs\Terminus\Session;
 use df\arch\node\IBuildTaskNode as BuildTaskNode;
 use df\arch\Request as ArchRequest;
-use df\flex\Guid;
 use Generator;
 use ReflectionClass;
 
@@ -45,7 +44,7 @@ class BuildManifest implements Manifest
 
     public function __construct(Session $session)
     {
-        $this->buildId = (string)Guid::uuid1();
+        $this->buildId = Guidance::createV1String();
         $this->session = $session;
     }
 

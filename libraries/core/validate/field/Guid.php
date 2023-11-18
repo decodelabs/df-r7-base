@@ -3,10 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\core\validate\field;
 
+use DecodeLabs\Guidance;
 use df\core;
-use df\flex;
 
 class Guid extends Base implements core\validate\IGuidField
 {
@@ -23,7 +24,7 @@ class Guid extends Base implements core\validate\IGuidField
 
         // Validate
         try {
-            $value = flex\Guid::factory($value);
+            $value = Guidance::from($value);
         } catch (\Throwable $e) {
             $this->addError('invalid', $this->validator->_(
                 'Please select a valid entry'

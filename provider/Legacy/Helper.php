@@ -14,6 +14,9 @@ use DateTime;
 
 use DecodeLabs\Deliverance;
 use DecodeLabs\Genesis;
+use DecodeLabs\Guidance;
+use DecodeLabs\Guidance\Format as GuidanceFormat;
+use DecodeLabs\Guidance\Uuid;
 use DecodeLabs\R7\Config\Theme as ThemeConfig;
 use DecodeLabs\R7\Legacy\Plugins\Http as HttpPlugin;
 use DecodeLabs\R7\Nightfire\Block;
@@ -45,7 +48,6 @@ use df\core\time\Date;
 use df\core\time\Duration;
 use df\core\uri\IUrl as Url;
 use df\fire\ISlotContent as Slot;
-use df\flex\Guid;
 use df\flow\Manager as CommsManager;
 use df\mesh\entity\Locator as EntityLocator;
 use df\mesh\job\IJob as Job;
@@ -503,18 +505,18 @@ class Helper
      * Ensure GUID
      */
     public function guid(
-        string|Guid|null $guid
-    ): Guid {
-        return Guid::factory($guid);
+        string|Uuid $guid
+    ): Uuid {
+        return Guidance::from($guid);
     }
 
 
     /**
      * New GUID
      */
-    public function newGuid(): Guid
+    public function newGuid(): Uuid
     {
-        return Guid::comb();
+        return Guidance::createV4Comb();
     }
 
 
@@ -522,17 +524,18 @@ class Helper
      * Shorten Guid
      */
     public function shortenGuid(
-        string|Guid $guid
+        string|Uuid $guid
     ): string {
-        return Guid::shorten((string)$guid);
+        return Guidance::shorten($guid, GuidanceFormat::GmpBase62);
     }
 
     /**
      * Unshorten Guid
      */
-    public function unshortenGuid(string $id): string
-    {
-        return Guid::unshorten($id);
+    public function unshortenGuid(
+        string $id
+    ): string {
+        return (string)Guidance::fromShortString($id, GuidanceFormat::GmpBase62);
     }
 
 
