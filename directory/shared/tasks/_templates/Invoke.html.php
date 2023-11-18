@@ -30,7 +30,7 @@ if(window.XMLHttpRequest) {
         $("#continue").removeClass("disabled");
     };
 
-    xhr.open("GET", "' . $this->uri('~/tasks/invoke.stream?token=' . $token) . '", true);
+    xhr.open("GET", "' . ($this['url'] ?? $this->uri('~/tasks/invoke.stream?token=' . $token)) . '", true);
     xhr.send("Making request...");
 }
 '), $attr);
