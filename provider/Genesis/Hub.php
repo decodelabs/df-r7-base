@@ -351,10 +351,10 @@ class Hub implements HubInterface
 
 
         // Archetype registration
-        Archetype::register(new ArchetypeExtension(
+        Archetype::extend(
             Kernel::class,
             R7Kernel::class /** @phpstan-ignore-line */
-        ));
+        );
 
 
         // Harvest spaces
