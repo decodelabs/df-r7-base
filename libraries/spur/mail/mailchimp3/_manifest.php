@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\spur\mail\mailchimp3;
 
 use df\spur;
@@ -55,7 +56,13 @@ interface IMediator extends spur\IGuzzleMediator
     public function newMemberFilter(): IMemberFilter;
     public function fetchMembers(string $listId, IMemberFilter $filter = null): IDataList;
 
-    public function ensureSubscription(string $listId, user\IClientDataObject $user, array $groups = [], ?array $extraData = null): IDataObject;
+    public function ensureSubscription(
+        string $listId,
+        user\IClientDataObject $user,
+        array $groups = [],
+        ?array $extraData = null,
+        ?array $tags = null
+    ): IDataObject;
     public function unsubscribe(string $listId, string $email): ?IDataObject;
     public function updateMemberDetails(string $listId, string $oldEmail, user\IClientDataObject $user): IDataObject;
 

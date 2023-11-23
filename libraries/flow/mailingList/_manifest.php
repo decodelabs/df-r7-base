@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\flow\mailingList;
 
 use df\core;
@@ -31,7 +32,14 @@ interface ISource
     public function getGroupOptionsFor(?string $listId, bool $nested = false, bool $showSets = true): array;
     public function getGroupIdListFor(?string $listId): array;
 
-    public function subscribeUserToList(user\IClientDataObject $client, string $listId, array $groups = null, bool $replace = false, ?array $extraData = null): ISubscribeResult;
+    public function subscribeUserToList(
+        user\IClientDataObject $client,
+        string $listId,
+        array $groups = null,
+        bool $replace = false,
+        ?array $extraData = null,
+        ?array $tags = null
+    ): ISubscribeResult;
 
     public function getClientManifest(): array;
     public function getClientSubscribedGroupsIn(?string $listId): array;
@@ -49,7 +57,15 @@ interface IAdapter
     public function canConnect(): bool;
     public function fetchManifest(): array;
 
-    public function subscribeUserToList(user\IClientDataObject $client, string $listId, array $manifest, array $groups = null, bool $replace = false, ?array $extraData = null): ISubscribeResult;
+    public function subscribeUserToList(
+        user\IClientDataObject $client,
+        string $listId,
+        array $manifest,
+        array $groups = null,
+        bool $replace = false,
+        ?array $extraData = null,
+        ?array $tags = null
+    ): ISubscribeResult;
     public function fetchClientManifest(array $manifest): array;
     public function refreshClientManifest(): void;
     public function updateListUserDetails(string $oldEmail, user\IClientDataObject $client, array $manifest);

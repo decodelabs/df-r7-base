@@ -96,10 +96,18 @@ class Mailchimp3 extends Base
     }
 
 
-    public function subscribeUserToList(user\IClientDataObject $client, string $listId, array $manifest, array $groups = null, bool $replace = false, ?array $extraData = null): flow\mailingList\ISubscribeResult
-    {
+    public function subscribeUserToList(
+        user\IClientDataObject $client,
+        string $listId,
+        array $manifest,
+        array $groups = null,
+        bool $replace = false,
+        ?array $extraData = null,
+        ?array $tags = null
+    ): flow\mailingList\ISubscribeResult {
         $email = $client->getEmail();
         $merges = [];
+        $tags ??= [];
         $result = new flow\mailingList\SubscribeResult();
 
         if (!$email) {
@@ -110,10 +118,12 @@ class Mailchimp3 extends Base
         $interests = [];
 
         if ($member = $this->_getMemberData($listId, $email)) {
+            //dd($member);
             $merges = $member['mergeFields'];
 
             if (!$replace) {
                 $interests = $member['interests'];
+                $tags = array_unique($tags + array_values($member['tags'] ?? []));
             }
         }
 
@@ -136,7 +146,7 @@ class Mailchimp3 extends Base
             ->setManualInputUrl($manifest['url']);
 
         try {
-            $this->_mediator->ensureSubscription($listId, $client, $interests, $extraData);
+            $this->_mediator->ensureSubscription($listId, $client, $interests, $extraData, $tags);
 
             $result
                 ->isSuccessful(true)
@@ -288,6 +298,9 @@ class Mailchimp3 extends Base
             return null;
         }
 
+
+
+        // Interest
         $interests = $member->interests->toArray();
 
         foreach ($interests as $key => $enabled) {
@@ -296,13 +309,21 @@ class Mailchimp3 extends Base
             }
         }
 
+        // Tags
+        $tags = [];
+
+        foreach ($member->tags->toArray() as $tag) {
+            $tags[$tag['id']] = $tag['name'];
+        }
+
         return [
             'id' => $member['id'],
             'email' => $member['email_address'],
             'emailId' => $member['unique_email_id'],
             'status' => $member['status'],
             'mergeFields' => $member->merge_fields->toArray(),
-            'interests' => $interests
+            'interests' => $interests,
+            'tags' => $tags
         ];
     }
 }

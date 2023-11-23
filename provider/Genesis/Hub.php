@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace DecodeLabs\R7\Genesis;
 
 use DecodeLabs\Archetype;
-use DecodeLabs\Archetype\Resolver\Extension as ArchetypeExtension;
 use DecodeLabs\Atlas;
 use DecodeLabs\Disciple;
 use DecodeLabs\Dovetail;

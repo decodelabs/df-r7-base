@@ -40,12 +40,56 @@ interface IManager extends core\IManager
     public function getPrimaryGroupOptionsFor($source, bool $nested = false, bool $showSets = true): array;
     public function getPrimaryGroupIdListFor($source): array;
 
-    public function subscribeClientToPrimaryList($source, array $groups = null, bool $replace = false, ?array $extraData = null): flow\mailingList\ISubscribeResult;
-    public function subscribeClientToList($source, $listId, array $groups = null, bool $replace = false, ?array $extraData = null): flow\mailingList\ISubscribeResult;
-    public function subscribeClientToGroups(array $compoundGroupIds, bool $replace = false, ?array $extraData = null): array;
-    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $source, array $groups = null, bool $replace = false, ?array $extraData = null): flow\mailingList\ISubscribeResult;
-    public function subscribeUserToList(user\IClientDataObject $client, $source, $listId, array $groups = null, bool $replace = false, ?array $extraData = null): flow\mailingList\ISubscribeResult;
-    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, bool $replace = false, ?array $extraData = null): array;
+    public function subscribeClientToPrimaryList(
+        $source,
+        array $groups = null,
+        bool $replace = false,
+        ?array $extraData = null,
+        ?array $tags = null
+    ): flow\mailingList\ISubscribeResult;
+
+    public function subscribeClientToList(
+        $source,
+        $listId,
+        array $groups = null,
+        bool $replace = false,
+        ?array $extraData = null,
+        ?array $tags = null
+    ): flow\mailingList\ISubscribeResult;
+
+    public function subscribeClientToGroups(
+        array $compoundGroupIds,
+        bool $replace = false,
+        ?array $extraData = null,
+        ?array $tags = null
+    ): array;
+
+    public function subscribeUserToPrimaryList(
+        user\IClientDataObject $client,
+        $source,
+        array $groups = null,
+        bool $replace = false,
+        ?array $extraData = null,
+        ?array $tags = null
+    ): flow\mailingList\ISubscribeResult;
+
+    public function subscribeUserToList(
+        user\IClientDataObject $client,
+        $source,
+        $listId,
+        array $groups = null,
+        bool $replace = false,
+        ?array $extraData = null,
+        ?array $tags = null
+    ): flow\mailingList\ISubscribeResult;
+
+    public function subscribeUserToGroups(
+        user\IClientDataObject $client,
+        array $compoundGroupIds,
+        bool $replace = false,
+        ?array $extraData = null,
+        ?array $tags = null
+    ): array;
 
     public function getClientSubscribedGroups(): array;
     public function getClientSubscribedGroupsFor($source): array;

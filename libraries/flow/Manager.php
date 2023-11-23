@@ -520,26 +520,47 @@ class Manager implements IManager, core\IShutdownAware
 
 
 
-    public function subscribeClientToPrimaryList($source, array $groups = null, bool $replace = false, ?array $extraData = null): flow\mailingList\ISubscribeResult
-    {
+    public function subscribeClientToPrimaryList(
+        $source,
+        array $groups = null,
+        bool $replace = false,
+        ?array $extraData = null,
+        ?array $tags = null
+    ): flow\mailingList\ISubscribeResult {
         $client = user\Manager::getInstance()->getClient();
-        return $this->subscribeUserToPrimaryList($client, $source, $groups, $replace, $extraData);
+        return $this->subscribeUserToPrimaryList($client, $source, $groups, $replace, $extraData, $tags);
     }
 
-    public function subscribeClientToList($source, $listId, array $groups = null, bool $replace = false, ?array $extraData = null): flow\mailingList\ISubscribeResult
-    {
+    public function subscribeClientToList(
+        $source,
+        $listId,
+        array $groups = null,
+        bool $replace = false,
+        ?array $extraData = null,
+        ?array $tags = null
+    ): flow\mailingList\ISubscribeResult {
         $client = user\Manager::getInstance()->getClient();
-        return $this->subscribeUserToList($client, $source, $listId, $groups, $replace, $extraData);
+        return $this->subscribeUserToList($client, $source, $listId, $groups, $replace, $extraData, $tags);
     }
 
-    public function subscribeClientToGroups(array $compoundGroupIds, bool $replace = false, ?array $extraData = null): array
-    {
+    public function subscribeClientToGroups(
+        array $compoundGroupIds,
+        bool $replace = false,
+        ?array $extraData = null,
+        ?array $tags = null
+    ): array {
         $client = user\Manager::getInstance()->getClient();
-        return $this->subscribeUserToGroups($client, $compoundGroupIds, $replace, $extraData);
+        return $this->subscribeUserToGroups($client, $compoundGroupIds, $replace, $extraData, $tags);
     }
 
-    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $source, array $groups = null, bool $replace = false, ?array $extraData = null): flow\mailingList\ISubscribeResult
-    {
+    public function subscribeUserToPrimaryList(
+        user\IClientDataObject $client,
+        $source,
+        array $groups = null,
+        bool $replace = false,
+        ?array $extraData = null,
+        ?array $tags = null
+    ): flow\mailingList\ISubscribeResult {
         if (!$source = $this->getListSource($sourceId = $source)) {
             throw Exceptional::{'df/flow/mailingList/Api,flow/mailingList/NotFound'}(
                 'List source ' . $sourceId . ' does not exist'
@@ -552,22 +573,34 @@ class Manager implements IManager, core\IShutdownAware
             );
         }
 
-        return $this->subscribeUserToList($client, $source, $listId, $groups, $replace, $extraData);
+        return $this->subscribeUserToList($client, $source, $listId, $groups, $replace, $extraData, $tags);
     }
 
-    public function subscribeUserToList(user\IClientDataObject $client, $source, $listId, array $groups = null, bool $replace = false, ?array $extraData = null): flow\mailingList\ISubscribeResult
-    {
+    public function subscribeUserToList(
+        user\IClientDataObject $client,
+        $source,
+        $listId,
+        array $groups = null,
+        bool $replace = false,
+        ?array $extraData = null,
+        ?array $tags = null
+    ): flow\mailingList\ISubscribeResult {
         if (!$source = $this->getListSource($sourceId = $source)) {
             throw Exceptional::{'df/flow/mailingList/Api,flow/mailingList/NotFound'}(
                 'List source ' . $sourceId . ' does not exist'
             );
         }
 
-        return $source->subscribeUserToList($client, $listId, $groups, $replace, $extraData);
+        return $source->subscribeUserToList($client, $listId, $groups, $replace, $extraData, $tags);
     }
 
-    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, bool $replace = false, ?array $extraData = null): array
-    {
+    public function subscribeUserToGroups(
+        user\IClientDataObject $client,
+        array $compoundGroupIds,
+        bool $replace = false,
+        ?array $extraData = null,
+        ?array $tags = null
+    ): array {
         $manifest = $output = [];
 
         foreach ($compoundGroupIds as $id) {
@@ -577,7 +610,7 @@ class Manager implements IManager, core\IShutdownAware
 
         foreach ($manifest as $sourceId => $lists) {
             foreach ($lists as $listId => $groups) {
-                $output[$sourceId][$listId] = $this->subscribeUserToList($client, $sourceId, $listId, $groups, $replace, $extraData);
+                $output[$sourceId][$listId] = $this->subscribeUserToList($client, $sourceId, $listId, $groups, $replace, $extraData, $tags);
             }
         }
 

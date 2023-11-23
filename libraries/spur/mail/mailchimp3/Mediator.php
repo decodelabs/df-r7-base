@@ -220,8 +220,13 @@ class Mediator implements IMediator
     }
 
 
-    public function ensureSubscription(string $listId, user\IClientDataObject $user, array $groups = [], ?array $extraData = null): IDataObject
-    {
+    public function ensureSubscription(
+        string $listId,
+        user\IClientDataObject $user,
+        array $groups = [],
+        ?array $extraData = null,
+        ?array $tags = null
+    ): IDataObject {
         $input = [
             'email_address' => $email = $user->getEmail(),
             'status_if_new' => 'subscribed',
@@ -253,6 +258,10 @@ class Mediator implements IMediator
 
         foreach ($extraData ?? [] as $key => $value) {
             $input['merge_fields'][strtoupper($key)] = $value;
+        }
+
+        if ($tags !== null) {
+            $input['tags'] = array_values(array_map('strval', $tags));
         }
 
         $hash = md5($email);
