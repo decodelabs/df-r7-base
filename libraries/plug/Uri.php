@@ -19,6 +19,7 @@ use df\fuse;
 use df\link;
 use GuzzleHttp\Client as HttpClient;
 use Psr\Http\Message\ResponseInterface;
+use Stringable;
 
 class Uri implements arch\IDirectoryHelper
 {
@@ -61,8 +62,8 @@ class Uri implements arch\IDirectoryHelper
             $uri = clone $this->context->request;
         }
 
-        if ($uri instanceof core\IStringProvider) {
-            $uri = $uri->toString();
+        if ($uri instanceof Stringable) {
+            $uri = $uri->__toString();
         }
 
         if (!is_string($uri)) {

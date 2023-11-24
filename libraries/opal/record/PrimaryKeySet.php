@@ -10,6 +10,7 @@ use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
 use df\core;
+use Stringable;
 
 class PrimaryKeySet implements IPrimaryKeySet, Dumpable
 {
@@ -322,8 +323,14 @@ class PrimaryKeySet implements IPrimaryKeySet, Dumpable
             }
 
             if (
-                ($value instanceof core\IStringProvider || is_string($value)) &&
-                ($testKeys[$key] instanceof core\IStringProvider || is_string($testKeys[$key]))
+                (
+                    $value instanceof Stringable ||
+                    is_string($value)
+                ) &&
+                (
+                    $testKeys[$key] instanceof Stringable ||
+                    is_string($testKeys[$key])
+                )
             ) {
                 if ((string)$value === (string)$testKeys[$key]) {
                     continue;

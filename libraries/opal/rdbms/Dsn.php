@@ -10,6 +10,7 @@ use DecodeLabs\Exceptional;
 
 use DecodeLabs\Glitch\Dumpable;
 use df\core;
+use Stringable;
 
 class Dsn implements IDsn, Dumpable
 {
@@ -48,8 +49,8 @@ class Dsn implements IDsn, Dumpable
     protected function _parse($dsn)
     {
         if (!is_string($dsn)) {
-            if ($dsn instanceof core\IStringProvider) {
-                $dsn = $dsn->toString();
+            if ($dsn instanceof Stringable) {
+                $dsn = $dsn->__toString();
             } else {
                 throw Exceptional::InvalidArgument(
                     'Invalid dsn string!'

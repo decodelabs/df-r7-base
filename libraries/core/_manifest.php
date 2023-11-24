@@ -13,9 +13,10 @@ use DecodeLabs\Glitch;
 use DecodeLabs\R7\Legacy;
 use df;
 use df\core;
+use Stringable;
 
 // String provider
-interface IStringProvider
+interface IStringProvider extends Stringable
 {
     public function toString(): string;
     public function __toString(): string;
