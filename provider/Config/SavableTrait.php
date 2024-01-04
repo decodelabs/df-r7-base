@@ -8,6 +8,7 @@ namespace DecodeLabs\R7\Config;
 
 use DecodeLabs\Dovetail;
 use DecodeLabs\Dovetail\Manifest;
+use DecodeLabs\Dovetail\Template;
 use DecodeLabs\Genesis;
 
 trait SavableTrait
@@ -15,7 +16,8 @@ trait SavableTrait
     public function save(): void
     {
         $loader = Dovetail::getLoaderFor($this->manifest);
-        $loader->saveConfig($this->manifest, $this->data->toArray());
+        $template = new Template($this->data->toArray());
+        $loader->saveConfig($this->manifest, $template);
 
         if (Genesis::$build->isCompiled()) {
             $path = Genesis::$hub->getApplicationPath() . '/config/' . $this->manifest->getName() . '.php';
@@ -26,7 +28,7 @@ trait SavableTrait
                 $this->manifest->getFormat()
             );
 
-            $loader->saveConfig($manifest, $this->data->toArray());
+            $loader->saveConfig($manifest, $template);
         }
 
         $this->onSave();
