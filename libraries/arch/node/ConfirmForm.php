@@ -7,9 +7,8 @@
 namespace df\arch\node;
 
 use DecodeLabs\Dictum;
-
 use DecodeLabs\Tagged as Html;
-use df\aura;
+use df\aura\html\widget\Form as FormWidget;
 
 abstract class ConfirmForm extends Form
 {
@@ -25,7 +24,8 @@ abstract class ConfirmForm extends Form
     protected function createUi(): void
     {
         $itemName = $this->getItemName();
-        $form = $this->content->addForm();
+        $form = $this->createForm();
+        $this->content->push($form);
         $fs = $form->addFieldSet($this->_('%n% information', ['%n%' => ucfirst($itemName)]));
 
         $fs->push(Html::{'p'}($this->getMainMessage()));
@@ -63,6 +63,11 @@ abstract class ConfirmForm extends Form
     protected function getMainMessage()
     {
         return $this->_('Are you sure?');
+    }
+
+    protected function createForm(): FormWidget
+    {
+        return $this->html->form();
     }
 
     protected function createItemUi(/*aura\html\widget\IContainerWidget*/ $container)
