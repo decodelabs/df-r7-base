@@ -50,9 +50,16 @@ class Protocol implements Middleware
         $method = $request->getMethod();
 
         if (!in_array($method, self::METHODS)) {
-            return Harvest::text('', $method === 'OPTIONS' ? 200 : 405, [
+            $response = Harvest::text('', $method === 'OPTIONS' ? 200 : 405, [
                 'allow' => 'OPTIONS, GET, HEAD, POST'
             ]);
+
+            if ($method === 'OPTIONS') {
+                // CORS
+                $response = (new Headers())->handleAccessControl($request, $response);
+            }
+
+            return $response;
         }
 
 

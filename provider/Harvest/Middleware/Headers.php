@@ -40,7 +40,7 @@ class Headers implements Middleware
     /**
      * Add access-control headers
      */
-    protected function handleAccessControl(
+    public function handleAccessControl(
         Request $request,
         Response $response
     ): Response {
