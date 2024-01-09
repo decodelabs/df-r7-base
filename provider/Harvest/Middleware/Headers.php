@@ -55,6 +55,11 @@ class Headers implements Middleware
         $router = Legacy::$http->getRouter();
 
         if (!$router->lookupDomain($url->getHost())) {
+            $response = $response->withHeader(
+                'x-legacy-domain',
+                $url->getHost()
+            );
+
             return $response;
         }
 
