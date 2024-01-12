@@ -10,6 +10,7 @@ use DecodeLabs\Dovetail;
 use DecodeLabs\Dovetail\Manifest;
 use DecodeLabs\Dovetail\Template;
 use DecodeLabs\Genesis;
+use DecodeLabs\R7\Legacy;
 
 trait SavableTrait
 {
@@ -32,6 +33,11 @@ trait SavableTrait
         }
 
         $this->onSave();
+
+        Legacy::emitEvent(
+            'dovetail://' . $this->manifest->getName(),
+            'save'
+        );
     }
 
     protected function onSave(): void
