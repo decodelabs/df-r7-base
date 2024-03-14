@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\user\session;
 
 use df\core;
@@ -140,6 +141,8 @@ interface IPerpetuator
     public function perpetuateRecallKey(IController $controller, RecallKey $key);
     public function getRecallKey(IController $controller);
     public function destroyRecallKey(IController $controller);
+
+    public function perpetuateState(user\IClient $client);
 }
 
 class Node

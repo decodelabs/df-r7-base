@@ -57,4 +57,9 @@ class BlackHole implements user\session\IPerpetuator
         // Derp
         return $this;
     }
+
+    public function perpetuateState(user\IClient $client)
+    {
+        // nothing
+    }
 }

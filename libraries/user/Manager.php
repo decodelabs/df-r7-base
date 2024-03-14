@@ -83,6 +83,12 @@ class Manager implements IManager, core\IShutdownAware
                 core\logException($e);
             }
         }
+
+        try {
+            $this->getHelper('session')->perpetuator->perpetuateState($this->client);
+        } catch(\Throwable $e) {
+            core\logException($e);
+        }
     }
 
 

@@ -19,6 +19,7 @@ class Cookie implements user\session\IPerpetuator
     public const SESSION_NAME = '_s';
     public const REMEMBER_NAME = '_r';
     public const JOIN_NAME = '_j';
+    public const STATE_NAME = '_a';
 
     protected $_inputId;
     protected $_canRecall = true;
@@ -242,5 +243,57 @@ class Cookie implements user\session\IPerpetuator
 
         $this->destroyJoinKey();
         return $output;
+    }
+
+
+    public function perpetuateState(
+        user\IClient $client
+    ) {
+        $sigs = $client->getSignifiers();
+
+        if (in_array('guest', $sigs)) {
+            $sigs = [];
+        }
+
+        $augmentor = Legacy::$http->getResponseAugmentor();
+
+        if (
+            array_key_exists(self::STATE_NAME, $_COOKIE) &&
+            empty($sigs)
+        ) {
+            $augmentor->removeCookieForAnyRequest($augmentor->newCookie(
+                self::STATE_NAME,
+                '',
+                null,
+                true
+            ));
+        }
+
+        if (empty($sigs)) {
+            return;
+        }
+
+        $value = [];
+
+        foreach ($sigs as $sig) {
+            $value[] = md5($client->getId() . ':' . $sig);
+        }
+
+        $value = implode('.', $value);
+
+        if (
+            array_key_exists(self::STATE_NAME, $_COOKIE) &&
+            $_COOKIE[self::STATE_NAME] == $value
+        ) {
+            return;
+        }
+
+
+        $augmentor->setCookieForAnyRequest($augmentor->newCookie(
+            self::STATE_NAME,
+            $value,
+            '+5 minutes',
+            true
+        ));
     }
 }
