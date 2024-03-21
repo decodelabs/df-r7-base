@@ -8,6 +8,7 @@ namespace df\apex\directory\front\cache\_nodes;
 
 use DecodeLabs\R7\Config\Cache as CacheConfig;
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\Stash;
 use DecodeLabs\Terminus as Cli;
 
 use df\arch;
@@ -31,6 +32,7 @@ class TaskPrune extends arch\node\Task
 
         Cli::{'yellow'}('FileStore: ');
         $count = core\cache\FileStore::prune('1 week');
+        $count += Stash::pruneFileStores('1 week');
         Cli::success($count . ' removed');
     }
 }

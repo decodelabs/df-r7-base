@@ -94,6 +94,3 @@ interface ISubscribeResult
 class Cache extends core\cache\Base
 {
 }
-class ApiStore extends core\cache\FileStore
-{
-}

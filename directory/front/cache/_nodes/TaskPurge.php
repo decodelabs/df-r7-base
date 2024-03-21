@@ -30,6 +30,6 @@ class TaskPurge extends arch\node\Task
             $class::purgeAll($options, Cli::getSession());
         }
 
-        Stash::purgeAll();
+        Stash::purge();
     }
 }

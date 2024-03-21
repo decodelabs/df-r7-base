@@ -8,6 +8,7 @@ namespace df\flow\mailingList;
 
 use DecodeLabs\Dovetail\Repository;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Stash;
 use df\axis;
 use df\core;
 use df\flow;
@@ -16,6 +17,7 @@ use df\user;
 class Source implements ISource
 {
     public const MANIFEST_VERSION = 100;
+    public const FILE_STORE = 'mailingList.manifest';
 
     protected $_id;
     protected $_adapter;
@@ -78,7 +80,7 @@ class Source implements ISource
 
     public function refetchManifest(): array
     {
-        $store = ApiStore::getInstance();
+        $store = Stash::loadFileStore(self::FILE_STORE);
 
         try {
             $manifest = $this->_adapter->fetchManifest();
@@ -97,7 +99,7 @@ class Source implements ISource
 
     protected function _getManifestFromStore(): array
     {
-        $store = ApiStore::getInstance();
+        $store = Stash::loadFileStore(self::FILE_STORE);
 
         if (!$manifestFile = $store->get($this->_id, '2 months')) {
             $manifest = $this->refetchManifest();
@@ -106,12 +108,6 @@ class Source implements ISource
         }
 
         return $manifest;
-    }
-
-    protected function _clearManifestStore(): void
-    {
-        $store = ApiStore::getInstance();
-        $store->remove($this->_id);
     }
 
     protected function _normalizeManifest($manifest): array
@@ -171,7 +167,7 @@ class Source implements ISource
 
     public function getManifestTimestamp(): ?int
     {
-        $store = ApiStore::getInstance();
+        $store = Stash::loadFileStore(self::FILE_STORE);
         return $store->getCreationTime($this->_id);
     }
 
