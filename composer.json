@@ -41,7 +41,7 @@
         "decodelabs/pandora": "^0.2.11",
         "decodelabs/sanctum": "^0.1.4",
         "decodelabs/spectrum": "^0.2.1",
-        "decodelabs/stash": "^0.4",
+        "decodelabs/stash": "^0.5",
         "decodelabs/systemic": "^0.11.9",
         "decodelabs/tagged": "^0.14.6",
         "decodelabs/terminus": "^0.10",

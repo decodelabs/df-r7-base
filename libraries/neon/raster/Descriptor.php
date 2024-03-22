@@ -10,6 +10,8 @@ use DecodeLabs\Atlas;
 use DecodeLabs\Genesis;
 use DecodeLabs\Hydro;
 use DecodeLabs\Spectrum\Color;
+use DecodeLabs\Stash;
+use DecodeLabs\Stash\FileStore;
 use DecodeLabs\Typify;
 use df\core;
 use df\link;
@@ -73,7 +75,7 @@ class Descriptor implements IDescriptor
     public function applyTransformation($transformation, core\time\IDate $modificationDate = null)
     {
         $mTime = null;
-        $fileStore = FileStore::getInstance();
+        $fileStore = $this->getFileStore();
 
         if ($transformation !== null) {
             $transformation = Transformation::factory($transformation);
@@ -110,7 +112,7 @@ class Descriptor implements IDescriptor
 
         // Prune store
         if ($mTime !== null && $mTime > $fileStore->getCreationTime($key)) {
-            $fileStore->remove($key);
+            $fileStore->delete($key);
         }
 
 
@@ -286,13 +288,12 @@ class Descriptor implements IDescriptor
             $key = basename(dirname($path)) . '_' . basename($path) . '-' . md5($this->_sourceLocation . ':') . '-ico';
         }
 
-        $fileStore = FileStore::getInstance();
+        $fileStore = $this->getFileStore();
 
-        if (!$file = $fileStore->get($key, self::DEFAULT_LIFETIME)) {
+        $file = $fileStore->fetch($key, function () {
             $ico = new Ico($this->_location, 16, 32);
-            $fileStore->set($key, $ico->generate());
-            $file = $fileStore->get($key);
-        }
+            return $ico->generate();
+        }, self::DEFAULT_LIFETIME);
 
         $this->_location = $file->getPath();
         $this->_contentType = 'image/x-icon';
@@ -370,5 +371,11 @@ class Descriptor implements IDescriptor
         }
 
         return $this->_contentType;
+    }
+
+
+    protected function getFileStore(): FileStore
+    {
+        return Stash::loadFileStore('neon.raster');
     }
 }

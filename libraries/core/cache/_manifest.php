@@ -36,12 +36,6 @@ interface ICache extends IStore
     public function clearAll();
 }
 
-interface IFileStore extends IStore
-{
-    public function clearOlderThan($lifeTime);
-    public function getFileList(): array;
-}
-
 interface IBackend extends \Countable
 {
     public static function purgeAll(Repository $options, ?Session $session = null);

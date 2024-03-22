@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\neon\raster;
 
 use DecodeLabs\Atlas\File;
@@ -181,8 +182,4 @@ interface IDescriptor
     public function shouldIncludeTransformationInFileName(bool $flag = null);
 
     public function getContentType(): string;
-}
-
-class FileStore extends core\cache\FileStore
-{
 }
