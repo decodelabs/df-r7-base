@@ -3,8 +3,10 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\apex\models\user;
 
+use DecodeLabs\Stash;
 use df\apex;
 use df\axis;
 use df\user;
@@ -189,5 +191,25 @@ class Model extends axis\Model implements user\IUserModel
         }
 
         return $this;
+    }
+
+
+    public function setAvatarCacheTime(): int
+    {
+        $cache = Stash::load('model.user');
+        $cache->set('avatarCacheTime', $time = time());
+        return $time;
+    }
+
+    public function getAvatarCacheTime(): int
+    {
+        $cache = Stash::load('model.user');
+        $time = $cache->get('avatarCacheTime');
+
+        if (!$time) {
+            $time = $this->setAvatarCacheTime();
+        }
+
+        return $time;
     }
 }

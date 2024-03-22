@@ -36,7 +36,6 @@ use df\aura\view\content\Template;
 use df\aura\view\IHtmlView as View;
 use df\axis\IUnit as Unit;
 use df\axis\Model;
-use df\axis\unit\Cache as CacheUnit;
 use df\axis\unit\Enum as EnumUnit;
 use df\axis\unit\Table as TableUnit;
 use df\core\app\Base as AppBase;
@@ -558,17 +557,6 @@ class Helper
     {
         /**
          * @var EnumUnit
-         */
-        return Model::loadUnitFromId($id);
-    }
-
-    /**
-     * Load cache unit from ID
-     */
-    public function getCache(string $id): CacheUnit
-    {
-        /**
-         * @var CacheUnit
          */
         return Model::loadUnitFromId($id);
     }

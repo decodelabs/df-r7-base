@@ -24,7 +24,7 @@ class Avatar implements arch\IDirectoryHelper
     public function getAvatarUrl($userId, $size = null)
     {
         return $this->context->uri->__invoke(
-            'avatar/download?user=' . $userId . '&size=' . $size . '&c=' . $this->context->data->user->cache->getAvatarCacheTime()
+            'avatar/download?user=' . $userId . '&size=' . $size . '&c=' . $this->context->data->user->getAvatarCacheTime()
         );
     }
 
