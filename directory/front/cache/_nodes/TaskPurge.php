@@ -27,15 +27,16 @@ class TaskPurge extends arch\node\Task
 
         // Delete
         $paths = [
-            Genesis::$hub->getLocalDataPath() . '/filestore',
-            Genesis::$hub->getLocalDataPath() . '/fileStore',
+            'Legacy cache' => Genesis::$hub->getLocalDataPath() . '/cache',
+            'Legacy fileStore' => Genesis::$hub->getLocalDataPath() . '/filestore',
+            'Intermediate fileStore' => Genesis::$hub->getLocalDataPath() . '/fileStore',
         ];
 
-        foreach ($paths as $path) {
+        foreach ($paths as $label => $path) {
             $dir = Atlas::dir($path);
 
             if ($dir->exists()) {
-                Cli::{'.green'}('Legacy file store');
+                Cli::{'.green'}($label);
                 $dir->delete();
             }
         }
