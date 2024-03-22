@@ -6,7 +6,6 @@
 
 namespace df\flow\mailingList;
 
-use df\core;
 use df\flow;
 use df\user;
 
@@ -88,9 +87,4 @@ interface ISubscribeResult
     public function hasBounced(bool $flag = null);
     public function isInvalid(bool $flag = null);
     public function isThrottled(bool $flag = null);
-}
-
-
-class Cache extends core\cache\Base
-{
 }

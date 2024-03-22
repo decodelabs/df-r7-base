@@ -6,6 +6,8 @@
 
 namespace df\axis\schema;
 
+use DecodeLabs\Stash;
+use DecodeLabs\Stash\Store;
 use df\axis;
 use df\core;
 
@@ -21,7 +23,7 @@ class Manager implements IManager
     public function fetchFor(axis\ISchemaBasedStorageUnit $unit, $transient = false)
     {
         $schema = null;
-        $cache = Cache::getInstance();
+        $cache = $this->getCache();
         $globalUnitId = $unit->getUnitId();
         $isStoreUnit = $globalUnitId == 'axis/schema';
         $setCache = false;
@@ -31,7 +33,7 @@ class Manager implements IManager
         }
 
         if (!($transient && isset($this->_transient[$unit->getUnitId()]))) {
-            $schema = $cache->get($globalUnitId);
+            $schema = $cache->get($this->prepareCacheKey($globalUnitId));
 
             if ($schema !== null && !$schema instanceof ISchema) {
                 $schema = null;
@@ -88,7 +90,7 @@ class Manager implements IManager
         }
 
         if ($setCache) {
-            $cache->set($globalUnitId, $schema);
+            $cache->set($this->prepareCacheKey($globalUnitId), $schema);
         }
 
         return $schema;
@@ -158,23 +160,37 @@ class Manager implements IManager
             ->where('unitId', '=', $unitId)
             ->execute();
 
-        $cache = Cache::getInstance();
-        $cache->remove($unitId);
+        $this->getCache()->delete($unitId);
 
         return $this;
     }
 
+    public function getCache(): Store
+    {
+        return Stash::load('axis.schema');
+    }
+
     public function clearCache(axis\ISchemaBasedStorageUnit $unit = null)
     {
-        $cache = Cache::getInstance();
+        $cache = $this->getCache();
 
         if ($unit) {
-            $cache->remove($unit->getUnitId());
+            $cache->delete($this->prepareCacheKey($unit->getUnitId()));
         } else {
             $cache->clear();
         }
 
         return $this;
+    }
+
+    protected function prepareCacheKey(
+        string $key
+    ): string {
+        return str_replace(
+            ['/', '{', '}', '(', ')'],
+            ['.', '[', ']', '[', ']'],
+            $key
+        );
     }
 
     public function fetchStoredUnitList()

@@ -796,7 +796,3 @@ interface ITranslator
     public function createFreshTargetSchema();
     public function updateTargetSchema();
 }
-
-class Cache extends core\cache\Base
-{
-}

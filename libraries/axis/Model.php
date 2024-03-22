@@ -127,7 +127,7 @@ abstract class Model implements IModel, Dumpable
         return $unit;
     }
 
-    public static function getSchemaManager()
+    public static function getSchemaManager(): axis\schema\Manager
     {
         return axis\schema\Manager::getInstance();
     }

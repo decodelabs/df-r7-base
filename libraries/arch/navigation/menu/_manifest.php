@@ -34,7 +34,6 @@ interface ISource
 
 interface IListableSource extends ISource
 {
-    public function loadAllMenus(array $whiteList = null);
 }
 
 interface ISourceAdapter
@@ -66,8 +65,4 @@ interface IEntryList extends arch\navigation\IEntryList
 {
     public function registerMenu(IMenu $menu);
     public function hasMenu($id);
-}
-
-class Cache extends core\cache\Base
-{
 }

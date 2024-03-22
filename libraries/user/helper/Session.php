@@ -9,8 +9,8 @@ namespace df\user\helper;
 use DecodeLabs\Genesis;
 use df\axis;
 use df\flex;
-
 use df\user;
+use df\user\session\Cache;
 
 class Session extends Base implements user\session\IController
 {
@@ -23,7 +23,7 @@ class Session extends Base implements user\session\IController
     public $descriptor;
     public $perpetuator;
     public $backend;
-    public $cache;
+    public Cache $cache;
 
     protected $_isOpen = false;
     protected $_buckets = [];
@@ -39,7 +39,7 @@ class Session extends Base implements user\session\IController
     {
         $this->_isOpen = true;
 
-        $this->cache = user\session\Cache::getInstance();
+        $this->cache = Cache::getInstance();
         $this->backend = axis\Model::factory('session');
 
         if (!$this->backend instanceof user\session\IBackend) {

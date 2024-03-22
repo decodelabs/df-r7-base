@@ -162,10 +162,3 @@ interface ILayoutMapEntry
     public function matches(arch\IRequest $request);
     public function apply(aura\view\ILayoutView $view);
 }
-
-
-
-// Cache
-class Cache extends core\cache\Base
-{
-}

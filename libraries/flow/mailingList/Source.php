@@ -18,6 +18,7 @@ class Source implements ISource
 {
     public const MANIFEST_VERSION = 100;
     public const FILE_STORE = 'mailingList.manifest';
+    public const CACHE = 'mailingList.manifest';
 
     protected $_id;
     protected $_adapter;
@@ -62,9 +63,9 @@ class Source implements ISource
 
     public function getManifest(): array
     {
-        $cache = Cache::getInstance();
+        $cache = Stash::load(self::CACHE);
 
-        if (!$manifest = $cache->get('manifest:' . $this->_id)) {
+        if (!$manifest = $cache->get($this->_id)) {
             $manifest = $this->_getManifestFromStore();
 
             if (($manifest['__manifest_version__'] ?? null) !== self::MANIFEST_VERSION) {
@@ -72,7 +73,7 @@ class Source implements ISource
             }
 
             unset($manifest['__manifest_version__']);
-            $cache->set('manifest:' . $this->_id, $manifest);
+            $cache->set($this->_id, $manifest);
         }
 
         return $manifest;

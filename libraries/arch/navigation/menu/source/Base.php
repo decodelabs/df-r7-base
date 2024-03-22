@@ -7,7 +7,6 @@
 namespace df\arch\navigation\menu\source;
 
 use DecodeLabs\Exceptional;
-use DecodeLabs\R7\Legacy;
 
 use df\arch;
 use df\core;
@@ -15,24 +14,6 @@ use df\core;
 abstract class Base implements arch\navigation\menu\ISource, core\IContextAware
 {
     use core\TContextAware;
-
-    public static function loadAll(arch\IContext $context)
-    {
-        $output = [];
-
-        foreach (Legacy::getLoader()->lookupClassList('arch/navigation/menu/source') as $name => $class) {
-            try {
-                $source = self::factory($context, $name);
-            } catch (NotFoundException $e) {
-                continue;
-            }
-
-            $output[$source->getName()] = $source;
-        }
-
-        ksort($output);
-        return $output;
-    }
 
     public static function factory(arch\IContext $context, $type): arch\navigation\menu\ISource
     {

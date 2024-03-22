@@ -19,7 +19,7 @@ class TaskRebuildSchemas extends arch\node\Task
             ->toList('unitId');
 
         $this->data->axis->schema->delete()->execute();
-        axis\schema\Cache::getInstance()->clearAll();
+        $this->data->axis->getSchemaManager()->clearCache();
 
         foreach ($list as $unitId) {
             try {
@@ -39,6 +39,6 @@ class TaskRebuildSchemas extends arch\node\Task
             Cli::success('done');
         }
 
-        axis\schema\Cache::getInstance()->clearAll();
+        $this->data->axis->getSchemaManager()->clearCache();
     }
 }

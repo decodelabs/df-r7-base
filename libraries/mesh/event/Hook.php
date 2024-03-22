@@ -8,8 +8,8 @@ namespace df\mesh\event;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Genesis;
-
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\Stash;
 use df\core;
 use df\mesh;
 
@@ -53,27 +53,14 @@ abstract class Hook implements IHook
             $context = new core\SharedContext();
         }
 
-        $cache = HookCache::getInstance();
         $domain = $entityLocator->getDomain();
+        $eventMap = self::_generateEventMap($context);
 
-        if (!$entitySet = $cache->get($domain)) {
-            $emptySet = $cache->get('__empty', []);
-
-            if (in_array($domain, $emptySet)) {
-                return;
-            }
-
-            $eventMap = self::_generateEventMap($context);
-
-            if (!isset($eventMap[$domain])) {
-                $emptySet[] = $domain;
-                $cache->set('__empty', $emptySet);
-                return;
-            }
-
-            $entitySet = $eventMap[$domain];
+        if (!isset($eventMap[$domain])) {
+            return;
         }
 
+        $entitySet = $eventMap[$domain];
         $action = $event->getAction();
 
         if (!isset($entitySet[$action])) {
@@ -114,6 +101,16 @@ abstract class Hook implements IHook
 
     protected static function _generateEventMap(core\IContext $context)
     {
+        $cache = Stash::load('mesh.hook');
+        $isProduction = Genesis::$environment->isProduction();
+
+        if (
+            $isProduction &&
+            $cache->has('eventMap')
+        ) {
+            return $cache->get('eventMap');
+        }
+
         $classList = self::getClassList();
         $map = [];
 
@@ -156,6 +153,10 @@ abstract class Hook implements IHook
                     $map[$domain][$key] = array_merge($map[$domain][$key], $val);
                 }
             }
+        }
+
+        if ($isProduction) {
+            $cache->set('eventMap', $map);
         }
 
         return $map;

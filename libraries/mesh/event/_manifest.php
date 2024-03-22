@@ -3,6 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
+
 namespace df\mesh\event;
 
 use df\core;
@@ -60,8 +61,4 @@ interface IHook extends core\IContextAware
     public static function triggerEvent(IEvent $event);
     public function getName(): string;
     public function getEventMap();
-}
-
-class HookCache extends core\cache\Base
-{
 }

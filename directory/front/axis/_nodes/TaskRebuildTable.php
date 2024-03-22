@@ -66,7 +66,7 @@ class TaskRebuildTable extends arch\node\Task
 
         $this->{$func}($unit, $schema);
 
-        axis\schema\Cache::getInstance()->clearAll();
+        axis\schema\Manager::getInstance()->clearCache();
         axis\schema\Manager::getInstance()->store($unit, $schema);
 
         gc_collect_cycles();

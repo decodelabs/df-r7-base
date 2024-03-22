@@ -6,11 +6,8 @@
 
 namespace df\arch\navigation\menu\source;
 
-use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
-
 use DecodeLabs\R7\Legacy;
-
 use df\arch;
 use df\arch\scaffold\Loader as ScaffoldLoader;
 use df\core;
@@ -103,11 +100,6 @@ class Directory extends Base implements arch\navigation\menu\IListableSource
         return $output;
     }
 
-    public function loadAllMenus(array $whiteList = null)
-    {
-        return $this->loadIds($this->getMenuIds(), $whiteList);
-    }
-
     public function loadIds(array $ids, array $whiteList = null)
     {
         $output = [];
@@ -154,118 +146,6 @@ class Directory extends Base implements arch\navigation\menu\IListableSource
         }
 
         ksort($output);
-
-        return $output;
-    }
-
-    public function loadListedMenus($areas = null)
-    {
-        return $this->loadIds($this->getMenuIds($areas));
-    }
-
-    public function loadNestedMenus($areas = null)
-    {
-        $flatList = $this->loadIds($this->getMenuIds($areas));
-        $index = $output = [];
-
-        foreach ($flatList as $id => $menu) {
-            $packageName = $menu->getSubId();
-
-            if ($packageName === null) {
-                $packageName = '__default';
-            } else {
-                $parts = explode('_', $id);
-                array_pop($parts);
-                $id = implode('_', $parts);
-            }
-
-            $index[$id][$packageName] = $menu;
-        }
-
-        foreach ($index as $id => $set) {
-            if (isset($set['__default'])) {
-                $top = $set['__default'];
-                unset($set['__default']);
-            } else {
-                $top = new arch\navigation\menu\Base(
-                    $this->context,
-                    arch\navigation\menu\Base::normalizeId($id)
-                );
-            }
-
-            foreach ($set as $delegate) {
-                $top->addDelegate($delegate);
-            }
-
-            $output[(string)$top->getId()] = $top;
-        }
-
-        return $output;
-    }
-
-    public function getMenuIds($areas = null)
-    {
-        $cache = arch\navigation\menu\Cache::getInstance();
-        $cacheId = 'Directory://__ID_LIST__';
-
-        if (!$cache->has($cacheId)
-        || null === ($list = $cache->get($cacheId))) {
-            $list = [];
-            $paths = Legacy::getLoader()->getFileSearchPaths('apex/directory');
-
-            foreach ($paths as $path) {
-                if (!is_dir($path)) {
-                    continue;
-                }
-
-                $dir = new \RecursiveDirectoryIterator($path);
-                $it = new \RecursiveIteratorIterator($dir);
-                $regex = new \RegexIterator($it, '/^' . preg_quote($path, '/') . '\/(.+)\/_menus\/(.+)\.php$/i', \RecursiveRegexIterator::GET_MATCH);
-
-                foreach ($regex as $item) {
-                    $list[] = arch\Request::AREA_MARKER . $item[1] . '/' . $item[2];
-                }
-            }
-
-            $cache->set($cacheId, $list);
-        }
-
-        if ($areas !== null) {
-            if (!is_array($areas)) {
-                $areas = [$areas];
-            }
-
-            $temp = $list;
-            $list = [];
-
-            foreach ($temp as $id) {
-                $parts = explode('/', $id);
-                $area = trim($parts[0], arch\Request::AREA_MARKER);
-
-                if (!in_array($area, $areas)) {
-                    continue;
-                }
-
-                $list[] = $id;
-            }
-        }
-
-        return $list;
-    }
-
-    public function getAreaOptionList()
-    {
-        $ids = $this->getMenuIds();
-        $output = [];
-
-        foreach ($ids as $id) {
-            $parts = explode('/', $id);
-            $area = ltrim((string)array_shift($parts), arch\Request::AREA_MARKER);
-
-            if (!isset($output[$area])) {
-                $output[$area] = Dictum::name($area);
-            }
-        }
 
         return $output;
     }

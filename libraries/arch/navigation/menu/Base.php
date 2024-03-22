@@ -8,8 +8,9 @@ namespace df\arch\navigation\menu;
 
 use DecodeLabs\Dictum;
 use DecodeLabs\Exceptional;
-
 use DecodeLabs\R7\Legacy;
+use DecodeLabs\Stash;
+use DecodeLabs\Stash\Store;
 use df\arch;
 use df\core;
 
@@ -23,48 +24,6 @@ class Base implements IMenu, \Serializable
     protected $_subId;
     protected $_delegates = null;
 
-    public static function loadAll(arch\IContext $context, array $whiteList = null)
-    {
-        $output = [];
-        $sources = arch\navigation\menu\source\Base::loadAll($context);
-
-        if ($whiteList !== null) {
-            $temp = $whiteList;
-            $whiteList = [];
-
-            foreach ($temp as $id) {
-                $id = self::normalizeId($id);
-                $sourceName = $id->getScheme();
-
-                if (!isset($whiteList[$sourceName])) {
-                    $whiteList[$sourceName] = [];
-                }
-
-                $whiteList[$sourceName][] = $id;
-            }
-        }
-
-        foreach ($sources as $source) {
-            if (!$source instanceof IListableSource) {
-                continue;
-            }
-
-            $sourceWhiteList = null;
-            $sourceName = $source->getName();
-
-            if ($whiteList !== null) {
-                if (isset($whiteList[$sourceName])) {
-                    $sourceWhiteList = $whiteList[$sourceName];
-                } else {
-                    $sourceWhiteList = [];
-                }
-            }
-
-            $output = array_merge($output, $source->loadAllMenus($sourceWhiteList));
-        }
-
-        return $output;
-    }
 
     public static function loadList(arch\IContext $context, array $ids)
     {
@@ -88,12 +47,8 @@ class Base implements IMenu, \Serializable
 
         $id = self::normalizeId($id);
         $source = arch\navigation\menu\source\Base::factory($context, $id->getScheme());
-        $cache = Cache::getInstance();
-
-        //$cacheId = md5($id);
-        $cacheId = (string)$id;
-
-        //$cache->clear();
+        $cache = static::getCache();
+        $cacheId = md5($id);
 
         if (!$cache->has($cacheId)
         || null === ($output = $cache->get($cacheId))) {
@@ -107,18 +62,17 @@ class Base implements IMenu, \Serializable
     public static function clearCacheFor(arch\IContext $context, $id)
     {
         $id = self::normalizeId($id);
-        $cache = Cache::getInstance();
-
-        //$cacheId = md5($id);
-        $cacheId = (string)$id;
-
-        $cache->remove($cacheId);
+        static::getCache()->delete(md5($id));
     }
 
     public static function clearCache(arch\IContext $context)
     {
-        $cache = Cache::getInstance();
-        $cache->clear();
+        static::getCache()->clear();
+    }
+
+    public static function getCache(): Store
+    {
+        return Stash::load('arch.navigation.menu');
     }
 
     public static function normalizeId($id): core\uri\IUrl

@@ -130,8 +130,8 @@ abstract class Table implements
     {
         $this->_schema = null;
 
-        $cache = axis\schema\Cache::getInstance();
-        $cache->remove($this->getUnitId());
+        $cache = $this->_model->getSchemaManager()->getCache();
+        $cache->delete($this->getUnitId());
 
         return $this;
     }
